@@ -68,7 +68,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     boolean existsBySlug(String slug);
 
 
-    @Query(value = """
+    @Query("""
             SELECT new com.haihoan2874.techhub.dto.response.ProductResponse(
                         p.id,
                         p.categoryId,
@@ -97,7 +97,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
             """)
     Optional<ProductResponse> findDetailProductByCondition(@Param("columnName") String columnName, @Param("value") String value);
 
-    @Query(value = """
+    @Query("""
             SELECT p
             FROM Product p
             Where p.id IN :ids

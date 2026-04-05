@@ -11,6 +11,9 @@ import java.util.*;
  * Utility class for VNPay payment gateway integration.
  */
 public class VnPayUtil {
+    private VnPayUtil() {
+        // Utility class
+    }
 
     /**
      * Hash message with HmacSHA512.
@@ -22,7 +25,7 @@ public class VnPayUtil {
     public static String hmacSHA512(String key, String data) {
         try {
             if (key == null || data == null) {
-                throw new NullPointerException();
+                throw new IllegalArgumentException("Key or data cannot be null");
             }
             final Mac hmac512 = Mac.getInstance("HmacSHA512");
             byte[] hmacKeyBytes = key.getBytes(StandardCharsets.UTF_8);

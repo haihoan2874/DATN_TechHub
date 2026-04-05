@@ -155,7 +155,9 @@ public class CategoryService {
     }
 
     private String generateSlug(String input) {
-        if (input == null || input.isEmpty()) return "";
+        if (input == null || input.isEmpty()) {
+            return "";
+        }
         return input.toLowerCase()
                 .replaceAll("[^a-z0-9\\s]", "")
                 .replaceAll("\\s+", "-");

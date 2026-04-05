@@ -8,7 +8,6 @@ import com.haihoan2874.techhub.repository.BrandRepository;
 import jakarta.persistence.EntityNotFoundException;
 import com.haihoan2874.techhub.repository.ProductRepository;
 import com.haihoan2874.techhub.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;

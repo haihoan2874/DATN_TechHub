@@ -10,7 +10,6 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.List;
 
 /**
  * JWT Token Provider for generating and validating JWT tokens.
