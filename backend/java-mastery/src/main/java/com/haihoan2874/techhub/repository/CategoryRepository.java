@@ -14,6 +14,8 @@ import java.util.UUID;
 public interface CategoryRepository extends JpaRepository<Category, UUID> {
     boolean existsByName(String name);
 
+    boolean existsBySlug(String slug);
+
     boolean existsByNameAndIdNot(String name, UUID id);
 
     @Query("SELECT c FROM Category c WHERE " +

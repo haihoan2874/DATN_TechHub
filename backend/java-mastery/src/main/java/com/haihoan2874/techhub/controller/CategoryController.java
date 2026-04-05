@@ -2,9 +2,9 @@ package com.haihoan2874.techhub.controller;
 
 import com.haihoan2874.techhub.dto.request.CategoryFilterRequest;
 import com.haihoan2874.techhub.dto.request.CreateCategoryRequest;
+import com.haihoan2874.techhub.dto.response.CategoryResponse;
 import com.haihoan2874.techhub.dto.response.CreateCategoryResponse;
 import com.haihoan2874.techhub.dto.core.PagingList;
-import com.haihoan2874.techhub.model.Category;
 import com.haihoan2874.techhub.dto.request.UpdateCategoryRequest;
 import com.haihoan2874.techhub.dto.response.UpdateCategoryResponse;
 import com.haihoan2874.techhub.service.CategoryService;
@@ -30,14 +30,14 @@ import java.util.UUID;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/categories")
+@RequestMapping("/api/v1/categories")
 @Validated
 @Tag(name = "Categories", description = "Category management endpoints")
 public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping
-    @Operation(summary = "Create category", description = "Create a new category")
+    @Operation(summary = "Create category", description = "Create a new category (Admin only)")
     @SecurityRequirement(name = "bearer")
     @PreAuthorize("hasRole('ADMIN')")
     @ApiResponses({
@@ -58,29 +58,34 @@ public class CategoryController {
     }
 
     @GetMapping
-    @Operation(summary = "Get all category")
+    @Operation(summary = "Get all categories", description = "Get list of categories with filtering and pagination")
     @PreAuthorize("permitAll()")
-    public ResponseEntity<PagingList<Category>> getAllCategories(CategoryFilterRequest request) {
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved categories",
+                    content = @Content(schema = @Schema(implementation = PagingList.class)))
+    })
+    public ResponseEntity<PagingList<CategoryResponse>> getAllCategories(CategoryFilterRequest request) {
         log.info("Getting all categories with request: {}", request);
 
         return ResponseEntity.ok(categoryService.getCategories(request));
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Get category detail ", description = "Get detail info of a category by ID")
+    @Operation(summary = "Get category detail", description = "Get detailed information of a category by ID")
     @PreAuthorize("permitAll()")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Successfully category detail"),
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved category detail",
+                    content = @Content(schema = @Schema(implementation = CategoryResponse.class))),
             @ApiResponse(responseCode = "404", description = "Category not found")
     })
-    public ResponseEntity<Category> getCategoryById(@PathVariable UUID id) {
+    public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable UUID id) {
         log.info("Getting category with id: {}", id);
 
         return ResponseEntity.ok(categoryService.getCategoryById(id));
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Update category")
+    @Operation(summary = "Update category", description = "Update category details (Admin only)")
     @SecurityRequirement(name = "bearer")
     @PreAuthorize("hasRole('ADMIN')")
     @ApiResponses({
@@ -102,11 +107,12 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Delete category")
+    @Operation(summary = "Delete category", description = "Delete a category by ID (Admin only. Refused if products exist)")
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "bearer")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Category deleted successfully"),
+            @ApiResponse(responseCode = "400", description = "Cannot delete category (associated products found)"),
             @ApiResponse(responseCode = "404", description = "Category not found"),
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")

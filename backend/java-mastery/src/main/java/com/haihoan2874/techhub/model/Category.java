@@ -26,11 +26,18 @@ public class Category {
     @Column(nullable = false, length = 50)
     private String name;
 
+    @Column(nullable = false, unique = true, length = 100)
+    private String slug;
+
     @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column(length = 255)
     private String icon;
+
+    @Column(name = "is_active")
+    @Builder.Default
+    private Boolean isActive = true;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
