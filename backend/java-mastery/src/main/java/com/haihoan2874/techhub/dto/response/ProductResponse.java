@@ -1,6 +1,7 @@
 package com.haihoan2874.techhub.dto.response;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +12,8 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDto {
+@Builder
+public class ProductResponse {
     private UUID id;
     private UUID categoryId;
     private UUID brandId;

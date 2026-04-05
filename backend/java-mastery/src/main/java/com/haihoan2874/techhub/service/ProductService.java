@@ -1,6 +1,6 @@
 package com.haihoan2874.techhub.service;
 
-import com.haihoan2874.techhub.dto.response.ProductDto;
+import com.haihoan2874.techhub.dto.response.ProductResponse;
 import com.haihoan2874.techhub.dto.request.CreateProductRequest;
 import com.haihoan2874.techhub.dto.request.UpdateProductRequest;
 import com.haihoan2874.techhub.dto.request.UpdateProductStockRequest;
@@ -52,6 +52,16 @@ public class ProductService {
         Product product = new Product();
         mapRequestToEntity(product, request);
 
+        // Standardize slug
+        String slug = (request.getSlug() == null || request.getSlug().isEmpty())
+                ? generateSlug(request.getName())
+                : generateSlug(request.getSlug());
+
+        if (productRepository.existsBySlug(slug)) {
+            slug = slug + "-" + UUID.randomUUID().toString().substring(0, 8);
+        }
+        product.setSlug(slug);
+
         product.setCreatedBy(userService.getCurrentUserId(authentication));
 
         Product saveProduct = productRepository.save(product);
@@ -78,7 +88,7 @@ public class ProductService {
     }
 
 
-    public PagingList<ProductDto> getAllProducts(ProductFilterRequest request) {
+    public PagingList<ProductResponse> getAllProducts(ProductFilterRequest request) {
         String sortBy = validateAndGetSortBy(request.getSortBy());
         Sort.Direction direction = "asc".equalsIgnoreCase(request.getSortOrder())
                 ? Sort.Direction.ASC
@@ -96,13 +106,13 @@ public class ProductService {
                 .sortDirection(direction)
                 .build();
 
-        Page<ProductDto> products = productRepository.findProductsByFilter(filter, pageable);
+        Page<ProductResponse> products = productRepository.findProductsByFilter(filter, pageable);
 
-        List<ProductDto> content = products.getContent().stream()
-                .map(this::mapToDto)
+        List<ProductResponse> content = products.getContent().stream()
+                .map(this::mapToResponse)
                 .toList();
 
-        return PagingList.<ProductDto>builder()
+        return PagingList.<ProductResponse>builder()
                 .contents(content)
                 .page(request.getPageNo())
                 .size(request.getPageSize())
@@ -129,23 +139,23 @@ public class ProductService {
     }
 
     /**
-     * Map ProductDto to ProductDto with additional fields
+     * Map ProductResponse to ProductResponse with additional fields
      */
-    private ProductDto mapToDto(ProductDto productDto) {
+    private ProductResponse mapToResponse(ProductResponse productResponse) {
         // Set default values for rating and reviews
         // TODO: Calculate actual average rating and review count from reviews table
-        productDto.setAverageRating(5.0);
-        productDto.setReviewCount(10);
-        return productDto;
+        productResponse.setAverageRating(5.0);
+        productResponse.setReviewCount(10);
+        return productResponse;
     }
 
-    public ProductDto getProductByCondition(String searchBy, String value) {
+    public ProductResponse getProductByCondition(String searchBy, String value) {
         if (!List.of("id", "slug").contains(searchBy.toLowerCase())) {
             throw new IllegalArgumentException("Invalid filter parameters");
         }
         log.info("Getting product by {}: {}", searchBy, value);
         return productRepository.findDetailProductByCondition(searchBy, value)
-                .map(this::mapToDto)
+                .map(this::mapToResponse)
                 .orElseThrow(() -> new EntityNotFoundException("Product not found"));
     }
 
@@ -157,7 +167,18 @@ public class ProductService {
 
         validateProductRequest(request, id);
 
+        String oldName = product.getName();
         mapRequestToEntity(product, request);
+
+        // Update slug if name changed or slug is empty
+        if (!oldName.equals(request.getName()) || product.getSlug() == null || product.getSlug().isEmpty()) {
+            String newSlug = generateSlug(request.getName());
+            if (productRepository.existsBySlug(newSlug)) {
+                newSlug = newSlug + "-" + UUID.randomUUID().toString().substring(0, 8);
+            }
+            product.setSlug(newSlug);
+        }
+
         product.setUpdatedBy(userService.getCurrentUserId(authentication));
 
         Product savedProduct = productRepository.save(product);
@@ -168,7 +189,6 @@ public class ProductService {
 
     private void mapRequestToEntity(Product product, BaseProductRequest request) {
         product.setName(request.getName());
-        product.setSlug(request.getSlug());
         product.setDescription(request.getDescription());
         product.setPrice(request.getPrice());
         product.setImageUrl(request.getImageUrl());
@@ -178,6 +198,16 @@ public class ProductService {
         product.setBrandId(request.getBrandId());
         product.setSpecs(request.getSpecs());
         product.setVideoUrls(request.getVideoUrls());
+    }
+
+    private String generateSlug(String input) {
+        if (input == null || input.isEmpty()) {
+            return "";
+        }
+        return input.toLowerCase()
+                .replaceAll("[^a-z0-9\\s]", "")
+                .replaceAll("\\s+", "-")
+                .replaceAll("^-+|-+$", "");
     }
 
     private void validateProductRequest(BaseProductRequest request, UUID productId) {

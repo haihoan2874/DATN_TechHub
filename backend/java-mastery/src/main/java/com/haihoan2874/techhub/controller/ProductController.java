@@ -1,6 +1,6 @@
 package com.haihoan2874.techhub.controller;
 
-import com.haihoan2874.techhub.dto.response.ProductDto;
+import com.haihoan2874.techhub.dto.response.ProductResponse;
 import com.haihoan2874.techhub.dto.request.CreateProductRequest;
 import com.haihoan2874.techhub.dto.request.UpdateProductRequest;
 import com.haihoan2874.techhub.dto.request.UpdateProductStockRequest;
@@ -32,7 +32,7 @@ import java.util.UUID;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/products")
+@RequestMapping("/api/v1/products")
 @Validated
 @Tag(name = "Products", description = "Product management endpoints")
 public class ProductController {
@@ -67,7 +67,7 @@ public class ProductController {
                     content = @Content(schema = @Schema(implementation = PagingList.class))),
             @ApiResponse(responseCode = "400", description = "Invalid filter parameters")
     })
-    public ResponseEntity<PagingList<ProductDto>> getAllProducts(ProductFilterRequest request) {
+    public ResponseEntity<PagingList<ProductResponse>> getAllProducts(ProductFilterRequest request) {
         log.info("Getting all products with filter: {}", request);
 
         return ResponseEntity.ok(productService.getAllProducts(request));
@@ -78,11 +78,11 @@ public class ProductController {
     @PreAuthorize("permitAll()")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Products retrieved successfully",
-                    content = @Content(schema = @Schema(implementation = ProductDto.class))),
+                    content = @Content(schema = @Schema(implementation = ProductResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid filter parameters"),
             @ApiResponse(responseCode = "404", description = "Product not found")
     })
-    public ResponseEntity<ProductDto> getProductDetail(
+    public ResponseEntity<ProductResponse> getProductDetail(
             @RequestParam String searchBy,
             @RequestParam String value
     ) {

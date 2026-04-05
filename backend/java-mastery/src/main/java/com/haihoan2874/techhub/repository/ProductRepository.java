@@ -1,6 +1,6 @@
 package com.haihoan2874.techhub.repository;
 
-import com.haihoan2874.techhub.dto.response.ProductDto;
+import com.haihoan2874.techhub.dto.response.ProductResponse;
 import com.haihoan2874.techhub.dto.request.ProductFilter;
 import com.haihoan2874.techhub.model.Product;
 import org.springframework.data.domain.Page;
@@ -23,7 +23,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     boolean existsByName(String name);
 
     @Query(value = """
-            SELECT new com.haihoan2874.techhub.dto.response.ProductDto(
+            SELECT new com.haihoan2874.techhub.dto.response.ProductResponse(
                 p.id,
                 p.categoryId,
                 p.brandId,
@@ -61,13 +61,15 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
                     AND (:#{#filter.maxPrice} IS NULL OR p.price <= :#{#filter.maxPrice})
                     AND (:#{#filter.isActive} IS NULL OR p.isActive = :#{#filter.isActive})
                     """)
-    Page<ProductDto> findProductsByFilter(@Param("filter") ProductFilter filter, Pageable pageable);
+    Page<ProductResponse> findProductsByFilter(@Param("filter") ProductFilter filter, Pageable pageable);
 
     boolean existsByNameAndIdNot(String name, UUID id);
 
+    boolean existsBySlug(String slug);
+
 
     @Query(value = """
-            SELECT new com.haihoan2874.techhub.dto.response.ProductDto(
+            SELECT new com.haihoan2874.techhub.dto.response.ProductResponse(
                         p.id,
                         p.categoryId,
                         p.brandId,
@@ -93,7 +95,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
                         WHERE (:columnName = 'id' AND CAST(p.id AS string ) = :value )
                         OR (:columnName = 'slug' AND p.slug = :value)
             """)
-    Optional<ProductDto> findDetailProductByCondition(@Param("columnName") String columnName, @Param("value") String value);
+    Optional<ProductResponse> findDetailProductByCondition(@Param("columnName") String columnName, @Param("value") String value);
 
     @Query(value = """
             SELECT p
