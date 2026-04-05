@@ -22,6 +22,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
             SELECT new com.haihoan2874.techhub.dto.ProductDto(
                 p.id,
                 p.categoryId,
+                p.brandId,
                 c.name,
                 p.name,
                 p.slug,
@@ -30,12 +31,14 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
                 p.imageUrl,
                 p.stockQuantity,
                 p.isActive,
+                p.specs,
+                p.videoUrls,
                 p.createdAt,
                 p.createdBy,
                 p.updatedAt,
                 p.updatedBy,
-                CAST(0.0 AS  double),
-                CAST(0 AS integer) 
+                CAST(0.0 AS double),
+                CAST(0 AS integer)
             )
             FROM Product p
             JOIN Category c ON p.categoryId = c.id
@@ -63,6 +66,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
             SELECT new com.haihoan2874.techhub.dto.ProductDto(
                         p.id,
                         p.categoryId,
+                        p.brandId,
                         c.name,
                         p.name,
                         p.slug,
@@ -71,6 +75,8 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
                         p.imageUrl,
                         p.stockQuantity,
                         p.isActive,
+                        p.specs,
+                        p.videoUrls,
                         p.createdAt,
                         p.createdBy,
                         p.updatedAt,
