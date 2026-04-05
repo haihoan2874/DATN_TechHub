@@ -19,7 +19,8 @@ public class CheckoutResponse {
     private UUID orderId;
     private String orderNumber;
     private String status;
-    private BigDecimal totalAmount;
+    private BigDecimal totalAmount; // Final amount after discount
+    private BigDecimal discountAmount;
     private String paymentUrl; // Optional, for VNPAY
     private String message;
 }

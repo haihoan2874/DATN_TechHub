@@ -18,4 +18,5 @@ public class CheckoutRequest {
     private UUID shippingAddressId;
     private String paymentMethod; // e.g., "COD", "VNPAY"
     private String notes;
+    private String voucherCode;
 }

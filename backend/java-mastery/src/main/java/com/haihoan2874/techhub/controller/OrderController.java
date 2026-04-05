@@ -3,6 +3,7 @@ package com.haihoan2874.techhub.controller;
 import com.haihoan2874.techhub.constant.APIConstants;
 import com.haihoan2874.techhub.dto.request.CheckoutRequest;
 import com.haihoan2874.techhub.dto.request.CreateOrderRequest;
+import com.haihoan2874.techhub.dto.response.AdminOrderResponse;
 import com.haihoan2874.techhub.dto.response.CheckoutResponse;
 import com.haihoan2874.techhub.dto.response.CreateOrderResponse;
 import com.haihoan2874.techhub.dto.response.GetOrderByOrderNumberResponse;
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -101,9 +103,25 @@ public class OrderController {
             @ApiResponse(responseCode = APIConstants.NOT_FOUND, description = APIConstants.MSG_ORDER_NOT_FOUND)
     })
     public ResponseEntity<PatchCancelOrderResponse> cancelOrder(@PathVariable UUID id, Authentication authentication) {
+        log.info("Canceling order with id {} for user", id);
         PatchCancelOrderResponse response = orderService.cancelOrder(id, authentication);
-
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping
+    @Operation(summary = "Get all orders (Admin only)")
+    @SecurityRequirement(name = APIConstants.BEARER)
+    @PreAuthorize(APIConstants.ROLE_ADMIN)
+    public ResponseEntity<java.util.List<AdminOrderResponse>> getAllOrders() {
+        return ResponseEntity.ok(orderService.getAllOrdersAdmin());
+    }
+
+    @PutMapping("/{id}/status")
+    @Operation(summary = "Update order status (Admin only)")
+    @SecurityRequirement(name = APIConstants.BEARER)
+    @PreAuthorize(APIConstants.ROLE_ADMIN)
+    public ResponseEntity<AdminOrderResponse> updateStatus(@PathVariable java.util.UUID id, @RequestParam com.haihoan2874.techhub.model.OrderStatus status) {
+        return ResponseEntity.ok(orderService.updateOrderStatus(id, status));
     }
 
 }
