@@ -1,7 +1,15 @@
 package com.haihoan2874.techhub.service;
 
-import com.haihoan2874.techhub.dto.*;
-import com.haihoan2874.techhub.dto.core.BaseProductRequest;
+import com.haihoan2874.techhub.dto.ProductDto;
+import com.haihoan2874.techhub.dto.request.CreateProductRequest;
+import com.haihoan2874.techhub.dto.request.UpdateProductRequest;
+import com.haihoan2874.techhub.dto.request.UpdateProductStockRequest;
+import com.haihoan2874.techhub.dto.request.ProductFilter;
+import com.haihoan2874.techhub.dto.request.ProductFilterRequest;
+import com.haihoan2874.techhub.dto.response.CreateProductResponse;
+import com.haihoan2874.techhub.dto.response.UpdateProductResponse;
+import com.haihoan2874.techhub.dto.response.UpdateProductStockResponse;
+import com.haihoan2874.techhub.dto.request.base.BaseProductRequest;
 import com.haihoan2874.techhub.dto.core.PagingList;
 import com.haihoan2874.techhub.model.Product;
 import com.haihoan2874.techhub.repository.BrandRepository;

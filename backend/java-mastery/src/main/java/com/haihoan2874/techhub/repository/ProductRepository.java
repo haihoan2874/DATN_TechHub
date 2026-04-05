@@ -1,7 +1,7 @@
 package com.haihoan2874.techhub.repository;
 
 import com.haihoan2874.techhub.dto.ProductDto;
-import com.haihoan2874.techhub.dto.ProductFilter;
+import com.haihoan2874.techhub.dto.request.ProductFilter;
 import com.haihoan2874.techhub.model.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

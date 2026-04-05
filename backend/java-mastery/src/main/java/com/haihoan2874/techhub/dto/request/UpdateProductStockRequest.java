@@ -1,4 +1,4 @@
-package com.haihoan2874.techhub.dto;
+package com.haihoan2874.techhub.dto.request;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
