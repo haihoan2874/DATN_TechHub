@@ -46,14 +46,13 @@ public class SecurityConfiguration {
                                 .accessDeniedHandler(jwtAuthenticationForBidden)
                 )
                 .sessionManagement(sessionManagement ->
-                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                        sessionManagement.sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED)
                 )
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers(
-                                        "/api/v1/register",
-                                        "/api/v1/login",
                                         "/api/v1/auth/**",
+                                        "/api/v1/health",
                                         "/health",
                                         "/v3/api-docs/**",
                                         "/swagger-ui/**",
@@ -63,7 +62,10 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.GET, "/api/v1/categories/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/brands/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/products/**").permitAll()
-                                .requestMatchers("/api/v1/carts/**").permitAll()
+                                .requestMatchers("/api/v1/cart/**").authenticated()
+                                .requestMatchers("/api/v1/orders/**").authenticated()
+                                .requestMatchers("/api/v1/addresses/**").authenticated()
+                                .requestMatchers("/api/v1/reviews/**").authenticated()
                                 .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2

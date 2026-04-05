@@ -12,29 +12,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * REST Controller for health check endpoints (no authentication required).
+ * REST Controller for health checks.
  */
 @Slf4j
 @RestController
-@RequestMapping("/health")
+@RequestMapping("/api/v1/health")
 @Tag(name = "Health", description = "Health check endpoints")
 public class HealthController {
 
     /**
-     * Public health check endpoint (no authentication required).
+     * Check if the application is running.
      *
-     * @return health status
+     * @return health status map
      */
     @GetMapping
-    @Operation(summary = "Health check", description = "Public endpoint to check application health status")
-    public ResponseEntity<Map<String, Object>> healthCheck() {
+    @Operation(summary = "Health check", description = "Endpoint to check application health status")
+    public ResponseEntity<Map<String, Object>> health() {
         log.info("Health check endpoint accessed");
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("status", "UP");
-        response.put("timestamp", System.currentTimeMillis());
-        response.put("service", "springboot-boilerplate");
-
-        return ResponseEntity.ok(response);
+        Map<String, Object> status = new HashMap<>();
+        status.put("status", "UP");
+        status.put("message", "Service is healthy");
+        status.put("timestamp", System.currentTimeMillis());
+        return ResponseEntity.ok(status);
     }
 }

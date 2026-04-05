@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/orders")
+@RequestMapping("/api/v1/orders")
 @Tag(name = "Orders", description = "Order management endpoints")
 public class OrderController {
     private final OrderService orderService;
