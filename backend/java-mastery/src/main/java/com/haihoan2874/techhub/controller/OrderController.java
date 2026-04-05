@@ -1,0 +1,95 @@
+package com.haihoan2874.techhub.controller;
+
+import com.haihoan2874.techhub.dto.CreateOrderRequest;
+import com.haihoan2874.techhub.dto.CreateOrderResponse;
+import com.haihoan2874.techhub.dto.PatchCancelOrderResponse;
+import com.haihoan2874.techhub.dto.GetOrderByOrderNumberResponse;
+import com.haihoan2874.techhub.dto.GetOrderByIdResponse;
+import com.haihoan2874.techhub.service.OrderService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
+import org.springframework.web.bind.annotation.*;
+
+@Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/orders")
+@Tag(name = "Orders", description = "Order management endpoints")
+public class OrderController {
+    private final OrderService orderService;
+
+    @PostMapping
+    @Operation(summary = "Create order", description = "Create a new order")
+    @SecurityRequirement(name = "bearer")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Order created successfully",
+                    content = @Content(schema = @Schema(implementation = CreateOrderResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input or insufficient stock"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Product or address not found")
+    })
+    public ResponseEntity<CreateOrderResponse> createOrder(@Valid @RequestBody CreateOrderRequest request, Authentication authentication) {
+        log.info("Creating order for user");
+
+        CreateOrderResponse response = orderService.createOrder(request, authentication);
+
+        log.info("Order created with id: {}", response.getId());
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Get order by id", description = "Get an order by its ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Order retrieved successfully",
+                    content = @Content(schema = @Schema(implementation = GetOrderByIdResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Order not found")
+    })
+    public ResponseEntity<GetOrderByIdResponse> getOrderById(@PathVariable UUID id, Authentication authentication) {
+        return ResponseEntity.ok(orderService.getDetailOrderById(id, authentication));
+    }
+
+    @GetMapping("/number/{orderNumber}")
+    @Operation(summary = "Get order by order number", description = "Get order detail by order number")
+    @SecurityRequirement(name = "bearer")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Order retrieved successfully",
+                    content = @Content(schema = @Schema(implementation = GetOrderByOrderNumberResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Order not found")
+    })
+    public ResponseEntity<GetOrderByOrderNumberResponse> getDetailByOrderNumber(@PathVariable String orderNumber, Authentication authentication) {
+        return ResponseEntity.ok(orderService.getDetailByOrderNumber(orderNumber, authentication));
+    }
+
+    @PatchMapping("/{id}/cancel")
+    @Operation(summary = "Cancel order")
+    @SecurityRequirement(name = "bearer")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Cancel order successfully",
+                    content = @Content(schema = @Schema(implementation = PatchCancelOrderResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Order not found")
+    })
+    public ResponseEntity<PatchCancelOrderResponse> cancelOrder(@PathVariable UUID id, Authentication authentication) {
+        PatchCancelOrderResponse response = orderService.cancelOrder(id, authentication);
+
+        return ResponseEntity.ok(response);
+    }
+
+}

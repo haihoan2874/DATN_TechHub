@@ -1,0 +1,166 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: techhub-postgres
+    environment:
+      POSTGRES_DB: datn_techhub
+      POSTGRES_USER: pguser
+      POSTGRES_PASSWORD: pgpassword
+      POSTGRES_INITDB_ARGS: "-c max_connections=200 -c shared_buffers=256MB"
+    ports:
+      - "5439:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - springboot-network
+    restart: unless-stopped
+
+  # Redis Cache
+#  redis:
+#    image: redis:7-alpine
+#    container_name: springboot-redis
+#    ports:
+#      - "6379:6379"
+#    volumes:
+#      - redis_data:/data
+#    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:redis_password}
+#    healthcheck:
+#      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+#    networks:
+#      - springboot-network
+#    restart: unless-stopped
+
+  # Mailhog for Email Testing
+#  mailhog:
+#    image: mailhog/mailhog:latest
+#    container_name: springboot-mailhog
+#    ports:
+#      - "1025:1025"    # SMTP port
+#      - "8025:8025"    # Web UI port
+#    environment:
+#      MH_MAILDIR_LIMIT: 5000
+#      MH_SMTP_BIND_ADDR: "0.0.0.0:1025"
+#      MH_API_BIND_ADDR: "0.0.0.0:8025"
+#    networks:
+#      - springboot-network
+#    restart: unless-stopped
+
+  # LocalStack for AWS Services
+#  localstack:
+#    image: localstack/localstack:latest
+#    container_name: springboot-localstack
+#    ports:
+#      - "4566:4566"        # Main LocalStack port
+#      - "4571:4571"        # Legacy port
+#    environment:
+#      SERVICES: s3,sqs,sns,dynamodb,secretsmanager,ssm
+#      DEBUG: 1
+#      DATA_DIR: /tmp/localstack/data
+#      LAMBDA_EXECUTOR: docker
+#      DOCKER_HOST: unix:///var/run/docker.sock
+#      AWS_DEFAULT_REGION: ${AWS_REGION:us-east-1}
+#      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:test}
+#      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:test}
+#    volumes:
+#      - "${TMPDIR:-.}/localstack:/tmp/localstack"
+#      - "/var/run/docker.sock:/var/run/docker.sock"
+#      - ./scripts/localstack-init.sh:/docker-entrypoint-initaws.d/init-aws.sh
+#    networks:
+#      - springboot-network
+#    restart: unless-stopped
+
+  # Spring Boot Application
+#  app:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    container_name: springboot-app
+#    ports:
+#      - "${PORT:8080}:8080"
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:springboot_boilerplate}
+#      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:postgres}
+#      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:postgres}
+#      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+#
+#      # Redis Configuration
+#      SPRING_REDIS_HOST: redis
+#      SPRING_REDIS_PORT: 6379
+#      SPRING_REDIS_PASSWORD: ${REDIS_PASSWORD:redis_password}
+#
+#      # JWT Configuration
+#      JWT_SECRETKEY: ${JWT_SECRETKEY:your-super-secret-key-change-in-production-environment}
+#      JWT_ISSUER: ${JWT_ISSUER:TechHub}
+#      JWT_EXPIRATIONMINUTE: ${JWT_EXPIRATIONMINUTE:1440}
+#
+#      # Swagger Configuration
+#      SWAGGER_APPNAME: ${SWAGGER_APPNAME:TechHub API}
+#      SWAGGER_APPDESCRIPTION: ${SWAGGER_APPDESCRIPTION:TechHub API Documentation}
+#      SWAGGER_APPVERSION: ${SWAGGER_APPVERSION:1.0.0}
+#
+#      # Email/Mailhog Configuration
+#      SPRING_MAIL_HOST: mailhog
+#      SPRING_MAIL_PORT: 1025
+#      SPRING_MAIL_USERNAME: test
+#      SPRING_MAIL_PASSWORD: test
+#      SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: "false"
+#      SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: "false"
+#
+#      # LocalStack Configuration
+#      AWS_S3_ENDPOINT: http://localstack:4566
+#      AWS_SQS_ENDPOINT: http://localstack:4566
+#      AWS_SNS_ENDPOINT: http://localstack:4566
+#      AWS_DYNAMODB_ENDPOINT: http://localstack:4566
+#      AWS_REGION: ${AWS_REGION:us-east-1}
+#      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:test}
+#      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:test}
+#
+#      # Logging
+#      LOGGING_LEVEL_ROOT: ${LOGGING_LEVEL_ROOT:INFO}
+#      LOGGING_LEVEL_COM_CONGLT: ${LOGGING_LEVEL_COM_CONGLT:DEBUG}
+#
+#      # Server Configuration
+#      SERVER_PORT: 8080
+#      TZ: ${TZ:GMT+0}
+#    depends_on:
+#      postgres:
+#        condition: service_healthy
+#      redis:
+#        condition: service_healthy
+#      mailhog:
+#        condition: service_started
+#      localstack:
+#        condition: service_started
+#    networks:
+#      - springboot-network
+#    restart: unless-stopped
+#    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
+#      start_period: 40s
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+
+networks:
+  springboot-network:
+    driver: bridge
+
