@@ -1,4 +1,4 @@
-package com.haihoan2874.techhub.dto;
+package com.haihoan2874.techhub.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateBrandRequest {
+public class UpdateBrandRequest {
     @NotBlank(message = "Brand name is required")
     @Size(max = 100, message = "Name must be at most 100 characters")
     private String name;
@@ -24,4 +24,6 @@ public class CreateBrandRequest {
 
     @Size(max = 500)
     private String logoUrl;
+
+    private Boolean isActive;
 }

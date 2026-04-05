@@ -1,8 +1,8 @@
 package com.haihoan2874.techhub.service;
 
-import com.haihoan2874.techhub.dto.BrandResponse;
-import com.haihoan2874.techhub.dto.CreateBrandRequest;
-import com.haihoan2874.techhub.dto.UpdateBrandRequest;
+import com.haihoan2874.techhub.dto.response.BrandResponse;
+import com.haihoan2874.techhub.dto.request.CreateBrandRequest;
+import com.haihoan2874.techhub.dto.request.UpdateBrandRequest;
 import com.haihoan2874.techhub.model.Brand;
 import com.haihoan2874.techhub.repository.BrandRepository;
 import jakarta.persistence.EntityNotFoundException;
