@@ -30,6 +30,14 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
             SELECT o
             FROM Order o
             LEFT JOIN FETCH o.items
+            WHERE o.orderNumber = :orderNumber
+            """)
+    Optional<Order> findByOrderNumber(@Param("orderNumber") String orderNumber);
+
+    @Query("""
+            SELECT o
+            FROM Order o
+            LEFT JOIN FETCH o.items
             WHERE o.orderNumber = :orderNumber AND o.userId = :userId
             """)
     Optional<Order> findByOrderNumberAndUserId(@Param("orderNumber") String orderNumber, @Param("userId") UUID userId);

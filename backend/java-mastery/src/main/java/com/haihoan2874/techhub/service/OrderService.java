@@ -15,7 +15,11 @@ import com.haihoan2874.techhub.repository.OrderItemRepository;
 import com.haihoan2874.techhub.repository.OrderRepository;
 import com.haihoan2874.techhub.repository.ProductRepository;
 import com.haihoan2874.techhub.security.service.UserService;
+import com.haihoan2874.techhub.dto.request.CheckoutRequest;
+import com.haihoan2874.techhub.dto.response.CartResponse;
+import com.haihoan2874.techhub.dto.response.CheckoutResponse;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -40,6 +44,10 @@ public class OrderService {
     private final CustomerAddressRepository customerAddressRepository;
     private final OrderItemRepository orderItemRepository;
     private final UserService userService;
+    private final CartService cartService;
+    private final InventoryService inventoryService;
+    private final PaymentService paymentService;
+    private final EmailService emailService;
 
     @Transactional
     public CreateOrderResponse createOrder(CreateOrderRequest request, Authentication authentication) {
@@ -186,6 +194,114 @@ public class OrderService {
                 .status(savedOrder.getStatus())
                 .updatedAt(savedOrder.getUpdatedAt())
                 .build();
+    }
+
+    @Transactional
+    public CheckoutResponse checkout(CheckoutRequest request, HttpServletRequest servletRequest, Authentication authentication) {
+        UUID userId = userService.getCurrentUserId(authentication);
+        log.info("Starting checkout for user: {}", userId);
+
+        // 1. Get Cart from Redis
+        CartResponse cart = cartService.getCart(userId.toString());
+        if (cart == null || cart.getItems().isEmpty()) {
+            throw new IllegalStateException("Cart is empty");
+        }
+
+        // 2. Validate Address
+        CustomerAddress address = customerAddressRepository.findByIdAndUserId(request.getShippingAddressId(), userId)
+                .orElseThrow(() -> new EntityNotFoundException("Shipping address not found"));
+
+        // 3. Create Order
+        Order order = Order.builder()
+                .orderNumber(generateOrderNumber())
+                .userId(userId)
+                .status(OrderStatus.PENDING)
+                .total(cart.getTotalPrice())
+                .shippingAddress(address)
+                .paymentMethod(request.getPaymentMethod())
+                .notes(request.getNotes())
+                .items(new ArrayList<>())
+                .build();
+
+        Order savedOrder = orderRepository.saveAndFlush(order);
+
+        // 4. Reserve Stock & Create Order Items
+        List<OrderItem> orderItems = new ArrayList<>();
+        for (var cartItem : cart.getItems()) {
+            // Atomic reserve in DB
+            boolean reserved = inventoryService.reserveStock(cartItem.getProductId(), cartItem.getQuantity());
+            if (!reserved) {
+                throw new RuntimeException("Product " + cartItem.getProductName() + " is out of stock");
+            }
+
+            OrderItem orderItem = OrderItem.builder()
+                    .order(savedOrder)
+                    .productId(cartItem.getProductId())
+                    .productName(cartItem.getProductName())
+                    .quantity(cartItem.getQuantity())
+                    .price(cartItem.getPrice())
+                    .subtotal(cartItem.getSubTotal())
+                    .build();
+            orderItems.add(orderItem);
+        }
+        orderItemRepository.saveAll(orderItems);
+        savedOrder.setItems(orderItems);
+
+        // 5. Generate Payment URL if VNPay
+        String paymentUrl = null;
+        if ("VNPAY".equalsIgnoreCase(request.getPaymentMethod())) {
+            paymentUrl = paymentService.createPaymentUrl(
+                    servletRequest, 
+                    savedOrder.getTotal().longValue(), 
+                    "Thanh toan don hang " + savedOrder.getOrderNumber(), 
+                    savedOrder.getOrderNumber()
+            );
+        }
+
+        // 6. Clear Cart
+        cartService.clearCart(userId.toString());
+
+        // 7. Send Email confirmation (Async)
+        emailService.sendEmail(
+                userService.getUserByUsername(authentication.getName()).getEmail(),
+                "TechHub - Xác nhận đặt hàng " + savedOrder.getOrderNumber(),
+                "Cảm ơn bạn đã đặt hàng tại TechHub. Mã đơn hàng của bạn là: " + savedOrder.getOrderNumber(),
+                false
+        );
+
+        log.info("Checkout successful for order: {}", savedOrder.getOrderNumber());
+
+        return CheckoutResponse.builder()
+                .orderId(savedOrder.getId())
+                .orderNumber(savedOrder.getOrderNumber())
+                .status(savedOrder.getStatus().toString())
+                .totalAmount(savedOrder.getTotal())
+                .paymentUrl(paymentUrl)
+                .message("Order created successfully")
+                .build();
+    }
+
+    @Transactional
+    public void processPaymentSuccess(String orderNumber) {
+        log.info("Processing successful payment for order: {}", orderNumber);
+        Order order = orderRepository.findByOrderNumber(orderNumber)
+                .orElseThrow(() -> new EntityNotFoundException("Order not found: " + orderNumber));
+
+        if (order.getStatus() != OrderStatus.PENDING) {
+            log.warn("Order {} is already in status {}", orderNumber, order.getStatus());
+            return;
+        }
+
+        // 1. Update Order Status
+        order.setStatus(OrderStatus.CONFIRMED);
+        orderRepository.save(order);
+
+        // 2. Confirm Inventory Sale (Release Reserved -> Actually deduct)
+        for (OrderItem item : order.getItems()) {
+            inventoryService.confirmSale(item.getProductId(), item.getQuantity());
+        }
+
+        log.info("Order {} confirmed and inventory updated", orderNumber);
     }
 
     private List<OrderItem> createOrderItems(List<CreateOrderRequest.ItemRequest> itemRequests,

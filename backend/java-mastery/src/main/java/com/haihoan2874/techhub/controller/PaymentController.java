@@ -1,5 +1,6 @@
 package com.haihoan2874.techhub.controller;
 
+import com.haihoan2874.techhub.service.OrderService;
 import com.haihoan2874.techhub.service.PaymentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,6 +26,7 @@ import java.util.Map;
 public class PaymentController {
 
     private final PaymentService paymentService;
+    private final OrderService orderService;
 
     /**
      * Create VNPay payment URL for an order.
@@ -62,7 +64,9 @@ public class PaymentController {
         log.info("VNPay callback received: {}", queryParams);
         boolean isSuccess = paymentService.verifyPayment(queryParams);
         if (isSuccess) {
-            log.info("VNPay payment SUCCESS for Ref: {}", queryParams.get("vnp_TxnRef"));
+            String orderNumber = queryParams.get("vnp_TxnRef");
+            log.info("VNPay payment SUCCESS for Ref: {}", orderNumber);
+            orderService.processPaymentSuccess(orderNumber);
             return ResponseEntity.ok("Payment Success");
         } else {
             log.warn("VNPay payment FAILED or INVALID for Ref: {}", queryParams.get("vnp_TxnRef"));

@@ -1,10 +1,12 @@
 package com.haihoan2874.techhub.controller;
 
+import com.haihoan2874.techhub.dto.request.CheckoutRequest;
 import com.haihoan2874.techhub.dto.request.CreateOrderRequest;
+import com.haihoan2874.techhub.dto.response.CheckoutResponse;
 import com.haihoan2874.techhub.dto.response.CreateOrderResponse;
-import com.haihoan2874.techhub.dto.response.PatchCancelOrderResponse;
 import com.haihoan2874.techhub.dto.response.GetOrderByOrderNumberResponse;
 import com.haihoan2874.techhub.dto.response.GetOrderByIdResponse;
+import com.haihoan2874.techhub.dto.response.PatchCancelOrderResponse;
 import com.haihoan2874.techhub.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +34,17 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Orders", description = "Order management endpoints")
 public class OrderController {
     private final OrderService orderService;
+
+    @SecurityRequirement(name = "bearer")
+    @PostMapping("/checkout")
+    @Operation(summary = "Checkout from cart", description = "Create order from current user cart items in Redis")
+    public ResponseEntity<CheckoutResponse> checkout(
+            @RequestBody CheckoutRequest request,
+            HttpServletRequest servletRequest,
+            Authentication authentication) {
+        log.info("Request checkout for user: {}", authentication.getName());
+        return ResponseEntity.ok(orderService.checkout(request, servletRequest, authentication));
+    }
 
     @PostMapping
     @Operation(summary = "Create order", description = "Create a new order")
