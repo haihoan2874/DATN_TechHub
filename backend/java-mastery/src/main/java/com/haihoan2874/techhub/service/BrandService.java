@@ -6,8 +6,12 @@ import com.haihoan2874.techhub.dto.request.UpdateBrandRequest;
 import com.haihoan2874.techhub.model.Brand;
 import com.haihoan2874.techhub.repository.BrandRepository;
 import jakarta.persistence.EntityNotFoundException;
+import com.haihoan2874.techhub.repository.ProductRepository;
+import com.haihoan2874.techhub.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,9 +24,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BrandService {
     private final BrandRepository brandRepository;
+    private final UserRepository userRepository;
+    private final ProductRepository productRepository;
 
     @Transactional
-    public BrandResponse createBrand(CreateBrandRequest request) {
+    public BrandResponse createBrand(CreateBrandRequest request, Authentication authentication) {
         log.info("Creating brand: {}", request.getName());
 
         if (brandRepository.existsBySlug(request.getSlug())) {
@@ -36,6 +42,13 @@ public class BrandService {
                 .logoUrl(request.getLogoUrl())
                 .isActive(true)
                 .build();
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            userRepository.findByUsername(authentication.getName()).ifPresent(user -> {
+                brand.setCreatedBy(user.getId());
+                brand.setUpdatedBy(user.getId());
+            });
+        }
 
         Brand savedBrand = brandRepository.save(brand);
         return mapToResponse(savedBrand);
@@ -54,7 +67,7 @@ public class BrandService {
     }
 
     @Transactional
-    public BrandResponse updateBrand(UUID id, UpdateBrandRequest request) {
+    public BrandResponse updateBrand(UUID id, UpdateBrandRequest request, Authentication authentication) {
         log.info("Updating brand with id: {}", id);
 
         Brand brand = brandRepository.findById(id)
@@ -70,6 +83,12 @@ public class BrandService {
         brand.setLogoUrl(request.getLogoUrl());
         brand.setIsActive(request.getIsActive() != null ? request.getIsActive() : brand.getIsActive());
 
+        if (authentication != null && authentication.isAuthenticated()) {
+            userRepository.findByUsername(authentication.getName()).ifPresent(user -> {
+                brand.setUpdatedBy(user.getId());
+            });
+        }
+
         Brand updatedBrand = brandRepository.save(brand);
         return mapToResponse(updatedBrand);
     }
@@ -77,10 +96,16 @@ public class BrandService {
     @Transactional
     public void deleteBrand(UUID id) {
         log.info("Deleting brand with id: {}", id);
-        if (!brandRepository.existsById(id)) {
-            throw new EntityNotFoundException("Brand not found with id: " + id);
+        
+        Brand brand = brandRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Brand not found with id: " + id));
+
+        if (productRepository.existsByBrandId(id)) {
+            log.error("Cannot delete brand id: {} as it has associated products", id);
+            throw new IllegalStateException("Cannot delete brand as it has associated products. Please delete or move products first.");
         }
-        brandRepository.deleteById(id);
+
+        brandRepository.delete(brand);
     }
 
     private BrandResponse mapToResponse(Brand brand) {

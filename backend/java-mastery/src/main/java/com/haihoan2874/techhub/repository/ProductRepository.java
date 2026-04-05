@@ -16,6 +16,10 @@ import java.util.UUID;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, UUID> {
+    boolean existsByCategoryId(UUID categoryId);
+
+    boolean existsByBrandId(UUID brandId);
+
     boolean existsByName(String name);
 
     @Query(value = """
