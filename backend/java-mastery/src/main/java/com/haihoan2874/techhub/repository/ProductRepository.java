@@ -1,6 +1,6 @@
 package com.haihoan2874.techhub.repository;
 
-import com.haihoan2874.techhub.dto.ProductDto;
+import com.haihoan2874.techhub.dto.response.ProductDto;
 import com.haihoan2874.techhub.dto.request.ProductFilter;
 import com.haihoan2874.techhub.model.Product;
 import org.springframework.data.domain.Page;
@@ -19,7 +19,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     boolean existsByName(String name);
 
     @Query(value = """
-            SELECT new com.haihoan2874.techhub.dto.ProductDto(
+            SELECT new com.haihoan2874.techhub.dto.response.ProductDto(
                 p.id,
                 p.categoryId,
                 p.brandId,
@@ -63,7 +63,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
 
 
     @Query(value = """
-            SELECT new com.haihoan2874.techhub.dto.ProductDto(
+            SELECT new com.haihoan2874.techhub.dto.response.ProductDto(
                         p.id,
                         p.categoryId,
                         p.brandId,

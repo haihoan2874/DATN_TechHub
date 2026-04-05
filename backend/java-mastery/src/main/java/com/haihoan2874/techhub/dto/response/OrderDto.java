@@ -1,4 +1,4 @@
-package com.haihoan2874.techhub.dto;
+package com.haihoan2874.techhub.dto.response;
 
 import com.haihoan2874.techhub.model.OrderStatus;
 import lombok.AllArgsConstructor;

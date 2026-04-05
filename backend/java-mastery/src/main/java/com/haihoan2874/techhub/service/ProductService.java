@@ -1,6 +1,6 @@
 package com.haihoan2874.techhub.service;
 
-import com.haihoan2874.techhub.dto.ProductDto;
+import com.haihoan2874.techhub.dto.response.ProductDto;
 import com.haihoan2874.techhub.dto.request.CreateProductRequest;
 import com.haihoan2874.techhub.dto.request.UpdateProductRequest;
 import com.haihoan2874.techhub.dto.request.UpdateProductStockRequest;
