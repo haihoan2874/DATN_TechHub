@@ -19,8 +19,10 @@ public class RedisConfig {
         template.setHashKeySerializer(new StringRedisSerializer());
         
         // Value serialization: JSON
-        template.setValueSerializer(new org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer());
-        template.setHashValueSerializer(new org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer());
+        org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer serializer = 
+            new org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer();
+        template.setValueSerializer(serializer);
+        template.setHashValueSerializer(serializer);
         
         template.afterPropertiesSet();
         return template;

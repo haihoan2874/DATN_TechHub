@@ -20,6 +20,16 @@ public class GeminiConfig {
     private String apiUrl;
 
     /**
+     * Define WebClient.Builder bean if not automatically provided.
+     * 
+     * @return a new WebClient.Builder
+     */
+    @Bean
+    public WebClient.Builder webClientBuilder() {
+        return WebClient.builder();
+    }
+
+    /**
      * Create WebClient bean for Gemini AI API calls.
      *
      * @param builder the WebClient builder
