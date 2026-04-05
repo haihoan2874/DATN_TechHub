@@ -46,23 +46,29 @@ public class SecurityConfiguration {
                                 .accessDeniedHandler(jwtAuthenticationForBidden)
                 )
                 .sessionManagement(sessionManagement ->
-                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers(
-                                        "/register",
-                                        "/login",
+                                        "/api/v1/register",
+                                        "/api/v1/login",
+                                        "/api/v1/auth/**",
                                         "/health",
-                                        "/api/hello/**",
                                         "/v3/api-docs/**",
                                         "/swagger-ui/**",
                                         "/swagger-ui.html",
                                         "/actuator/**"
                                 ).permitAll()
-                                .requestMatchers(HttpMethod.GET, "/categories", "/categories/{id}").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/products", "/products/detail").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/categories/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/brands/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/products/**").permitAll()
+                                .requestMatchers("/api/v1/carts/**").permitAll()
                                 .anyRequest().authenticated()
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .defaultSuccessUrl("/api/v1/auth/oauth2/success")
+                        .failureUrl("/api/v1/auth/oauth2/failure")
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
