@@ -16,6 +16,8 @@ import com.haihoan2874.techhub.repository.BrandRepository;
 import com.haihoan2874.techhub.repository.CategoryRepository;
 import com.haihoan2874.techhub.repository.ProductRepository;
 import com.haihoan2874.techhub.security.service.UserService;
+import com.haihoan2874.techhub.mapper.ProductMapper;
+import com.haihoan2874.techhub.util.SlugUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +28,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.Locale;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -50,12 +53,12 @@ public class ProductService {
         validateProductRequest(request, null);
 
         Product product = new Product();
-        mapRequestToEntity(product, request);
+        ProductMapper.mapRequestToEntity(product, request);
 
         // Standardize slug
         String slug = (request.getSlug() == null || request.getSlug().isEmpty())
-                ? generateSlug(request.getName())
-                : generateSlug(request.getSlug());
+                ? SlugUtil.generateSlug(request.getName())
+                : SlugUtil.generateSlug(request.getSlug());
 
         if (productRepository.existsBySlug(slug)) {
             slug = slug + "-" + UUID.randomUUID().toString().substring(0, 8);
@@ -109,7 +112,7 @@ public class ProductService {
         Page<ProductResponse> products = productRepository.findProductsByFilter(filter, pageable);
 
         List<ProductResponse> content = products.getContent().stream()
-                .map(this::mapToResponse)
+                .map(ProductMapper::mapToResponse)
                 .toList();
 
         return PagingList.<ProductResponse>builder()
@@ -129,7 +132,7 @@ public class ProductService {
             return DEFAULT_SORT_FIELD;
         }
 
-        String lowerSortBy = sortBy.toLowerCase();
+        String lowerSortBy = sortBy.toLowerCase(Locale.ROOT);
         if (!ALLOWED_SORT_FIELDS.contains(lowerSortBy)) {
             log.warn("Invalid sortBy field: '{}', using default '{}'", sortBy, DEFAULT_SORT_FIELD);
             return DEFAULT_SORT_FIELD;
@@ -138,24 +141,14 @@ public class ProductService {
         return lowerSortBy;
     }
 
-    /**
-     * Map ProductResponse to ProductResponse with additional fields
-     */
-    private ProductResponse mapToResponse(ProductResponse productResponse) {
-        // Set default values for rating and reviews
-        // TODO: Calculate actual average rating and review count from reviews table
-        productResponse.setAverageRating(5.0);
-        productResponse.setReviewCount(10);
-        return productResponse;
-    }
 
     public ProductResponse getProductByCondition(String searchBy, String value) {
-        if (!List.of("id", "slug").contains(searchBy.toLowerCase())) {
+        if (!List.of("id", "slug").contains(searchBy.toLowerCase(Locale.ROOT))) {
             throw new IllegalArgumentException("Invalid filter parameters");
         }
         log.info("Getting product by {}: {}", searchBy, value);
         return productRepository.findDetailProductByCondition(searchBy, value)
-                .map(this::mapToResponse)
+                .map(ProductMapper::mapToResponse)
                 .orElseThrow(() -> new EntityNotFoundException("Product not found"));
     }
 
@@ -168,11 +161,11 @@ public class ProductService {
         validateProductRequest(request, id);
 
         String oldName = product.getName();
-        mapRequestToEntity(product, request);
+        ProductMapper.mapRequestToEntity(product, request);
 
         // Update slug if name changed or slug is empty
         if (!oldName.equals(request.getName()) || product.getSlug() == null || product.getSlug().isEmpty()) {
-            String newSlug = generateSlug(request.getName());
+            String newSlug = SlugUtil.generateSlug(request.getName());
             if (productRepository.existsBySlug(newSlug)) {
                 newSlug = newSlug + "-" + UUID.randomUUID().toString().substring(0, 8);
             }
@@ -187,28 +180,6 @@ public class ProductService {
         return UpdateProductResponse.builder().id(savedProduct.getId()).build();
     }
 
-    private void mapRequestToEntity(Product product, BaseProductRequest request) {
-        product.setName(request.getName());
-        product.setDescription(request.getDescription());
-        product.setPrice(request.getPrice());
-        product.setImageUrl(request.getImageUrl());
-        product.setStockQuantity(request.getStockQuantity());
-        product.setIsActive(request.getIsActive() != null ? request.getIsActive() : true);
-        product.setCategoryId(request.getCategoryId());
-        product.setBrandId(request.getBrandId());
-        product.setSpecs(request.getSpecs());
-        product.setVideoUrls(request.getVideoUrls());
-    }
-
-    private String generateSlug(String input) {
-        if (input == null || input.isEmpty()) {
-            return "";
-        }
-        return input.toLowerCase()
-                .replaceAll("[^a-z0-9\\s]", "")
-                .replaceAll("\\s+", "-")
-                .replaceAll("^-+|-+$", "");
-    }
 
     private void validateProductRequest(BaseProductRequest request, UUID productId) {
         if (!categoryRepository.existsById(request.getCategoryId())) {

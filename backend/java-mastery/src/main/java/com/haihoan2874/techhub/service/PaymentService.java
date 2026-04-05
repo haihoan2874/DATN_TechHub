@@ -33,7 +33,7 @@ public class PaymentService {
         log.info("Creating VNPay payment URL for Ref: {}, Amount: {}", txnRef, amount);
         
         String vnpIpAddr = VnPayUtil.getIpAddress(request);
-        String vnpCreateDate = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+        String vnpCreateDate = new SimpleDateFormat("yyyyMMddHHmmss", Locale.ROOT).format(new Date());
 
         Map<String, String> vnpParams = new HashMap<>();
         vnpParams.put("vnp_Version", vnPayConfig.getVersion());
@@ -69,7 +69,9 @@ public class PaymentService {
      */
     public boolean verifyPayment(Map<String, String> requestParams) {
         String vnpSecureHash = requestParams.get("vnp_SecureHash");
-        if (vnpSecureHash == null) return false;
+        if (vnpSecureHash == null) {
+            return false;
+        }
 
         // Remove hash from params to verify
         Map<String, String> verifyParams = new HashMap<>(requestParams);

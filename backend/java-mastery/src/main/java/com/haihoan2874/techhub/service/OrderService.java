@@ -201,81 +201,98 @@ public class OrderService {
         UUID userId = userService.getCurrentUserId(authentication);
         log.info("Starting checkout for user: {}", userId);
 
-        // 1. Get Cart from Redis
+        CartResponse cart = validateCart(userId);
+        CustomerAddress address = validateAddress(request.getShippingAddressId(), userId);
+        Order savedOrder = createInitialOrder(userId, cart.getTotalPrice(), address, request);
+
+        List<OrderItem> orderItems = reserveInventoryAndCreateItems(savedOrder, cart.getItems());
+        savedOrder.setItems(orderItems);
+
+        String paymentUrl = generatePaymentUrlIfVnPay(savedOrder, request.getPaymentMethod(), servletRequest);
+        
+        cartService.clearCart(userId.toString());
+        sendOrderEmail(authentication.getName(), savedOrder);
+
+        log.info("Checkout successful for order: {}", savedOrder.getOrderNumber());
+        return mapToCheckoutResponse(savedOrder, paymentUrl);
+    }
+
+    private CartResponse validateCart(UUID userId) {
         CartResponse cart = cartService.getCart(userId.toString());
         if (cart == null || cart.getItems().isEmpty()) {
             throw new IllegalStateException("Cart is empty");
         }
+        return cart;
+    }
 
-        // 2. Validate Address
-        CustomerAddress address = customerAddressRepository.findByIdAndUserId(request.getShippingAddressId(), userId)
+    private CustomerAddress validateAddress(UUID addressId, UUID userId) {
+        return customerAddressRepository.findByIdAndUserId(addressId, userId)
                 .orElseThrow(() -> new EntityNotFoundException("Shipping address not found"));
+    }
 
-        // 3. Create Order
+    private Order createInitialOrder(UUID userId, BigDecimal total, CustomerAddress address, CheckoutRequest request) {
         Order order = Order.builder()
                 .orderNumber(generateOrderNumber())
                 .userId(userId)
                 .status(OrderStatus.PENDING)
-                .total(cart.getTotalPrice())
+                .total(total)
                 .shippingAddress(address)
                 .paymentMethod(request.getPaymentMethod())
                 .notes(request.getNotes())
                 .items(new ArrayList<>())
                 .build();
+        return orderRepository.saveAndFlush(order);
+    }
 
-        Order savedOrder = orderRepository.saveAndFlush(order);
-
-        // 4. Reserve Stock & Create Order Items
+    private List<OrderItem> reserveInventoryAndCreateItems(Order order, List<?> cartItems) {
         List<OrderItem> orderItems = new ArrayList<>();
-        for (var cartItem : cart.getItems()) {
-            // Atomic reserve in DB
-            boolean reserved = inventoryService.reserveStock(cartItem.getProductId(), cartItem.getQuantity());
-            if (!reserved) {
+        // Note: Using a generic list to avoid casting issues in this internal helper if needed, 
+        // but here we know they are CartItemResponse.
+        for (Object itemObj : cartItems) {
+            com.haihoan2874.techhub.dto.response.CartItemResponse cartItem = (com.haihoan2874.techhub.dto.response.CartItemResponse) itemObj;
+            if (!inventoryService.reserveStock(cartItem.getProductId(), cartItem.getQuantity())) {
                 throw new RuntimeException("Product " + cartItem.getProductName() + " is out of stock");
             }
 
-            OrderItem orderItem = OrderItem.builder()
-                    .order(savedOrder)
+            orderItems.add(OrderItem.builder()
+                    .order(order)
                     .productId(cartItem.getProductId())
                     .productName(cartItem.getProductName())
                     .quantity(cartItem.getQuantity())
                     .price(cartItem.getPrice())
                     .subtotal(cartItem.getSubTotal())
-                    .build();
-            orderItems.add(orderItem);
+                    .build());
         }
-        orderItemRepository.saveAll(orderItems);
-        savedOrder.setItems(orderItems);
+        return orderItemRepository.saveAll(orderItems);
+    }
 
-        // 5. Generate Payment URL if VNPay
-        String paymentUrl = null;
-        if ("VNPAY".equalsIgnoreCase(request.getPaymentMethod())) {
-            paymentUrl = paymentService.createPaymentUrl(
-                    servletRequest, 
-                    savedOrder.getTotal().longValue(), 
-                    "Thanh toan don hang " + savedOrder.getOrderNumber(), 
-                    savedOrder.getOrderNumber()
+    private String generatePaymentUrlIfVnPay(Order order, String paymentMethod, HttpServletRequest request) {
+        if ("VNPAY".equalsIgnoreCase(paymentMethod)) {
+            return paymentService.createPaymentUrl(
+                    request,
+                    order.getTotal().longValue(),
+                    "Thanh toan don hang " + order.getOrderNumber(),
+                    order.getOrderNumber()
             );
         }
+        return null;
+    }
 
-        // 6. Clear Cart
-        cartService.clearCart(userId.toString());
-
-        // 7. Send Email confirmation (Async)
+    private void sendOrderEmail(String username, Order order) {
         emailService.sendEmail(
-                userService.getUserByUsername(authentication.getName()).getEmail(),
-                "TechHub - Xác nhận đặt hàng " + savedOrder.getOrderNumber(),
-                "Cảm ơn bạn đã đặt hàng tại TechHub. Mã đơn hàng của bạn là: " + savedOrder.getOrderNumber(),
+                userService.getUserByUsername(username).getEmail(),
+                "TechHub - Xác nhận đặt hàng " + order.getOrderNumber(),
+                "Cảm ơn bạn đã đặt hàng tại TechHub. Mã đơn hàng của bạn là: " + order.getOrderNumber(),
                 false
         );
+    }
 
-        log.info("Checkout successful for order: {}", savedOrder.getOrderNumber());
-
+    private CheckoutResponse mapToCheckoutResponse(Order order, String paymentUrl) {
         return CheckoutResponse.builder()
-                .orderId(savedOrder.getId())
-                .orderNumber(savedOrder.getOrderNumber())
-                .status(savedOrder.getStatus().toString())
-                .totalAmount(savedOrder.getTotal())
+                .orderId(order.getId())
+                .orderNumber(order.getOrderNumber())
+                .status(order.getStatus().toString())
+                .totalAmount(order.getTotal())
                 .paymentUrl(paymentUrl)
                 .message("Order created successfully")
                 .build();

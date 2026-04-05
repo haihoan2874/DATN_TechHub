@@ -10,7 +10,7 @@ import java.util.*;
 /**
  * Utility class for VNPay payment gateway integration.
  */
-public class VnPayUtil {
+public final class VnPayUtil {
     private VnPayUtil() {
         // Utility class
     }
@@ -23,10 +23,10 @@ public class VnPayUtil {
      * @return hex encoded hash string
      */
     public static String hmacSHA512(String key, String data) {
+        if (key == null || data == null) {
+            return "";
+        }
         try {
-            if (key == null || data == null) {
-                throw new IllegalArgumentException("Key or data cannot be null");
-            }
             final Mac hmac512 = Mac.getInstance("HmacSHA512");
             byte[] hmacKeyBytes = key.getBytes(StandardCharsets.UTF_8);
             final SecretKeySpec secretKey = new SecretKeySpec(hmacKeyBytes, "HmacSHA512");
@@ -77,9 +77,9 @@ public class VnPayUtil {
             String fieldName = itr.next();
             String fieldValue = data.get(fieldName);
             if ((fieldValue != null) && (fieldValue.length() > 0)) {
-                sb.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII));
-                sb.append('=');
-                sb.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
+                sb.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII))
+                  .append('=')
+                  .append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
                 if (itr.hasNext()) {
                     sb.append('&');
                 }
@@ -103,9 +103,9 @@ public class VnPayUtil {
             String fieldName = itr.next();
             String fieldValue = data.get(fieldName);
             if ((fieldValue != null) && (fieldValue.length() > 0)) {
-                sb.append(fieldName);
-                sb.append('=');
-                sb.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
+                sb.append(fieldName)
+                  .append('=')
+                  .append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
                 if (itr.hasNext()) {
                     sb.append('&');
                 }

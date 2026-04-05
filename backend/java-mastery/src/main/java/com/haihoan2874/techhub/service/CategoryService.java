@@ -11,6 +11,7 @@ import com.haihoan2874.techhub.model.Category;
 import com.haihoan2874.techhub.repository.CategoryRepository;
 import com.haihoan2874.techhub.repository.ProductRepository;
 import com.haihoan2874.techhub.repository.UserRepository;
+import com.haihoan2874.techhub.util.SlugUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -42,7 +42,7 @@ public class CategoryService {
             throw new IllegalArgumentException("Category name already exists");
         }
 
-        String slug = generateSlug(request.getName());
+        String slug = SlugUtil.generateSlug(request.getName());
         if (categoryRepository.existsBySlug(slug)) {
             slug = slug + "-" + UUID.randomUUID().toString().substring(0, 8);
         }
@@ -106,7 +106,7 @@ public class CategoryService {
                 throw new IllegalArgumentException("Category name already exists");
             }
             category.setName(request.getName());
-            category.setSlug(generateSlug(request.getName()));
+            category.setSlug(SlugUtil.generateSlug(request.getName()));
         }
 
         category.setDescription(request.getDescription());
@@ -155,12 +155,4 @@ public class CategoryService {
                 .build();
     }
 
-    private String generateSlug(String input) {
-        if (input == null || input.isEmpty()) {
-            return "";
-        }
-        return input.toLowerCase(Locale.ROOT)
-                .replaceAll("[^a-z0-9\\s]", "")
-                .replaceAll("\\s+", "-");
-    }
 }
