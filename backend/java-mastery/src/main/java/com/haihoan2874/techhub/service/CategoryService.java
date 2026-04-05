@@ -21,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -158,7 +159,7 @@ public class CategoryService {
         if (input == null || input.isEmpty()) {
             return "";
         }
-        return input.toLowerCase()
+        return input.toLowerCase(Locale.ROOT)
                 .replaceAll("[^a-z0-9\\s]", "")
                 .replaceAll("\\s+", "-");
     }

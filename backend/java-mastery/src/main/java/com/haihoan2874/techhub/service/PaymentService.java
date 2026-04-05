@@ -7,8 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -34,29 +32,29 @@ public class PaymentService {
     public String createPaymentUrl(HttpServletRequest request, long amount, String orderInfo, String txnRef) {
         log.info("Creating VNPay payment URL for Ref: {}, Amount: {}", txnRef, amount);
         
-        String vnp_IpAddr = VnPayUtil.getIpAddress(request);
-        String vnp_CreateDate = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+        String vnpIpAddr = VnPayUtil.getIpAddress(request);
+        String vnpCreateDate = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 
-        Map<String, String> vnp_Params = new HashMap<>();
-        vnp_Params.put("vnp_Version", vnPayConfig.getVersion());
-        vnp_Params.put("vnp_Command", vnPayConfig.getCommand());
-        vnp_Params.put("vnp_TmnCode", vnPayConfig.getTmnCode());
-        vnp_Params.put("vnp_Amount", String.valueOf(amount * 100)); // VNPay amount is in cents
-        vnp_Params.put("vnp_CurrCode", "VND");
-        vnp_Params.put("vnp_TxnRef", txnRef);
-        vnp_Params.put("vnp_OrderInfo", orderInfo);
-        vnp_Params.put("vnp_OrderType", "other");
-        vnp_Params.put("vnp_Locale", "vn");
-        vnp_Params.put("vnp_ReturnUrl", vnPayConfig.getReturnUrl());
-        vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
-        vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
+        Map<String, String> vnpParams = new HashMap<>();
+        vnpParams.put("vnp_Version", vnPayConfig.getVersion());
+        vnpParams.put("vnp_Command", vnPayConfig.getCommand());
+        vnpParams.put("vnp_TmnCode", vnPayConfig.getTmnCode());
+        vnpParams.put("vnp_Amount", String.valueOf(amount * 100)); // VNPay amount is in cents
+        vnpParams.put("vnp_CurrCode", "VND");
+        vnpParams.put("vnp_TxnRef", txnRef);
+        vnpParams.put("vnp_OrderInfo", orderInfo);
+        vnpParams.put("vnp_OrderType", "other");
+        vnpParams.put("vnp_Locale", "vn");
+        vnpParams.put("vnp_ReturnUrl", vnPayConfig.getReturnUrl());
+        vnpParams.put("vnp_IpAddr", vnpIpAddr);
+        vnpParams.put("vnp_CreateDate", vnpCreateDate);
 
         // Build Hash Data
-        String hashData = VnPayUtil.getHashData(vnp_Params);
-        String vnp_SecureHash = VnPayUtil.hmacSHA512(vnPayConfig.getHashSecret(), hashData);
+        String hashData = VnPayUtil.getHashData(vnpParams);
+        String vnpSecureHash = VnPayUtil.hmacSHA512(vnPayConfig.getHashSecret(), hashData);
         
         // Build Query String
-        String queryUrl = VnPayUtil.getPaymentQueryString(vnp_Params) + "&vnp_SecureHash=" + vnp_SecureHash;
+        String queryUrl = VnPayUtil.getPaymentQueryString(vnpParams) + "&vnp_SecureHash=" + vnpSecureHash;
         String paymentUrl = vnPayConfig.getPayUrl() + "?" + queryUrl;
         
         log.info("Generated VNPay payment URL: {}", paymentUrl);
@@ -70,8 +68,8 @@ public class PaymentService {
      * @return true if payment is successful and signature is valid
      */
     public boolean verifyPayment(Map<String, String> requestParams) {
-        String vnp_SecureHash = requestParams.get("vnp_SecureHash");
-        if (vnp_SecureHash == null) return false;
+        String vnpSecureHash = requestParams.get("vnp_SecureHash");
+        if (vnpSecureHash == null) return false;
 
         // Remove hash from params to verify
         Map<String, String> verifyParams = new HashMap<>(requestParams);
@@ -81,7 +79,7 @@ public class PaymentService {
         String hashData = VnPayUtil.getHashData(verifyParams);
         String expectedHash = VnPayUtil.hmacSHA512(vnPayConfig.getHashSecret(), hashData);
 
-        boolean isValid = vnp_SecureHash.equalsIgnoreCase(expectedHash);
+        boolean isValid = vnpSecureHash.equalsIgnoreCase(expectedHash);
         String responseCode = requestParams.get("vnp_ResponseCode");
         
         log.info("VNPay payment verification: ID={}, Valid={}, ResponseCode={}", 
