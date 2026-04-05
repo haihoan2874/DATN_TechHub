@@ -1,5 +1,6 @@
 package com.haihoan2874.techhub.controller;
 
+import com.haihoan2874.techhub.constant.APIConstants;
 import com.haihoan2874.techhub.dto.request.CheckoutRequest;
 import com.haihoan2874.techhub.dto.request.CreateOrderRequest;
 import com.haihoan2874.techhub.dto.response.CheckoutResponse;
@@ -34,7 +35,7 @@ import java.util.UUID;
 public class OrderController {
     private final OrderService orderService;
 
-    @SecurityRequirement(name = "bearer")
+    @SecurityRequirement(name = APIConstants.BEARER)
     @PostMapping("/checkout")
     @Operation(summary = "Checkout from cart", description = "Create order from current user cart items in Redis")
     public ResponseEntity<CheckoutResponse> checkout(
@@ -47,13 +48,13 @@ public class OrderController {
 
     @PostMapping
     @Operation(summary = "Create order", description = "Create a new order")
-    @SecurityRequirement(name = "bearer")
+    @SecurityRequirement(name = APIConstants.BEARER)
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Order created successfully",
+            @ApiResponse(responseCode = APIConstants.CREATED, description = "Order created successfully",
                     content = @Content(schema = @Schema(implementation = CreateOrderResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid input or insufficient stock"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "404", description = "Product or address not found")
+            @ApiResponse(responseCode = APIConstants.BAD_REQUEST, description = "Invalid input or insufficient stock"),
+            @ApiResponse(responseCode = APIConstants.UNAUTHORIZED, description = APIConstants.MSG_UNAUTHORIZED),
+            @ApiResponse(responseCode = APIConstants.NOT_FOUND, description = "Product or address not found")
     })
     public ResponseEntity<CreateOrderResponse> createOrder(@Valid @RequestBody CreateOrderRequest request, Authentication authentication) {
         log.info("Creating order for user");
@@ -68,10 +69,10 @@ public class OrderController {
     @GetMapping("/{id}")
     @Operation(summary = "Get order by id", description = "Get an order by its ID")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Order retrieved successfully",
+            @ApiResponse(responseCode = APIConstants.OK, description = "Order retrieved successfully",
                     content = @Content(schema = @Schema(implementation = GetOrderByIdResponse.class))),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "404", description = "Order not found")
+            @ApiResponse(responseCode = APIConstants.UNAUTHORIZED, description = APIConstants.MSG_UNAUTHORIZED),
+            @ApiResponse(responseCode = APIConstants.NOT_FOUND, description = APIConstants.MSG_ORDER_NOT_FOUND)
     })
     public ResponseEntity<GetOrderByIdResponse> getOrderById(@PathVariable UUID id, Authentication authentication) {
         return ResponseEntity.ok(orderService.getDetailOrderById(id, authentication));
@@ -79,7 +80,7 @@ public class OrderController {
 
     @GetMapping("/number/{orderNumber}")
     @Operation(summary = "Get order by order number", description = "Get order detail by order number")
-    @SecurityRequirement(name = "bearer")
+    @SecurityRequirement(name = APIConstants.BEARER)
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Order retrieved successfully",
                     content = @Content(schema = @Schema(implementation = GetOrderByOrderNumberResponse.class))),
@@ -92,12 +93,12 @@ public class OrderController {
 
     @PatchMapping("/{id}/cancel")
     @Operation(summary = "Cancel order")
-    @SecurityRequirement(name = "bearer")
+    @SecurityRequirement(name = APIConstants.BEARER)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Cancel order successfully",
+            @ApiResponse(responseCode = APIConstants.OK, description = "Cancel order successfully",
                     content = @Content(schema = @Schema(implementation = PatchCancelOrderResponse.class))),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "404", description = "Order not found")
+            @ApiResponse(responseCode = APIConstants.UNAUTHORIZED, description = APIConstants.MSG_UNAUTHORIZED),
+            @ApiResponse(responseCode = APIConstants.NOT_FOUND, description = APIConstants.MSG_ORDER_NOT_FOUND)
     })
     public ResponseEntity<PatchCancelOrderResponse> cancelOrder(@PathVariable UUID id, Authentication authentication) {
         PatchCancelOrderResponse response = orderService.cancelOrder(id, authentication);

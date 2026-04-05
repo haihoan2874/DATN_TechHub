@@ -1,5 +1,6 @@
 package com.haihoan2874.techhub.controller;
 
+import com.haihoan2874.techhub.constant.APIConstants;
 import com.haihoan2874.techhub.dto.request.CreateCustomerAddressRequest;
 import com.haihoan2874.techhub.dto.response.CreateCustomerAddressResponse;
 import com.haihoan2874.techhub.dto.request.UpdateCustomerAddressRequest;
@@ -30,7 +31,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/addresses")
-@SecurityRequirement(name = "bearer")
+@SecurityRequirement(name = APIConstants.BEARER)
 @Tag(name = "Address", description = "Customer address management")
 public class CustomerAddressController {
     private final CustomerAddressService customerAddressService;
@@ -38,11 +39,11 @@ public class CustomerAddressController {
     @PostMapping
     @Operation(summary = "Create customer address", description = "Create a new customer address")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Customer address created successfully",
+            @ApiResponse(responseCode = APIConstants.CREATED, description = "Customer address created successfully",
                     content = @Content(schema = @Schema(implementation = CreateCustomerAddressResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "404", description = "User not found")
+            @ApiResponse(responseCode = APIConstants.BAD_REQUEST, description = "Invalid input"),
+            @ApiResponse(responseCode = APIConstants.UNAUTHORIZED, description = APIConstants.MSG_UNAUTHORIZED),
+            @ApiResponse(responseCode = APIConstants.NOT_FOUND, description = "User not found")
     })
     public ResponseEntity<CreateCustomerAddressResponse> createCustomerAddress(@Valid @RequestBody CreateCustomerAddressRequest request, Authentication authentication) {
         log.info("Creating customer address with name customer: {}", request.getFullName());
@@ -101,9 +102,9 @@ public class CustomerAddressController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete customer address", description = "Delete a customer address by ID")
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Customer address deleted successfully"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "404", description = "Customer address not found")
+            @ApiResponse(responseCode = APIConstants.NO_CONTENT, description = "Customer address deleted successfully"),
+            @ApiResponse(responseCode = APIConstants.UNAUTHORIZED, description = APIConstants.MSG_UNAUTHORIZED),
+            @ApiResponse(responseCode = APIConstants.NOT_FOUND, description = "Customer address not found")
     })
     public ResponseEntity<Void> deleteCustomerAddress(@PathVariable UUID id, Authentication authentication) {
         customerAddressService.deleteCustomerAddress(id, authentication);
@@ -114,10 +115,10 @@ public class CustomerAddressController {
     @PatchMapping("/{id}/default")
     @Operation(summary = "Set default address")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Default address set successfully",
+            @ApiResponse(responseCode = APIConstants.OK, description = "Default address set successfully",
                     content = @Content(schema = @Schema(implementation = SetDefaultAddressResponse.class))),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "404", description = "Customer address not found")
+            @ApiResponse(responseCode = APIConstants.UNAUTHORIZED, description = APIConstants.MSG_UNAUTHORIZED),
+            @ApiResponse(responseCode = APIConstants.NOT_FOUND, description = "Customer address not found")
     })
     public ResponseEntity<SetDefaultAddressResponse> setDefaultAddress(@PathVariable UUID id, Authentication authentication) {
         SetDefaultAddressResponse response = customerAddressService.setDefaultAddress(id, authentication);

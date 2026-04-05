@@ -1,5 +1,6 @@
 package com.haihoan2874.techhub.controller;
 
+import com.haihoan2874.techhub.constant.APIConstants;
 import com.haihoan2874.techhub.dto.response.ProductResponse;
 import com.haihoan2874.techhub.dto.request.CreateProductRequest;
 import com.haihoan2874.techhub.dto.request.UpdateProductRequest;
@@ -40,14 +41,14 @@ public class ProductController {
 
     @PostMapping
     @Operation(summary = "Create product", description = "Create a new product")
-    @SecurityRequirement(name = "bearer")
-    @PreAuthorize("hasRole('ADMIN')")
+    @SecurityRequirement(name = APIConstants.BEARER)
+    @PreAuthorize(APIConstants.ROLE_ADMIN)
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Product created successfully",
+            @ApiResponse(responseCode = APIConstants.CREATED, description = "Product created successfully",
                     content = @Content(schema = @Schema(implementation = CreateProductResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid input or product name already"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "404", description = "Category not found")
+            @ApiResponse(responseCode = APIConstants.BAD_REQUEST, description = "Invalid input or product name already"),
+            @ApiResponse(responseCode = APIConstants.UNAUTHORIZED, description = APIConstants.MSG_UNAUTHORIZED),
+            @ApiResponse(responseCode = APIConstants.NOT_FOUND, description = "Category not found")
     })
     public ResponseEntity<CreateProductResponse> createProduct(@Valid @RequestBody CreateProductRequest request, Authentication authentication) {
         log.info("Creating product with name: {}", request.getName());
@@ -77,10 +78,10 @@ public class ProductController {
     @Operation(summary = "Get product detail", description = "Get product by ID or Slug")
     @PreAuthorize("permitAll()")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Products retrieved successfully",
+            @ApiResponse(responseCode = APIConstants.OK, description = "Products retrieved successfully",
                     content = @Content(schema = @Schema(implementation = ProductResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid filter parameters"),
-            @ApiResponse(responseCode = "404", description = "Product not found")
+            @ApiResponse(responseCode = APIConstants.BAD_REQUEST, description = "Invalid filter parameters"),
+            @ApiResponse(responseCode = APIConstants.NOT_FOUND, description = APIConstants.MSG_PRODUCT_NOT_FOUND)
     })
     public ResponseEntity<ProductResponse> getProductDetail(
             @RequestParam String searchBy,
@@ -93,8 +94,8 @@ public class ProductController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update Product")
-    @SecurityRequirement(name = "bearer")
-    @PreAuthorize("hasRole('ADMIN')")
+    @SecurityRequirement(name = APIConstants.BEARER)
+    @PreAuthorize(APIConstants.ROLE_ADMIN)
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Product updated successfully",
                     content = @Content(schema = @Schema(implementation = UpdateProductResponse.class))),
@@ -114,12 +115,12 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete product")
-    @SecurityRequirement(name = "bearer")
-    @PreAuthorize("hasRole('ADMIN')")
+    @SecurityRequirement(name = APIConstants.BEARER)
+    @PreAuthorize(APIConstants.ROLE_ADMIN)
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Product deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "Product not found"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized")
+            @ApiResponse(responseCode = APIConstants.NO_CONTENT, description = "Product deleted successfully"),
+            @ApiResponse(responseCode = APIConstants.NOT_FOUND, description = APIConstants.MSG_PRODUCT_NOT_FOUND),
+            @ApiResponse(responseCode = APIConstants.UNAUTHORIZED, description = APIConstants.MSG_UNAUTHORIZED)
     })
     public ResponseEntity<Void> deleteProduct(@PathVariable UUID id, Authentication authentication) {
         log.info("Deleting product with id: {}", id);

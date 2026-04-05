@@ -1,5 +1,6 @@
 package com.haihoan2874.techhub.controller;
 
+import com.haihoan2874.techhub.constant.APIConstants;
 import com.haihoan2874.techhub.dto.response.CartResponse;
 import com.haihoan2874.techhub.service.CartService;
 import com.haihoan2874.techhub.security.service.UserService;
@@ -25,7 +26,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/cart")
 @RequiredArgsConstructor
 @Tag(name = "Cart", description = "Shopping cart management endpoints (Requires Login)")
-@SecurityRequirement(name = "bearer")
+@SecurityRequirement(name = APIConstants.BEARER)
 public class CartController {
 
     private final CartService cartService;
@@ -40,8 +41,8 @@ public class CartController {
     @GetMapping
     @Operation(summary = "Get current cart", description = "Retrieve the shopping cart for the authenticated user")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Cart retrieved successfully"),
-        @ApiResponse(responseCode = "401", description = "Unauthorized")
+        @ApiResponse(responseCode = APIConstants.OK, description = "Cart retrieved successfully"),
+        @ApiResponse(responseCode = APIConstants.UNAUTHORIZED, description = APIConstants.MSG_UNAUTHORIZED)
     })
     public ResponseEntity<CartResponse> getCart(Authentication authentication) {
         UUID userId = userService.getCurrentUserId(authentication);
@@ -59,9 +60,9 @@ public class CartController {
     @PostMapping("/add")
     @Operation(summary = "Add item to cart", description = "Add a specific product and quantity to the cart")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Item added successfully"),
-        @ApiResponse(responseCode = "401", description = "Unauthorized"),
-        @ApiResponse(responseCode = "404", description = "Product not found")
+        @ApiResponse(responseCode = APIConstants.OK, description = "Item added successfully"),
+        @ApiResponse(responseCode = APIConstants.UNAUTHORIZED, description = APIConstants.MSG_UNAUTHORIZED),
+        @ApiResponse(responseCode = APIConstants.NOT_FOUND, description = "Product not found")
     })
     public ResponseEntity<CartResponse> addToCart(
             @RequestParam UUID productId,
@@ -100,8 +101,8 @@ public class CartController {
     @DeleteMapping("/clear")
     @Operation(summary = "Clear cart", description = "Remove all items from the current user's cart")
     @ApiResponses({
-        @ApiResponse(responseCode = "204", description = "Cart cleared successfully"),
-        @ApiResponse(responseCode = "401", description = "Unauthorized")
+        @ApiResponse(responseCode = APIConstants.NO_CONTENT, description = "Cart cleared successfully"),
+        @ApiResponse(responseCode = APIConstants.UNAUTHORIZED, description = APIConstants.MSG_UNAUTHORIZED)
     })
     public ResponseEntity<Void> clearCart(Authentication authentication) {
         UUID userId = userService.getCurrentUserId(authentication);
