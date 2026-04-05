@@ -39,6 +39,13 @@ public class Order {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal total;
 
+    @Column(name = "discount_amount", precision = 10, scale = 2)
+    @Builder.Default
+    private BigDecimal discountAmount = BigDecimal.ZERO;
+
+    @Column(name = "voucher_code")
+    private String voucherCode;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shipping_address", nullable = false)
     private CustomerAddress shippingAddress;

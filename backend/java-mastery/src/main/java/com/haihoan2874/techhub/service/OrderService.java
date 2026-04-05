@@ -9,11 +9,13 @@ import com.haihoan2874.techhub.model.OrderStatus;
 import com.haihoan2874.techhub.model.Product;
 import com.haihoan2874.techhub.dto.response.GetOrderByIdResponse;
 import com.haihoan2874.techhub.dto.response.PatchCancelOrderResponse;
+import com.haihoan2874.techhub.dto.response.AdminOrderResponse;
 import com.haihoan2874.techhub.model.*;
 import com.haihoan2874.techhub.repository.CustomerAddressRepository;
 import com.haihoan2874.techhub.repository.OrderItemRepository;
 import com.haihoan2874.techhub.repository.OrderRepository;
 import com.haihoan2874.techhub.repository.ProductRepository;
+import com.haihoan2874.techhub.repository.UserRepository;
 import com.haihoan2874.techhub.security.service.UserService;
 import com.haihoan2874.techhub.dto.request.CheckoutRequest;
 import com.haihoan2874.techhub.dto.response.CartResponse;
@@ -44,6 +46,7 @@ public class OrderService {
     private final CustomerAddressRepository customerAddressRepository;
     private final OrderItemRepository orderItemRepository;
     private final UserService userService;
+    private final UserRepository userRepository;
     private final CartService cartService;
     private final InventoryService inventoryService;
     private final PaymentService paymentService;
@@ -196,6 +199,55 @@ public class OrderService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
+    public List<AdminOrderResponse> getAllOrdersAdmin() {
+        log.info("Admin fetching all orders");
+        List<Order> orders = orderRepository.findAll();
+        return orders.stream().map(order -> {
+            // Let's use a better way to get user info
+            String customerName = "N/A";
+            String customerEmail = "N/A";
+            try {
+                User u = userRepository.findById(order.getUserId()).orElse(null);
+                if (u != null) {
+                    customerName = u.getFirstName() + " " + u.getLastName();
+                    customerEmail = u.getEmail();
+                }
+            } catch (Exception e) {
+                log.error("Error fetching user for order: {}", order.getOrderNumber());
+            }
+
+            return AdminOrderResponse.builder()
+                    .id(order.getId())
+                    .orderNumber(order.getOrderNumber())
+                    .status(order.getStatus())
+                    .total(order.getTotal())
+                    .customerName(customerName)
+                    .customerEmail(customerEmail)
+                    .itemCount(order.getItems().size())
+                    .paymentMethod(order.getPaymentMethod())
+                    .createdAt(order.getCreatedAt())
+                    .build();
+        }).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public AdminOrderResponse updateOrderStatus(UUID id, OrderStatus newStatus) {
+        log.info("Admin updating order status for id {} to {}", id, newStatus);
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Order not found"));
+        
+        order.setStatus(newStatus);
+        Order savedOrder = orderRepository.save(order);
+        
+        return AdminOrderResponse.builder()
+                .id(savedOrder.getId())
+                .orderNumber(savedOrder.getOrderNumber())
+                .status(savedOrder.getStatus())
+                .total(savedOrder.getTotal())
+                .build();
+    }
+
     @Transactional
     public CheckoutResponse checkout(CheckoutRequest request, HttpServletRequest servletRequest, Authentication authentication) {
         UUID userId = userService.getCurrentUserId(authentication);
@@ -203,7 +255,11 @@ public class OrderService {
 
         CartResponse cart = validateCart(userId);
         CustomerAddress address = validateAddress(request.getShippingAddressId(), userId);
-        Order savedOrder = createInitialOrder(userId, cart.getTotalPrice(), address, request);
+        
+        BigDecimal discountAmount = BigDecimal.ZERO;
+        
+        BigDecimal finalTotal = cart.getTotalPrice().subtract(discountAmount);
+        Order savedOrder = createInitialOrder(userId, finalTotal, discountAmount, address, request);
 
         List<OrderItem> orderItems = reserveInventoryAndCreateItems(savedOrder, cart.getItems());
         savedOrder.setItems(orderItems);
@@ -230,12 +286,14 @@ public class OrderService {
                 .orElseThrow(() -> new EntityNotFoundException("Shipping address not found"));
     }
 
-    private Order createInitialOrder(UUID userId, BigDecimal total, CustomerAddress address, CheckoutRequest request) {
+    private Order createInitialOrder(UUID userId, BigDecimal total, BigDecimal discountAmount, CustomerAddress address, CheckoutRequest request) {
         Order order = Order.builder()
                 .orderNumber(generateOrderNumber())
                 .userId(userId)
                 .status(OrderStatus.PENDING)
                 .total(total)
+                .discountAmount(discountAmount)
+                .voucherCode(request.getVoucherCode())
                 .shippingAddress(address)
                 .paymentMethod(request.getPaymentMethod())
                 .notes(request.getNotes())
@@ -293,6 +351,7 @@ public class OrderService {
                 .orderNumber(order.getOrderNumber())
                 .status(order.getStatus().toString())
                 .totalAmount(order.getTotal())
+                .discountAmount(order.getDiscountAmount())
                 .paymentUrl(paymentUrl)
                 .message("Order created successfully")
                 .build();
@@ -317,6 +376,7 @@ public class OrderService {
         for (OrderItem item : order.getItems()) {
             inventoryService.confirmSale(item.getProductId(), item.getQuantity());
         }
+
 
         log.info("Order {} confirmed and inventory updated", orderNumber);
     }

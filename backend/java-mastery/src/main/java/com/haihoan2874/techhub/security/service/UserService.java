@@ -7,6 +7,7 @@ import com.haihoan2874.techhub.security.dto.LoginRequest;
 import com.haihoan2874.techhub.security.dto.LoginResponse;
 import com.haihoan2874.techhub.security.dto.RegistrationRequest;
 import com.haihoan2874.techhub.security.dto.RegistrationResponse;
+import com.haihoan2874.techhub.dto.response.UserResponse;
 import com.haihoan2874.techhub.security.jwt.JwtTokenProvider;
 import com.haihoan2874.techhub.security.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,22 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserMapper userMapper;
+
+    public java.util.List<UserResponse> getAllUsers() {
+        log.info("Admin is fetching all users");
+        return userRepository.findAll().stream()
+                .map(user -> UserResponse.builder()
+                        .id(user.getId())
+                        .username(user.getUsername())
+                        .email(user.getEmail())
+                        .firstName(user.getFirstName())
+                        .lastName(user.getLastName())
+                        .role(user.getRole())
+                        .isActive(user.getIsActive())
+                        .createdAt(user.getCreatedAt())
+                        .build())
+                .collect(java.util.stream.Collectors.toList());
+    }
 
     /**
      * Register a new user.
