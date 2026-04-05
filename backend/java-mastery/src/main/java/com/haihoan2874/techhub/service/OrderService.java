@@ -1,14 +1,14 @@
 package com.haihoan2874.techhub.service;
 
-import com.haihoan2874.techhub.dto.CreateOrderRequest;
-import com.haihoan2874.techhub.dto.CreateOrderResponse;
-import com.haihoan2874.techhub.dto.GetOrderByOrderNumberResponse;
+import com.haihoan2874.techhub.dto.request.CreateOrderRequest;
+import com.haihoan2874.techhub.dto.response.CreateOrderResponse;
+import com.haihoan2874.techhub.dto.response.GetOrderByOrderNumberResponse;
 import com.haihoan2874.techhub.model.CustomerAddress;
 import com.haihoan2874.techhub.model.Order;
 import com.haihoan2874.techhub.model.OrderStatus;
 import com.haihoan2874.techhub.model.Product;
-import com.haihoan2874.techhub.dto.GetOrderByIdResponse;
-import com.haihoan2874.techhub.dto.PatchCancelOrderResponse;
+import com.haihoan2874.techhub.dto.response.GetOrderByIdResponse;
+import com.haihoan2874.techhub.dto.response.PatchCancelOrderResponse;
 import com.haihoan2874.techhub.model.*;
 import com.haihoan2874.techhub.repository.CustomerAddressRepository;
 import com.haihoan2874.techhub.repository.OrderItemRepository;

@@ -1,4 +1,4 @@
-package com.haihoan2874.techhub.dto;
+package com.haihoan2874.techhub.dto.response;
 
 import com.haihoan2874.techhub.model.OrderStatus;
 import lombok.AllArgsConstructor;
@@ -15,7 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GetOrderByIdResponse {
+public class CreateOrderResponse {
     private UUID id;
     private String orderNumber;
     private UUID userId;
@@ -29,7 +29,7 @@ public class GetOrderByIdResponse {
 
     @Data
     @Builder
-    public static class ItemResponse{
+    public static class ItemResponse {
         private UUID id;
         private UUID productId;
         private String productName;
@@ -37,5 +37,4 @@ public class GetOrderByIdResponse {
         private BigDecimal price;
         private BigDecimal subtotal;
     }
-
 }

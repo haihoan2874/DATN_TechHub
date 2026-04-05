@@ -1,4 +1,4 @@
-package com.haihoan2874.techhub.dto;
+package com.haihoan2874.techhub.dto.request;
 
 import com.haihoan2874.techhub.model.OrderStatus;
 import io.swagger.v3.oas.annotations.media.Schema;

@@ -1,10 +1,10 @@
 package com.haihoan2874.techhub.controller;
 
-import com.haihoan2874.techhub.dto.CreateOrderRequest;
-import com.haihoan2874.techhub.dto.CreateOrderResponse;
-import com.haihoan2874.techhub.dto.PatchCancelOrderResponse;
-import com.haihoan2874.techhub.dto.GetOrderByOrderNumberResponse;
-import com.haihoan2874.techhub.dto.GetOrderByIdResponse;
+import com.haihoan2874.techhub.dto.request.CreateOrderRequest;
+import com.haihoan2874.techhub.dto.response.CreateOrderResponse;
+import com.haihoan2874.techhub.dto.response.PatchCancelOrderResponse;
+import com.haihoan2874.techhub.dto.response.GetOrderByOrderNumberResponse;
+import com.haihoan2874.techhub.dto.response.GetOrderByIdResponse;
 import com.haihoan2874.techhub.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

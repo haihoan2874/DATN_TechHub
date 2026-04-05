@@ -1,4 +1,4 @@
-package com.haihoan2874.techhub.dto;
+package com.haihoan2874.techhub.dto.response;
 
 import com.haihoan2874.techhub.model.OrderStatus;
 import lombok.AllArgsConstructor;
@@ -15,7 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateOrderResponse {
+public class GetOrderByOrderNumberResponse {
     private UUID id;
     private String orderNumber;
     private UUID userId;
