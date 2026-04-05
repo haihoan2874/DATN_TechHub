@@ -1,7 +1,7 @@
 package com.haihoan2874.techhub.controller;
 
-import com.haihoan2874.techhub.dto.CreateReviewRequest;
-import com.haihoan2874.techhub.dto.CreateReviewResponse;
+import com.haihoan2874.techhub.dto.request.CreateReviewRequest;
+import com.haihoan2874.techhub.dto.response.CreateReviewResponse;
 import com.haihoan2874.techhub.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

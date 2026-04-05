@@ -1,7 +1,7 @@
 package com.haihoan2874.techhub.service;
 
-import com.haihoan2874.techhub.dto.CreateReviewRequest;
-import com.haihoan2874.techhub.dto.CreateReviewResponse;
+import com.haihoan2874.techhub.dto.request.CreateReviewRequest;
+import com.haihoan2874.techhub.dto.response.CreateReviewResponse;
 import com.haihoan2874.techhub.model.Product;
 import com.haihoan2874.techhub.model.Review;
 import com.haihoan2874.techhub.model.User;
