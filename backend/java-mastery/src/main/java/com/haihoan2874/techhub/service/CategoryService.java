@@ -1,10 +1,10 @@
 package com.haihoan2874.techhub.service;
 
-import com.haihoan2874.techhub.dto.CategoryFilterRequest;
-import com.haihoan2874.techhub.dto.CreateCategoryRequest;
-import com.haihoan2874.techhub.dto.CreateCategoryResponse;
-import com.haihoan2874.techhub.dto.UpdateCategoryRequest;
-import com.haihoan2874.techhub.dto.UpdateCategoryResponse;
+import com.haihoan2874.techhub.dto.request.CategoryFilterRequest;
+import com.haihoan2874.techhub.dto.request.CreateCategoryRequest;
+import com.haihoan2874.techhub.dto.response.CreateCategoryResponse;
+import com.haihoan2874.techhub.dto.request.UpdateCategoryRequest;
+import com.haihoan2874.techhub.dto.response.UpdateCategoryResponse;
 import com.haihoan2874.techhub.dto.core.PagingList;
 import com.haihoan2874.techhub.model.Category;
 import com.haihoan2874.techhub.repository.CategoryRepository;

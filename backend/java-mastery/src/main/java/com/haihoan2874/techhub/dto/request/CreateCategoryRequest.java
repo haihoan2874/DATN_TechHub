@@ -1,4 +1,4 @@
-package com.haihoan2874.techhub.dto;
+package com.haihoan2874.techhub.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -7,9 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class UpdateCategoryRequest {
+@AllArgsConstructor
+public class CreateCategoryRequest {
     @NotBlank(message = "Category name is required")
     @Size(max = 50, message = "Name must be at most 50 characters")
     private String name;

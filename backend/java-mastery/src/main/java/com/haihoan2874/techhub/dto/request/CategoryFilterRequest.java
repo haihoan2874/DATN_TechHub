@@ -1,4 +1,4 @@
-package com.haihoan2874.techhub.dto;
+package com.haihoan2874.techhub.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
