@@ -1,12 +1,12 @@
 package com.haihoan2874.techhub.controller;
 
-import com.haihoan2874.techhub.dto.CreateCustomerAddressRequest;
-import com.haihoan2874.techhub.dto.CreateCustomerAddressResponse;
-import com.haihoan2874.techhub.dto.UpdateCustomerAddressRequest;
-import com.haihoan2874.techhub.dto.UpdateCustomerAddressResponse;
-import com.haihoan2874.techhub.dto.GetDetailCustomerAddressResponse;
-import com.haihoan2874.techhub.dto.GetListCustomerAddressResponse;
-import com.haihoan2874.techhub.dto.SetDefaultAddressResponse;
+import com.haihoan2874.techhub.dto.request.CreateCustomerAddressRequest;
+import com.haihoan2874.techhub.dto.response.CreateCustomerAddressResponse;
+import com.haihoan2874.techhub.dto.request.UpdateCustomerAddressRequest;
+import com.haihoan2874.techhub.dto.response.UpdateCustomerAddressResponse;
+import com.haihoan2874.techhub.dto.response.GetDetailCustomerAddressResponse;
+import com.haihoan2874.techhub.dto.response.GetListCustomerAddressResponse;
+import com.haihoan2874.techhub.dto.response.SetDefaultAddressResponse;
 import com.haihoan2874.techhub.service.CustomerAddressService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

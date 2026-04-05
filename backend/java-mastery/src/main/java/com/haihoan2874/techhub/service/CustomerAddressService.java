@@ -1,7 +1,13 @@
 package com.haihoan2874.techhub.service;
 
-import com.haihoan2874.techhub.dto.*;
-import com.haihoan2874.techhub.dto.core.BaseCustomerAddressRequest;
+import com.haihoan2874.techhub.dto.request.CreateCustomerAddressRequest;
+import com.haihoan2874.techhub.dto.response.CreateCustomerAddressResponse;
+import com.haihoan2874.techhub.dto.request.UpdateCustomerAddressRequest;
+import com.haihoan2874.techhub.dto.response.UpdateCustomerAddressResponse;
+import com.haihoan2874.techhub.dto.response.GetDetailCustomerAddressResponse;
+import com.haihoan2874.techhub.dto.response.GetListCustomerAddressResponse;
+import com.haihoan2874.techhub.dto.response.SetDefaultAddressResponse;
+import com.haihoan2874.techhub.dto.request.base.BaseCustomerAddressRequest;
 import com.haihoan2874.techhub.model.CustomerAddress;
 import com.haihoan2874.techhub.repository.CustomerAddressRepository;
 import com.haihoan2874.techhub.security.service.UserService;

@@ -1,4 +1,4 @@
-package com.haihoan2874.techhub.dto.core;
+package com.haihoan2874.techhub.dto.request.base;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
