@@ -75,7 +75,7 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         {(!collapsed || isMobile) && (
           <div className="flex items-center gap-3">
             <LogoIcon size={36} />
-            <span className="text-2xl font-black text-slate-900 tracking-tighter italic">TECH<span className="text-blue-600">HUB</span></span>
+            <span className="text-2xl font-black text-slate-900 tracking-tighter italic">S-Life</span>
           </div>
         )}
         {!isMobile && (
@@ -180,11 +180,11 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <div className="h-8 w-px bg-slate-200 hidden sm:block" />
             <div className="flex items-center gap-4">
               <div className="text-right hidden sm:block">
-                <p className="text-sm font-black text-slate-900 leading-tight italic">Quản trị TechHub</p>
+                <p className="text-sm font-black text-slate-900 leading-tight italic">Quản trị S-Life</p>
                 <p className="text-[10px] uppercase font-black tracking-widest text-blue-600 mt-1">Super Admin</p>
               </div>
               <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-2xl flex items-center justify-center font-black text-white shadow-xl shadow-blue-500/30">
-                TH
+                SL
               </div>
             </div>
           </div>

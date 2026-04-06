@@ -26,14 +26,26 @@ export const GradientIcon: React.FC<IconProps & { children: React.ReactNode, id:
 );
 
 export const LogoIcon: React.FC<IconProps> = ({ className, size = 32 }) => (
-  <GradientIcon id="logo-grad" colors={['#2563eb', '#0ea5e9']} size={size} className={className}>
+  <GradientIcon id="logo-grad" colors={['#1e3a8a', '#3b82f6']} size={size} className={className}>
+    {/* Stylized S + Pulse Wave */}
     <path 
-      d="M13 2L3 14H12L11 22L21 10H12L13 2Z" 
-      fill="url(#logo-grad)" 
+      d="M12 2C6.477 2 2 6.477 2 12C2 17.523 6.477 22 12 22C17.523 22 22 17.523 22 12" 
       stroke="url(#logo-grad)" 
       strokeWidth="2" 
       strokeLinecap="round" 
-      strokeLinejoin="round" 
+    />
+    <path 
+      d="M7 12H9.5L11 8L13 16L14.5 12H17" 
+      stroke="url(#logo-grad)" 
+      strokeWidth="2" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    />
+    <path 
+      d="M8 8C8 8 10 6 12 6C14 6 16 8 16 8M8 16C8 16 10 18 12 18C14 18 16 16 16 16"
+      stroke="url(#logo-grad)" 
+      strokeWidth="1.5" 
+      strokeLinecap="round"
     />
   </GradientIcon>
 );
