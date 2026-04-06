@@ -1,6 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Storefront from './pages/Storefront';
+import Login from './pages/auth/Login';
+import Register from './pages/auth/Register';
+import ProductDetail from './pages/shop/ProductDetail';
+import Cart from './pages/cart/Cart';
+import Checkout from './pages/cart/Checkout';
+
+// Admin Imports
 import AdminLayout from './layouts/AdminLayout';
 import Dashboard from './pages/admin/Dashboard';
 import ProductList from './pages/admin/products/ProductList';
@@ -22,6 +29,12 @@ const App: React.FC = () => {
       <Routes>
         {/* Public Storefront Routes */}
         <Route path="/" element={<Storefront />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/shop" element={<Storefront />} /> {/* Temporary redirect to home/shop section */}
+        <Route path="/product/:id" element={<ProductDetail />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<Checkout />} />
         
         {/* Admin Dashboard Routes */}
         <Route path="/admin" element={<AdminLayout><Dashboard /></AdminLayout>} />

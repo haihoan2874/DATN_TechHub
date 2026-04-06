@@ -12,7 +12,7 @@ const apiClient = axios.create({
 // Add a request interceptor to attach JWT token
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('techhub_token');
+    const token = localStorage.getItem('slife_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -29,7 +29,7 @@ apiClient.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       // Clear token and redirect to login if unauthorized
-      localStorage.removeItem('techhub_token');
+      localStorage.removeItem('slife_token');
       window.location.href = '/login';
     }
     return Promise.reject(error);
