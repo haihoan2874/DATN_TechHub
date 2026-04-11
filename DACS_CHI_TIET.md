@@ -1,16 +1,16 @@
-# 📋 ĐẶC TẢ CHI TIẾT DỰ ÁN - TechHub (Smartphone & Phụ kiện)
+# 📋 ĐẶC TẢ CHI TIẾT DỰ ÁN - S-Life (Health Tech Ecosystem)
 
-## Website Bán Smartphone & Phụ Kiện Trực Tuyến
+## Hệ Sinh Thái Thiết Bị Sức Khỏe & Công Nghệ Thông Minh
 ---
 
 ## 📚 MỤC LỤC
 
 1. [Tổng Quan Dự Án](#1-tổng-quan-dự-án)
 2. [Yêu Cầu Chức Năng](#2-yêu-cầu-chức-năng)
-3. [Kiến Trúc Hệ Thống](#3-kiến-trúc-hệ-thống)
-4. [Cấu Trúc Dữ Liệu (Database)](#4-cấu-trúc-dữ-liệu-database)
-5. [API Endpoints](#5-api-endpoints)
-6. [Cấu Trúc Frontend](#6-cấu-trúc-frontend)
+3. [Trải Nghiệm Người Dùng (UI/UX)](#3-trải-nghiệm-người-dùng-uiux)
+4. [Kiến Trúc Hệ Thống & Crawler](#4-kiến-trúc-hệ-thống--crawler)
+5. [Cấu Trúc Dữ Liệu (Database)](#5-cấu-trúc-dữ-liệu-database)
+6. [API Endpoints](#6-api-endpoints)
 7. [Hệ Thống Xác Thực & Bảo Mật](#7-hệ-thống-xác-thực--bảo-mật)
 8. [Công Nghệ Sử Dụng](#8-công-nghệ-sử-dụng)
 9. [Quy Trình Triển Khai](#9-quy-trình-triển-khai)
@@ -21,44 +21,34 @@
 
 ### 1.1 Mô Tả Dự Án
 
-**TechHub** là nền tảng thương mại điện tử chuyên bán các sản phẩm công nghệ di động, gồm:
+**S-Life** là nền tảng thương mại điện tử thế hệ mới, tiên phong trong việc cung cấp các giải pháp và thiết bị công nghệ hỗ trợ theo dõi sức khỏe chủ động. Dự án tập trung vào các dòng sản phẩm:
 
-- 📱 **Điện thoại thông minh** (Smartphones: Apple, Samsung, Oppo, Xiaomi, Realme...)
-- 💻 **Máy tính bảng** (Tablets: iPad, Galaxy Tab, Lenovo Tab...)
-- ⌚ **Đồng hồ thông minh** (Smartwatches: Apple Watch, Galaxy Watch, Garmin...)
-- 🎧 **Phụ kiện đi kèm** (Accessories: Tai nghe, Cáp sạc, Ốp lưng, Pin dự phòng, Cáp USB...)
+- ⌚ **Smartwatches Cao cấp** (Garmin, Apple Watch Series 9/Ultra, Galaxy Watch 6...)
+- 🏃‍♂️ **Thiết bị theo dõi vận động** (Fitness Bands, Coros, Fitbit...)
+- ⚖️ **Cân sức khỏe thông minh** (Smart Scales, Body Composition Analyzers...)
+- 🛡️ **Phụ kiện & Cảm biến chuyên sâu** (Heart rate straps, SpO2 sensors, sạc thông minh...)
 
-Hệ thống cho phép:
-
-- ✅ Duyệt và tìm kiếm sản phẩm công nghệ
-- ✅ So sánh thông số kỹ thuật giữa các sản phẩm
-- ✅ Thêm vào giỏ hàng, quản lý đơn hàng
-- ✅ Thanh toán online (VNPay, Credit Card, Banking)
-- ✅ Đăng ký tài khoản hoặc OAuth2 (Google/Facebook)
-- ✅ Xem lịch sử mua hàng, đánh giá sản phẩm, review video
-- ✅ Hỗ trợ khách hàng qua chat AI (tư vấn sản phẩm)
-- ✅ Admin quản trị sản phẩm, đơn hàng, kho hàng, người dùng
+Hệ thống được thiết kế với triết lý **"Technology for Better Life"**, kết hợp giữa nền tảng bán hàng chuyên nghiệp và trí tuệ nhân tạo (AI) để tư vấn sức khỏe cá nhân hóa.
 
 ### 1.2 Mục Tiêu Dự Án
 
-- Cung cấp nền tảng bán hàng công nghệ an toàn, dễ sử dụng
-- Tư vấn sản phẩm thông minh qua AI (so sánh specs, gợi ý)
-- Hỗ trợ mua sắm smartphone & phụ kiện cho cá nhân và doanh nghiệp
-- Tích hợp thanh toán đa kênh (VNPay, eWallet, Banking)
-- Cung cấp trạng thái đơn hàng real-time
-- Hỗ trợ khách hàng 24/7 qua AI Chat
+- **Thương hiệu Nhất quán**: Xây dựng bộ nhận diện S-Life sang trọng, tối giản và hiện đại.
+- **Tối ưu Chuyển đổi (Conversion rate)**: Áp dụng các kỹ thuật UI/UX mới nhất (Double Actions, Fast Checkout).
+- **Trí tuệ Nhân tạo**: Sử dụng Google Gemini AI để tư vấn thiết bị dựa trên chỉ số sức khỏe của người dùng.
+- **Hệ thống Dữ liệu Mạnh mẽ**: Tích hợp hạ tầng Crawler tự động thu thập hàng trăm sản phẩm thương mại thực tế.
+- **Hiệu năng Vượt trội**: Tốc độ phản hồi cực nhanh nhờ kiến trúc React Vite và Spring Boot 3 tối ưu.
 
 ### 1.3 Phạm Vi Dự Án
 
-| Thành Phần   | Phạm Vi                                        |
-| ------------ | ---------------------------------------------- |
-| **Frontend** | Web responsive (desktop, tablet, mobile)       |
-| **Backend**  | REST API, xử lý business logic                 |
-| **Database** | PostgreSQL (Supabase)                          |
-| **Session**  | Redis (giỏ hàng, cache, sessions)              |
-| **AI**       | Google Gemini (tư vấn sản phẩm, so sánh specs) |
-| **Deploy**   | Docker (backend, frontend, database)           |
-| **Mobile**   | (Tương lai) React Native app                   |
+| Thành Phần   | Phạm Vi                                             |
+| ------------ | --------------------------------------------------- |
+| **Frontend** | Premium Web UI (React + Tailwind CSS v4)            |
+| **Backend**  | RESTful API (Spring Boot 3.5.6)                     |
+| **Crawler**  | S-Life Scraper (Python + BeautifulSoup4)            |
+| **Database** | PostgreSQL (Supabase) + Flyway Migrations           |
+| **Session**  | Redis (Cart, Fast Search Cache)                     |
+| **AI**       | Google Gemini 1.5 Flash (Bác sĩ ảo & Tư vấn thiết bị) |
+| **Deploy**   | Docker Containerization                             |
 
 ---
 
@@ -66,188 +56,66 @@ Hệ thống cho phép:
 
 ### 2.1 Chức Năng Khách Hàng (Customer)
 
-#### 2.1.1 Quản Lý Tài Khoản
+#### 2.1.1 Trải Nghiệm Mua Sắm Cao Cấp
+- **Fast Live Search**: Thanh tìm kiếm tích hợp trực tiếp trên Header, hiển thị kết quả thời gian thực kèm ảnh và giá.
+- **Quick Buy Mode**: Hai nút hành động riêng biệt (MUA NGAY - Chuyển thẳng tới checkout; THÊM VÀO GIỎ - Tiếp tục mua sắm).
+- **Phân loại Thông minh**: Lọc sản phẩm theo thương hiệu (Garmin, Apple...) hoặc theo nhu cầu sức khỏe (Chạy bộ, Bơi lội, Theo dõi giấc ngủ).
 
-- **Đăng ký tài khoản**: Email + mật khẩu hoặc OAuth2 (Google/Facebook)
-- **Xác minh email**: Gửi link xác minh, tự động expire sau 24h
-- **Đăng nhập**: Email/mật khẩu, OAuth2
-- **Quên mật khẩu**: Reset via email link (hết hạn sau 1h)
-- **Cập nhật hồ sơ**: Tên, số điện thoại, avatar
-- **Xem thông tin cá nhân**: Email, điện thoại, địa chỉ, lịch sử mua
-- **Đăng xuất**: Xóa token, session
+#### 2.1.2 Quản Lý Tài Khoản & Bảo Mật
+- Đăng nhập/Đăng ký với giao diện sạch, hỗ trợ JWT Token và bảo mật đa lớp.
+- Quản lý hồ sơ sức khỏe cơ bản để AI đưa ra gợi ý sản phẩm phù hợp.
 
-#### 2.1.2 Duyệt & Tìm Kiếm Sản Phẩm
+#### 2.1.3 Thanh Toán & Vận Chuyển
+- Tích hợp VNPay, chuyển khoản ngân hàng và COD.
+- Hệ thống tính phí vận chuyển và tracking đơn hàng thời gian thực.
 
-- **Xem danh sách sản phẩm** với phân trang
-- **Lọc theo**: Danh mục (Smartphone, Tablet, Watch, Accessories), thương hiệu, giá tiền, đánh giá
-- **Sắp xếp theo**: Mới nhất, giá cao/thấp, bán chạy, đánh giá cao
-- **Tìm kiếm**: Từ khóa sản phẩm (tên, mô tả)
-- **So sánh sản phẩm**: So sánh specs 2-3 sản phẩm cùng lúc
-- **Xem chi tiết sản phẩm**: Specs, hình ảnh, giá, đánh giá, review video
-- **Lưu sản phẩm yêu thích**: Wishlist
+### 2.2 Chức Năng Admin (Cổng Quản Trị S-Life)
 
-#### 2.1.3 Quản Lý Giỏ Hàng
-
-- **Thêm/xóa sản phẩm**: Từ chi tiết hoặc danh sách
-- **Cập nhật số lượng**: Tăng/giảm trong giỏ
-- **Lưu giỏ hàng**: Trên Redis (session-based)
-- **Xem tổng tiền**: Sub-total, discount, shipping, grand total
-- **Áp dụng mã giảm giá**: Kiểm tra và cập nhật giá
-- **Xóa giỏ hàng**: Sau khi thanh toán hoặc hủy
-
-#### 2.1.4 Đặt Hàng & Thanh Toán
-
-- **Tạo đơn hàng**: Từ giỏ hàng
-- **Chọn địa chỉ giao hàng**: Từ danh sách hoặc tạo mới
-- **Chọn phương thức thanh toán**: VNPay, Credit Card, Banking, COD
-- **Xác nhận đơn hàng**: Review trước khi thanh toán
-- **Nhận xác nhận**: Email + SMS + In hóa đơn
-- **Tra cứu đơn hàng**: Số order, ngày, trạng thái, tổng tiền
-
-#### 2.1.5 Xem Lịch Sử Mua Hàng
-
-- **Danh sách đơn hàng**: Tất cả, chưa giao, đã giao, bị hủy
-- **Chi tiết đơn hàng**: Sản phẩm, giá, discount, shipping, warranty info
-- **Xem trạng thái vận chuyển**: Real-time tracking từ nhà vận chuyển
-- **In hóa đơn**: PDF format
-- **Hủy đơn hàng**: Nếu chưa xác nhận
-- **Yêu cầu trả hàng**: Trong 30 ngày (nếu bảo hành)
-
-#### 2.1.6 Đánh Giá & Nhận Xét
-
-- **Viết đánh giá**: Sau khi nhận hàng (1-5 sao)
-- **Thêm ảnh/video**: Ghi chép review sản phẩm
-- **Chỉnh sửa đánh giá**: Nếu chưa bị xóa
-- **Xóa đánh giá**: Của chính mình
-- **Xem đánh giá khác**: Danh sách chi tiết
-
-#### 2.1.7 Quản Lý Địa Chỉ
-
-- **Thêm địa chỉ**: Tên, địa chỉ đầy đủ, SĐT
-- **Chỉnh sửa địa chỉ**: Cập nhật thông tin
-- **Xóa địa chỉ**: Loại bỏ khỏi danh sách
-- **Đặt địa chỉ mặc định**: Cho giao hàng
-- **Danh sách địa chỉ**: Tất cả địa chỉ đã lưu
-
-#### 2.1.8 AI Tư Vấn & Hỗ Trợ
-
-- **Chat với AI**: Hỏi về sản phẩm, so sánh specs, gợi ý
-- **AI giúp chọn sản phẩm**: "Tôi cần smartphone < 10 triệu, dùng chơi game"
-- **Xem lịch sử chat**: Lưu trữ cuộc trò chuyện
-- **Tạo ticket hỗ trợ**: Cho vấn đề phức tạp
-- **Upload file**: Ảnh, video chứng minh vấn đề
-
-### 2.2 Chức Năng Admin
-
-#### 2.2.1 Quản Lý Sản Phẩm
-
-- **Thêm sản phẩm**: Tên, specs, giá, danh mục, thương hiệu, hình ảnh, video
-- **Chỉnh sửa sản phẩm**: Cập nhật mọi thông tin
-- **Xóa sản phẩm**: Soft delete
-- **Danh sách sản phẩm**: Phân trang, lọc, tìm kiếm
-- **Import sản phẩm**: CSV/Excel
-- **Export sản phẩm**: CSV/Excel
-- **Kích hoạt/vô hiệu hóa**: Sản phẩm
-
-#### 2.2.2 Quản Lý Danh Mục & Thương Hiệu
-
-- **Danh mục chính**: Smartphones, Tablets, Smartwatches, Accessories
-- **Danh mục phụ**: iPhone, Samsung, iPad, Apple Watch, Earbuds, Chargers...
-- **Thương hiệu**: Apple, Samsung, Oppo, Xiaomi, Realme, Garmin, JBL...
-
-#### 2.2.3 Quản Lý Kho Hàng (Inventory)
-
-- **Xem tồn kho**: Số lượng sẵn có, đặt trước, mức tối thiểu
-- **Cập nhật tồn kho**: Thêm hàng, điều chỉnh
-- **Cảnh báo tồn kho thấp**: Tự động thông báo
-- **Lịch sử nhập hàng**: Ngày, số lượng, giá
-
-#### 2.2.4 Quản Lý Đơn Hàng
-
-- **Danh sách đơn hàng**: Tất cả trạng thái
-- **Xem chi tiết đơn hàng**: Khách hàng, sản phẩm, tổng tiền
-- **Cập nhật trạng thái**: PENDING → CONFIRMED → IN_PACKING → WAITING_SHIPPING → IN_TRANSIT → DELIVERED
-- **Hủy đơn hàng**: Nếu chưa giao
-- **In hóa đơn/label**: PDF
-- **Export danh sách**: CSV/Excel
-
-#### 2.2.5 Quản Lý Vận Chuyển
-
-- **Chọn nhà vận chuyển**: GHN, GHTK, Viettel Post, J&T...
-- **Tạo đơn vận chuyển**: Tự động lấy tracking number
-- **Cập nhật tracking**: Real-time từ nhà vận chuyển
-- **Quản lý chi phí shipping**: Tính phí theo khoảng cách/weight
-
-#### 2.2.6 Quản Lý Thanh Toán
-
-- **Danh sách thanh toán**: Tất cả giao dịch
-- **Chi tiết thanh toán**: Đơn hàng, số tiền, phương thức, thời gian
-- **Trạng thái thanh toán**: Pending, Success, Failed, Refunded
-- **Xác nhận thanh toán thủ công**: Cho COD
-- **Hoàn tiền**: Xử lý yêu cầu refund
-- **Báo cáo doanh thu**: Ngày/tháng/năm
-
-#### 2.2.7 Quản Lý Người Dùng
-
-- **Danh sách người dùng**: Tất cả khách hàng
-- **Chi tiết người dùng**: Email, tên, SĐT, lịch sử mua
-- **Kích hoạt/vô hiệu hóa**: Tài khoản
-- **Phân quyền**: Nâng/hạ quyền admin
-
-#### 2.2.8 Quản Lý Mã Giảm Giá
-
-- **Thêm discount**: Code, %, VNĐ, điều kiện
-- **Chỉnh sửa discount**: Cập nhật thông tin
-- **Xóa discount**: Vô hiệu hóa mã
-- **Danh sách discount**: Hoạt động, hết hạn
-- **Theo dõi sử dụng**: Số lần dùng, tổng tiết kiệm
-- **Hạn sử dụng**: Ngày bắt đầu, ngày kết thúc
-
-#### 2.2.9 Báo Cáo & Thống Kê
-
-- **Thống kê bán hàng**: Doanh thu, số đơn, khách hàng mới
-- **Sản phẩm bán chạy**: Top 10 sản phẩm
-- **Danh mục phổ biến**: Smartphone > Tablet > Watch > Accessories
-- **Phương thức thanh toán**: So sánh VNPay vs CC vs Banking
-- **Export báo cáo**: PDF, Excel
+- **S-Life Dashboard**: Giao diện quản trị hiện đại, thống kê doanh thu và tồn kho thiết bị.
+- **Quản lý Sản phẩm**: Chỉnh sửa thông số kỹ thuật (Specs) chuyên sâu cho thiết bị sức khỏe.
+- **Hệ thống Seeder**: Khả năng import dữ liệu hàng loạt từ file JSON của Crawler.
 
 ---
 
-## 3. KIẾN TRÚC HỆ THỐNG
+## 3. TRẢI NGHIỆM NGƯỜI DÙNG (UI/UX)
 
-### 3.1 Kiến Trúc Tổng Thể
+S-Life áp dụng các quy chuẩn thiết kế **Premium Digital Store**:
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    Frontend (Vite React)                        │
-│  (localhost:5173)                                               │
-│  - Product Listing, Comparison                                  │
-│  - Shopping Cart                                                │
-│  - Checkout & Payment                                           │
-│  - User Dashboard                                               │
-│  - Admin Panel, Inventory                                       │
-│  - AI Chatbot (Product Advisory)                                │
-└────────────────┬────────────────────────────────────────────────┘
-                 │ HTTP REST API
-                 ↓
-┌─────────────────────────────────────────────────────────────────┐
-│               Backend (Spring Boot 3.5.6)                       │
-│  (localhost:12345)                                              │
-│  - REST API Controllers                                         │
-│  - Business Logic (Services)                                    │
-│  - AI Product Advisory (Gemini)                                 │
-│  - Inventory Management                                         │
-│  - Payment Processing (VNPay)                                   │
-│  - Email Service                                                │
-└────────────┬────────────────┬─────────────────┬─────────────────┘
-             │                │                 │
-             ↓                ↓                 ↓
-        ┌─────────┐    ┌──────────┐    ┌───────────────┐
-        │PostgreSQL   │  Redis    │    │Gemini API    │
-        │(Supabase)   │(Session)  │    │(1.5 Flash)   │
-        └─────────┘    └──────────┘    └───────────────┘
-```
+1. **Inline Search Bar**: Thay thế overlay cũ bằng thanh tìm kiếm tích hợp sâu vào Navbar, tạo sự liền mạch.
+2. **Micro-interactivity**: Sử dụng Framer Motion cho các hiệu ứng hover, chuyển trang và dropdown kết quả tìm kiếm.
+3. **Typography & Color**: Sử dụng font chữ Italic Black mạnh mẽ, màu xanh Blue-600 làm chủ đạo, hỗ trợ Dark/Light mode tinh tế.
+4. **Fast Checkout Interface**: Giảm thiểu bước trung gian, tập trung vào nút "Mua ngay" để tăng tỷ lệ chốt đơn.
 
 ---
 
-Tài liệu này được tạo dựa theo mô hình **TechHub** - nền tảng thương mại điện tử bán smartphone & phụ kiện. Cấu trúc y hệt **SecureShop** nhưng tập trung vào domain công nghệ di động.
+## 4. KIẾN TRÚC HỆ THỐNG & CRAWLER
+
+### 4.1 Kiến Trúc Tổng Thể
+
+```mermaid
+graph TD
+    A[S-Life Website - React] -->|HTTPS| B[S-Life API - Spring Boot]
+    B --> C[PostgreSQL - Supabase]
+    B --> D[Redis - Cache/Session]
+    B --> E[Gemini AI - Consultation]
+    F[S-Life Crawler - Python] -->|One-time Sync| C
+```
+
+### 4.2 S-Life Crawler (Standalone Utility)
+- **Công cụ**: Python 3.x, BeautifulSoup4, Requests.
+- **Mục tiêu**: Thu thập 150+ sản phẩm đồng hồ thông minh thực tế từ các nhà bán lẻ hàng đầu (CellphoneS, FPT Shop).
+- **Dữ liệu**: Tên, Thương hiệu, Specs sức khỏe, Ảnh gốc 4K, Giá niêm yết.
+- **Bảo mật**: Chạy độc lập và được chặn bởi `.gitignore` để đảm bảo an toàn cho dự án chính.
+
+---
+
+## 5. CÔNG NGHỆ SỬ DỤNG
+
+- **Frontend**: Vite, React 19, Tailwind CSS v4, Lucide Icons, Framer Motion.
+- **Backend**: Java 21, Spring Boot 3.5, Spring Security, JPA/Hibernate.
+- **Database**: PostgreSQL (v15+), Flyway (Version Control).
+- **DevOps**: Docker, Github Actions.
+
+---
+
+Tài liệu này được cập nhật theo định hướng **S-Life - Một Bản sắc, Một Đẳng cấp**. Đảm bảo mọi chi tiết kỹ thuật đều phục vụ mục tiêu chăm sóc sức khỏe khách hàng thông qua công nghệ. 🩺💎⌚
