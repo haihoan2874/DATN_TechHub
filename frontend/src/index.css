@@ -3,13 +3,26 @@
 @theme {
   --color-brand-primary: #2563eb;
   --color-brand-secondary: #0ea5e9;
-  --color-app-bg: #f8fafc;
-  --color-app-surface: #ffffff;
+  --color-brand-hover: #1d4ed8;
+  --color-brand-active: #1e40af;
+  --color-brand-soft: #eff6ff;
+  
+  --color-status-success: #10b981;
+  --color-status-error: #ef4444;
+  --color-status-warning: #f59e0b;
+
+  --color-app-bg: #ffffff;
+  --color-app-surface: #f8fafc;
   --color-app-border: #e2e8f0;
   --color-app-text: #0f172a;
   --color-app-muted: #64748b;
+  
   --color-glass-bg: rgba(255, 255, 255, 0.7);
-  --color-glass-border: rgba(255, 255, 255, 0.3);
+  --color-glass-border: rgba(255, 255, 255, 0.2);
+
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
 }
 
 @layer base {
