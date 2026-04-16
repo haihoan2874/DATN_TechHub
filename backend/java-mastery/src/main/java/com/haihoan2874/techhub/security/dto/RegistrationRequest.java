@@ -29,5 +29,9 @@ public class RegistrationRequest {
     private String firstName;
 
     private String lastName;
+
+    private String phoneNumber;
+
+    private String fullName;
 }
 
