@@ -33,6 +33,8 @@ public interface UserMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "isActive", ignore = true)
+    @Mapping(target = "resetOtp", ignore = true)
+    @Mapping(target = "resetOtpExpiry", ignore = true)
     User registrationRequestToUser(RegistrationRequest registrationRequest);
 }
 

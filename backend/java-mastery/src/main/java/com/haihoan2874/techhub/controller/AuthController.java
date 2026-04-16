@@ -4,6 +4,7 @@ import com.haihoan2874.techhub.security.dto.LoginRequest;
 import com.haihoan2874.techhub.security.dto.LoginResponse;
 import com.haihoan2874.techhub.security.dto.RegistrationRequest;
 import com.haihoan2874.techhub.security.dto.RegistrationResponse;
+import com.haihoan2874.techhub.security.service.PasswordResetService;
 import com.haihoan2874.techhub.security.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -34,6 +35,28 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final UserService userService;
+    private final PasswordResetService passwordResetService;
+
+    @PostMapping("/forgot-password")
+    @Operation(summary = "Send OTP to Email", description = "Checks if email exists and sends a 6-digit OTP")
+    public ResponseEntity<Void> forgotPassword(@Valid @RequestBody com.haihoan2874.techhub.security.dto.ForgotPasswordRequest request) {
+        passwordResetService.sendOtp(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/verify-otp")
+    @Operation(summary = "Verify OTP Code", description = "Verifies the 6-digit code sent to user email")
+    public ResponseEntity<Boolean> verifyOtp(@Valid @RequestBody com.haihoan2874.techhub.security.dto.VerifyOtpRequest request) {
+        boolean isValid = passwordResetService.verifyOtp(request);
+        return ResponseEntity.ok(isValid);
+    }
+
+    @PostMapping("/reset-password")
+    @Operation(summary = "Reset Password", description = "Updates user password with new one after OTP verification")
+    public ResponseEntity<Void> resetPassword(@Valid @RequestBody com.haihoan2874.techhub.security.dto.ResetPasswordRequest request) {
+        passwordResetService.resetPassword(request);
+        return ResponseEntity.ok().build();
+    }
 
     /**
      * Login with username and password.

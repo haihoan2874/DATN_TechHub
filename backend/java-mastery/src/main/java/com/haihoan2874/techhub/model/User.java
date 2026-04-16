@@ -32,6 +32,9 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(name = "phone_number", unique = true)
+    private String phoneNumber;
+
     @Column(nullable = false)
     private String password;
 
@@ -55,6 +58,12 @@ public class User {
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive;
+
+    @Column(name = "reset_otp")
+    private String resetOtp;
+
+    @Column(name = "reset_otp_expiry")
+    private LocalDateTime resetOtpExpiry;
 
     @PrePersist
     protected void onCreate() {

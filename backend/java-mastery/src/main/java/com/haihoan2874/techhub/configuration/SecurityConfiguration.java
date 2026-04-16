@@ -16,6 +16,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Security Configuration for Spring Security with JWT authentication.
@@ -39,7 +45,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer::disable)
-                .cors(org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .exceptionHandling(exceptionHandling ->
                         exceptionHandling
                                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
@@ -51,13 +57,21 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers(
+                                        "/api/v1/auth/login",
+                                        "/api/v1/auth/register",
+                                        "/api/v1/auth/forgot-password",
+                                        "/api/v1/auth/verify-otp",
+                                        "/api/v1/auth/reset-password",
+                                        "/api/v1/auth/oauth2/**",
                                         "/api/v1/auth/**",
                                         "/api/v1/health",
                                         "/health",
                                         "/v3/api-docs/**",
                                         "/swagger-ui/**",
                                         "/swagger-ui.html",
-                                        "/actuator/**"
+                                        "/actuator/**",
+                                        "/api/v1/system/**",
+                                        "/api/v1/ai/**"
                                 ).permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/categories/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/brands/**").permitAll()
@@ -78,8 +92,20 @@ public class SecurityConfiguration {
     }
 
     @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
+        configuration.setExposedHeaders(List.of("x-auth-token"));
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
+    @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
 }
-
