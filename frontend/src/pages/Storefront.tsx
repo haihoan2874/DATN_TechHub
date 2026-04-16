@@ -14,6 +14,17 @@ import { useNavigate, Link } from 'react-router-dom';
 
 const Storefront: React.FC = () => {
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  const [username, setUsername] = React.useState('');
+
+  React.useEffect(() => {
+    const token = localStorage.getItem('slife_token');
+    const storedUsername = localStorage.getItem('slife_username');
+    if (token) {
+      setIsLoggedIn(true);
+      setUsername(storedUsername || 'Member');
+    }
+  }, []);
 
   const featuredProducts = [
     { id: '1', name: "Apple Watch Series 9", price: 9990000, image: <Watch size={40} className="text-blue-600" />, category: "Smartwatch" },
@@ -41,25 +52,33 @@ const Storefront: React.FC = () => {
               >
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] font-black uppercase tracking-widest mb-8 shadow-sm">
                   <HeartPulse size={12} className="fill-emerald-600/20" />
-                  Bạn khỏe hơn mỗi ngày
+                  {isLoggedIn ? `Chào mừng trở lại, ${username}` : "Bạn khỏe hơn mỗi ngày"}
                 </div>
                 <h1 className="text-5xl md:text-7xl font-black leading-[1] mb-8 text-slate-900 tracking-tighter italic uppercase">
-                  Kiến tạo <br />
-                  <span className="text-blue-600">Lối sống Khỏe</span>
+                  {isLoggedIn ? <>Mua sắm <br /> <span className="text-blue-600">Thông minh</span></> : <>Kiến tạo <br /> <span className="text-blue-600">Lối sống Khỏe</span></>}
                 </h1>
                 <p className="text-base md:text-lg text-slate-500 leading-relaxed mb-10 max-w-lg mx-auto lg:mx-0 font-bold italic">
-                  Khám phá những thiết bị đeo thông minh giúp bạn thấu hiểu cơ thể và cải thiện sức khỏe một cách giản đơn nhất.
+                  {isLoggedIn 
+                    ? "Chào mừng bạn trở lại. Khám phá kho thiết bị sức khỏe mới nhất và nhận các gợi ý mua sắm thông minh từ trợ lý AI." 
+                    : "Khám phá những thiết bị đeo thông minh giúp bạn thấu hiểu cơ thể và cải thiện sức khỏe một cách giản đơn nhất."}
                 </p>
                 <div className="flex flex-col sm:flex-row flex-wrap justify-center lg:justify-start gap-4">
                   <button 
                     className="px-10 py-5 bg-blue-600 text-white font-black italic uppercase tracking-widest text-xs rounded-2xl flex items-center justify-center gap-3 hover:bg-blue-700 hover:scale-105 transition-all shadow-2xl shadow-blue-500/30 group"
                     onClick={() => navigate('/shop')}
                   >
-                    Bắt đầu ngay <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                    {isLoggedIn ? "Sắm ngay ưu đãi" : "Bắt đầu ngay"} <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
                   </button>
-                  <button className="px-10 py-5 bg-white border border-slate-200 text-slate-900 font-black italic uppercase tracking-widest text-xs rounded-2xl hover:bg-slate-50 transition-colors shadow-sm">
-                    Tìm hiểu thêm
-                  </button>
+                  {isLoggedIn && (
+                    <button className="px-10 py-5 bg-white border border-slate-200 text-slate-900 font-black italic uppercase tracking-widest text-xs rounded-2xl hover:bg-slate-50 transition-colors shadow-sm">
+                      Đơn hàng của tôi
+                    </button>
+                  )}
+                  {!isLoggedIn && (
+                    <button className="px-10 py-5 bg-white border border-slate-200 text-slate-900 font-black italic uppercase tracking-widest text-xs rounded-2xl hover:bg-slate-50 transition-colors shadow-sm">
+                      Tìm hiểu thêm
+                    </button>
+                  )}
                 </div>
 
                 {/* Stats/Badges */}

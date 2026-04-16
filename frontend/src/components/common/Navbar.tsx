@@ -20,13 +20,32 @@ const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showResults, setShowResults] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState('');
+  const [role, setRole] = useState('');
   const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
+    
+    const token = localStorage.getItem('slife_token');
+    const storedUsername = localStorage.getItem('slife_username');
+    const storedRole = localStorage.getItem('slife_role');
+    if (token) {
+      setIsLoggedIn(true);
+      setUsername(storedUsername || 'Member');
+      setRole(storedRole || 'ROLE_USER');
+    }
+
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    setIsLoggedIn(false);
+    window.location.href = '/';
+  };
 
   const filteredProducts = searchQuery.length > 0 
     ? MOCK_PRODUCTS.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -76,16 +95,33 @@ const Navbar: React.FC = () => {
                 ))}
               </nav>
               <div className="mt-auto space-y-4">
-                <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
-                  <button className="w-full py-5 bg-blue-600 text-white font-black italic uppercase tracking-widest text-xs rounded-2xl shadow-xl shadow-blue-500/20">
-                    Đăng nhập
-                  </button>
-                </Link>
-                <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
-                  <button className="w-full py-5 bg-slate-50 text-slate-900 font-black italic uppercase tracking-widest text-xs rounded-2xl border border-slate-200">
-                    Đăng ký
-                  </button>
-                </Link>
+                {isLoggedIn ? (
+                  <>
+                    <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 mb-4">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic mb-1">Chào mừng</p>
+                      <p className="text-sm font-black text-slate-900 italic">{username}</p>
+                    </div>
+                    <button 
+                      onClick={handleLogout}
+                      className="w-full py-5 bg-rose-500 text-white font-black italic uppercase tracking-widest text-xs rounded-2xl shadow-xl shadow-rose-500/20"
+                    >
+                      Đăng xuất
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
+                      <button className="w-full py-5 bg-blue-600 text-white font-black italic uppercase tracking-widest text-xs rounded-2xl shadow-xl shadow-blue-500/20">
+                        Đăng nhập
+                      </button>
+                    </Link>
+                    <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
+                      <button className="w-full py-5 bg-slate-50 text-slate-900 font-black italic uppercase tracking-widest text-xs rounded-2xl border border-slate-200">
+                        Đăng ký
+                      </button>
+                    </Link>
+                  </>
+                )}
               </div>
             </motion.div>
           </>
@@ -116,6 +152,11 @@ const Navbar: React.FC = () => {
                   {link.name}
                 </Link>
               ))}
+              {isLoggedIn && role === 'ROLE_ADMIN' && (
+                <Link to="/admin" className="text-[10px] uppercase tracking-[0.2em] font-black italic text-rose-500 hover:text-rose-600 transition-colors">
+                  Quản trị
+                </Link>
+              )}
             </div>
           </div>
 
@@ -198,17 +239,34 @@ const Navbar: React.FC = () => {
             <button className="md:hidden p-2.5 text-slate-400 hover:text-blue-600" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
               <Menu size={24} />
             </button>
-            <div className="hidden md:flex items-center gap-1">
-              <Link to="/login">
-                <button className="px-5 py-2.5 text-slate-900 font-black italic uppercase tracking-widest text-[10px] hover:text-blue-600 transition-all">
-                  Đăng nhập
-                </button>
-              </Link>
-              <Link to="/register">
-                <button className="px-5 py-2.5 bg-blue-600 text-white font-black italic uppercase tracking-widest text-[10px] rounded-full shadow-lg shadow-blue-500/20 hover:scale-105 transition-all active:scale-95">
-                  Đăng ký ngay
-                </button>
-              </Link>
+            <div className="hidden md:flex items-center gap-4">
+              {isLoggedIn ? (
+                <div className="flex items-center gap-4">
+                  <div className="flex flex-col items-end">
+                    <span className="text-[10px] font-black italic uppercase text-slate-400 tracking-widest">{role === 'ROLE_ADMIN' ? 'Administrator' : 'Member'}</span>
+                    <span className="text-[11px] font-black italic uppercase text-slate-900 tracking-tighter">{username}</span>
+                  </div>
+                  <button 
+                    onClick={handleLogout}
+                    className="px-5 py-2.5 bg-slate-50 text-slate-400 font-black italic uppercase tracking-widest text-[10px] rounded-full border border-slate-100 hover:bg-rose-50 hover:text-rose-500 hover:border-rose-100 transition-all"
+                  >
+                    Đăng xuất
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <Link to="/login">
+                    <button className="px-5 py-2.5 text-slate-900 font-black italic uppercase tracking-widest text-[10px] hover:text-blue-600 transition-all">
+                      Đăng nhập
+                    </button>
+                  </Link>
+                  <Link to="/register">
+                    <button className="px-5 py-2.5 bg-blue-600 text-white font-black italic uppercase tracking-widest text-[10px] rounded-full shadow-lg shadow-blue-500/20 hover:scale-105 transition-all active:scale-95">
+                      Đăng ký ngay
+                    </button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
