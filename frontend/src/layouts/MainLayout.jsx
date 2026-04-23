@@ -3,13 +3,9 @@ import Navbar from '../components/common/Navbar';
 import Footer from '../components/common/Footer';
 import SlifeAdvisor from '../components/common/SlifeAdvisor';
 
-interface MainLayoutProps {
-  children: React.ReactNode;
-}
-
-const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
+const MainLayout = ({ children }) => {
   return (
-    <div className="min-h-screen bg-white selection:bg-blue-600 selection:text-white flex flex-col">
+    <div className="min-h-screen bg-white selection-blue-600 selection-white flex flex-col">
       <Navbar />
       <main className="flex-1">
         {children}

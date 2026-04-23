@@ -9,13 +9,13 @@ import {
 import { SearchIcon } from './IconComponents';
 
 const MOCK_PRODUCTS = [
-  { id: 1, name: 'Apple Watch Series 9', price: '9.990.000₫', image: 'https://lh3.googleusercontent.com/proxy/U8h-n48z7A9X4G_X0Y-L8v8z9_k0_8_-9_m-8_-9_m-8_-9_m-8_-9_m-8_-9_m-8_-9_m-8_-9_m-8_-9_m-8_-9_m-8_-9_m-8_-9_m-8_-9_m' },
-  { id: 2, name: 'Garmin Fenix 7 Pro', price: '18.490.000₫', image: 'https://images.fpt.shop/unsafe/fit-in/585x390/filters:quality(90):fill(white)/fptshop.com.vn/Uploads/Originals/2023/6/1/638212134546454645_garmin-fenix-7-pro-den-1.jpg' },
-  { id: 3, name: 'Fitbit Charge 6 Smart', price: '3.990.000₫', image: 'https://m.media-amazon.com/images/I/61k0Wf-Q4LL._AC_SL1500_.jpg' },
-  { id: 4, name: 'Samsung Galaxy Watch 6', price: '6.490.000₫', image: 'https://images.samsung.com/is/image/samsung/p6pim/vn/2307/gallery/vn-galaxy-watch6-r930-sm-r930nzkaxev-537400329' },
+  { id: '1', name: 'Apple Watch Series 9', price: '9.990.000₫', image: 'https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&q=80&w=200' },
+  { id: '2', name: 'Garmin Fenix 7 Pro', price: '18.490.000₫', image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=200' },
+  { id: '3', name: 'Fitbit Charge 6 Smart', price: '3.990.000₫', image: 'https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?auto=format&fit=crop&q=80&w=200' },
+  { id: '4', name: 'Samsung Galaxy Watch 6', price: '6.490.000₫', image: 'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&q=80&w=200' },
 ];
 
-const Navbar: React.FC = () => {
+const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -167,7 +167,7 @@ const Navbar: React.FC = () => {
               <input 
                 type="text" 
                 placeholder="Tìm kiếm thiết bị..." 
-                className="bg-transparent border-none focus:ring-0 w-full text-xs font-bold italic text-slate-900 placeholder:text-slate-400 px-3 py-1"
+                className="bg-transparent border-none focus:ring-0 w-full text-xs font-bold italic text-slate-900 placeholder-slate-400 px-3 py-1 outline-none"
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);

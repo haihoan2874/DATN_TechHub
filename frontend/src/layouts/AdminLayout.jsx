@@ -18,16 +18,7 @@ import {
   SearchIcon 
 } from '../components/common/IconComponents';
 
-interface SidebarItemProps {
-  icon: React.ReactNode;
-  label: string;
-  path: string;
-  active: boolean;
-  collapsed: boolean;
-  onClick?: () => void;
-}
-
-const SidebarItem: React.FC<SidebarItemProps> = ({ icon, label, path, active, collapsed, onClick }) => (
+const SidebarItem = ({ icon, label, path, active, collapsed, onClick }) => (
   <Link 
     to={path} 
     onClick={onClick}
@@ -45,7 +36,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ icon, label, path, active, co
   </Link>
 );
 
-const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const AdminLayout = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
@@ -159,12 +150,12 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 <Menu size={24} />
               </button>
             )}
-            <div className="hidden sm:flex items-center gap-4 bg-slate-50 border border-slate-200 px-5 py-3 rounded-2xl md:w-[350px] lg:w-[450px] group focus-within:shadow-xl focus-within:shadow-blue-500/5 focus-within:bg-white transition-all">
+            <div className="hidden sm:flex items-center gap-4 bg-slate-50 border border-slate-200 px-5 py-3 rounded-2xl md:w-[350px] lg:w-[450px] group focus-within:ring-4 focus-within:ring-blue-500/5 focus-within:bg-white transition-all">
               <SearchIcon size={20} className="text-slate-400 group-focus-within:text-blue-600" />
               <input 
                 type="text" 
                 placeholder="Tìm kiếm mọi thứ..." 
-                className="bg-transparent border-none outline-none text-sm w-full placeholder:text-slate-400 font-bold italic"
+                className="bg-transparent border-none outline-none text-sm w-full placeholder-slate-400 font-bold italic"
               />
             </div>
             {isMobile && (

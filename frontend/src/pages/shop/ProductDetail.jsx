@@ -18,16 +18,16 @@ import {
 } from 'lucide-react';
 import MainLayout from '../../layouts/MainLayout';
 
-const ProductDetail: React.FC = () => {
+const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('specs');
   const [selectedColor, setSelectedColor] = useState('Graphite');
 
   const product = {
     name: "Apple Watch Series 9",
-    price: 9990000,
+    price: 10500000,
     rating: 4.8,
-    reviews: 856,
+    reviews: 156,
     description: "Chip S9 mạnh mẽ nhất. Thao tác chạm hai lần kỳ diệu. Theo dõi nhịp tim, oxy trong máu và theo dõi giấc ngủ chuyên sâu để bạn thấu hiểu cơ thể mình hơn.",
     colors: ["Midnight", "Starlight", "Silver", "Product Red", "Graphite"],
     specs: [
@@ -53,7 +53,7 @@ const ProductDetail: React.FC = () => {
           </div>
 
           <div className="grid lg:grid-cols-2 gap-16 lg:items-start">
-            {/* Left: Image Gallery */}
+            {/* Left Gallery */}
             <div className="space-y-6">
               <motion.div 
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -74,7 +74,7 @@ const ProductDetail: React.FC = () => {
               </div>
             </div>
 
-            {/* Right: Product Info */}
+            {/* Right Info */}
             <div className="flex flex-col">
               <div className="mb-8">
                 <h1 className="text-4xl lg:text-5xl font-black text-slate-900 mb-6 tracking-tight italic uppercase">{product.name}</h1>

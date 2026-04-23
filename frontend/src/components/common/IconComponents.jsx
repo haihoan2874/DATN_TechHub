@@ -1,11 +1,6 @@
 import React from 'react';
 
-interface IconProps {
-  className?: string;
-  size?: number;
-}
-
-export const GradientIcon: React.FC<IconProps & { children: React.ReactNode, id: string, colors: string[] }> = ({ children, id, colors, className, size = 24 }) => (
+export const GradientIcon = ({ children, id, colors, className, size = 24 }) => (
   <svg 
     width={size} 
     height={size} 
@@ -25,7 +20,7 @@ export const GradientIcon: React.FC<IconProps & { children: React.ReactNode, id:
   </svg>
 );
 
-export const LogoIcon: React.FC<IconProps> = ({ className, size = 32 }) => (
+export const LogoIcon = ({ className, size = 32 }) => (
   <GradientIcon id="logo-grad" colors={['#1e3a8a', '#3b82f6']} size={size} className={className}>
     {/* Stylized S + Pulse Wave */}
     <path 
@@ -50,7 +45,7 @@ export const LogoIcon: React.FC<IconProps> = ({ className, size = 32 }) => (
   </GradientIcon>
 );
 
-export const DashboardIcon: React.FC<IconProps> = ({ className, size = 24 }) => (
+export const DashboardIcon = ({ className, size = 24 }) => (
   <GradientIcon id="dash-grad" colors={['#3b82f6', '#6366f1']} size={size} className={className}>
     <rect x="3" y="3" width="7" height="7" rx="2" fill="url(#dash-grad)" fillOpacity="0.2" stroke="url(#dash-grad)" strokeWidth="2" />
     <rect x="14" y="3" width="7" height="7" rx="2" stroke="url(#dash-grad)" strokeWidth="2" />
@@ -59,7 +54,7 @@ export const DashboardIcon: React.FC<IconProps> = ({ className, size = 24 }) => 
   </GradientIcon>
 );
 
-export const ProductIcon: React.FC<IconProps> = ({ className, size = 24 }) => (
+export const ProductIcon = ({ className, size = 24 }) => (
   <GradientIcon id="prod-grad" colors={['#0ea5e9', '#22d3ee']} size={size} className={className}>
     <path d="M21 8L12 3L3 8V16L12 21L21 16V8Z" stroke="url(#prod-grad)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     <path d="M12 21V12" stroke="url(#prod-grad)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -69,7 +64,7 @@ export const ProductIcon: React.FC<IconProps> = ({ className, size = 24 }) => (
   </GradientIcon>
 );
 
-export const CategoryIcon: React.FC<IconProps> = ({ className, size = 24 }) => (
+export const CategoryIcon = ({ className, size = 24 }) => (
   <GradientIcon id="cat-grad" colors={['#6366f1', '#a855f7']} size={size} className={className}>
     <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="url(#cat-grad)" fillOpacity="0.2" stroke="url(#cat-grad)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     <path d="M2 17L12 22L22 17" stroke="url(#cat-grad)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -77,7 +72,7 @@ export const CategoryIcon: React.FC<IconProps> = ({ className, size = 24 }) => (
   </GradientIcon>
 );
 
-export const OrderIcon: React.FC<IconProps> = ({ className, size = 24 }) => (
+export const OrderIcon = ({ className, size = 24 }) => (
   <GradientIcon id="order-grad" colors={['#f59e0b', '#fbbf24']} size={size} className={className}>
     <path d="M6 2L3 6V20C3 20.5304 3.21071 21.0391 3.58579 21.4142C3.96086 21.7893 4.46957 22 5 22H19C19.5304 22 20.0391 21.7893 20.4142 21.4142C20.7893 21.0391 21 20.5304 21 20V6L18 2H6Z" stroke="url(#order-grad)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     <path d="M3 6H21" stroke="url(#order-grad)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -85,7 +80,7 @@ export const OrderIcon: React.FC<IconProps> = ({ className, size = 24 }) => (
   </GradientIcon>
 );
 
-export const CustomerIcon: React.FC<IconProps> = ({ className, size = 24 }) => (
+export const CustomerIcon = ({ className, size = 24 }) => (
   <GradientIcon id="cust-grad" colors={['#10b981', '#34d399']} size={size} className={className}>
     <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="url(#cust-grad)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     <circle cx="9" cy="7" r="4" fill="url(#cust-grad)" fillOpacity="0.2" stroke="url(#cust-grad)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -94,21 +89,21 @@ export const CustomerIcon: React.FC<IconProps> = ({ className, size = 24 }) => (
   </GradientIcon>
 );
 
-export const SettingIcon: React.FC<IconProps> = ({ className, size = 24 }) => (
+export const SettingIcon = ({ className, size = 24 }) => (
   <GradientIcon id="set-grad" colors={['#64748b', '#94a3b8']} size={size} className={className}>
     <circle cx="12" cy="12" r="3" stroke="url(#set-grad)" strokeWidth="2" />
     <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="url(#set-grad)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
   </GradientIcon>
 );
 
-export const BellIcon: React.FC<IconProps> = ({ className, size = 24 }) => (
+export const BellIcon = ({ className, size = 24 }) => (
   <GradientIcon id="bell-grad" colors={['#f43f5e', '#fb7185']} size={size} className={className}>
     <path d="M18 8A6 6 0 0 0 6 8C6 15 3 17 3 17H21C21 17 18 15 18 8" stroke="url(#bell-grad)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     <path d="M13.73 21a2 2 0 0 1-3.46 0" fill="url(#bell-grad)" fillOpacity="0.4" stroke="url(#bell-grad)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
   </GradientIcon>
 );
 
-export const SearchIcon: React.FC<IconProps> = ({ className, size = 24 }) => (
+export const SearchIcon = ({ className, size = 24 }) => (
   <GradientIcon id="search-grad" colors={['#2563eb', '#0ea5e9']} size={size} className={className}>
     <circle cx="11" cy="11" r="8" stroke="url(#search-grad)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     <path d="M21 21L16.65 16.65" stroke="url(#search-grad)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />

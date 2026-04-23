@@ -3,34 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Package, MapPin, CreditCard, Calendar, ShoppingBag } from 'lucide-react';
 import apiClient from '../../../api/axios';
 
-interface OrderItem {
-  id: string;
-  productName: string;
-  quantity: number;
-  price: number;
-  subtotal: number;
-}
-
-interface OrderDetail {
-  id: string;
-  orderNumber: string;
-  status: string;
-  total: number;
-  shippingAddress: string;
-  paymentMethod: string;
-  notes: string;
-  items: OrderItem[];
-  createdAt: string;
-}
-
-interface OrderDetailModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  orderId: string | null;
-}
-
-const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ isOpen, onClose, orderId }) => {
-  const [order, setOrder] = useState<OrderDetail | null>(null);
+const OrderDetailModal = ({ isOpen, onClose, orderId }) => {
+  const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -51,7 +25,7 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ isOpen, onClose, or
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status) => {
     switch (status) {
       case 'PENDING': return 'bg-amber-50 text-amber-600 border-amber-100';
       case 'CONFIRMED': return 'bg-blue-50 text-blue-600 border-blue-100';
@@ -104,7 +78,7 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ isOpen, onClose, or
                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Đang tải dữ liệu...</p>
               </div>
             ) : order && (
-              <div className="overflow-y-auto custom-scrollbar p-8 space-y-10">
+              <div className="overflow-y-auto p-8 space-y-10">
                 {/* Info Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div className="bg-slate-50/50 p-6 rounded-3xl border border-slate-100">
@@ -123,7 +97,7 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ isOpen, onClose, or
                         <div className="flex items-center gap-3 mb-4 text-slate-400 capitalize italic font-black text-[10px] tracking-widest">
                             <ShoppingBag size={14} /> Tổng tiền
                         </div>
-                        <p className="text-blue-600 font-black text-xl italic">${order.total.toLocaleString()}</p>
+                        <p className="text-blue-600 font-black text-xl italic">${order.total?.toLocaleString()}</p>
                     </div>
                     <div className="bg-slate-50/50 p-6 rounded-3xl border border-slate-100">
                         <div className="flex items-center gap-3 mb-4 text-slate-400 capitalize italic font-black text-[10px] tracking-widest">
@@ -170,19 +144,19 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ isOpen, onClose, or
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50">
-                                {order.items.map((item) => (
+                                {order.items?.map((item) => (
                                     <tr key={item.id} className="text-sm font-medium italic">
                                         <td className="px-6 py-4 text-slate-900 font-black uppercase tracking-tight">{item.productName}</td>
                                         <td className="px-6 py-4 text-center font-bold">x{item.quantity}</td>
-                                        <td className="px-6 py-4 text-right text-slate-500">${item.price.toLocaleString()}</td>
-                                        <td className="px-6 py-4 text-right text-blue-600 font-black">${item.subtotal.toLocaleString()}</td>
+                                        <td className="px-6 py-4 text-right text-slate-500">${item.price?.toLocaleString()}</td>
+                                        <td className="px-6 py-4 text-right text-blue-600 font-black">${item.subtotal?.toLocaleString()}</td>
                                     </tr>
                                 ))}
                             </tbody>
                             <tfoot>
                                 <tr className="bg-slate-50/50">
                                     <td colSpan={3} className="px-6 py-6 text-right text-[10px] font-black uppercase italic tracking-widest text-slate-400">Tổng thanh toán</td>
-                                    <td className="px-6 py-6 text-right text-blue-600 font-black text-xl italic">${order.total.toLocaleString()}</td>
+                                    <td className="px-6 py-6 text-right text-blue-600 font-black text-xl italic">${order.total?.toLocaleString()}</td>
                                 </tr>
                             </tfoot>
                         </table>

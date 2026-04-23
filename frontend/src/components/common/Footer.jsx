@@ -1,13 +1,12 @@
 import React from 'react';
 
-
-const Footer: React.FC = () => {
+const Footer = () => {
   const footerSections = [
     { 
       title: "Hệ thống Showroom", 
       links: [
-        { name: "S-Life Hà Nội: 123 Cầu Giấy", path: "#" },
-        { name: "S-Life Tp.HCM: 456 Lê Lợi", path: "#" },
+        { name: "S-Life Hà Nội Cầu Giấy", path: "#" },
+        { name: "S-Life Tp.HCM Lê Lợi", path: "#" },
         { name: "Giờ mở cửa: 08:00 - 22:00", path: "#" }
       ] 
     },
@@ -59,7 +58,7 @@ const Footer: React.FC = () => {
       </div>
 
       {/* Bottom Bar */}
-      <div className="max-w-7xl mx-auto px-6 pt-12 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-8 text-slate-400 text-[10px] font-black uppercase tracking-widest italic">
+      <div className="max-w-7xl mx-auto px-6 pt-12 border-t border-slate-100 flex flex-col md:row justify-between items-center gap-8 text-slate-400 text-[10px] font-black uppercase tracking-widest italic">
         <p>© 2026 Đồ án tốt nghiệp S-Life. Thiết bị Sức khỏe Thông minh.</p>
         <div className="flex gap-8">
           <span className="text-emerald-500 flex items-center gap-2">

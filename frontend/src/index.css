@@ -1,15 +1,16 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-primary: #2563eb;
-  --color-brand-secondary: #0ea5e9;
-  --color-brand-hover: #1d4ed8;
-  --color-brand-active: #1e40af;
-  --color-brand-soft: #eff6ff;
+  --color-brand-primary: #3b82f6;
+  --color-brand-secondary: #60a5fa;
+  --color-brand-accent: #10b981;
+  --color-brand-hover: #2563eb;
+  --color-brand-active: #1d4ed8;
+  --color-brand-soft: #f0f9ff;
   
-  --color-status-success: #10b981;
-  --color-status-error: #ef4444;
-  --color-status-warning: #f59e0b;
+  --color-status-success: #059669;
+  --color-status-error: #dc2626;
+  --color-status-warning: #d97706;
 
   --color-app-bg: #ffffff;
   --color-app-surface: #f8fafc;
@@ -20,9 +21,12 @@
   --color-glass-bg: rgba(255, 255, 255, 0.7);
   --color-glass-border: rgba(255, 255, 255, 0.2);
 
-  --radius-xl: 0.75rem;
-  --radius-2xl: 1rem;
-  --radius-3xl: 1.5rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 2.5rem;
+  
+  --shadow-premium: 0 20px 50px rgba(0, 0, 0, 0.05);
+  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
 }
 
 @layer base {
@@ -31,45 +35,57 @@
     color: var(--color-app-text);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight;
   }
 }
 
 @layer components {
   .glass {
-    backdrop-filter: blur(12px);
-    background-color: var(--color-glass-bg);
-    border: 1px solid var(--color-glass-border);
+    @apply backdrop-blur-xl bg-white/70 border border-white/20 shadow-glass;
   }
   
-  .btn-primary {
-    @apply px-6 py-2.5 bg-brand-primary hover:bg-brand-secondary text-white rounded-xl 
-           font-bold transition-all duration-300 shadow-lg shadow-blue-500/20 
-           active:scale-95;
+  .glass-dark {
+    @apply backdrop-blur-xl bg-slate-900/80 border border-white/10 shadow-glass;
+  }
+
+  .btn-premium {
+    @apply px-8 py-4 bg-slate-900 text-white rounded-2xl font-bold transition-all duration-500 
+           hover:bg-blue-600 hover:shadow-2xl hover:shadow-blue-500/25 active:scale-95 flex items-center justify-center gap-2;
+  }
+
+  .btn-outline {
+    @apply px-8 py-4 bg-white border border-slate-200 text-slate-900 rounded-2xl font-bold transition-all duration-300
+           hover:bg-slate-50 hover:border-slate-300 shadow-sm active:scale-95;
   }
   
+  .text-gradient {
+    @apply bg-gradient-to-br from-slate-900 via-slate-800 to-blue-600 bg-clip-text text-transparent;
+  }
+
   .nav-link {
-    @apply text-app-muted hover:text-brand-primary transition-colors relative after:content-[''] 
-           after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 
-           after:bg-brand-primary after:transition-all hover:after:w-full;
+    @apply text-app-muted hover:text-slate-900 font-medium transition-all relative py-2;
   }
 
   .card-premium {
-    @apply bg-white border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 rounded-3xl;
+    @apply bg-white border border-slate-100 shadow-premium hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-500 rounded-3xl overflow-hidden;
+  }
+
+  .tag-premium {
+    @apply px-3 py-1 bg-blue-50 text-blue-600 text-[10px] font-bold uppercase tracking-widest rounded-full border border-blue-100;
   }
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background-color: #f8fafc;
+  @apply bg-slate-50;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: #e2e8f0;
-  border-radius: 9999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background-color: #cbd5e1;
+  @apply bg-slate-200 rounded-full transition-colors hover:bg-slate-300;
 }

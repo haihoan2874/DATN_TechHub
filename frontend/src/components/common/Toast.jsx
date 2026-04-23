@@ -2,16 +2,7 @@ import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, AlertCircle, X, Info } from 'lucide-react';
 
-export type ToastType = 'success' | 'error' | 'info';
-
-interface ToastProps {
-  message: string;
-  type: ToastType;
-  isVisible: boolean;
-  onClose: () => void;
-}
-
-const Toast: React.FC<ToastProps> = ({ message, type, isVisible, onClose }) => {
+const Toast = ({ message, type, isVisible, onClose }) => {
   useEffect(() => {
     if (isVisible) {
       const timer = setTimeout(() => {

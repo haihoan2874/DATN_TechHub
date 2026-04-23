@@ -4,29 +4,8 @@ import { X, Save, AlertCircle, Image as ImageIcon } from 'lucide-react';
 import apiClient from '../../../api/axios';
 import { ProductIcon } from '../../../components/common/IconComponents';
 
-interface Product {
-  id?: string;
-  name: string;
-  slug: string;
-  price: number;
-  stockQuantity: number;
-  description: string;
-  imageUrl: string;
-  categoryId: string;
-  brandId: string;
-  isActive: boolean;
-  specs: string;
-}
-
-interface ProductModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSuccess: () => void;
-  product?: Product | null;
-}
-
-const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSuccess, product }) => {
-  const [formData, setFormData] = useState<Product>({
+const ProductModal = ({ isOpen, onClose, onSuccess, product }) => {
+  const [formData, setFormData] = useState({
     name: '',
     slug: '',
     price: 0,
@@ -39,10 +18,10 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSuccess,
     specs: ''
   });
   
-  const [categories, setCategories] = useState<any[]>([]);
-  const [brands, setBrands] = useState<any[]>([]);
+  const [categories, setCategories] = useState([]);
+  const [brands, setBrands] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -50,8 +29,9 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSuccess,
       if (product) {
         setFormData({
             ...product,
-            categoryId: (product as any).category?.id || product.categoryId || '',
-            brandId: (product as any).brand?.id || product.brandId || '',
+            categoryId: product.category?.id || product.categoryId || '',
+            brandId: product.brand?.id || product.brandId || '',
+            specs: typeof product.specs === 'object' ? JSON.stringify(product.specs) : product.specs || ''
         });
       } else {
         setFormData({
@@ -87,7 +67,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSuccess,
     }
   };
 
-  const handleNameChange = (name: string) => {
+  const handleNameChange = (name) => {
     const slug = name.toLowerCase()
       .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
       .replace(/[^\w ]+/g, '')
@@ -95,7 +75,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSuccess,
     setFormData({ ...formData, name, slug });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -108,14 +88,21 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSuccess,
     }
 
     try {
+      const dataToSubmit = {
+        ...formData,
+        price: Number(formData.price),
+        stockQuantity: Number(formData.stockQuantity),
+        specs: formData.specs ? JSON.parse(formData.specs) : {}
+      };
+
       if (product?.id) {
-        await apiClient.put(`/products/${product.id}`, formData);
+        await apiClient.put(`/products/${product.id}`, dataToSubmit);
       } else {
-        await apiClient.post('/products', formData);
+        await apiClient.post('/products', dataToSubmit);
       }
       onSuccess();
       onClose();
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error saving product:', err);
       setError(err.response?.data?.message || 'Có lỗi xảy ra khi lưu sản phẩm. Vui lòng kiểm tra dữ liệu.');
     } finally {
@@ -157,7 +144,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSuccess,
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="overflow-y-auto custom-scrollbar p-8">
+            <form onSubmit={handleSubmit} className="overflow-y-auto p-8">
               {error && (
                 <div className="p-4 mb-6 bg-rose-50 border border-rose-100 rounded-2xl flex items-center gap-3 text-rose-600 text-xs font-bold animate-shake">
                   <AlertCircle size={18} />
@@ -166,7 +153,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSuccess,
               )}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                {/* Left Column: General Info */}
+                {/* Left Column Info */}
                 <div className="space-y-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 italic ml-1">Tên Sản phẩm</label>
@@ -209,12 +196,12 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSuccess,
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 italic ml-1">Giá bán ($)</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 italic ml-1">Giá bán (₫)</label>
                         <input 
                             required
                             type="number" 
                             value={formData.price}
-                            onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
+                            onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                             className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 outline-none focus:border-blue-500/50 transition-all font-bold"
                         />
                     </div>
@@ -224,7 +211,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSuccess,
                             required
                             type="number" 
                             value={formData.stockQuantity}
-                            onChange={(e) => setFormData({ ...formData, stockQuantity: Number(e.target.value) })}
+                            onChange={(e) => setFormData({ ...formData, stockQuantity: e.target.value })}
                             className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 outline-none focus:border-blue-500/50 transition-all font-bold"
                         />
                     </div>
@@ -252,7 +239,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onSuccess,
                   </div>
                 </div>
 
-                {/* Right Column: Specs & Desc */}
+                {/* Right Column & Desc */}
                 <div className="space-y-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 italic ml-1">Slug (Đường dẫn)</label>

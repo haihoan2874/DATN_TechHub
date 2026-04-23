@@ -12,20 +12,20 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import MainLayout from '../../layouts/MainLayout';
 
-const Cart: React.FC = () => {
+const Cart = () => {
   const navigate = useNavigate();
   const [items, setItems] = useState([
-    { id: 1, name: "Apple Watch Series 9", price: 9990000, quantity: 1, color: "Graphite" },
-    { id: 2, name: "Garmin Venu 3", price: 11490000, quantity: 2, color: "Graphite" },
+    { id: '1', name: "Apple Watch Series 9", price: 10500000, quantity: 1, color: "Graphite" },
+    { id: '2', name: "Garmin Venu 3", price: 12500000, quantity: 1, color: "Graphite" },
   ]);
 
-  const updateQuantity = (id: number, delta: number) => {
+  const updateQuantity = (id, delta) => {
     setItems(items.map(item => 
       item.id === id ? { ...item, quantity: Math.max(1, item.quantity + delta) } : item
     ));
   };
 
-  const removeItem = (id: number) => {
+  const removeItem = (id) => {
     setItems(items.filter(item => item.id !== id));
   };
 

@@ -4,39 +4,29 @@ import { X, Save, AlertCircle } from 'lucide-react';
 import apiClient from '../../../api/axios';
 import { CategoryIcon } from '../../../components/common/IconComponents';
 
-interface Category {
-  id?: string;
-  name: string;
-  description: string;
-  icon: string;
-}
-
-interface CategoryModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSuccess: () => void;
-  category?: Category | null;
-}
-
-const CategoryModal: React.FC<CategoryModalProps> = ({ isOpen, onClose, onSuccess, category }) => {
-  const [formData, setFormData] = useState<Category>({
+const CategoryModal = ({ isOpen, onClose, onSuccess, category }) => {
+  const [formData, setFormData] = useState({
     name: '',
     description: '',
     icon: 'folder'
   });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (category) {
-      setFormData(category);
+      setFormData({
+        name: category.name || '',
+        description: category.description || '',
+        icon: category.icon || 'folder'
+      });
     } else {
       setFormData({ name: '', description: '', icon: 'folder' });
     }
     setError(null);
   }, [category, isOpen]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -51,7 +41,7 @@ const CategoryModal: React.FC<CategoryModalProps> = ({ isOpen, onClose, onSucces
       }
       onSuccess();
       onClose();
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error saving category:', err);
       setError(err.response?.data?.message || 'Có lỗi xảy ra khi lưu danh mục.');
     } finally {
@@ -133,7 +123,7 @@ const CategoryModal: React.FC<CategoryModalProps> = ({ isOpen, onClose, onSucces
                   type="text" 
                   value={formData.icon}
                   onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                  placeholder="Ví dụ: phone, laptop, monitor..." 
+                  placeholder="Ví dụ: smartphone, laptop, monitor..." 
                   className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/5 focus:bg-white transition-all font-mono text-xs"
                 />
               </div>

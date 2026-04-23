@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import MainLayout from '../../layouts/MainLayout';
 
-const Profile: React.FC = () => {
+const Profile = () => {
   const [userData, setUserData] = React.useState({
     name: "Member",
     email: "email@example.com",
@@ -39,8 +39,8 @@ const Profile: React.FC = () => {
   };
 
   const orders = [
-    { id: "SL-9824-X12", date: "14/04/2026", status: "Đang giao", total: 9990000, product: "Apple Watch Series 9" },
-    { id: "SL-8812-Y05", date: "02/04/2026", status: "Hoàn thành", total: 1290000, product: "Xiaomi Band 8" },
+    { id: "SL-9824-X12", date: "14/04/2026", status: "Đang giao", total: 10500000, product: "Apple Watch Series 9" },
+    { id: "SL-8812-Y05", date: "02/04/2026", status: "Hoàn thành", total: 2490000, product: "Xiaomi Band 8" },
   ];
 
   const sidebarLinks = [
@@ -62,7 +62,7 @@ const Profile: React.FC = () => {
               <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-100">
                 <div className="flex items-center gap-4 mb-10">
                    <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-2xl font-black">
-                      H
+                      {userData.name.charAt(0).toUpperCase()}
                    </div>
                    <div>
                       <h2 className="text-lg font-black text-slate-900 tracking-tighter italic uppercase">{userData.name}</h2>
@@ -173,7 +173,7 @@ const Profile: React.FC = () => {
                                 <p className="text-slate-900 font-black italic">{order.total.toLocaleString('vi-VN')}₫</p>
                              </div>
                              <div className={`px-4 py-2 rounded-full text-[8px] font-black uppercase tracking-widest italic ${
-                               order.status === "Đang giao" ? "bg-blue-50 text-blue-600 border border-blue-100" : "bg-emerald-50 text-emerald-600 border border-emerald-100"
+                                order.status === "Đang giao" ? "bg-blue-50 text-blue-600 border border-blue-100" : "bg-emerald-50 text-emerald-600 border border-emerald-100"
                              }`}>
                                 {order.status}
                              </div>

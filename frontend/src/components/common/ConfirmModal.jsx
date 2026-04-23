@@ -2,18 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertTriangle, Trash2 } from 'lucide-react';
 
-interface ConfirmModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  title: string;
-  message: string;
-  confirmText?: string;
-  cancelText?: string;
-  type?: 'danger' | 'info';
-}
-
-const ConfirmModal: React.FC<ConfirmModalProps> = ({ 
+const ConfirmModal = ({ 
   isOpen, 
   onClose, 
   onConfirm, 

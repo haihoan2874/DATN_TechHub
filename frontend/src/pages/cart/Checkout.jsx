@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
 import { 
   CreditCard, 
   Truck, 
@@ -8,19 +7,37 @@ import {
   ChevronRight,
   Smartphone
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import MainLayout from '../../layouts/MainLayout';
+import SLButton from '../../components/ui/SLButton';
+import toast from 'react-hot-toast';
 
-const Checkout: React.FC = () => {
+const Checkout = () => {
+  const navigate = useNavigate();
   const [paymentMethod, setPaymentMethod] = useState('vnpay');
+  const [loading, setLoading] = useState(false);
 
   const cartItems = [
-    { id: 1, name: "Apple Watch Series 9", price: 9990000, quantity: 1 },
-    { id: 2, name: "Garmin Venu 3", price: 11490000, quantity: 2 },
+    { id: '1', name: "Apple Watch Series 9", price: 10500000, quantity: 1 },
+    { id: '2', name: "Garmin Venu 3", price: 12500000, quantity: 1 },
   ];
 
-  const subtotal = 32970000;
+  const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const shipping = 0;
+
+  const handlePlaceOrder = async () => {
+    setLoading(true);
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      toast.success("Đặt hàng thành công!");
+      navigate('/order-success');
+    } catch (error) {
+      toast.error("Có lỗi xảy ra, vui lòng thử lại.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <MainLayout>
@@ -131,9 +148,15 @@ const Checkout: React.FC = () => {
                    </div>
                 </div>
 
-                <button className="w-full mt-10 py-5 bg-blue-600 text-white font-black italic uppercase tracking-widest text-xs rounded-2xl shadow-xl shadow-blue-500/20 hover:bg-blue-700 transition-all flex items-center justify-center gap-3">
-                   Xác nhận đặt hàng <ChevronRight size={18} />
-                </button>
+                <SLButton 
+                  onClick={handlePlaceOrder}
+                  isLoading={loading}
+                  className="w-full mt-10"
+                  size="lg"
+                  rightIcon={<ChevronRight size={18} />}
+                >
+                   Xác nhận đặt hàng
+                </SLButton>
 
                 <div className="mt-6 flex items-center justify-center gap-3 text-slate-400">
                    <ShieldCheck size={14} className="text-blue-600" />
