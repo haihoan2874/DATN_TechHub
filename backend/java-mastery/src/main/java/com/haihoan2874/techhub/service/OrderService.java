@@ -339,8 +339,8 @@ public class OrderService {
     private void sendOrderEmail(String username, Order order) {
         emailService.sendEmail(
                 userService.getUserByUsername(username).getEmail(),
-                "TechHub - Xác nhận đặt hàng " + order.getOrderNumber(),
-                "Cảm ơn bạn đã đặt hàng tại TechHub. Mã đơn hàng của bạn là: " + order.getOrderNumber(),
+                "S-Life - Xác nhận đặt hàng " + order.getOrderNumber(),
+                "Cảm ơn bạn đã tin tưởng chọn S-Life. Đơn hàng của bạn đang được chuẩn bị để bắt đầu hành trình chăm sóc sức khỏe. Mã đơn hàng: " + order.getOrderNumber(),
                 false
         );
     }

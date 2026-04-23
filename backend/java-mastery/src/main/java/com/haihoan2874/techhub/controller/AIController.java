@@ -7,10 +7,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
-import java.util.Map;
 
 /**
  * REST Controller for AI-powered product advisory.
@@ -27,23 +27,25 @@ public class AIController {
     /**
      * Ask the AI advisor for product recommendations or specifications.
      *
-     * @param request the map containing "question"
+     * @param userQuestion the question from user
      * @return Mono with the AI response
      */
-    @PostMapping("/advisor")
-    @Operation(summary = "Ask AI Advisor", description = "Send a question to the TechHub AI Advisor for product recommendations")
+    @PostMapping("/consult")
+    @Operation(summary = "Ask S-Life AI Advisor", description = "Send a question to the S-Life AI Advisor for health tech recommendations")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "AI responded successfully"),
         @ApiResponse(responseCode = "500", description = "AI service unavailable")
     })
-    public Mono<String> askAdvisor(@RequestBody Map<String, String> request) {
-        String question = request.get("question");
-        log.info("Incoming AI question: {}", question);
-        
-        if (question == null || question.isEmpty()) {
-            return Mono.just("Chào bạn! TechHub có thể giúp gì cho bạn trong việc chọn Smartphone và phụ kiện?");
-        }
-        
-        return aiService.getProductAdvice(question);
+    public Mono<ResponseEntity<String>> getAdvice(@RequestBody String userQuestion) {
+        log.info("Incoming AI question: {}", userQuestion);
+        return aiService.getProductAdvice(userQuestion)
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/hello")
+    @Operation(summary = "AI Greeting", description = "Get a friendly greeting from S-Life AI")
+    public Mono<String> hello() {
+        return Mono.just("Chào bạn! S-Life AI Advisor có thể giúp gì cho bạn trong việc lựa chọn thiết bị theo dõi sức khỏe thông minh?");
     }
 }

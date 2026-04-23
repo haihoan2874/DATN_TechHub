@@ -43,8 +43,8 @@ public class PasswordResetService {
             message.setTo(user.getEmail());
             message.setSubject("Mã xác thực đổi mật khẩu S-Life");
             message.setText("Mã xác thực của bạn là: " + otp + ". Mã có hiệu lực trong 5 phút.");
-            // mailSender.send(message); // Tạm thời comment nếu chưa có cấu hình SMTP thật
-            log.info("Đã giả lập gửi Email thành công cho {}", user.getEmail());
+            mailSender.send(message); 
+            log.info("Đã gửi Email thành công cho {}", user.getEmail());
         } catch (Exception e) {
             log.error("Lỗi khi gửi mail: {}", e.getMessage());
         }

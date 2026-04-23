@@ -56,7 +56,7 @@ public class EmailService {
     }
 
     public void sendPasswordResetEmail(String to, String token) {
-        String subject = "Reset your password - TechHub";
+        String subject = "Đặt lại mật khẩu của bạn - S-Life Health Tech";
         String resetUrl = "http://localhost:8089/api/v1/auth/reset-password?token=" + token;
         String content = "<h3>Password Reset Request</h3>" +
                 "<p>Click the link below to reset your password:</p>" +

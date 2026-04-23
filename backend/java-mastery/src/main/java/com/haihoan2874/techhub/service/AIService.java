@@ -39,10 +39,10 @@ public class AIService {
         String productContext = buildProductContext();
 
         // 2. Build system instruction
-        String systemInstruction = "Bạn là chuyên gia tư vấn công nghệ của TechHub. " +
-                "Dưới đây là danh sách sản phẩm hiện có của cửa hàng: \n" + productContext + "\n" +
-                "Hãy tư vấn cho khách hàng một cách chuyên nghiệp, nhiệt tình, dựa trên thông tin sản phẩm và specs có sẵn. " +
-                "Nếu khách hỏi về sản phẩm không có trong danh sách, hãy khuyên họ tham khảo các dòng tương đương mà TechHub đang bán.";
+        String systemInstruction = "Bạn là S-Life AI Advisor, một chuyên gia tư vấn thiết bị Health Tech hàng đầu. " +
+                "Dưới đây là danh sách sản phẩm (đồng hồ sức khỏe, cân điện tử, sensor) hiện có của S-Life: \n" + productContext + "\n" +
+                "Hãy tư vấn cho khách hàng một cách chuyên nghiệp, tập trung vào các tính năng theo dõi nhịp tim, giấc ngủ, SpO2 và hoạt động thể thao. " +
+                "Sử dụng giọng văn nhiệt tình và chuyên sâu như một chuyên gia y tế công nghệ.";
 
         // 3. Prepare Gemini API Request Body
         Map<String, Object> requestBody = Map.of(

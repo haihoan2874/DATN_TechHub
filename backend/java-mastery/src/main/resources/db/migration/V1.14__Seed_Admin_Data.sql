@@ -4,7 +4,7 @@
 -- 1. Insert Admin User (password: admin123)
 -- BCrypt: $2a$10$8.UnVuG9HHgffUDAlk8qn.e/vPsYpx0.9Uvy5k5V.WfUnP3G1X.T.
 INSERT INTO users (username, email, password, first_name, last_name, role)
-VALUES ('admin', 'admin@techhub.com', '$2a$10$8.UnVuG9HHgffUDAlk8qn.e/vPsYpx0.9Uvy5k5V.WfUnP3G1X.T.', 'TechHub', 'Admin', 'ROLE_ADMIN')
+VALUES ('admin', 'admin@slife.com', '$2a$10$8.UnVuG9HHgffUDAlk8qn.e/vPsYpx0.9Uvy5k5V.WfUnP3G1X.T.', 'S-Life', 'Admin', 'ROLE_ADMIN')
 ON CONFLICT (username) DO NOTHING;
 
 -- 2. Insert Sample Products (linking to existing Brands and Categories)
@@ -20,8 +20,8 @@ BEGIN
 
     IF brand_apple_id IS NOT NULL AND cat_phone_id IS NOT NULL THEN
         -- Insert iPhone 15 Pro
-        INSERT INTO products (name, slug, description, price, brand_id, category_id, stock_quantity, sku)
-        VALUES ('iPhone 15 Pro', 'iphone-15-pro', 'Titanium design, A17 Pro chip', 1099.00, brand_apple_id, cat_phone_id, 50, 'IP15P-128-TITAN')
+        INSERT INTO products (name, slug, description, price, brand_id, category_id, stock_quantity)
+        VALUES ('iPhone 15 Pro', 'iphone-15-pro', 'Titanium design, A17 Pro chip', 1099.00, brand_apple_id, cat_phone_id, 50)
         ON CONFLICT (slug) DO UPDATE SET price = 1099.00, stock_quantity = 50
         RETURNING id INTO prod_iphone_id;
 
