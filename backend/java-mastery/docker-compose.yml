@@ -6,7 +6,7 @@ services:
     image: postgres:16-alpine
     container_name: techhub-postgres
     environment:
-      POSTGRES_DB: datn_techhub
+      POSTGRES_DB: datn_slife
       POSTGRES_USER: pguser
       POSTGRES_PASSWORD: pgpassword
       POSTGRES_INITDB_ARGS: "-c max_connections=200 -c shared_buffers=256MB"
@@ -101,12 +101,12 @@ services:
 #
 #      # JWT Configuration
 #      JWT_SECRETKEY: ${JWT_SECRETKEY:your-super-secret-key-change-in-production-environment}
-#      JWT_ISSUER: ${JWT_ISSUER:TechHub}
+#      JWT_ISSUER: ${JWT_ISSUER:S-Life}
 #      JWT_EXPIRATIONMINUTE: ${JWT_EXPIRATIONMINUTE:1440}
 #
 #      # Swagger Configuration
-#      SWAGGER_APPNAME: ${SWAGGER_APPNAME:TechHub API}
-#      SWAGGER_APPDESCRIPTION: ${SWAGGER_APPDESCRIPTION:TechHub API Documentation}
+#      SWAGGER_APPNAME: ${SWAGGER_APPNAME:S-Life API}
+#      SWAGGER_APPDESCRIPTION: ${SWAGGER_APPDESCRIPTION:S-Life API Documentation}
 #      SWAGGER_APPVERSION: ${SWAGGER_APPVERSION:1.0.0}
 #
 #      # Email/Mailhog Configuration

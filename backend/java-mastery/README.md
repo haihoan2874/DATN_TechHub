@@ -1,6 +1,6 @@
-# TechHub Backend - Spring Boot E-commerce API
+# S-Life Backend - Spring Boot E-commerce API
 
-This is the backend service for the **TechHub Graduation Project** (E-commerce platform for Smartphones and Accessories). 
+This is the backend service for the **S-Life Graduation Project** (E-commerce platform for Smartphones and Accessories). 
 It provides RESTful APIs for client storefronts, Admin dashboards, and AI integrations.
 
 ## Overview
@@ -87,5 +87,5 @@ curl http://localhost:8089/health
 ---
 
 **Version**: 1.0.0 (Graduation Project Development Phase)
-**Author**: Hoan (TechHub Workspace)
+**Author**: Hoan (S-Life Workspace)
 
