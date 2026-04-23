@@ -35,6 +35,8 @@ public class SecurityConfiguration {
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAuthenticationForBidden jwtAuthenticationForBidden;
+    private final com.haihoan2874.techhub.security.service.CustomOAuth2UserService customOAuth2UserService;
+    private final com.haihoan2874.techhub.security.OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
@@ -83,8 +85,11 @@ public class SecurityConfiguration {
                                 .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .defaultSuccessUrl("/api/v1/auth/oauth2/success")
-                        .failureUrl("/api/v1/auth/oauth2/failure")
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService)
+                        )
+                        .successHandler(oAuth2AuthenticationSuccessHandler)
+                        .failureUrl("http://localhost:5173/login?error=oauth2")
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 

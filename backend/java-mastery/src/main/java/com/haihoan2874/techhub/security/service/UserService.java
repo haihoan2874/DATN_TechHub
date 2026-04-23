@@ -72,6 +72,20 @@ public class UserService {
         // Create new user
         User user = userMapper.registrationRequestToUser(registrationRequest);
         user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+        user.setPhoneNumber(registrationRequest.getPhoneNumber()); // Save phone number
+        
+        // Handle fullName if provided
+        if (registrationRequest.getFullName() != null && !registrationRequest.getFullName().isBlank()) {
+            String fullName = registrationRequest.getFullName();
+            if (fullName.contains(" ")) {
+                user.setFirstName(fullName.substring(0, fullName.lastIndexOf(" ")));
+                user.setLastName(fullName.substring(fullName.lastIndexOf(" ") + 1));
+            } else {
+                user.setFirstName(fullName);
+                user.setLastName("");
+            }
+        }
+        
         user.setRole(UserRole.ROLE_USER);
         user.setIsActive(true);
 
@@ -90,27 +104,31 @@ public class UserService {
      * @throws IllegalArgumentException if username not found or password is incorrect
      */
     public LoginResponse login(LoginRequest loginRequest) {
-        log.info("Authenticating user: {}", loginRequest.getUsername());
+        log.info("Authenticating user with identifier: [{}]", loginRequest.getUsername());
 
-        // Find user by username
-        User user = userRepository.findByUsername(loginRequest.getUsername())
+        // Find user by username OR email
+        User user = userRepository.findByUsernameOrEmail(loginRequest.getUsername(), loginRequest.getUsername())
                 .orElseThrow(() -> {
-                    log.error("User not found: {}", loginRequest.getUsername());
-                    return new IllegalArgumentException("Invalid username or password");
+                    log.warn("User not found for identifier: [{}]", loginRequest.getUsername());
+                    return new IllegalArgumentException("Incorrect username or password");
                 });
+
+        log.info("User found: [{}], Role: [{}]", user.getUsername(), user.getRole());
 
         // Verify password
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            log.error("Invalid password for user: {}", loginRequest.getUsername());
-            throw new IllegalArgumentException("Invalid username or password");
+            log.warn("Password mismatch for user: [{}]", loginRequest.getUsername());
+            throw new IllegalArgumentException("Incorrect username or password");
         }
+
+        log.info("Authentication successful for: [{}]", user.getUsername());
 
         String role = user.getRole().getValue();
         // Generate JWT token
         String token = jwtTokenProvider.generateToken(user.getUsername(), role);
-        log.info("JWT token generated for user: {}", user.getUsername());
+        log.info("JWT token generated for user: {} with role: {}", user.getUsername(), role);
 
-        return new LoginResponse(token);
+        return new LoginResponse(token, role, user.getUsername());
     }
 
     /**
