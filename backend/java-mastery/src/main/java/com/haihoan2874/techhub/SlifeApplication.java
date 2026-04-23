@@ -8,13 +8,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 @EnableJpaRepositories(basePackages = "com.haihoan2874.techhub.repository")
 @EnableAspectJAutoProxy
-public class TechHubApplication {
-    private TechHubApplication() {
-        // Utility class
-    }
+public class SlifeApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(TechHubApplication.class, args);
+        SpringApplication.run(SlifeApplication.class, args);
     }
-
 }
