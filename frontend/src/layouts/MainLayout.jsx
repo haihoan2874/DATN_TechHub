@@ -1,17 +1,18 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 import Navbar from '../components/common/Navbar';
 import Footer from '../components/common/Footer';
-import SlifeAdvisor from '../components/common/SlifeAdvisor';
+import AIChatbot from '../components/common/AIChatbot';
 
-const MainLayout = ({ children }) => {
+const MainLayout = () => {
   return (
-    <div className="min-h-screen bg-white selection-blue-600 selection-white flex flex-col">
+    <div className="flex flex-col min-h-screen relative">
       <Navbar />
-      <main className="flex-1">
-        {children}
+      <main className="flex-grow">
+        <Outlet />
       </main>
       <Footer />
-      <SlifeAdvisor />
+      <AIChatbot />
     </div>
   );
 };

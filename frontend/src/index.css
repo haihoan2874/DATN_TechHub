@@ -1,91 +1,61 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-primary: #3b82f6;
-  --color-brand-secondary: #60a5fa;
-  --color-brand-accent: #10b981;
-  --color-brand-hover: #2563eb;
-  --color-brand-active: #1d4ed8;
-  --color-brand-soft: #f0f9ff;
+  --color-primary: #2563eb; /* Blue 600 */
+  --color-secondary: #0ea5e9; /* Sky 500 */
+  --color-accent: #22d3ee; /* Cyan 400 */
+  --color-background: #f8fafc; /* Slate 50 */
+  --color-surface: #ffffff;
   
-  --color-status-success: #059669;
-  --color-status-error: #dc2626;
-  --color-status-warning: #d97706;
-
-  --color-app-bg: #ffffff;
-  --color-app-surface: #f8fafc;
-  --color-app-border: #e2e8f0;
-  --color-app-text: #0f172a;
-  --color-app-muted: #64748b;
-  
-  --color-glass-bg: rgba(255, 255, 255, 0.7);
-  --color-glass-border: rgba(255, 255, 255, 0.2);
-
-  --radius-xl: 1rem;
-  --radius-2xl: 1.5rem;
-  --radius-3xl: 2.5rem;
-  
-  --shadow-premium: 0 20px 50px rgba(0, 0, 0, 0.05);
-  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 @layer base {
-  body {
-    background-color: var(--color-app-bg);
-    color: var(--color-app-text);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+  :root {
+    color-scheme: light;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    @apply tracking-tight;
+  body {
+    @apply bg-background text-slate-900 font-sans antialiased;
+    background-image: 
+      radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.04) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(14, 165, 233, 0.04) 0px, transparent 50%);
+    min-height: 100vh;
+  }
+
+  a, button {
+    @apply transition-all duration-300 ease-in-out;
   }
 }
 
 @layer components {
-  .glass {
-    @apply backdrop-blur-xl bg-white/70 border border-white/20 shadow-glass;
+  .glass-card {
+    @apply bg-white border border-slate-100 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.06)] transition-all duration-500;
   }
   
-  .glass-dark {
-    @apply backdrop-blur-xl bg-slate-900/80 border border-white/10 shadow-glass;
+  .btn-primary {
+    @apply bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-xl font-semibold shadow-lg shadow-primary/20 active:scale-95;
   }
 
-  .btn-premium {
-    @apply px-8 py-4 bg-slate-900 text-white rounded-2xl font-bold transition-all duration-500 
-           hover:bg-blue-600 hover:shadow-2xl hover:shadow-blue-500/25 active:scale-95 flex items-center justify-center gap-2;
-  }
-
-  .btn-outline {
-    @apply px-8 py-4 bg-white border border-slate-200 text-slate-900 rounded-2xl font-bold transition-all duration-300
-           hover:bg-slate-50 hover:border-slate-300 shadow-sm active:scale-95;
-  }
-  
-  .text-gradient {
-    @apply bg-gradient-to-br from-slate-900 via-slate-800 to-blue-600 bg-clip-text text-transparent;
-  }
-
-  .nav-link {
-    @apply text-app-muted hover:text-slate-900 font-medium transition-all relative py-2;
-  }
-
-  .card-premium {
-    @apply bg-white border border-slate-100 shadow-premium hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-500 rounded-3xl overflow-hidden;
-  }
-
-  .tag-premium {
-    @apply px-3 py-1 bg-blue-50 text-blue-600 text-[10px] font-bold uppercase tracking-widest rounded-full border border-blue-100;
+  .tech-gradient-text {
+    @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
   }
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
+/* Performant animations */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
 }
-::-webkit-scrollbar-track {
-  @apply bg-slate-50;
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
 }
-::-webkit-scrollbar-thumb {
-  @apply bg-slate-200 rounded-full transition-colors hover:bg-slate-300;
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float, a, button {
+    animation: none !important;
+    transition: none !important;
+  }
 }

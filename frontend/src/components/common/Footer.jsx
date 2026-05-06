@@ -1,73 +1,103 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { Facebook, Twitter, Instagram, Mail, Phone, MapPin } from 'lucide-react';
 
 const Footer = () => {
-  const footerSections = [
-    { 
-      title: "Hệ thống Showroom", 
-      links: [
-        { name: "S-Life Hà Nội Cầu Giấy", path: "#" },
-        { name: "S-Life Tp.HCM Lê Lợi", path: "#" },
-        { name: "Giờ mở cửa: 08:00 - 22:00", path: "#" }
-      ] 
-    },
-    { 
-      title: "Hỗ trợ 24/7", 
-      links: [
-        { name: "Hotline: 1900 6789", path: "#" },
-        { name: "Email: support@slife.vn", path: "#" },
-        { name: "Bảo hành tận nơi", path: "#" }
-      ] 
-    }
-  ];
-
   return (
-    <footer className="pt-32 pb-16 border-t border-slate-100 bg-white overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 mb-24">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+    <footer className="bg-slate-50 border-t border-slate-200 pt-24 pb-12">
+      <div className="container mx-auto px-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20">
           {/* Brand Column */}
-          <div className="lg:col-span-6 flex flex-col items-center lg:items-start">
-            <div className="flex items-center gap-2 mb-8 group">
+          <div className="flex flex-col gap-8">
+            <Link to="/" className="flex items-center gap-2 group">
               <img 
                 src="/logo_final.png" 
                 alt="S-Life Logo" 
-                className="h-40 w-auto drop-shadow-2xl group-hover:scale-105 transition-transform duration-700 mix-blend-multiply" 
+                className="w-10 h-10 object-contain" 
               />
-              <span className="text-6xl font-black text-slate-900 tracking-tighter italic">S-Life</span>
-            </div>
-            <p className="text-slate-400 text-lg max-w-md leading-relaxed font-bold italic text-center lg:text-left">
-              Người bạn đồng hành tin cậy cho hành trình sống khỏe. Thiết bị thông minh, công nghệ tương lai.
+              <span className="text-2xl font-black tracking-tighter text-slate-900">
+                S-LIFE
+              </span>
+            </Link>
+            <p className="text-slate-500 leading-relaxed">
+              Tiên phong cung cấp các giải pháp công nghệ sức khỏe thông minh, giúp nâng tầm chất lượng cuộc sống cho mọi gia đình Việt.
             </p>
+            <div className="flex gap-4">
+              <SocialIcon icon={<Facebook size={20} />} href="#" />
+              <SocialIcon icon={<Twitter size={20} />} href="#" />
+              <SocialIcon icon={<Instagram size={20} />} href="#" />
+            </div>
           </div>
 
-          {/* Links Columns */}
-          <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-12 w-full">
-            {footerSections.map((section) => (
-              <div key={section.title} className="text-center sm:text-left">
-                <h5 className="text-slate-900 font-black mb-10 italic uppercase tracking-[0.3em] text-[10px] md:text-xs">{section.title}</h5>
-                <ul className="flex flex-col gap-6 text-slate-400 text-xs md:text-sm font-black italic tracking-wider">
-                  {section.links.map(link => (
-                    <li key={link.name} className="hover:text-blue-600 transition-colors cursor-default">
-                      {link.name}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+          {/* Quick Links */}
+          <div>
+            <h4 className="text-slate-900 font-black text-xs mb-8 uppercase tracking-[0.2em]">Khám phá</h4>
+            <ul className="flex flex-col gap-5">
+              <FooterLink to="/shop">Tất cả sản phẩm</FooterLink>
+              <FooterLink to="/categories">Danh mục</FooterLink>
+              <FooterLink to="/news">Tin tức sức khỏe</FooterLink>
+            </ul>
+          </div>
+
+          {/* Support */}
+          <div>
+            <h4 className="text-slate-900 font-black text-xs mb-8 uppercase tracking-[0.2em]">Hỗ trợ khách hàng</h4>
+            <ul className="flex flex-col gap-5">
+              <FooterLink to="/faq">Câu hỏi thường gặp</FooterLink>
+              <FooterLink to="/shipping">Chính sách vận chuyển</FooterLink>
+              <FooterLink to="/warranty">Chính sách bảo hành</FooterLink>
+              <FooterLink to="/privacy">Chính sách bảo mật</FooterLink>
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h4 className="text-slate-900 font-black text-xs mb-8 uppercase tracking-[0.2em]">Liên hệ</h4>
+            <ul className="flex flex-col gap-8">
+              <ContactItem icon={<Phone size={20} />} text="1900 123 456" />
+              <ContactItem icon={<Mail size={20} />} text="contact@s-life.com" />
+              <ContactItem icon={<MapPin size={20} />} text="123 Tech Street, Hà Nội, Việt Nam" />
+            </ul>
           </div>
         </div>
-      </div>
 
-      {/* Bottom Bar */}
-      <div className="max-w-7xl mx-auto px-6 pt-12 border-t border-slate-100 flex flex-col md:row justify-between items-center gap-8 text-slate-400 text-[10px] font-black uppercase tracking-widest italic">
-        <p>© 2026 Đồ án tốt nghiệp S-Life. Thiết bị Sức khỏe Thông minh.</p>
-        <div className="flex gap-8">
-          <span className="text-emerald-500 flex items-center gap-2">
-            <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping" /> Hệ thống sẵn sàng
-          </span>
+        <div className="pt-12 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center gap-8">
+          <p className="text-slate-400 text-sm font-medium">
+            © 2026 S-LIFE TECHHUB. Đồ án tốt nghiệp - Trịnh Hải Hoàn.
+          </p>
+          <div className="flex items-center gap-8">
+             <img src="https://img.icons8.com/color/48/000000/visa.png" alt="Visa" className="h-8 grayscale opacity-30 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer" />
+             <img src="https://img.icons8.com/color/48/000000/mastercard.png" alt="Mastercard" className="h-8 grayscale opacity-30 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer" />
+             <img src="https://img.icons8.com/color/48/000000/paypal.png" alt="Paypal" className="h-8 grayscale opacity-30 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer" />
+          </div>
         </div>
       </div>
     </footer>
   );
 };
+
+const FooterLink = ({ to, children }) => (
+  <li>
+    <Link to={to} className="text-slate-500 hover:text-primary transition-colors font-medium">
+      {children}
+    </Link>
+  </li>
+);
+
+const SocialIcon = ({ icon, href }) => (
+  <a 
+    href={href} 
+    className="w-10 h-10 rounded-xl bg-white border border-slate-200 shadow-sm flex items-center justify-center text-slate-400 hover:bg-primary hover:text-white hover:border-primary transition-all"
+  >
+    {icon}
+  </a>
+);
+
+const ContactItem = ({ icon, text }) => (
+  <li className="flex items-start gap-4 text-slate-500">
+    <div className="mt-1 text-primary">{icon}</div>
+    <span className="font-medium">{text}</span>
+  </li>
+);
 
 export default Footer;
