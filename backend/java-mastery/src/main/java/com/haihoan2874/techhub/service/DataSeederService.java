@@ -120,6 +120,7 @@ public class DataSeederService {
                         .stockQuantity(100)
                         .isActive(true)
                         .specs(data.get("specs") != null ? objectMapper.writeValueAsString(data.get("specs")) : "{}")
+                        .features(data.get("features") != null ? objectMapper.writeValueAsString(data.get("features")) : "[]")
                         .build();
 
                 Product savedProduct = productRepository.save(product);
@@ -232,21 +233,80 @@ public class DataSeederService {
         return brand;
     }
 
+    // Category metadata — description + icon for well-known categories
+    private static final Map<String, String> CATEGORY_DESCRIPTIONS = Map.of(
+            "Đồng hồ thể thao", "Bộ sưu tập đồng hồ thông minh thể thao chính hãng từ Amazfit, Garmin, Samsung — GPS chính xác, theo dõi sức khỏe 24/7.",
+            "Phụ kiện đồng hồ", "Dây đeo, đế sạc, nhẫn thông minh và phụ kiện chính hãng cho smartwatch — chất lượng cao, giá tốt.",
+            "Vòng theo dõi sức khỏe", "Vòng đeo tay thông minh theo dõi bước chân, nhịp tim, SpO2 và giấc ngủ — nhỏ gọn, pin trâu, giá rẻ."
+    );
+
+    private static final Map<String, String> CATEGORY_ICONS = Map.of(
+            "Đồng hồ thể thao", "Watch",
+            "Phụ kiện đồng hồ", "Cable",
+            "Vòng theo dõi sức khỏe", "Activity"
+    );
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Category getOrCreateCategory(String name) {
         if (name == null || name.isBlank()) name = "Khác";
         String cleanName = name.trim();
-        if (categoryCache.containsKey(cleanName)) return categoryCache.get(cleanName);
 
-        Category category = categoryRepository.findByName(cleanName).orElseGet(() -> {
-            String slug = cleanName.toLowerCase().replace(" ", "-").replaceAll("[^a-z0-9-]", "");
-            if (categoryRepository.existsBySlug(slug))
-                slug = slug + "-" + UUID.randomUUID().toString().substring(0, 5);
-            return categoryRepository.saveAndFlush(Category.builder()
-                    .name(cleanName).slug(slug).isActive(true).build());
-        });
+        // Check cache first, but still run repair logic
+        Category category;
+        if (categoryCache.containsKey(cleanName)) {
+            category = categoryCache.get(cleanName);
+        } else {
+            category = categoryRepository.findByName(cleanName).orElseGet(() -> {
+                String slug = buildVietnameseSlug(cleanName);
+                if (categoryRepository.existsBySlug(slug))
+                    slug = slug + "-" + UUID.randomUUID().toString().substring(0, 5);
+                return categoryRepository.saveAndFlush(Category.builder()
+                        .name(cleanName)
+                        .slug(slug)
+                        .description(CATEGORY_DESCRIPTIONS.getOrDefault(cleanName, "Khám phá bộ sưu tập " + cleanName + " tại S-Life."))
+                        .icon(CATEGORY_ICONS.getOrDefault(cleanName, "Tag"))
+                        .isActive(true)
+                        .build());
+            });
+        }
+
+        // Repair existing category if description/icon/slug is missing or broken
+        boolean updated = false;
+        if (category.getDescription() == null || category.getDescription().isBlank()) {
+            category.setDescription(CATEGORY_DESCRIPTIONS.getOrDefault(cleanName, "Khám phá bộ sưu tập " + cleanName + " tại S-Life."));
+            updated = true;
+        }
+        if (category.getIcon() == null || category.getIcon().isBlank()) {
+            category.setIcon(CATEGORY_ICONS.getOrDefault(cleanName, "Tag"));
+            updated = true;
+        }
+        String expectedSlug = buildVietnameseSlug(cleanName);
+        if (!expectedSlug.equals(category.getSlug()) && !categoryRepository.existsBySlug(expectedSlug)) {
+            category.setSlug(expectedSlug);
+            updated = true;
+        }
+        if (updated) {
+            category = categoryRepository.saveAndFlush(category);
+            log.info("🔧 Đã sửa category: {} → slug={}, desc=✓, icon={}", cleanName, category.getSlug(), category.getIcon());
+        }
+
         categoryCache.put(cleanName, category);
         return category;
+    }
+
+    private String buildVietnameseSlug(String name) {
+        return name.toLowerCase()
+                .replaceAll("[àáảãạăắặẳẵặâấầẩẫậ]", "a")
+                .replaceAll("[èéẻẽẹêếềểễệ]", "e")
+                .replaceAll("[ìíỉĩị]", "i")
+                .replaceAll("[òóỏõọôốồổỗộơớờởỡợ]", "o")
+                .replaceAll("[ùúủũụưứừửữự]", "u")
+                .replaceAll("[ỳýỷỹỵ]", "y")
+                .replaceAll("[đ]", "d")
+                .replaceAll("[^a-z0-9\\s-]", "")
+                .replaceAll("\\s+", "-")
+                .replaceAll("-+", "-")
+                .replaceAll("^-|-$", "");
     }
 
     /**

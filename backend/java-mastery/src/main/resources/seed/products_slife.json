@@ -1,2722 +1,2355 @@
 [
-    {
-        "id": "SL-2001",
-        "name": "Xiaomi Mi Band 8 45mm Đen",
-        "brand": "Xiaomi",
-        "price": 829000,
-        "originalPrice": 932000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2001/400/400",
-        "rating": 4.9,
-        "reviewsCount": 33,
-        "description": "Sản phẩm Xiaomi Mi Band 8 45mm Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "10 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2002",
-        "name": "OPPO Watch X Nam Đen",
-        "brand": "OPPO",
-        "price": 10064000,
-        "originalPrice": 13229000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2002/400/400",
-        "rating": 4.6,
-        "reviewsCount": 36,
-        "description": "Sản phẩm OPPO Watch X Nam Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "13 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2003",
-        "name": "COROS Pace 3 45mm Bạc",
-        "brand": "Coros",
-        "price": 7300000,
-        "originalPrice": 9655000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2003/400/400",
-        "rating": 4.9,
-        "reviewsCount": 37,
-        "description": "Sản phẩm COROS Pace 3 45mm Bạc mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "14 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2004",
-        "name": "Xiaomi Mi Band 8 Nam Xanh",
-        "brand": "Xiaomi",
-        "price": 926000,
-        "originalPrice": 1151000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2004/400/400",
-        "rating": 4.5,
-        "reviewsCount": 48,
-        "description": "Sản phẩm Xiaomi Mi Band 8 Nam Xanh mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "7 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2005",
-        "name": "OPPO Watch X 40mm Đen",
-        "brand": "OPPO",
-        "price": 9887000,
-        "originalPrice": 11426000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2005/400/400",
-        "rating": 4.6,
-        "reviewsCount": 32,
-        "description": "Sản phẩm OPPO Watch X 40mm Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "7 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2006",
-        "name": "Huawei Watch GT 4 Nhôm Trắng",
-        "brand": "Huawei",
-        "price": 5353000,
-        "originalPrice": 6973000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2006/400/400",
-        "rating": 4.5,
-        "reviewsCount": 15,
-        "description": "Sản phẩm Huawei Watch GT 4 Nhôm Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "10 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2007",
-        "name": "OPPO Watch X 45mm Đen",
-        "brand": "OPPO",
-        "price": 8702000,
-        "originalPrice": 10344000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2007/400/400",
-        "rating": 4.7,
-        "reviewsCount": 31,
-        "description": "Sản phẩm OPPO Watch X 45mm Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "14 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2008",
-        "name": "Xiaomi Watch S3 Nhôm Trắng",
-        "brand": "Xiaomi",
-        "price": 3466000,
-        "originalPrice": 4556000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2008/400/400",
-        "rating": 4.5,
-        "reviewsCount": 24,
-        "description": "Sản phẩm Xiaomi Watch S3 Nhôm Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "12 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2009",
-        "name": "Apple Watch SE 2023 44mm Trắng",
-        "brand": "Apple",
-        "price": 5962000,
-        "originalPrice": 6767000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2009/400/400",
-        "rating": 4.6,
-        "reviewsCount": 19,
-        "description": "Sản phẩm Apple Watch SE 2023 44mm Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "10 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2010",
-        "name": "COROS Pace 3 40mm Trắng",
-        "brand": "Coros",
-        "price": 7198000,
-        "originalPrice": 8462000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2010/400/400",
-        "rating": 4.9,
-        "reviewsCount": 41,
-        "description": "Sản phẩm COROS Pace 3 40mm Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "13 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2011",
-        "name": "Apple Watch SE 2023 44mm Xanh",
-        "brand": "Apple",
-        "price": 7606000,
-        "originalPrice": 9349000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2011/400/400",
-        "rating": 4.6,
-        "reviewsCount": 19,
-        "description": "Sản phẩm Apple Watch SE 2023 44mm Xanh mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "9 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2012",
-        "name": "Huawei Watch GT 4 LTE Hồng",
-        "brand": "Huawei",
-        "price": 4578000,
-        "originalPrice": 6327000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2012/400/400",
-        "rating": 4.8,
-        "reviewsCount": 37,
-        "description": "Sản phẩm Huawei Watch GT 4 LTE Hồng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "9 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2013",
-        "name": "Xiaomi Watch S3 Bản Giới Hạn Bạc",
-        "brand": "Xiaomi",
-        "price": 4042000,
-        "originalPrice": 5520000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2013/400/400",
-        "rating": 4.6,
-        "reviewsCount": 41,
-        "description": "Sản phẩm Xiaomi Watch S3 Bản Giới Hạn Bạc mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "10 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2014",
-        "name": "Samsung Galaxy Watch 6 classic Nữ Đen",
-        "brand": "Samsung",
-        "price": 8334000,
-        "originalPrice": 10903000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2014/400/400",
-        "rating": 4.8,
-        "reviewsCount": 42,
-        "description": "Sản phẩm Samsung Galaxy Watch 6 classic Nữ Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "8 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2015",
-        "name": "Apple Watch Ultra 2 Ocean Band LTE Hồng",
-        "brand": "Apple",
-        "price": 23825000,
-        "originalPrice": 30170000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2015/400/400",
-        "rating": 4.9,
-        "reviewsCount": 11,
-        "description": "Sản phẩm Apple Watch Ultra 2 Ocean Band LTE Hồng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "8 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2016",
-        "name": "Samsung Galaxy Watch 6 classic 44mm Bạc",
-        "brand": "Samsung",
-        "price": 7754000,
-        "originalPrice": 10331000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2016/400/400",
-        "rating": 4.9,
-        "reviewsCount": 46,
-        "description": "Sản phẩm Samsung Galaxy Watch 6 classic 44mm Bạc mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "10 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2017",
-        "name": "Samsung Galaxy Watch 6 classic Thép Trắng",
-        "brand": "Samsung",
-        "price": 8851000,
-        "originalPrice": 12000000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2017/400/400",
-        "rating": 5.0,
-        "reviewsCount": 39,
-        "description": "Sản phẩm Samsung Galaxy Watch 6 classic Thép Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "8 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2018",
-        "name": "Apple Watch Series 9 GPS Nữ Vàng",
-        "brand": "Apple",
-        "price": 10580000,
-        "originalPrice": 13530000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2018/400/400",
-        "rating": 4.5,
-        "reviewsCount": 23,
-        "description": "Sản phẩm Apple Watch Series 9 GPS Nữ Vàng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "5 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2019",
-        "name": "Xiaomi Watch S3 Nữ Đen",
-        "brand": "Xiaomi",
-        "price": 3416000,
-        "originalPrice": 3969000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2019/400/400",
-        "rating": 4.9,
-        "reviewsCount": 35,
-        "description": "Sản phẩm Xiaomi Watch S3 Nữ Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "8 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2020",
-        "name": "Samsung Watch Active 2 LTE Đen",
-        "brand": "Samsung",
-        "price": 3963000,
-        "originalPrice": 5330000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2020/400/400",
-        "rating": 4.9,
-        "reviewsCount": 25,
-        "description": "Sản phẩm Samsung Watch Active 2 LTE Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "6 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2021",
-        "name": "Apple Watch Ultra 2 Ocean Band GPS Bạc",
-        "brand": "Apple",
-        "price": 19909000,
-        "originalPrice": 26396000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2021/400/400",
-        "rating": 4.6,
-        "reviewsCount": 18,
-        "description": "Sản phẩm Apple Watch Ultra 2 Ocean Band GPS Bạc mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "6 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2022",
-        "name": "OPPO Watch X Nữ Trắng",
-        "brand": "OPPO",
-        "price": 7856000,
-        "originalPrice": 9214000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2022/400/400",
-        "rating": 4.6,
-        "reviewsCount": 46,
-        "description": "Sản phẩm OPPO Watch X Nữ Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "8 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2023",
-        "name": "Amazfit GTR 4 Thép Trắng",
-        "brand": "Amazfit",
-        "price": 4283000,
-        "originalPrice": 5865000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2023/400/400",
-        "rating": 4.6,
-        "reviewsCount": 16,
-        "description": "Sản phẩm Amazfit GTR 4 Thép Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "9 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2024",
-        "name": "Garmin Epix Gen 2 40mm Đen",
-        "brand": "Garmin",
-        "price": 22945000,
-        "originalPrice": 29481000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2024/400/400",
-        "rating": 4.6,
-        "reviewsCount": 41,
-        "description": "Sản phẩm Garmin Epix Gen 2 40mm Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "13 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2025",
-        "name": "Samsung Galaxy Watch 6 classic GPS Đen",
-        "brand": "Samsung",
-        "price": 7715000,
-        "originalPrice": 10478000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2025/400/400",
-        "rating": 4.8,
-        "reviewsCount": 17,
-        "description": "Sản phẩm Samsung Galaxy Watch 6 classic GPS Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "13 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2026",
-        "name": "Xiaomi Watch S3 40mm Xanh",
-        "brand": "Xiaomi",
-        "price": 3710000,
-        "originalPrice": 4765000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2026/400/400",
-        "rating": 4.8,
-        "reviewsCount": 38,
-        "description": "Sản phẩm Xiaomi Watch S3 40mm Xanh mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "8 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2027",
-        "name": "COROS Pace 3 GPS Vàng",
-        "brand": "Coros",
-        "price": 6543000,
-        "originalPrice": 7255000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2027/400/400",
-        "rating": 4.9,
-        "reviewsCount": 23,
-        "description": "Sản phẩm COROS Pace 3 GPS Vàng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "8 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2028",
-        "name": "Apple Watch Series 9 GPS 44mm Vàng",
-        "brand": "Apple",
-        "price": 9820000,
-        "originalPrice": 11978000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2028/400/400",
-        "rating": 4.6,
-        "reviewsCount": 41,
-        "description": "Sản phẩm Apple Watch Series 9 GPS 44mm Vàng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "13 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2029",
-        "name": "Samsung Galaxy Watch 6 classic Titanium Trắng",
-        "brand": "Samsung",
-        "price": 7216000,
-        "originalPrice": 8566000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2029/400/400",
-        "rating": 4.6,
-        "reviewsCount": 26,
-        "description": "Sản phẩm Samsung Galaxy Watch 6 classic Titanium Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "10 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2030",
-        "name": "Garmin Fenix 7 Sapphire Solar Nữ Bạc",
-        "brand": "Garmin",
-        "price": 17323000,
-        "originalPrice": 19672000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2030/400/400",
-        "rating": 4.9,
-        "reviewsCount": 37,
-        "description": "Sản phẩm Garmin Fenix 7 Sapphire Solar Nữ Bạc mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "8 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2031",
-        "name": "Apple Watch Series 9 GPS 40mm Hồng",
-        "brand": "Apple",
-        "price": 10388000,
-        "originalPrice": 13728000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2031/400/400",
-        "rating": 4.9,
-        "reviewsCount": 23,
-        "description": "Sản phẩm Apple Watch Series 9 GPS 40mm Hồng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "5 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2032",
-        "name": "Huawei Watch GT 4 45mm Vàng",
-        "brand": "Huawei",
-        "price": 5624000,
-        "originalPrice": 7493000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2032/400/400",
-        "rating": 4.9,
-        "reviewsCount": 32,
-        "description": "Sản phẩm Huawei Watch GT 4 45mm Vàng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "13 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2033",
-        "name": "Samsung Watch Active 2 Nam Hồng",
-        "brand": "Samsung",
-        "price": 3378000,
-        "originalPrice": 4634000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2033/400/400",
-        "rating": 4.7,
-        "reviewsCount": 29,
-        "description": "Sản phẩm Samsung Watch Active 2 Nam Hồng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "7 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2034",
-        "name": "Xiaomi Mi Band 8 Titanium Đen",
-        "brand": "Xiaomi",
-        "price": 964000,
-        "originalPrice": 1064000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2034/400/400",
-        "rating": 4.7,
-        "reviewsCount": 35,
-        "description": "Sản phẩm Xiaomi Mi Band 8 Titanium Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "7 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2035",
-        "name": "OPPO Watch X Nam Hồng",
-        "brand": "OPPO",
-        "price": 7787000,
-        "originalPrice": 10143000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2035/400/400",
-        "rating": 4.8,
-        "reviewsCount": 22,
-        "description": "Sản phẩm OPPO Watch X Nam Hồng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "12 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2036",
-        "name": "Xiaomi Watch S3 40mm Xanh",
-        "brand": "Xiaomi",
-        "price": 3386000,
-        "originalPrice": 4270000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2036/400/400",
-        "rating": 4.6,
-        "reviewsCount": 22,
-        "description": "Sản phẩm Xiaomi Watch S3 40mm Xanh mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "11 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2037",
-        "name": "Xiaomi Watch S3 Titanium Trắng",
-        "brand": "Xiaomi",
-        "price": 3748000,
-        "originalPrice": 5136000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2037/400/400",
-        "rating": 4.6,
-        "reviewsCount": 40,
-        "description": "Sản phẩm Xiaomi Watch S3 Titanium Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "9 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2038",
-        "name": "OPPO Watch X 40mm Xanh",
-        "brand": "OPPO",
-        "price": 9540000,
-        "originalPrice": 12557000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2038/400/400",
-        "rating": 4.5,
-        "reviewsCount": 37,
-        "description": "Sản phẩm OPPO Watch X 40mm Xanh mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "12 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2039",
-        "name": "Garmin Epix Gen 2 Nhôm Vàng",
-        "brand": "Garmin",
-        "price": 20527000,
-        "originalPrice": 23232000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2039/400/400",
-        "rating": 4.7,
-        "reviewsCount": 43,
-        "description": "Sản phẩm Garmin Epix Gen 2 Nhôm Vàng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "5 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2040",
-        "name": "Samsung Watch Active 2 LTE Trắng",
-        "brand": "Samsung",
-        "price": 3231000,
-        "originalPrice": 4365000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2040/400/400",
-        "rating": 4.7,
-        "reviewsCount": 43,
-        "description": "Sản phẩm Samsung Watch Active 2 LTE Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "5 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2041",
-        "name": "Samsung Watch Active 2 44mm Xanh",
-        "brand": "Samsung",
-        "price": 3429000,
-        "originalPrice": 4025000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2041/400/400",
-        "rating": 5.0,
-        "reviewsCount": 14,
-        "description": "Sản phẩm Samsung Watch Active 2 44mm Xanh mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "13 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2042",
-        "name": "Xiaomi Mi Band 8 40mm Trắng",
-        "brand": "Xiaomi",
-        "price": 881000,
-        "originalPrice": 1215000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2042/400/400",
-        "rating": 4.5,
-        "reviewsCount": 34,
-        "description": "Sản phẩm Xiaomi Mi Band 8 40mm Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "5 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2043",
-        "name": "COROS Pace 3 Bản Giới Hạn Trắng",
-        "brand": "Coros",
-        "price": 5689000,
-        "originalPrice": 7583000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2043/400/400",
-        "rating": 4.6,
-        "reviewsCount": 38,
-        "description": "Sản phẩm COROS Pace 3 Bản Giới Hạn Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "8 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2044",
-        "name": "Apple Watch Series 9 GPS Nữ Bạc",
-        "brand": "Apple",
-        "price": 11981000,
-        "originalPrice": 15342000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2044/400/400",
-        "rating": 4.8,
-        "reviewsCount": 12,
-        "description": "Sản phẩm Apple Watch Series 9 GPS Nữ Bạc mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "9 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2045",
-        "name": "HUAWEI Band 9 Nữ Trắng",
-        "brand": "Huawei",
-        "price": 1160000,
-        "originalPrice": 1574000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2045/400/400",
-        "rating": 5.0,
-        "reviewsCount": 36,
-        "description": "Sản phẩm HUAWEI Band 9 Nữ Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "14 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2046",
-        "name": "Huawei Watch GT 4 Nhôm Trắng",
-        "brand": "Huawei",
-        "price": 5689000,
-        "originalPrice": 6996000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2046/400/400",
-        "rating": 4.8,
-        "reviewsCount": 20,
-        "description": "Sản phẩm Huawei Watch GT 4 Nhôm Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "6 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2047",
-        "name": "Apple Watch Ultra 2 Ocean Band Bản Giới Hạn Bạc",
-        "brand": "Apple",
-        "price": 23903000,
-        "originalPrice": 30800000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2047/400/400",
-        "rating": 4.9,
-        "reviewsCount": 17,
-        "description": "Sản phẩm Apple Watch Ultra 2 Ocean Band Bản Giới Hạn Bạc mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "13 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2048",
-        "name": "Garmin Fenix 7 Sapphire Solar Nhôm Đen",
-        "brand": "Garmin",
-        "price": 20182000,
-        "originalPrice": 28069000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2048/400/400",
-        "rating": 4.8,
-        "reviewsCount": 39,
-        "description": "Sản phẩm Garmin Fenix 7 Sapphire Solar Nhôm Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "8 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2049",
-        "name": "Samsung Watch Active 2 44mm Bạc",
-        "brand": "Samsung",
-        "price": 3173000,
-        "originalPrice": 3537000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2049/400/400",
-        "rating": 4.7,
-        "reviewsCount": 48,
-        "description": "Sản phẩm Samsung Watch Active 2 44mm Bạc mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "7 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2050",
-        "name": "COROS Pace 3 Thép Vàng",
-        "brand": "Coros",
-        "price": 5777000,
-        "originalPrice": 7823000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2050/400/400",
-        "rating": 4.5,
-        "reviewsCount": 16,
-        "description": "Sản phẩm COROS Pace 3 Thép Vàng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "6 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2051",
-        "name": "Garmin Fenix 7 Sapphire Solar 45mm Hồng",
-        "brand": "Garmin",
-        "price": 21550000,
-        "originalPrice": 23756000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2051/400/400",
-        "rating": 4.6,
-        "reviewsCount": 10,
-        "description": "Sản phẩm Garmin Fenix 7 Sapphire Solar 45mm Hồng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "5 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2052",
-        "name": "Amazfit GTR 4 Bản Giới Hạn Trắng",
-        "brand": "Amazfit",
-        "price": 4931000,
-        "originalPrice": 5734000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2052/400/400",
-        "rating": 4.9,
-        "reviewsCount": 20,
-        "description": "Sản phẩm Amazfit GTR 4 Bản Giới Hạn Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "10 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2053",
-        "name": "Apple Watch SE 2023 Nhôm Trắng",
-        "brand": "Apple",
-        "price": 7678000,
-        "originalPrice": 9965000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2053/400/400",
-        "rating": 4.9,
-        "reviewsCount": 21,
-        "description": "Sản phẩm Apple Watch SE 2023 Nhôm Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "7 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2054",
-        "name": "Huawei Watch GT 4 LTE Xanh",
-        "brand": "Huawei",
-        "price": 4521000,
-        "originalPrice": 5361000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2054/400/400",
-        "rating": 4.8,
-        "reviewsCount": 15,
-        "description": "Sản phẩm Huawei Watch GT 4 LTE Xanh mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "14 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2055",
-        "name": "COROS Pace 3 Thép Hồng",
-        "brand": "Coros",
-        "price": 6654000,
-        "originalPrice": 8674000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2055/400/400",
-        "rating": 4.9,
-        "reviewsCount": 40,
-        "description": "Sản phẩm COROS Pace 3 Thép Hồng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "8 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2056",
-        "name": "Apple Watch Ultra 2 Ocean Band Thép Bạc",
-        "brand": "Apple",
-        "price": 25783000,
-        "originalPrice": 30122000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2056/400/400",
-        "rating": 4.7,
-        "reviewsCount": 31,
-        "description": "Sản phẩm Apple Watch Ultra 2 Ocean Band Thép Bạc mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "11 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2057",
-        "name": "Amazfit GTR 4 45mm Vàng",
-        "brand": "Amazfit",
-        "price": 5454000,
-        "originalPrice": 7445000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2057/400/400",
-        "rating": 4.6,
-        "reviewsCount": 10,
-        "description": "Sản phẩm Amazfit GTR 4 45mm Vàng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "10 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2058",
-        "name": "Samsung Watch Active 2 40mm Vàng",
-        "brand": "Samsung",
-        "price": 4061000,
-        "originalPrice": 4963000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2058/400/400",
-        "rating": 4.8,
-        "reviewsCount": 29,
-        "description": "Sản phẩm Samsung Watch Active 2 40mm Vàng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "7 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2059",
-        "name": "Amazfit GTR 4 Titanium Trắng",
-        "brand": "Amazfit",
-        "price": 4454000,
-        "originalPrice": 5909000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2059/400/400",
-        "rating": 4.5,
-        "reviewsCount": 26,
-        "description": "Sản phẩm Amazfit GTR 4 Titanium Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "12 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2060",
-        "name": "OPPO Watch X Thép Hồng",
-        "brand": "OPPO",
-        "price": 9031000,
-        "originalPrice": 11503000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2060/400/400",
-        "rating": 4.8,
-        "reviewsCount": 35,
-        "description": "Sản phẩm OPPO Watch X Thép Hồng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "8 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2061",
-        "name": "HUAWEI Band 9 Thép Hồng",
-        "brand": "Huawei",
-        "price": 1069000,
-        "originalPrice": 1320000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2061/400/400",
-        "rating": 4.6,
-        "reviewsCount": 17,
-        "description": "Sản phẩm HUAWEI Band 9 Thép Hồng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "9 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2062",
-        "name": "HUAWEI Band 9 LTE Đen",
-        "brand": "Huawei",
-        "price": 924000,
-        "originalPrice": 1132000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2062/400/400",
-        "rating": 5.0,
-        "reviewsCount": 43,
-        "description": "Sản phẩm HUAWEI Band 9 LTE Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "7 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2063",
-        "name": "HUAWEI Band 9 Thép Vàng",
-        "brand": "Huawei",
-        "price": 979000,
-        "originalPrice": 1326000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2063/400/400",
-        "rating": 4.7,
-        "reviewsCount": 40,
-        "description": "Sản phẩm HUAWEI Band 9 Thép Vàng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "12 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2064",
-        "name": "Apple Watch Ultra 2 Ocean Band Nam Vàng",
-        "brand": "Apple",
-        "price": 20688000,
-        "originalPrice": 24502000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2064/400/400",
-        "rating": 4.7,
-        "reviewsCount": 33,
-        "description": "Sản phẩm Apple Watch Ultra 2 Ocean Band Nam Vàng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "5 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2065",
-        "name": "Garmin Epix Gen 2 45mm Bạc",
-        "brand": "Garmin",
-        "price": 24048000,
-        "originalPrice": 33521000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2065/400/400",
-        "rating": 4.8,
-        "reviewsCount": 10,
-        "description": "Sản phẩm Garmin Epix Gen 2 45mm Bạc mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "12 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2066",
-        "name": "COROS Pace 3 Nữ Xanh",
-        "brand": "Coros",
-        "price": 7186000,
-        "originalPrice": 8028000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2066/400/400",
-        "rating": 4.9,
-        "reviewsCount": 50,
-        "description": "Sản phẩm COROS Pace 3 Nữ Xanh mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "7 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2067",
-        "name": "Huawei Watch GT 4 Nhôm Hồng",
-        "brand": "Huawei",
-        "price": 4570000,
-        "originalPrice": 5132000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2067/400/400",
-        "rating": 4.9,
-        "reviewsCount": 50,
-        "description": "Sản phẩm Huawei Watch GT 4 Nhôm Hồng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "13 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2068",
-        "name": "Garmin Epix Gen 2 LTE Bạc",
-        "brand": "Garmin",
-        "price": 20439000,
-        "originalPrice": 25632000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2068/400/400",
-        "rating": 4.8,
-        "reviewsCount": 46,
-        "description": "Sản phẩm Garmin Epix Gen 2 LTE Bạc mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "6 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2069",
-        "name": "Samsung Watch Active 2 Nam Đen",
-        "brand": "Samsung",
-        "price": 3471000,
-        "originalPrice": 4158000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2069/400/400",
-        "rating": 4.8,
-        "reviewsCount": 43,
-        "description": "Sản phẩm Samsung Watch Active 2 Nam Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "13 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2070",
-        "name": "Xiaomi Watch S3 45mm Trắng",
-        "brand": "Xiaomi",
-        "price": 4148000,
-        "originalPrice": 5086000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2070/400/400",
-        "rating": 4.7,
-        "reviewsCount": 18,
-        "description": "Sản phẩm Xiaomi Watch S3 45mm Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "14 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2071",
-        "name": "Apple Watch Ultra 2 Ocean Band 40mm Đen",
-        "brand": "Apple",
-        "price": 21423000,
-        "originalPrice": 29022000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2071/400/400",
-        "rating": 4.5,
-        "reviewsCount": 34,
-        "description": "Sản phẩm Apple Watch Ultra 2 Ocean Band 40mm Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "13 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2072",
-        "name": "HUAWEI Band 9 Thép Xanh",
-        "brand": "Huawei",
-        "price": 976000,
-        "originalPrice": 1125000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2072/400/400",
-        "rating": 4.5,
-        "reviewsCount": 34,
-        "description": "Sản phẩm HUAWEI Band 9 Thép Xanh mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "14 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2073",
-        "name": "Amazfit GTR 4 Nữ Vàng",
-        "brand": "Amazfit",
-        "price": 4582000,
-        "originalPrice": 5766000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2073/400/400",
-        "rating": 4.6,
-        "reviewsCount": 12,
-        "description": "Sản phẩm Amazfit GTR 4 Nữ Vàng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "12 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2074",
-        "name": "Samsung Galaxy Watch 6 classic Nam Bạc",
-        "brand": "Samsung",
-        "price": 8356000,
-        "originalPrice": 9848000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2074/400/400",
-        "rating": 4.9,
-        "reviewsCount": 43,
-        "description": "Sản phẩm Samsung Galaxy Watch 6 classic Nam Bạc mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "9 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2075",
-        "name": "Apple Watch Series 9 GPS Nam Xanh",
-        "brand": "Apple",
-        "price": 11189000,
-        "originalPrice": 14952000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2075/400/400",
-        "rating": 4.6,
-        "reviewsCount": 35,
-        "description": "Sản phẩm Apple Watch Series 9 GPS Nam Xanh mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "6 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2076",
-        "name": "COROS Pace 3 Bản Giới Hạn Xanh",
-        "brand": "Coros",
-        "price": 5607000,
-        "originalPrice": 6710000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2076/400/400",
-        "rating": 4.9,
-        "reviewsCount": 10,
-        "description": "Sản phẩm COROS Pace 3 Bản Giới Hạn Xanh mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "9 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2077",
-        "name": "Xiaomi Watch S3 GPS Vàng",
-        "brand": "Xiaomi",
-        "price": 4030000,
-        "originalPrice": 5547000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2077/400/400",
-        "rating": 4.9,
-        "reviewsCount": 37,
-        "description": "Sản phẩm Xiaomi Watch S3 GPS Vàng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "12 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2078",
-        "name": "Samsung Galaxy Watch 6 classic LTE Đen",
-        "brand": "Samsung",
-        "price": 7705000,
-        "originalPrice": 10736000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2078/400/400",
-        "rating": 4.6,
-        "reviewsCount": 20,
-        "description": "Sản phẩm Samsung Galaxy Watch 6 classic LTE Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "10 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2079",
-        "name": "Samsung Galaxy Watch 6 classic LTE Đen",
-        "brand": "Samsung",
-        "price": 9424000,
-        "originalPrice": 11489000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2079/400/400",
-        "rating": 4.6,
-        "reviewsCount": 27,
-        "description": "Sản phẩm Samsung Galaxy Watch 6 classic LTE Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "9 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2080",
-        "name": "Garmin Fenix 7 Sapphire Solar Nữ Hồng",
-        "brand": "Garmin",
-        "price": 22099000,
-        "originalPrice": 25796000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2080/400/400",
-        "rating": 4.9,
-        "reviewsCount": 21,
-        "description": "Sản phẩm Garmin Fenix 7 Sapphire Solar Nữ Hồng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "5 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2081",
-        "name": "OPPO Watch X 40mm Đen",
-        "brand": "OPPO",
-        "price": 9118000,
-        "originalPrice": 10119000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2081/400/400",
-        "rating": 4.6,
-        "reviewsCount": 33,
-        "description": "Sản phẩm OPPO Watch X 40mm Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "12 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2082",
-        "name": "Samsung Watch Active 2 LTE Trắng",
-        "brand": "Samsung",
-        "price": 3168000,
-        "originalPrice": 3860000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2082/400/400",
-        "rating": 4.8,
-        "reviewsCount": 41,
-        "description": "Sản phẩm Samsung Watch Active 2 LTE Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "6 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2083",
-        "name": "Xiaomi Mi Band 8 Bản Giới Hạn Xanh",
-        "brand": "Xiaomi",
-        "price": 993000,
-        "originalPrice": 1299000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2083/400/400",
-        "rating": 4.6,
-        "reviewsCount": 26,
-        "description": "Sản phẩm Xiaomi Mi Band 8 Bản Giới Hạn Xanh mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "9 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2084",
-        "name": "Huawei Watch GT 4 Titanium Xanh",
-        "brand": "Huawei",
-        "price": 5462000,
-        "originalPrice": 6330000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2084/400/400",
-        "rating": 4.7,
-        "reviewsCount": 46,
-        "description": "Sản phẩm Huawei Watch GT 4 Titanium Xanh mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "14 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2085",
-        "name": "Huawei Watch GT 4 LTE Bạc",
-        "brand": "Huawei",
-        "price": 5889000,
-        "originalPrice": 6746000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2085/400/400",
-        "rating": 4.7,
-        "reviewsCount": 33,
-        "description": "Sản phẩm Huawei Watch GT 4 LTE Bạc mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "7 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2086",
-        "name": "Apple Watch SE 2023 45mm Hồng",
-        "brand": "Apple",
-        "price": 7461000,
-        "originalPrice": 10250000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2086/400/400",
-        "rating": 4.9,
-        "reviewsCount": 30,
-        "description": "Sản phẩm Apple Watch SE 2023 45mm Hồng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "8 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2087",
-        "name": "Xiaomi Watch S3 GPS Bạc",
-        "brand": "Xiaomi",
-        "price": 3883000,
-        "originalPrice": 4455000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2087/400/400",
-        "rating": 4.6,
-        "reviewsCount": 46,
-        "description": "Sản phẩm Xiaomi Watch S3 GPS Bạc mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "5 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2088",
-        "name": "Garmin Fenix 7 Sapphire Solar Titanium Bạc",
-        "brand": "Garmin",
-        "price": 17319000,
-        "originalPrice": 19624000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2088/400/400",
-        "rating": 4.6,
-        "reviewsCount": 42,
-        "description": "Sản phẩm Garmin Fenix 7 Sapphire Solar Titanium Bạc mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "14 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2089",
-        "name": "Apple Watch SE 2023 Nhôm Vàng",
-        "brand": "Apple",
-        "price": 6607000,
-        "originalPrice": 7859000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2089/400/400",
-        "rating": 4.7,
-        "reviewsCount": 39,
-        "description": "Sản phẩm Apple Watch SE 2023 Nhôm Vàng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "6 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2090",
-        "name": "Garmin Epix Gen 2 Titanium Đen",
-        "brand": "Garmin",
-        "price": 20165000,
-        "originalPrice": 23901000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2090/400/400",
-        "rating": 4.7,
-        "reviewsCount": 24,
-        "description": "Sản phẩm Garmin Epix Gen 2 Titanium Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "10 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2091",
-        "name": "Amazfit GTR 4 Nhôm Đen",
-        "brand": "Amazfit",
-        "price": 4620000,
-        "originalPrice": 5518000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2091/400/400",
-        "rating": 4.9,
-        "reviewsCount": 45,
-        "description": "Sản phẩm Amazfit GTR 4 Nhôm Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "9 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2092",
-        "name": "Amazfit GTR 4 Titanium Trắng",
-        "brand": "Amazfit",
-        "price": 4383000,
-        "originalPrice": 5329000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2092/400/400",
-        "rating": 5.0,
-        "reviewsCount": 17,
-        "description": "Sản phẩm Amazfit GTR 4 Titanium Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "8 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2093",
-        "name": "Apple Watch Ultra 2 Ocean Band 45mm Vàng",
-        "brand": "Apple",
-        "price": 22065000,
-        "originalPrice": 25170000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2093/400/400",
-        "rating": 4.9,
-        "reviewsCount": 29,
-        "description": "Sản phẩm Apple Watch Ultra 2 Ocean Band 45mm Vàng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "12 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2094",
-        "name": "Samsung Watch Active 2 44mm Xanh",
-        "brand": "Samsung",
-        "price": 3177000,
-        "originalPrice": 3993000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2094/400/400",
-        "rating": 4.7,
-        "reviewsCount": 18,
-        "description": "Sản phẩm Samsung Watch Active 2 44mm Xanh mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "5 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2095",
-        "name": "Apple Watch SE 2023 Bản Giới Hạn Trắng",
-        "brand": "Apple",
-        "price": 7680000,
-        "originalPrice": 9595000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2095/400/400",
-        "rating": 4.9,
-        "reviewsCount": 33,
-        "description": "Sản phẩm Apple Watch SE 2023 Bản Giới Hạn Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "7 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2096",
-        "name": "Samsung Watch Active 2 GPS Hồng",
-        "brand": "Samsung",
-        "price": 3330000,
-        "originalPrice": 3861000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2096/400/400",
-        "rating": 4.8,
-        "reviewsCount": 12,
-        "description": "Sản phẩm Samsung Watch Active 2 GPS Hồng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "8 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2097",
-        "name": "Samsung Watch Active 2 LTE Xanh",
-        "brand": "Samsung",
-        "price": 3214000,
-        "originalPrice": 4157000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2097/400/400",
-        "rating": 4.8,
-        "reviewsCount": 17,
-        "description": "Sản phẩm Samsung Watch Active 2 LTE Xanh mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "10 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2098",
-        "name": "OPPO Watch X 45mm Trắng",
-        "brand": "OPPO",
-        "price": 9543000,
-        "originalPrice": 11852000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2098/400/400",
-        "rating": 4.9,
-        "reviewsCount": 27,
-        "description": "Sản phẩm OPPO Watch X 45mm Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "9 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2099",
-        "name": "HUAWEI Band 9 45mm Vàng",
-        "brand": "Huawei",
-        "price": 1168000,
-        "originalPrice": 1551000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2099/400/400",
-        "rating": 4.7,
-        "reviewsCount": 25,
-        "description": "Sản phẩm HUAWEI Band 9 45mm Vàng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "6 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2100",
-        "name": "COROS Pace 3 Nhôm Đen",
-        "brand": "Coros",
-        "price": 6186000,
-        "originalPrice": 8447000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2100/400/400",
-        "rating": 4.6,
-        "reviewsCount": 21,
-        "description": "Sản phẩm COROS Pace 3 Nhôm Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "13 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2101",
-        "name": "Amazfit GTR 4 Titanium Trắng",
-        "brand": "Amazfit",
-        "price": 5025000,
-        "originalPrice": 6411000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2101/400/400",
-        "rating": 4.6,
-        "reviewsCount": 13,
-        "description": "Sản phẩm Amazfit GTR 4 Titanium Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "7 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2102",
-        "name": "Huawei Watch GT 4 LTE Hồng",
-        "brand": "Huawei",
-        "price": 5544000,
-        "originalPrice": 7446000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2102/400/400",
-        "rating": 4.7,
-        "reviewsCount": 48,
-        "description": "Sản phẩm Huawei Watch GT 4 LTE Hồng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "9 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2103",
-        "name": "Garmin Fenix 7 Sapphire Solar 45mm Hồng",
-        "brand": "Garmin",
-        "price": 22567000,
-        "originalPrice": 24885000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2103/400/400",
-        "rating": 5.0,
-        "reviewsCount": 30,
-        "description": "Sản phẩm Garmin Fenix 7 Sapphire Solar 45mm Hồng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "8 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2104",
-        "name": "HUAWEI Band 9 GPS Vàng",
-        "brand": "Huawei",
-        "price": 1081000,
-        "originalPrice": 1486000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2104/400/400",
-        "rating": 4.8,
-        "reviewsCount": 29,
-        "description": "Sản phẩm HUAWEI Band 9 GPS Vàng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "10 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2105",
-        "name": "Xiaomi Watch S3 GPS Hồng",
-        "brand": "Xiaomi",
-        "price": 3489000,
-        "originalPrice": 4487000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2105/400/400",
-        "rating": 4.7,
-        "reviewsCount": 20,
-        "description": "Sản phẩm Xiaomi Watch S3 GPS Hồng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "13 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2106",
-        "name": "OPPO Watch X Nữ Vàng",
-        "brand": "OPPO",
-        "price": 9572000,
-        "originalPrice": 13249000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2106/400/400",
-        "rating": 4.7,
-        "reviewsCount": 35,
-        "description": "Sản phẩm OPPO Watch X Nữ Vàng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "9 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2107",
-        "name": "Xiaomi Watch S3 GPS Hồng",
-        "brand": "Xiaomi",
-        "price": 4021000,
-        "originalPrice": 5286000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2107/400/400",
-        "rating": 4.6,
-        "reviewsCount": 42,
-        "description": "Sản phẩm Xiaomi Watch S3 GPS Hồng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "11 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2108",
-        "name": "Samsung Galaxy Watch 6 classic Titanium Trắng",
-        "brand": "Samsung",
-        "price": 7752000,
-        "originalPrice": 10013000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2108/400/400",
-        "rating": 4.8,
-        "reviewsCount": 28,
-        "description": "Sản phẩm Samsung Galaxy Watch 6 classic Titanium Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "11 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2109",
-        "name": "HUAWEI Band 9 44mm Hồng",
-        "brand": "Huawei",
-        "price": 971000,
-        "originalPrice": 1146000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2109/400/400",
-        "rating": 4.5,
-        "reviewsCount": 32,
-        "description": "Sản phẩm HUAWEI Band 9 44mm Hồng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "8 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2110",
-        "name": "Apple Watch Ultra 2 Ocean Band 44mm Trắng",
-        "brand": "Apple",
-        "price": 22336000,
-        "originalPrice": 25991000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2110/400/400",
-        "rating": 4.7,
-        "reviewsCount": 34,
-        "description": "Sản phẩm Apple Watch Ultra 2 Ocean Band 44mm Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "7 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2111",
-        "name": "HUAWEI Band 9 Nữ Hồng",
-        "brand": "Huawei",
-        "price": 951000,
-        "originalPrice": 1246000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2111/400/400",
-        "rating": 4.5,
-        "reviewsCount": 35,
-        "description": "Sản phẩm HUAWEI Band 9 Nữ Hồng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "12 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2112",
-        "name": "Garmin Epix Gen 2 Nữ Bạc",
-        "brand": "Garmin",
-        "price": 21213000,
-        "originalPrice": 23349000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2112/400/400",
-        "rating": 4.7,
-        "reviewsCount": 44,
-        "description": "Sản phẩm Garmin Epix Gen 2 Nữ Bạc mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "8 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2113",
-        "name": "Huawei Watch GT 4 45mm Xanh",
-        "brand": "Huawei",
-        "price": 5795000,
-        "originalPrice": 7869000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2113/400/400",
-        "rating": 4.8,
-        "reviewsCount": 45,
-        "description": "Sản phẩm Huawei Watch GT 4 45mm Xanh mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "12 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2114",
-        "name": "Samsung Galaxy Watch 6 classic Titanium Xanh",
-        "brand": "Samsung",
-        "price": 9076000,
-        "originalPrice": 11597000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2114/400/400",
-        "rating": 4.9,
-        "reviewsCount": 41,
-        "description": "Sản phẩm Samsung Galaxy Watch 6 classic Titanium Xanh mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "9 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2115",
-        "name": "Apple Watch Series 9 GPS 40mm Hồng",
-        "brand": "Apple",
-        "price": 9884000,
-        "originalPrice": 12320000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2115/400/400",
-        "rating": 4.7,
-        "reviewsCount": 12,
-        "description": "Sản phẩm Apple Watch Series 9 GPS 40mm Hồng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "7 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2116",
-        "name": "Amazfit GTR 4 Thép Vàng",
-        "brand": "Amazfit",
-        "price": 4671000,
-        "originalPrice": 5880000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2116/400/400",
-        "rating": 4.7,
-        "reviewsCount": 19,
-        "description": "Sản phẩm Amazfit GTR 4 Thép Vàng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "14 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2117",
-        "name": "OPPO Watch X 40mm Đen",
-        "brand": "OPPO",
-        "price": 8879000,
-        "originalPrice": 11242000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2117/400/400",
-        "rating": 4.9,
-        "reviewsCount": 27,
-        "description": "Sản phẩm OPPO Watch X 40mm Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "8 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2118",
-        "name": "Apple Watch Series 9 GPS 44mm Trắng",
-        "brand": "Apple",
-        "price": 12313000,
-        "originalPrice": 16815000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2118/400/400",
-        "rating": 4.8,
-        "reviewsCount": 34,
-        "description": "Sản phẩm Apple Watch Series 9 GPS 44mm Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "13 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2119",
-        "name": "Xiaomi Mi Band 8 45mm Hồng",
-        "brand": "Xiaomi",
-        "price": 1020000,
-        "originalPrice": 1333000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2119/400/400",
-        "rating": 4.9,
-        "reviewsCount": 14,
-        "description": "Sản phẩm Xiaomi Mi Band 8 45mm Hồng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "14 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2120",
-        "name": "HUAWEI Band 9 44mm Vàng",
-        "brand": "Huawei",
-        "price": 1152000,
-        "originalPrice": 1503000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2120/400/400",
-        "rating": 4.6,
-        "reviewsCount": 18,
-        "description": "Sản phẩm HUAWEI Band 9 44mm Vàng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "5 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2121",
-        "name": "Apple Watch Series 9 GPS Titanium Trắng",
-        "brand": "Apple",
-        "price": 11316000,
-        "originalPrice": 14425000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2121/400/400",
-        "rating": 4.9,
-        "reviewsCount": 36,
-        "description": "Sản phẩm Apple Watch Series 9 GPS Titanium Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "10 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2122",
-        "name": "HUAWEI Band 9 44mm Trắng",
-        "brand": "Huawei",
-        "price": 1035000,
-        "originalPrice": 1297000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2122/400/400",
-        "rating": 4.7,
-        "reviewsCount": 30,
-        "description": "Sản phẩm HUAWEI Band 9 44mm Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "9 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2123",
-        "name": "Samsung Galaxy Watch 6 classic Nhôm Đen",
-        "brand": "Samsung",
-        "price": 7924000,
-        "originalPrice": 9132000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2123/400/400",
-        "rating": 4.6,
-        "reviewsCount": 16,
-        "description": "Sản phẩm Samsung Galaxy Watch 6 classic Nhôm Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "6 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2124",
-        "name": "Samsung Watch Active 2 LTE Đen",
-        "brand": "Samsung",
-        "price": 3309000,
-        "originalPrice": 4052000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2124/400/400",
-        "rating": 4.7,
-        "reviewsCount": 13,
-        "description": "Sản phẩm Samsung Watch Active 2 LTE Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "6 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2125",
-        "name": "Samsung Galaxy Watch 6 classic 40mm Trắng",
-        "brand": "Samsung",
-        "price": 7556000,
-        "originalPrice": 9252000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2125/400/400",
-        "rating": 4.6,
-        "reviewsCount": 34,
-        "description": "Sản phẩm Samsung Galaxy Watch 6 classic 40mm Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "10 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2126",
-        "name": "Apple Watch SE 2023 40mm Trắng",
-        "brand": "Apple",
-        "price": 6873000,
-        "originalPrice": 9501000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2126/400/400",
-        "rating": 4.7,
-        "reviewsCount": 24,
-        "description": "Sản phẩm Apple Watch SE 2023 40mm Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "6 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2127",
-        "name": "Amazfit GTR 4 Thép Xanh",
-        "brand": "Amazfit",
-        "price": 5330000,
-        "originalPrice": 6891000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2127/400/400",
-        "rating": 4.6,
-        "reviewsCount": 35,
-        "description": "Sản phẩm Amazfit GTR 4 Thép Xanh mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "7 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2128",
-        "name": "Samsung Galaxy Watch 6 classic 40mm Xanh",
-        "brand": "Samsung",
-        "price": 8944000,
-        "originalPrice": 12374000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2128/400/400",
-        "rating": 4.7,
-        "reviewsCount": 24,
-        "description": "Sản phẩm Samsung Galaxy Watch 6 classic 40mm Xanh mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "11 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2129",
-        "name": "HUAWEI Band 9 LTE Bạc",
-        "brand": "Huawei",
-        "price": 1088000,
-        "originalPrice": 1205000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2129/400/400",
-        "rating": 4.8,
-        "reviewsCount": 27,
-        "description": "Sản phẩm HUAWEI Band 9 LTE Bạc mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "7 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2130",
-        "name": "Samsung Galaxy Watch 6 classic Titanium Trắng",
-        "brand": "Samsung",
-        "price": 7229000,
-        "originalPrice": 8347000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2130/400/400",
-        "rating": 4.8,
-        "reviewsCount": 32,
-        "description": "Sản phẩm Samsung Galaxy Watch 6 classic Titanium Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "10 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2131",
-        "name": "HUAWEI Band 9 44mm Vàng",
-        "brand": "Huawei",
-        "price": 1159000,
-        "originalPrice": 1362000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2131/400/400",
-        "rating": 4.6,
-        "reviewsCount": 15,
-        "description": "Sản phẩm HUAWEI Band 9 44mm Vàng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "6 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2132",
-        "name": "Garmin Epix Gen 2 GPS Đen",
-        "brand": "Garmin",
-        "price": 21868000,
-        "originalPrice": 24308000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2132/400/400",
-        "rating": 4.7,
-        "reviewsCount": 43,
-        "description": "Sản phẩm Garmin Epix Gen 2 GPS Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "9 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2133",
-        "name": "Amazfit GTR 4 GPS Hồng",
-        "brand": "Amazfit",
-        "price": 4253000,
-        "originalPrice": 4739000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2133/400/400",
-        "rating": 4.7,
-        "reviewsCount": 13,
-        "description": "Sản phẩm Amazfit GTR 4 GPS Hồng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "13 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2134",
-        "name": "Apple Watch SE 2023 Titanium Đen",
-        "brand": "Apple",
-        "price": 7681000,
-        "originalPrice": 10652000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2134/400/400",
-        "rating": 4.9,
-        "reviewsCount": 33,
-        "description": "Sản phẩm Apple Watch SE 2023 Titanium Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "12 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2135",
-        "name": "Garmin Epix Gen 2 Nam Trắng",
-        "brand": "Garmin",
-        "price": 25522000,
-        "originalPrice": 32793000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2135/400/400",
-        "rating": 4.5,
-        "reviewsCount": 22,
-        "description": "Sản phẩm Garmin Epix Gen 2 Nam Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "10 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2136",
-        "name": "Samsung Watch Active 2 Nữ Xanh",
-        "brand": "Samsung",
-        "price": 3444000,
-        "originalPrice": 4607000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2136/400/400",
-        "rating": 4.9,
-        "reviewsCount": 11,
-        "description": "Sản phẩm Samsung Watch Active 2 Nữ Xanh mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "12 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2137",
-        "name": "Samsung Watch Active 2 Nữ Trắng",
-        "brand": "Samsung",
-        "price": 3546000,
-        "originalPrice": 4861000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2137/400/400",
-        "rating": 4.6,
-        "reviewsCount": 44,
-        "description": "Sản phẩm Samsung Watch Active 2 Nữ Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "13 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2138",
-        "name": "Garmin Fenix 7 Sapphire Solar Nữ Vàng",
-        "brand": "Garmin",
-        "price": 22266000,
-        "originalPrice": 25829000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2138/400/400",
-        "rating": 4.5,
-        "reviewsCount": 21,
-        "description": "Sản phẩm Garmin Fenix 7 Sapphire Solar Nữ Vàng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "9 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2139",
-        "name": "HUAWEI Band 9 Thép Đen",
-        "brand": "Huawei",
-        "price": 1053000,
-        "originalPrice": 1439000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2139/400/400",
-        "rating": 4.8,
-        "reviewsCount": 21,
-        "description": "Sản phẩm HUAWEI Band 9 Thép Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "7 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2140",
-        "name": "Apple Watch SE 2023 Nam Vàng",
-        "brand": "Apple",
-        "price": 7108000,
-        "originalPrice": 8999000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2140/400/400",
-        "rating": 4.8,
-        "reviewsCount": 15,
-        "description": "Sản phẩm Apple Watch SE 2023 Nam Vàng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "12 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2141",
-        "name": "Apple Watch Series 9 GPS Bản Giới Hạn Hồng",
-        "brand": "Apple",
-        "price": 9548000,
-        "originalPrice": 12009000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2141/400/400",
-        "rating": 4.7,
-        "reviewsCount": 31,
-        "description": "Sản phẩm Apple Watch Series 9 GPS Bản Giới Hạn Hồng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "8 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2142",
-        "name": "Garmin Epix Gen 2 Nhôm Trắng",
-        "brand": "Garmin",
-        "price": 20396000,
-        "originalPrice": 23891000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2142/400/400",
-        "rating": 4.5,
-        "reviewsCount": 32,
-        "description": "Sản phẩm Garmin Epix Gen 2 Nhôm Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "8 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2143",
-        "name": "Samsung Watch Active 2 LTE Vàng",
-        "brand": "Samsung",
-        "price": 3617000,
-        "originalPrice": 4953000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2143/400/400",
-        "rating": 5.0,
-        "reviewsCount": 40,
-        "description": "Sản phẩm Samsung Watch Active 2 LTE Vàng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "5 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2144",
-        "name": "Apple Watch SE 2023 Nam Đen",
-        "brand": "Apple",
-        "price": 7419000,
-        "originalPrice": 9709000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2144/400/400",
-        "rating": 4.5,
-        "reviewsCount": 32,
-        "description": "Sản phẩm Apple Watch SE 2023 Nam Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "8 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2145",
-        "name": "Garmin Epix Gen 2 LTE Đen",
-        "brand": "Garmin",
-        "price": 23509000,
-        "originalPrice": 28180000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2145/400/400",
-        "rating": 5.0,
-        "reviewsCount": 33,
-        "description": "Sản phẩm Garmin Epix Gen 2 LTE Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "5 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2146",
-        "name": "HUAWEI Band 9 Nhôm Bạc",
-        "brand": "Huawei",
-        "price": 951000,
-        "originalPrice": 1161000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2146/400/400",
-        "rating": 4.8,
-        "reviewsCount": 42,
-        "description": "Sản phẩm HUAWEI Band 9 Nhôm Bạc mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "10 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2147",
-        "name": "Xiaomi Mi Band 8 Nhôm Xanh",
-        "brand": "Xiaomi",
-        "price": 916000,
-        "originalPrice": 1258000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2147/400/400",
-        "rating": 4.7,
-        "reviewsCount": 47,
-        "description": "Sản phẩm Xiaomi Mi Band 8 Nhôm Xanh mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "9 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2148",
-        "name": "Garmin Epix Gen 2 40mm Hồng",
-        "brand": "Garmin",
-        "price": 23489000,
-        "originalPrice": 31529000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2148/400/400",
-        "rating": 4.8,
-        "reviewsCount": 19,
-        "description": "Sản phẩm Garmin Epix Gen 2 40mm Hồng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "8 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2149",
-        "name": "Xiaomi Watch S3 44mm Vàng",
-        "brand": "Xiaomi",
-        "price": 3907000,
-        "originalPrice": 5144000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2149/400/400",
-        "rating": 4.6,
-        "reviewsCount": 39,
-        "description": "Sản phẩm Xiaomi Watch S3 44mm Vàng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "11 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2150",
-        "name": "Apple Watch SE 2023 40mm Xanh",
-        "brand": "Apple",
-        "price": 7535000,
-        "originalPrice": 10149000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2150/400/400",
-        "rating": 4.7,
-        "reviewsCount": 44,
-        "description": "Sản phẩm Apple Watch SE 2023 40mm Xanh mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "6 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2151",
-        "name": "Huawei Watch GT 4 Thép Đen",
-        "brand": "Huawei",
-        "price": 5667000,
-        "originalPrice": 7525000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2151/400/400",
-        "rating": 4.6,
-        "reviewsCount": 27,
-        "description": "Sản phẩm Huawei Watch GT 4 Thép Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "14 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2152",
-        "name": "Huawei Watch GT 4 Nữ Trắng",
-        "brand": "Huawei",
-        "price": 5813000,
-        "originalPrice": 7895000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2152/400/400",
-        "rating": 5.0,
-        "reviewsCount": 49,
-        "description": "Sản phẩm Huawei Watch GT 4 Nữ Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "7 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2153",
-        "name": "Xiaomi Watch S3 GPS Đen",
-        "brand": "Xiaomi",
-        "price": 4065000,
-        "originalPrice": 4837000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2153/400/400",
-        "rating": 4.6,
-        "reviewsCount": 20,
-        "description": "Sản phẩm Xiaomi Watch S3 GPS Đen mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "13 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2154",
-        "name": "HUAWEI Band 9 Bản Giới Hạn Xanh",
-        "brand": "Huawei",
-        "price": 938000,
-        "originalPrice": 1125000,
-        "category": "Fitness Band",
-        "image": "https://picsum.photos/seed/SL-2154/400/400",
-        "rating": 4.5,
-        "reviewsCount": 17,
-        "description": "Sản phẩm HUAWEI Band 9 Bản Giới Hạn Xanh mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "8 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2155",
-        "name": "COROS Pace 3 GPS Hồng",
-        "brand": "Coros",
-        "price": 6988000,
-        "originalPrice": 9708000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2155/400/400",
-        "rating": 4.6,
-        "reviewsCount": 27,
-        "description": "Sản phẩm COROS Pace 3 GPS Hồng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "10 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2156",
-        "name": "Samsung Watch Active 2 Nhôm Bạc",
-        "brand": "Samsung",
-        "price": 3779000,
-        "originalPrice": 5142000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2156/400/400",
-        "rating": 4.6,
-        "reviewsCount": 45,
-        "description": "Sản phẩm Samsung Watch Active 2 Nhôm Bạc mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "5 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2157",
-        "name": "Amazfit GTR 4 45mm Trắng",
-        "brand": "Amazfit",
-        "price": 4426000,
-        "originalPrice": 6015000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2157/400/400",
-        "rating": 5.0,
-        "reviewsCount": 35,
-        "description": "Sản phẩm Amazfit GTR 4 45mm Trắng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "6 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2158",
-        "name": "Apple Watch Series 9 GPS Nữ Xanh",
-        "brand": "Apple",
-        "price": 12025000,
-        "originalPrice": 15851000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2158/400/400",
-        "rating": 4.9,
-        "reviewsCount": 27,
-        "description": "Sản phẩm Apple Watch Series 9 GPS Nữ Xanh mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "6 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2159",
-        "name": "Garmin Fenix 7 Sapphire Solar LTE Vàng",
-        "brand": "Garmin",
-        "price": 17271000,
-        "originalPrice": 23654000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2159/400/400",
-        "rating": 4.6,
-        "reviewsCount": 25,
-        "description": "Sản phẩm Garmin Fenix 7 Sapphire Solar LTE Vàng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "12 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
-    },
-    {
-        "id": "SL-2160",
-        "name": "OPPO Watch X 44mm Hồng",
-        "brand": "OPPO",
-        "price": 9658000,
-        "originalPrice": 13209000,
-        "category": "Smartwatch",
-        "image": "https://picsum.photos/seed/SL-2160/400/400",
-        "rating": 4.9,
-        "reviewsCount": 38,
-        "description": "Sản phẩm OPPO Watch X 44mm Hồng mang lại trải nghiệm đỉnh cao cho người dùng yêu thích công nghệ.",
-        "specs": {
-            "Pin": "10 ngày",
-            "Chống nước": "IP68 / 5ATM",
-            "Cảm biến": "Nhịp tim, SpO2, GPS"
-        }
+  {
+    "id": "sl-1",
+    "name": "Garmin Forerunner 965",
+    "brand": "Garmin",
+    "price": 13579000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,garmin,forerunner-965",
+    "description": "Sản phẩm Garmin Forerunner 965 cao cấp từ Garmin. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Garmin",
+      "Model": "Forerunner 965",
+      "Màu sắc": "Blue",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
     }
+  },
+  {
+    "id": "sl-2",
+    "name": "Garmin Forerunner 265",
+    "brand": "Garmin",
+    "price": 12129000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,garmin,forerunner-265",
+    "description": "Sản phẩm Garmin Forerunner 265 cao cấp từ Garmin. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Garmin",
+      "Model": "Forerunner 265",
+      "Màu sắc": "Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-3",
+    "name": "Garmin Fenix 7 Pro",
+    "brand": "Garmin",
+    "price": 20379000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,garmin,fenix-7-pro",
+    "description": "Sản phẩm Garmin Fenix 7 Pro Silver cao cấp từ Garmin. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Garmin",
+      "Model": "Fenix 7 Pro",
+      "Màu sắc": "Silver",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-4",
+    "name": "Garmin Epix Gen 2",
+    "brand": "Garmin",
+    "price": 13929000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,garmin,epix-gen-2",
+    "description": "Sản phẩm Garmin Epix Gen 2 Titanium cao cấp từ Garmin. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Garmin",
+      "Model": "Epix Gen 2",
+      "Màu sắc": "Titanium",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-5",
+    "name": "Garmin Venu 3",
+    "brand": "Garmin",
+    "price": 13519000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,garmin,venu-3",
+    "description": "Sản phẩm Garmin Venu 3 Titanium cao cấp từ Garmin. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Garmin",
+      "Model": "Venu 3",
+      "Màu sắc": "Titanium",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-6",
+    "name": "Garmin Instinct 2X",
+    "brand": "Garmin",
+    "price": 11699000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,garmin,instinct-2x",
+    "description": "Sản phẩm Garmin Instinct 2X cao cấp từ Garmin. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Garmin",
+      "Model": "Instinct 2X",
+      "Màu sắc": "Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-7",
+    "name": "Garmin Approach S70",
+    "brand": "Garmin",
+    "price": 12069000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,garmin,approach-s70",
+    "description": "Sản phẩm Garmin Approach S70 Silver cao cấp từ Garmin. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Garmin",
+      "Model": "Approach S70",
+      "Màu sắc": "Silver",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-8",
+    "name": "Garmin Lily 2",
+    "brand": "Garmin",
+    "price": 11309000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,garmin,lily-2",
+    "description": "Sản phẩm Garmin Lily 2 Titanium cao cấp từ Garmin. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Garmin",
+      "Model": "Lily 2",
+      "Màu sắc": "Titanium",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-9",
+    "name": "Garmin Vivomove Trend",
+    "brand": "Garmin",
+    "price": 11519000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,garmin,vivomove-trend",
+    "description": "Sản phẩm Garmin Vivomove Trend cao cấp từ Garmin. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Garmin",
+      "Model": "Vivomove Trend",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-10",
+    "name": "Garmin Enduro 2",
+    "brand": "Garmin",
+    "price": 12829000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,garmin,enduro-2",
+    "description": "Sản phẩm Garmin Enduro 2 Blue cao cấp từ Garmin. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Garmin",
+      "Model": "Enduro 2",
+      "Màu sắc": "Blue",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-11",
+    "name": "Garmin Marq Gen 2",
+    "brand": "Garmin",
+    "price": 20429000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,garmin,marq-gen-2",
+    "description": "Sản phẩm Garmin Marq Gen 2 Black cao cấp từ Garmin. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Garmin",
+      "Model": "Marq Gen 2",
+      "Màu sắc": "Black",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-12",
+    "name": "Garmin Tactix 7",
+    "brand": "Garmin",
+    "price": 13269000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,garmin,tactix-7",
+    "description": "Sản phẩm Garmin Tactix 7 Graphite cao cấp từ Garmin. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Garmin",
+      "Model": "Tactix 7",
+      "Màu sắc": "Graphite",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-13",
+    "name": "Garmin Tactix 7 Rose",
+    "brand": "Garmin",
+    "price": 12689000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,garmin,tactix-7",
+    "description": "Sản phẩm Garmin Tactix 7 Rose Gold cao cấp từ Garmin. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Garmin",
+      "Model": "Tactix 7",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-14",
+    "name": "Garmin Quatix 7",
+    "brand": "Garmin",
+    "price": 14539000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,garmin,quatix-7",
+    "description": "Sản phẩm Garmin Quatix 7 Black cao cấp từ Garmin. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Garmin",
+      "Model": "Quatix 7",
+      "Màu sắc": "Black",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-15",
+    "name": "Garmin D2 Mach 1",
+    "brand": "Garmin",
+    "price": 13239000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,garmin,d2-mach-1",
+    "description": "Sản phẩm Garmin D2 Mach 1 Silver cao cấp từ Garmin. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Garmin",
+      "Model": "D2 Mach 1",
+      "Màu sắc": "Silver",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-16",
+    "name": "Garmin D2 Mach 1 Rose",
+    "brand": "Garmin",
+    "price": 12869000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,garmin,d2-mach-1",
+    "description": "Sản phẩm Garmin D2 Mach 1 Rose Gold cao cấp từ Garmin. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Garmin",
+      "Model": "D2 Mach 1",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-17",
+    "name": "Garmin Descent G1",
+    "brand": "Garmin",
+    "price": 12759000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,garmin,descent-g1",
+    "description": "Sản phẩm Garmin Descent G1 cao cấp từ Garmin. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Garmin",
+      "Model": "Descent G1",
+      "Màu sắc": "Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-18",
+    "name": "Garmin Swim 2",
+    "brand": "Garmin",
+    "price": 12139000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,garmin,swim-2",
+    "description": "Sản phẩm Garmin Swim 2 Graphite cao cấp từ Garmin. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Garmin",
+      "Model": "Swim 2",
+      "Màu sắc": "Graphite",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-19",
+    "name": "Garmin Edge 540",
+    "brand": "Garmin",
+    "price": 14059000,
+    "category": "Phụ kiện đồng hồ",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,garmin,edge-540",
+    "description": "Sản phẩm Garmin Edge 540 Titanium cao cấp từ Garmin. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Garmin",
+      "Model": "Edge 540",
+      "Màu sắc": "Titanium",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-20",
+    "name": "Garmin Varia RCT715",
+    "brand": "Garmin",
+    "price": 14789000,
+    "category": "Phụ kiện đồng hồ",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,garmin,varia-rct715",
+    "description": "Sản phẩm Garmin Varia RCT715 cao cấp từ Garmin. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Garmin",
+      "Model": "Varia RCT715",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-21",
+    "name": "Amazfit GTR 4",
+    "brand": "Amazfit",
+    "price": 1989000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,amazfit,gtr-4",
+    "description": "Sản phẩm Amazfit GTR 4 Graphite cao cấp từ Amazfit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Amazfit",
+      "Model": "GTR 4",
+      "Màu sắc": "Graphite",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-22",
+    "name": "Amazfit GTS 4",
+    "brand": "Amazfit",
+    "price": 2059000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,amazfit,gts-4",
+    "description": "Sản phẩm Amazfit GTS 4 cao cấp từ Amazfit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Amazfit",
+      "Model": "GTS 4",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-23",
+    "name": "Amazfit T-Rex Ultra",
+    "brand": "Amazfit",
+    "price": 14019000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,amazfit,t-rex-ultra",
+    "description": "Sản phẩm Amazfit T-Rex Ultra Titanium cao cấp từ Amazfit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Amazfit",
+      "Model": "T-Rex Ultra",
+      "Màu sắc": "Titanium",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-24",
+    "name": "Amazfit T-Rex Ultra Rose",
+    "brand": "Amazfit",
+    "price": 16249000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,amazfit,t-rex-ultra",
+    "description": "Sản phẩm Amazfit T-Rex Ultra Rose Gold cao cấp từ Amazfit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Amazfit",
+      "Model": "T-Rex Ultra",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-25",
+    "name": "Amazfit Cheetah Pro",
+    "brand": "Amazfit",
+    "price": 15679000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,amazfit,cheetah-pro",
+    "description": "Sản phẩm Amazfit Cheetah Pro cao cấp từ Amazfit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Amazfit",
+      "Model": "Cheetah Pro",
+      "Màu sắc": "Graphite",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-26",
+    "name": "Amazfit Bip 5",
+    "brand": "Amazfit",
+    "price": 1549000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,amazfit,bip-5",
+    "description": "Sản phẩm Amazfit Bip 5 Gold cao cấp từ Amazfit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Amazfit",
+      "Model": "Bip 5",
+      "Màu sắc": "Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-27",
+    "name": "Amazfit Active Edge",
+    "brand": "Amazfit",
+    "price": 1509000,
+    "category": "Phụ kiện đồng hồ",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,amazfit,active-edge",
+    "description": "Sản phẩm Amazfit Active Edge cao cấp từ Amazfit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Amazfit",
+      "Model": "Active Edge",
+      "Màu sắc": "Graphite",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-28",
+    "name": "Amazfit Falcon",
+    "brand": "Amazfit",
+    "price": 5639000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,amazfit,falcon",
+    "description": "Sản phẩm Amazfit Falcon cao cấp từ Amazfit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Amazfit",
+      "Model": "Falcon",
+      "Màu sắc": "Graphite",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-29",
+    "name": "Amazfit Balance",
+    "brand": "Amazfit",
+    "price": 5199000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,amazfit,balance",
+    "description": "Sản phẩm Amazfit Balance Gold cao cấp từ Amazfit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Amazfit",
+      "Model": "Balance",
+      "Màu sắc": "Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-30",
+    "name": "Amazfit Balance Rose",
+    "brand": "Amazfit",
+    "price": 1699000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,amazfit,balance",
+    "description": "Sản phẩm Amazfit Balance Rose Gold cao cấp từ Amazfit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Amazfit",
+      "Model": "Balance",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-31",
+    "name": "Amazfit GTR Mini",
+    "brand": "Amazfit",
+    "price": 3169000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,amazfit,gtr-mini",
+    "description": "Sản phẩm Amazfit GTR Mini cao cấp từ Amazfit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Amazfit",
+      "Model": "GTR Mini",
+      "Màu sắc": "Graphite",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-32",
+    "name": "Amazfit GTS 4 Mini",
+    "brand": "Amazfit",
+    "price": 2039000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,amazfit,gts-4-mini",
+    "description": "Sản phẩm Amazfit GTS 4 Mini cao cấp từ Amazfit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Amazfit",
+      "Model": "GTS 4 Mini",
+      "Màu sắc": "Silver",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-33",
+    "name": "Amazfit Band 7",
+    "brand": "Amazfit",
+    "price": 2869000,
+    "category": "Vòng theo dõi sức khỏe",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,amazfit,band-7",
+    "description": "Sản phẩm Amazfit Band 7 Black cao cấp từ Amazfit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Amazfit",
+      "Model": "Band 7",
+      "Màu sắc": "Black",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-34",
+    "name": "Amazfit Band 7 Rose",
+    "brand": "Amazfit",
+    "price": 3579000,
+    "category": "Vòng theo dõi sức khỏe",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,amazfit,band-7",
+    "description": "Sản phẩm Amazfit Band 7 Rose Gold cao cấp từ Amazfit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Amazfit",
+      "Model": "Band 7",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-35",
+    "name": "Amazfit Pop 3S",
+    "brand": "Amazfit",
+    "price": 3379000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,amazfit,pop-3s",
+    "description": "Sản phẩm Amazfit Pop 3S cao cấp từ Amazfit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Amazfit",
+      "Model": "Pop 3S",
+      "Màu sắc": "Black",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-36",
+    "name": "Amazfit Pop 3R",
+    "brand": "Amazfit",
+    "price": 6449000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,amazfit,pop-3r",
+    "description": "Sản phẩm Amazfit Pop 3R cao cấp từ Amazfit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Amazfit",
+      "Model": "Pop 3R",
+      "Màu sắc": "Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-37",
+    "name": "Amazfit Neo",
+    "brand": "Amazfit",
+    "price": 5239000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,amazfit,neo",
+    "description": "Sản phẩm Amazfit Neo Black cao cấp từ Amazfit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Amazfit",
+      "Model": "Neo",
+      "Màu sắc": "Black",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-38",
+    "name": "Amazfit Stratos 3 Rose",
+    "brand": "Amazfit",
+    "price": 5599000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,amazfit,stratos-3",
+    "description": "Sản phẩm Amazfit Stratos 3 Rose Gold cao cấp từ Amazfit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Amazfit",
+      "Model": "Stratos 3",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-39",
+    "name": "Amazfit Stratos 3",
+    "brand": "Amazfit",
+    "price": 3679000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,amazfit,stratos-3",
+    "description": "Sản phẩm Amazfit Stratos 3 Graphite cao cấp từ Amazfit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Amazfit",
+      "Model": "Stratos 3",
+      "Màu sắc": "Graphite",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-40",
+    "name": "Amazfit Verge Lite",
+    "brand": "Amazfit",
+    "price": 3649000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,amazfit,verge-lite",
+    "description": "Sản phẩm Amazfit Verge Lite cao cấp từ Amazfit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Amazfit",
+      "Model": "Verge Lite",
+      "Màu sắc": "Blue",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-41",
+    "name": "Amazfit Active 2",
+    "brand": "Amazfit",
+    "price": 3290000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://m.media-amazon.com/images/I/61ZjlBOp+rL._AC_SL1500_.jpg",
+    "description": "Amazfit Active 2 là sự kết hợp hoàn hảo giữa phong cách thời thượng và công nghệ theo dõi sức khỏe tiên tiến. Với màn hình AMOLED siêu sáng và thời lượng pin ấn tượng, đây là người bạn đồng hành không thể thiếu cho lối sống năng động.",
+    "specs": {
+      "Màn Hình": {
+        "Loại": "Tròn 1.32\" AMOLED",
+        "Độ sáng": "2000 nits",
+        "Độ phân giải": "466x466 Pixel",
+        "Mật độ điểm ảnh": "353 ppi"
+      },
+      "Thiết kế": {
+        "Chất liệu viền": "Thép không gỉ",
+        "Khung giữa": "Polymer cao cấp",
+        "Kích thước": "43.9x43.9x9.9mm",
+        "Trọng lượng": "31.65g (Premium) / 29.5g (Standard)"
+      },
+      "Pin & Sạc": {
+        "Dung lượng": "300 mAh",
+        "Thời gian sử dụng": "14 ngày (Bình thường) / 30 ngày (Tiết kiệm)",
+        "Sạc": "Đế sạc từ tính"
+      },
+      "Cảm biến & Kết nối": {
+        "Sức khỏe": "BioTracker™ 6.0 PPG biometric sensor",
+        "Chuyển động": "Gia tốc, Ánh sáng, Nhiệt độ, Khí áp, Con quay hồi chuyển, Địa từ",
+        "Định vị": "5 hệ thống vệ tinh, Anten phân cực tròn",
+        "Bluetooth": "5.2 BLE"
+      },
+      "Độ bền": {
+        "Chống nước": "5ATM",
+        "Nhiệt độ vận hành": "-10°C đến 45°C"
+      }
+    },
+    "features": [
+      {
+        "title": "Màn hình AMOLED 2000 nits",
+        "description": "Hiển thị rực rỡ và sắc nét ngay cả dưới ánh nắng gắt nhất. Độ phân giải cao mang lại trải nghiệm thị giác tuyệt vời.",
+        "image": "https://m.media-amazon.com/images/I/71p0WfO8XyL._AC_SL1500_.jpg",
+        "type": "hero"
+      },
+      {
+        "title": "Định vị 5 vệ tinh mạnh mẽ",
+        "description": "Công nghệ anten phân cực tròn giúp bắt sóng nhanh và chính xác hơn trong mọi môi trường địa hình.",
+        "image": "https://m.media-amazon.com/images/I/61uG-V2aGEL._AC_SL1500_.jpg",
+        "type": "feature-card"
+      },
+      {
+        "title": "Theo dõi sức khỏe 24/7",
+        "description": "Cảm biến BioTracker™ 6.0 thế hệ mới giúp đo nhịp tim, SpO2 và mức độ căng thẳng với độ chính xác phòng thí nghiệm.",
+        "image": "https://m.media-amazon.com/images/I/61N6+f8-z1L._AC_SL1500_.jpg",
+        "type": "feature-card"
+      }
+    ]
+  },
+  {
+    "id": "sl-42",
+    "name": "Amazfit Cheetah Square Rose",
+    "brand": "Amazfit",
+    "price": 3429000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,amazfit,cheetah-square",
+    "description": "Sản phẩm Amazfit Cheetah Square Rose Gold cao cấp từ Amazfit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Amazfit",
+      "Model": "Cheetah Square",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-43",
+    "name": "Amazfit Cheetah Square",
+    "brand": "Amazfit",
+    "price": 5079000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,amazfit,cheetah-square",
+    "description": "Sản phẩm Amazfit Cheetah Square Silver cao cấp từ Amazfit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Amazfit",
+      "Model": "Cheetah Square",
+      "Màu sắc": "Silver",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-44",
+    "name": "Huawei Watch GT 4 Rose",
+    "brand": "Huawei",
+    "price": 5789000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,huawei,watch-gt-4",
+    "description": "Sản phẩm Huawei Watch GT 4 Rose Gold cao cấp từ Huawei. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Huawei",
+      "Model": "Watch GT 4",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-45",
+    "name": "Huawei Watch GT 4",
+    "brand": "Huawei",
+    "price": 2659000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,huawei,watch-gt-4",
+    "description": "Sản phẩm Huawei Watch GT 4 Blue cao cấp từ Huawei. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Huawei",
+      "Model": "Watch GT 4",
+      "Màu sắc": "Blue",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-46",
+    "name": "Huawei Watch Ultimate",
+    "brand": "Huawei",
+    "price": 15189000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,huawei,watch-ultimate",
+    "description": "Sản phẩm Huawei Watch Ultimate cao cấp từ Huawei. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Huawei",
+      "Model": "Watch Ultimate",
+      "Màu sắc": "Blue",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-47",
+    "name": "Huawei Watch 4 Pro",
+    "brand": "Huawei",
+    "price": 15799000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,huawei,watch-4-pro",
+    "description": "Sản phẩm Huawei Watch 4 Pro cao cấp từ Huawei. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Huawei",
+      "Model": "Watch 4 Pro",
+      "Màu sắc": "Titanium",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-48",
+    "name": "Huawei Band 8",
+    "brand": "Huawei",
+    "price": 3379000,
+    "category": "Vòng theo dõi sức khỏe",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,huawei,band-8",
+    "description": "Sản phẩm Huawei Band 8 Black cao cấp từ Huawei. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Huawei",
+      "Model": "Band 8",
+      "Màu sắc": "Black",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-49",
+    "name": "Huawei Watch Fit 3 Rose",
+    "brand": "Huawei",
+    "price": 2829000,
+    "category": "Vòng theo dõi sức khỏe",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,huawei,watch-fit-3",
+    "description": "Sản phẩm Huawei Watch Fit 3 Rose Gold cao cấp từ Huawei. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Huawei",
+      "Model": "Watch Fit 3",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-50",
+    "name": "Huawei Watch Fit 3",
+    "brand": "Huawei",
+    "price": 1039000,
+    "category": "Vòng theo dõi sức khỏe",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,huawei,watch-fit-3",
+    "description": "Sản phẩm Huawei Watch Fit 3 Titanium cao cấp từ Huawei. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Huawei",
+      "Model": "Watch Fit 3",
+      "Màu sắc": "Titanium",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-51",
+    "name": "Huawei Watch Buds",
+    "brand": "Huawei",
+    "price": 1989000,
+    "category": "Tai nghe Bluetooth",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,huawei,watch-buds",
+    "description": "Sản phẩm Huawei Watch Buds Black cao cấp từ Huawei. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Huawei",
+      "Model": "Watch Buds",
+      "Màu sắc": "Black",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-52",
+    "name": "Huawei Watch D",
+    "brand": "Huawei",
+    "price": 2539000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,huawei,watch-d",
+    "description": "Sản phẩm Huawei Watch D cao cấp từ Huawei. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Huawei",
+      "Model": "Watch D",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-53",
+    "name": "Huawei GT 3 SE",
+    "brand": "Huawei",
+    "price": 3949000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,huawei,gt-3-se",
+    "description": "Sản phẩm Huawei GT 3 SE Graphite cao cấp từ Huawei. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Huawei",
+      "Model": "GT 3 SE",
+      "Màu sắc": "Graphite",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-54",
+    "name": "Huawei Watch Kids 4 Pro",
+    "brand": "Huawei",
+    "price": 13349000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,huawei,watch-kids-4-pro",
+    "description": "Sản phẩm Huawei Watch Kids 4 Pro Black cao cấp từ Huawei. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Huawei",
+      "Model": "Watch Kids 4 Pro",
+      "Màu sắc": "Black",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-55",
+    "name": "Huawei FreeBuds Pro 3",
+    "brand": "Huawei",
+    "price": 3679000,
+    "category": "Tai nghe Bluetooth",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,huawei,freebuds-pro-3",
+    "description": "Sản phẩm Huawei FreeBuds Pro 3 cao cấp từ Huawei. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Huawei",
+      "Model": "FreeBuds Pro 3",
+      "Màu sắc": "Titanium",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-56",
+    "name": "Huawei FreeBuds 5",
+    "brand": "Huawei",
+    "price": 2669000,
+    "category": "Tai nghe Bluetooth",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,huawei,freebuds-5",
+    "description": "Sản phẩm Huawei FreeBuds 5 Black cao cấp từ Huawei. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Huawei",
+      "Model": "FreeBuds 5",
+      "Màu sắc": "Black",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-57",
+    "name": "Huawei FreeClip",
+    "brand": "Huawei",
+    "price": 3589000,
+    "category": "Tai nghe Bluetooth",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,huawei,freeclip",
+    "description": "Sản phẩm Huawei FreeClip Gold cao cấp từ Huawei. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Huawei",
+      "Model": "FreeClip",
+      "Màu sắc": "Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-58",
+    "name": "Huawei Watch GT 3 Pro",
+    "brand": "Huawei",
+    "price": 16419000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,huawei,watch-gt-3-pro",
+    "description": "Sản phẩm Huawei Watch GT 3 Pro Black cao cấp từ Huawei. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Huawei",
+      "Model": "Watch GT 3 Pro",
+      "Màu sắc": "Black",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-59",
+    "name": "Huawei Watch 3",
+    "brand": "Huawei",
+    "price": 4029000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,huawei,watch-3",
+    "description": "Sản phẩm Huawei Watch 3 Titanium cao cấp từ Huawei. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Huawei",
+      "Model": "Watch 3",
+      "Màu sắc": "Titanium",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-60",
+    "name": "Huawei GT Runner",
+    "brand": "Huawei",
+    "price": 6199000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,huawei,gt-runner",
+    "description": "Sản phẩm Huawei GT Runner Black cao cấp từ Huawei. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Huawei",
+      "Model": "GT Runner",
+      "Màu sắc": "Black",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-61",
+    "name": "Samsung Galaxy Watch 6 Classic",
+    "brand": "Samsung",
+    "price": 3499000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,samsung,galaxy-watch-6-classic",
+    "description": "Sản phẩm Samsung Galaxy Watch 6 Classic Titanium cao cấp từ Samsung. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Samsung",
+      "Model": "Galaxy Watch 6 Classic",
+      "Màu sắc": "Titanium",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-62",
+    "name": "Samsung Galaxy Watch 6 Classic Rose",
+    "brand": "Samsung",
+    "price": 3399000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,samsung,galaxy-watch-6-classic",
+    "description": "Sản phẩm Samsung Galaxy Watch 6 Classic Rose Gold cao cấp từ Samsung. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Samsung",
+      "Model": "Galaxy Watch 6 Classic",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-63",
+    "name": "Samsung Galaxy Watch 6",
+    "brand": "Samsung",
+    "price": 2359000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,samsung,galaxy-watch-6",
+    "description": "Sản phẩm Samsung Galaxy Watch 6 cao cấp từ Samsung. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Samsung",
+      "Model": "Galaxy Watch 6",
+      "Màu sắc": "Blue",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-64",
+    "name": "Samsung Galaxy Watch 5 Pro",
+    "brand": "Samsung",
+    "price": 16419000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,samsung,galaxy-watch-5-pro",
+    "description": "Sản phẩm Samsung Galaxy Watch 5 Pro cao cấp từ Samsung. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Samsung",
+      "Model": "Galaxy Watch 5 Pro",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-65",
+    "name": "Samsung Galaxy Buds 2 Pro Rose",
+    "brand": "Samsung",
+    "price": 5869000,
+    "category": "Tai nghe Bluetooth",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,samsung,galaxy-buds-2-pro",
+    "description": "Sản phẩm Samsung Galaxy Buds 2 Pro Rose Gold cao cấp từ Samsung. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Samsung",
+      "Model": "Galaxy Buds 2 Pro",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-66",
+    "name": "Samsung Galaxy Buds 2 Pro",
+    "brand": "Samsung",
+    "price": 1839000,
+    "category": "Tai nghe Bluetooth",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,samsung,galaxy-buds-2-pro",
+    "description": "Sản phẩm Samsung Galaxy Buds 2 Pro Titanium cao cấp từ Samsung. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Samsung",
+      "Model": "Galaxy Buds 2 Pro",
+      "Màu sắc": "Titanium",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-67",
+    "name": "Samsung Galaxy Fit 3",
+    "brand": "Samsung",
+    "price": 3429000,
+    "category": "Vòng theo dõi sức khỏe",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,samsung,galaxy-fit-3",
+    "description": "Sản phẩm Samsung Galaxy Fit 3 cao cấp từ Samsung. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Samsung",
+      "Model": "Galaxy Fit 3",
+      "Màu sắc": "Silver",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-68",
+    "name": "Samsung Galaxy Watch 4",
+    "brand": "Samsung",
+    "price": 3879000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,samsung,galaxy-watch-4",
+    "description": "Sản phẩm Samsung Galaxy Watch 4 cao cấp từ Samsung. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Samsung",
+      "Model": "Galaxy Watch 4",
+      "Màu sắc": "Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-69",
+    "name": "Samsung Galaxy Watch 6 LTE",
+    "brand": "Samsung",
+    "price": 6439000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,samsung,galaxy-watch-6-lte",
+    "description": "Sản phẩm Samsung Galaxy Watch 6 LTE Graphite cao cấp từ Samsung. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Samsung",
+      "Model": "Galaxy Watch 6 LTE",
+      "Màu sắc": "Graphite",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-70",
+    "name": "Samsung Galaxy Buds FE",
+    "brand": "Samsung",
+    "price": 4589000,
+    "category": "Tai nghe Bluetooth",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,samsung,galaxy-buds-fe",
+    "description": "Sản phẩm Samsung Galaxy Buds FE Blue cao cấp từ Samsung. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Samsung",
+      "Model": "Galaxy Buds FE",
+      "Màu sắc": "Blue",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-71",
+    "name": "Samsung Galaxy Watch 5",
+    "brand": "Samsung",
+    "price": 5699000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,samsung,galaxy-watch-5",
+    "description": "Sản phẩm Samsung Galaxy Watch 5 cao cấp từ Samsung. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Samsung",
+      "Model": "Galaxy Watch 5",
+      "Màu sắc": "Blue",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-72",
+    "name": "Samsung Galaxy Watch Active 2",
+    "brand": "Samsung",
+    "price": 3349000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,samsung,galaxy-watch-active-2",
+    "description": "Sản phẩm Samsung Galaxy Watch Active 2 cao cấp từ Samsung. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Samsung",
+      "Model": "Galaxy Watch Active 2",
+      "Màu sắc": "Black",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-73",
+    "name": "Apple Watch Ultra 2",
+    "brand": "Apple",
+    "price": 20819000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,apple,watch-ultra-2",
+    "description": "Sản phẩm Apple Watch Ultra 2 cao cấp từ Apple. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Apple",
+      "Model": "Watch Ultra 2",
+      "Màu sắc": "Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-74",
+    "name": "Apple Watch Series 9",
+    "brand": "Apple",
+    "price": 14669000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,apple,watch-series-9",
+    "description": "Sản phẩm Apple Watch Series 9 Titanium cao cấp từ Apple. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Apple",
+      "Model": "Watch Series 9",
+      "Màu sắc": "Titanium",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-75",
+    "name": "Apple Watch SE 2023",
+    "brand": "Apple",
+    "price": 13369000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,apple,watch-se-2023",
+    "description": "Sản phẩm Apple Watch SE 2023 Blue cao cấp từ Apple. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Apple",
+      "Model": "Watch SE 2023",
+      "Màu sắc": "Blue",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-76",
+    "name": "Apple AirPods Pro 2",
+    "brand": "Apple",
+    "price": 22819000,
+    "category": "Tai nghe Bluetooth",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,apple,airpods-pro-2",
+    "description": "Sản phẩm Apple AirPods Pro 2 cao cấp từ Apple. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Apple",
+      "Model": "AirPods Pro 2",
+      "Màu sắc": "Silver",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-77",
+    "name": "Apple AirPods 3",
+    "brand": "Apple",
+    "price": 11699000,
+    "category": "Tai nghe Bluetooth",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,apple,airpods-3",
+    "description": "Sản phẩm Apple AirPods 3 Blue cao cấp từ Apple. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Apple",
+      "Model": "AirPods 3",
+      "Màu sắc": "Blue",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-78",
+    "name": "Apple AirPods 3 Rose",
+    "brand": "Apple",
+    "price": 10749000,
+    "category": "Tai nghe Bluetooth",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,apple,airpods-3",
+    "description": "Sản phẩm Apple AirPods 3 Rose Gold cao cấp từ Apple. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Apple",
+      "Model": "AirPods 3",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-79",
+    "name": "Apple Watch Series 8",
+    "brand": "Apple",
+    "price": 12909000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,apple,watch-series-8",
+    "description": "Sản phẩm Apple Watch Series 8 cao cấp từ Apple. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Apple",
+      "Model": "Watch Series 8",
+      "Màu sắc": "Titanium",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-80",
+    "name": "Apple Watch Ultra 1",
+    "brand": "Apple",
+    "price": 21979000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,apple,watch-ultra-1",
+    "description": "Sản phẩm Apple Watch Ultra 1 cao cấp từ Apple. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Apple",
+      "Model": "Watch Ultra 1",
+      "Màu sắc": "Titanium",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-81",
+    "name": "Apple AirPods Max",
+    "brand": "Apple",
+    "price": 13879000,
+    "category": "Tai nghe Bluetooth",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,apple,airpods-max",
+    "description": "Sản phẩm Apple AirPods Max cao cấp từ Apple. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Apple",
+      "Model": "AirPods Max",
+      "Màu sắc": "Blue",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-82",
+    "name": "Apple Watch Series 7",
+    "brand": "Apple",
+    "price": 11169000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,apple,watch-series-7",
+    "description": "Sản phẩm Apple Watch Series 7 cao cấp từ Apple. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Apple",
+      "Model": "Watch Series 7",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-83",
+    "name": "Apple Watch SE 1st Gen",
+    "brand": "Apple",
+    "price": 11249000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,apple,watch-se-1st-gen",
+    "description": "Sản phẩm Apple Watch SE 1st Gen Black cao cấp từ Apple. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Apple",
+      "Model": "Watch SE 1st Gen",
+      "Màu sắc": "Black",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-84",
+    "name": "Fitbit Sense 2",
+    "brand": "Fitbit",
+    "price": 1969000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,fitbit,sense-2",
+    "description": "Sản phẩm Fitbit Sense 2 Titanium cao cấp từ Fitbit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Fitbit",
+      "Model": "Sense 2",
+      "Màu sắc": "Titanium",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-85",
+    "name": "Fitbit Versa 4",
+    "brand": "Fitbit",
+    "price": 5709000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,fitbit,versa-4",
+    "description": "Sản phẩm Fitbit Versa 4 cao cấp từ Fitbit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Fitbit",
+      "Model": "Versa 4",
+      "Màu sắc": "Silver",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-86",
+    "name": "Fitbit Charge 6",
+    "brand": "Fitbit",
+    "price": 2069000,
+    "category": "Vòng theo dõi sức khỏe",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,fitbit,charge-6",
+    "description": "Sản phẩm Fitbit Charge 6 cao cấp từ Fitbit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Fitbit",
+      "Model": "Charge 6",
+      "Màu sắc": "Blue",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-87",
+    "name": "Fitbit Luxe Rose",
+    "brand": "Fitbit",
+    "price": 3349000,
+    "category": "Vòng theo dõi sức khỏe",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,fitbit,luxe",
+    "description": "Sản phẩm Fitbit Luxe Rose Gold cao cấp từ Fitbit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Fitbit",
+      "Model": "Luxe",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-88",
+    "name": "Fitbit Luxe",
+    "brand": "Fitbit",
+    "price": 4519000,
+    "category": "Vòng theo dõi sức khỏe",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,fitbit,luxe",
+    "description": "Sản phẩm Fitbit Luxe Titanium cao cấp từ Fitbit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Fitbit",
+      "Model": "Luxe",
+      "Màu sắc": "Titanium",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-89",
+    "name": "Fitbit Inspire 3",
+    "brand": "Fitbit",
+    "price": 4569000,
+    "category": "Vòng theo dõi sức khỏe",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,fitbit,inspire-3",
+    "description": "Sản phẩm Fitbit Inspire 3 cao cấp từ Fitbit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Fitbit",
+      "Model": "Inspire 3",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-90",
+    "name": "Fitbit Ace 3",
+    "brand": "Fitbit",
+    "price": 5989000,
+    "category": "Vòng theo dõi sức khỏe",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,fitbit,ace-3",
+    "description": "Sản phẩm Fitbit Ace 3 cao cấp từ Fitbit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Fitbit",
+      "Model": "Ace 3",
+      "Màu sắc": "Titanium",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-91",
+    "name": "Fitbit Sense",
+    "brand": "Fitbit",
+    "price": 4699000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,fitbit,sense",
+    "description": "Sản phẩm Fitbit Sense Blue cao cấp từ Fitbit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Fitbit",
+      "Model": "Sense",
+      "Màu sắc": "Blue",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-92",
+    "name": "Fitbit Versa 3",
+    "brand": "Fitbit",
+    "price": 5909000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,fitbit,versa-3",
+    "description": "Sản phẩm Fitbit Versa 3 cao cấp từ Fitbit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Fitbit",
+      "Model": "Versa 3",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-93",
+    "name": "Fitbit Charge 5",
+    "brand": "Fitbit",
+    "price": 4999000,
+    "category": "Vòng theo dõi sức khỏe",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,fitbit,charge-5",
+    "description": "Sản phẩm Fitbit Charge 5 cao cấp từ Fitbit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Fitbit",
+      "Model": "Charge 5",
+      "Màu sắc": "Silver",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-94",
+    "name": "Fitbit Inspire 2",
+    "brand": "Fitbit",
+    "price": 3039000,
+    "category": "Vòng theo dõi sức khỏe",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,fitbit,inspire-2",
+    "description": "Sản phẩm Fitbit Inspire 2 cao cấp từ Fitbit. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Fitbit",
+      "Model": "Inspire 2",
+      "Màu sắc": "Black",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-95",
+    "name": "Ticwatch Pro 5",
+    "brand": "Ticwatch",
+    "price": 14449000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,ticwatch,pro-5",
+    "description": "Sản phẩm Ticwatch Pro 5 cao cấp từ Ticwatch. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Ticwatch",
+      "Model": "Pro 5",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-96",
+    "name": "Ticwatch E3",
+    "brand": "Ticwatch",
+    "price": 3209000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,ticwatch,e3",
+    "description": "Sản phẩm Ticwatch E3 Graphite cao cấp từ Ticwatch. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Ticwatch",
+      "Model": "E3",
+      "Màu sắc": "Graphite",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-97",
+    "name": "Ticwatch Pro 3 Ultra",
+    "brand": "Ticwatch",
+    "price": 13029000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,ticwatch,pro-3-ultra",
+    "description": "Sản phẩm Ticwatch Pro 3 Ultra cao cấp từ Ticwatch. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Ticwatch",
+      "Model": "Pro 3 Ultra",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-98",
+    "name": "Ticwatch GTH 2",
+    "brand": "Ticwatch",
+    "price": 2619000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,ticwatch,gth-2",
+    "description": "Sản phẩm Ticwatch GTH 2 Titanium cao cấp từ Ticwatch. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Ticwatch",
+      "Model": "GTH 2",
+      "Màu sắc": "Titanium",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-99",
+    "name": "Ticwatch Pro S",
+    "brand": "Ticwatch",
+    "price": 15379000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,ticwatch,pro-s",
+    "description": "Sản phẩm Ticwatch Pro S Graphite cao cấp từ Ticwatch. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Ticwatch",
+      "Model": "Pro S",
+      "Màu sắc": "Graphite",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-100",
+    "name": "Ticwatch GTX",
+    "brand": "Ticwatch",
+    "price": 5729000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,ticwatch,gtx",
+    "description": "Sản phẩm Ticwatch GTX Blue cao cấp từ Ticwatch. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Ticwatch",
+      "Model": "GTX",
+      "Màu sắc": "Blue",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-101",
+    "name": "Ticwatch C2+",
+    "brand": "Ticwatch",
+    "price": 3829000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,ticwatch,c2+",
+    "description": "Sản phẩm Ticwatch C2+ cao cấp từ Ticwatch. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Ticwatch",
+      "Model": "C2+",
+      "Màu sắc": "Blue",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-102",
+    "name": "Ticwatch E2",
+    "brand": "Ticwatch",
+    "price": 5119000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,ticwatch,e2",
+    "description": "Sản phẩm Ticwatch E2 cao cấp từ Ticwatch. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Ticwatch",
+      "Model": "E2",
+      "Màu sắc": "Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-103",
+    "name": "Coros Vertix 2",
+    "brand": "Coros",
+    "price": 13399000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,coros,vertix-2",
+    "description": "Sản phẩm Coros Vertix 2 Silver cao cấp từ Coros. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Coros",
+      "Model": "Vertix 2",
+      "Màu sắc": "Silver",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-104",
+    "name": "Coros Apex 2 Pro",
+    "brand": "Coros",
+    "price": 21859000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,coros,apex-2-pro",
+    "description": "Sản phẩm Coros Apex 2 Pro Blue cao cấp từ Coros. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Coros",
+      "Model": "Apex 2 Pro",
+      "Màu sắc": "Blue",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-105",
+    "name": "Coros Pace 3",
+    "brand": "Coros",
+    "price": 14049000,
+    "category": "Vòng theo dõi sức khỏe",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,coros,pace-3",
+    "description": "Sản phẩm Coros Pace 3 cao cấp từ Coros. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Coros",
+      "Model": "Pace 3",
+      "Màu sắc": "Graphite",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-106",
+    "name": "Coros Vertix 1",
+    "brand": "Coros",
+    "price": 10609000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,coros,vertix-1",
+    "description": "Sản phẩm Coros Vertix 1 cao cấp từ Coros. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Coros",
+      "Model": "Vertix 1",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-107",
+    "name": "Coros Apex 42mm",
+    "brand": "Coros",
+    "price": 11599000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,coros,apex-42mm",
+    "description": "Sản phẩm Coros Apex 42mm Graphite cao cấp từ Coros. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Coros",
+      "Model": "Apex 42mm",
+      "Màu sắc": "Graphite",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-108",
+    "name": "Coros Apex 42mm Rose",
+    "brand": "Coros",
+    "price": 11489000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,coros,apex-42mm",
+    "description": "Sản phẩm Coros Apex 42mm Rose Gold cao cấp từ Coros. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Coros",
+      "Model": "Apex 42mm",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-109",
+    "name": "Coros Apex 46mm",
+    "brand": "Coros",
+    "price": 13749000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,coros,apex-46mm",
+    "description": "Sản phẩm Coros Apex 46mm Gold cao cấp từ Coros. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Coros",
+      "Model": "Apex 46mm",
+      "Màu sắc": "Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-110",
+    "name": "Suunto Race Rose",
+    "brand": "Suunto",
+    "price": 10689000,
+    "category": "Vòng theo dõi sức khỏe",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,suunto,race",
+    "description": "Sản phẩm Suunto Race Rose Gold cao cấp từ Suunto. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Suunto",
+      "Model": "Race",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-111",
+    "name": "Suunto Race",
+    "brand": "Suunto",
+    "price": 12639000,
+    "category": "Vòng theo dõi sức khỏe",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,suunto,race",
+    "description": "Sản phẩm Suunto Race Graphite cao cấp từ Suunto. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Suunto",
+      "Model": "Race",
+      "Màu sắc": "Graphite",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-112",
+    "name": "Suunto Vertical",
+    "brand": "Suunto",
+    "price": 11879000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,suunto,vertical",
+    "description": "Sản phẩm Suunto Vertical cao cấp từ Suunto. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Suunto",
+      "Model": "Vertical",
+      "Màu sắc": "Silver",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-113",
+    "name": "Suunto 9 Peak Pro",
+    "brand": "Suunto",
+    "price": 20209000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,suunto,9-peak-pro",
+    "description": "Sản phẩm Suunto 9 Peak Pro cao cấp từ Suunto. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Suunto",
+      "Model": "9 Peak Pro",
+      "Màu sắc": "Blue",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-114",
+    "name": "Suunto 5 Peak",
+    "brand": "Suunto",
+    "price": 12099000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,suunto,5-peak",
+    "description": "Sản phẩm Suunto 5 Peak cao cấp từ Suunto. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Suunto",
+      "Model": "5 Peak",
+      "Màu sắc": "Titanium",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-115",
+    "name": "Suunto 9 Baro",
+    "brand": "Suunto",
+    "price": 12089000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,suunto,9-baro",
+    "description": "Sản phẩm Suunto 9 Baro Titanium cao cấp từ Suunto. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Suunto",
+      "Model": "9 Baro",
+      "Màu sắc": "Titanium",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-116",
+    "name": "Suunto 7",
+    "brand": "Suunto",
+    "price": 13639000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,suunto,7",
+    "description": "Sản phẩm Suunto 7 Titanium cao cấp từ Suunto. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Suunto",
+      "Model": "7",
+      "Màu sắc": "Titanium",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-117",
+    "name": "Suunto 3",
+    "brand": "Suunto",
+    "price": 11099000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,suunto,3",
+    "description": "Sản phẩm Suunto 3 Graphite cao cấp từ Suunto. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Suunto",
+      "Model": "3",
+      "Màu sắc": "Graphite",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-118",
+    "name": "Suunto D5",
+    "brand": "Suunto",
+    "price": 10419000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,suunto,d5",
+    "description": "Sản phẩm Suunto D5 cao cấp từ Suunto. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Suunto",
+      "Model": "D5",
+      "Màu sắc": "Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-119",
+    "name": "Polar Vantage V3",
+    "brand": "Polar",
+    "price": 3969000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,polar,vantage-v3",
+    "description": "Sản phẩm Polar Vantage V3 cao cấp từ Polar. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Polar",
+      "Model": "Vantage V3",
+      "Màu sắc": "Blue",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-120",
+    "name": "Polar Grit X Pro",
+    "brand": "Polar",
+    "price": 16069000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,polar,grit-x-pro",
+    "description": "Sản phẩm Polar Grit X Pro Silver cao cấp từ Polar. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Polar",
+      "Model": "Grit X Pro",
+      "Màu sắc": "Silver",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-121",
+    "name": "Polar Ignite 3",
+    "brand": "Polar",
+    "price": 6019000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,polar,ignite-3",
+    "description": "Sản phẩm Polar Ignite 3 cao cấp từ Polar. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Polar",
+      "Model": "Ignite 3",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-122",
+    "name": "Polar Pacer Pro",
+    "brand": "Polar",
+    "price": 14339000,
+    "category": "Vòng theo dõi sức khỏe",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,polar,pacer-pro",
+    "description": "Sản phẩm Polar Pacer Pro cao cấp từ Polar. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Polar",
+      "Model": "Pacer Pro",
+      "Màu sắc": "Black",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-123",
+    "name": "Polar Vantage M2",
+    "brand": "Polar",
+    "price": 4929000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,polar,vantage-m2",
+    "description": "Sản phẩm Polar Vantage M2 Blue cao cấp từ Polar. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Polar",
+      "Model": "Vantage M2",
+      "Màu sắc": "Blue",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-124",
+    "name": "Polar Vantage M2 Rose",
+    "brand": "Polar",
+    "price": 2799000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,polar,vantage-m2",
+    "description": "Sản phẩm Polar Vantage M2 Rose Gold cao cấp từ Polar. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Polar",
+      "Model": "Vantage M2",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-125",
+    "name": "Polar Unite",
+    "brand": "Polar",
+    "price": 3909000,
+    "category": "Vòng theo dõi sức khỏe",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,polar,unite",
+    "description": "Sản phẩm Polar Unite Silver cao cấp từ Polar. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Polar",
+      "Model": "Unite",
+      "Màu sắc": "Silver",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-126",
+    "name": "Polar H10 Heart Rate Sensor",
+    "brand": "Polar",
+    "price": 4809000,
+    "category": "Tai nghe Bluetooth",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,polar,h10-heart-rate-sensor",
+    "description": "Sản phẩm Polar H10 Heart Rate Sensor cao cấp từ Polar. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Polar",
+      "Model": "H10 Heart Rate Sensor",
+      "Màu sắc": "Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-127",
+    "name": "Whoop Whoop 4.0 Rose",
+    "brand": "Whoop",
+    "price": 4679000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,whoop,whoop-4.0",
+    "description": "Sản phẩm Whoop Whoop 4.0 Rose Gold cao cấp từ Whoop. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Whoop",
+      "Model": "Whoop 4.0",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-128",
+    "name": "Whoop Whoop 4.0",
+    "brand": "Whoop",
+    "price": 1869000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,whoop,whoop-4.0",
+    "description": "Sản phẩm Whoop Whoop 4.0 Black cao cấp từ Whoop. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Whoop",
+      "Model": "Whoop 4.0",
+      "Màu sắc": "Black",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-129",
+    "name": "Whoop Whoop Body",
+    "brand": "Whoop",
+    "price": 1969000,
+    "category": "Phụ kiện đồng hồ",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,whoop,whoop-body",
+    "description": "Sản phẩm Whoop Whoop Body cao cấp từ Whoop. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Whoop",
+      "Model": "Whoop Body",
+      "Màu sắc": "Graphite",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-130",
+    "name": "Whoop Whoop Band",
+    "brand": "Whoop",
+    "price": 3539000,
+    "category": "Vòng theo dõi sức khỏe",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,whoop,whoop-band",
+    "description": "Sản phẩm Whoop Whoop Band cao cấp từ Whoop. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Whoop",
+      "Model": "Whoop Band",
+      "Màu sắc": "Graphite",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-131",
+    "name": "Wonlex KT24",
+    "brand": "Wonlex",
+    "price": 4979000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,wonlex,kt24",
+    "description": "Sản phẩm Wonlex KT24 cao cấp từ Wonlex. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Wonlex",
+      "Model": "KT24",
+      "Màu sắc": "Blue",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-132",
+    "name": "Wonlex KT24S",
+    "brand": "Wonlex",
+    "price": 2479000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,wonlex,kt24s",
+    "description": "Sản phẩm Wonlex KT24S Silver cao cấp từ Wonlex. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Wonlex",
+      "Model": "KT24S",
+      "Màu sắc": "Silver",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-133",
+    "name": "Wonlex KT39",
+    "brand": "Wonlex",
+    "price": 4759000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,wonlex,kt39",
+    "description": "Sản phẩm Wonlex KT39 cao cấp từ Wonlex. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Wonlex",
+      "Model": "KT39",
+      "Màu sắc": "Graphite",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-134",
+    "name": "Wonlex GW400S",
+    "brand": "Wonlex",
+    "price": 5459000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,wonlex,gw400s",
+    "description": "Sản phẩm Wonlex GW400S cao cấp từ Wonlex. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Wonlex",
+      "Model": "GW400S",
+      "Màu sắc": "Rose Gold",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-135",
+    "name": "Wonlex KT15",
+    "brand": "Wonlex",
+    "price": 2189000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,wonlex,kt15",
+    "description": "Sản phẩm Wonlex KT15 Silver cao cấp từ Wonlex. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Wonlex",
+      "Model": "KT15",
+      "Màu sắc": "Silver",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  },
+  {
+    "id": "sl-136",
+    "name": "Wonlex KT17",
+    "brand": "Wonlex",
+    "price": 5509000,
+    "category": "Đồng hồ thể thao",
+    "image": "https://source.unsplash.com/featured/600x600?smartwatch,wonlex,kt17",
+    "description": "Sản phẩm Wonlex KT17 cao cấp từ Wonlex. Thiết kế sang trọng, tính năng thông minh vượt trội, hỗ trợ tập luyện và theo dõi sức khỏe chuyên nghiệp.",
+    "specs": {
+      "Thương hiệu": "Wonlex",
+      "Model": "KT17",
+      "Màu sắc": "Black",
+      "Thời lượng pin": "Từ 5-21 ngày tùy chế độ",
+      "Kháng nước": "5ATM / 10ATM / IP68",
+      "Bảo hành": "12 tháng chính hãng"
+    }
+  }
 ]
