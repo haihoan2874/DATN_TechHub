@@ -59,6 +59,9 @@ public class User {
     @Column(name = "is_active", nullable = false)
     private Boolean isActive;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @Column(name = "reset_otp")
     private String resetOtp;
 

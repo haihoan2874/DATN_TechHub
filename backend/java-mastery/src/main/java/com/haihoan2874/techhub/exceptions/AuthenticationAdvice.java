@@ -35,6 +35,23 @@ public class AuthenticationAdvice {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(jakarta.persistence.EntityNotFoundException.class)
+    public ResponseEntity<ApiExceptionResponse> handleEntityNotFoundException(
+            jakarta.persistence.EntityNotFoundException ex,
+            HttpServletRequest request) {
+
+        log.error("Resource not found: {}", ex.getMessage());
+
+        ApiExceptionResponse response = ApiExceptionResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.NOT_FOUND.value())
+                .message(ex.getMessage())
+                .path(request.getServletPath())
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiExceptionResponse> handleRuntimeException(
             RuntimeException ex,

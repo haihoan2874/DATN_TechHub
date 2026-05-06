@@ -84,6 +84,7 @@ public class ProductService {
                 .isActive(saveProduct.getIsActive())
                 .brandId(saveProduct.getBrandId())
                 .specs(saveProduct.getSpecs())
+                .features(saveProduct.getFeatures())
                 .videoUrls(saveProduct.getVideoUrls())
                 .createdAt(saveProduct.getCreatedAt())
                 .createdBy(saveProduct.getCreatedBy())
@@ -101,6 +102,7 @@ public class ProductService {
 
         ProductFilter filter = ProductFilter.builder()
                 .categoryId(request.getCategoryId())
+                .brandId(request.getBrandId())
                 .name(request.getName())
                 .minPrice(request.getMinPrice())
                 .maxPrice(request.getMaxPrice())

@@ -18,12 +18,18 @@ public class LoginResponse {
     private String type;
     private String role;
     private String username;
+    private String firstName;
+    private String lastName;
+    private String imageUrl;
 
-    public LoginResponse(String token, String role, String username) {
+    public LoginResponse(String token, String role, String username, String firstName, String lastName, String imageUrl) {
         this.token = token;
         this.type = "Bearer";
         this.role = role;
         this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.imageUrl = imageUrl;
     }
 
     public LoginResponse(String token) {

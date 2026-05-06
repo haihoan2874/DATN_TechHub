@@ -32,6 +32,14 @@ Thumbs.db
 .vscode/
 
 # Environment
+# AI Agent & Skills Configuration (Local only)
+.agent/
+.agents/
+skills/
+.gsd/
+skills-lock.json
+
+# Local Environment
 .env
 .env.local
 

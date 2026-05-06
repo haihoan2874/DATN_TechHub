@@ -57,6 +57,10 @@ public class Product {
     private String specs;
 
     @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "features", columnDefinition = "jsonb")
+    private String features;
+
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "video_urls", columnDefinition = "jsonb")
     private String videoUrls;
 

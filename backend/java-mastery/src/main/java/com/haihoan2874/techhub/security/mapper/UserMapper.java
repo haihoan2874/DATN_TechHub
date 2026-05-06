@@ -35,6 +35,7 @@ public interface UserMapper {
     @Mapping(target = "isActive", ignore = true)
     @Mapping(target = "resetOtp", ignore = true)
     @Mapping(target = "resetOtpExpiry", ignore = true)
+    @Mapping(target = "imageUrl", ignore = true)
     User registrationRequestToUser(RegistrationRequest registrationRequest);
 }
 

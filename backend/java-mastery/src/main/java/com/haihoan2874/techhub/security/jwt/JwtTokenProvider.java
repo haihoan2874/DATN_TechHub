@@ -1,6 +1,5 @@
 package com.haihoan2874.techhub.security.jwt;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import com.auth0.jwt.JWT;
@@ -15,16 +14,15 @@ import java.util.Date;
  * JWT Token Provider for generating and validating JWT tokens.
  */
 @Component
-@RequiredArgsConstructor
 public class JwtTokenProvider {
 
-    @Value("${jwt.secretKey}")
+    @Value("${jwt.secretKey:your-secret-key-change-in-production}")
     private String secretKey;
 
-    @Value("${jwt.issuer}")
+    @Value("${jwt.issuer:S-Life}")
     private String issuer;
 
-    @Value("${jwt.expirationMinute}")
+    @Value("${jwt.expirationMinute:1440}")
     private int expirationMinute;
 
     /**
@@ -117,4 +115,3 @@ public class JwtTokenProvider {
         }
     }
 }
-

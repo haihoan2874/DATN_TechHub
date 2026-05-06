@@ -17,4 +17,6 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
             """)
     Boolean existsByProductIdAndUserId(@Param("productId") UUID productId,
                                        @Param("userId") UUID userId);
+
+    java.util.List<Review> findByProductId(UUID productId);
 }

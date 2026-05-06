@@ -1,91 +1,74 @@
-# S-Life Backend - Spring Boot E-commerce API
+# S-Life - Smart Health & Tech Ecosystem
 
-This is the backend service for the **S-Life Graduation Project** (E-commerce platform for Smartphones and Accessories). 
-It provides RESTful APIs for client storefronts, Admin dashboards, and AI integrations.
+Dự án tốt nghiệp hệ thống Thương mại điện tử chuyên biệt cho thiết bị đeo thông minh (Smartwatch), Tai nghe và Phụ kiện công nghệ cao cấp.
 
-## Overview
+## 🌟 Tổng quan dự án (S-LIFE)
 
-- **Framework**: Spring Boot 4.0.0 with Spring Security 6.5
-- **Authentication**: JWT token-based (60-minute expiration) & OAuth2 (Google/Facebook - upcoming)
-- **Database**: PostgreSQL 16 with Hibernate ORM & Flyway migrations
-- **Session/Cache**: Redis (for Cart & Session)
-- **AI Integration**: Google Gemini 1.5 Flash API (Product Advisory)
-- **Payment**: VNPay Gateway Integration (upcoming)
-- **Java**: Version 21 (LTS)
+S-Life không chỉ là một website bán hàng, mà là một trải nghiệm mua sắm công nghệ hiện đại (Hardcore Techwear). Hệ thống được tối ưu hóa cho việc quản lý hàng trăm danh mục sản phẩm với độ chính xác cao và trải nghiệm người dùng mượt mà.
 
-## Features
+- **Frontend**: ReactJS (Vite), Framer Motion, TailwindCSS, Lucide Icons. Giao diện thiết kế theo phong cách tối giản, mạnh mẽ.
+- **Backend**: Spring Boot 3.x (Java 21 LTS), Spring Security (JWT), Hibernate ORM.
+- **Dữ liệu**: Hỗ trợ Seeding tự động hơn 136+ sản phẩm mẫu chất lượng cao từ các thương hiệu lớn (Garmin, Apple, Samsung, Amazfit...).
+- **Cơ sở dữ liệu**: PostgreSQL 16 (lưu trữ specs dưới dạng JSONB linh hoạt).
 
-✅ **Authentication & Security**
-- User Registration & Login with JWT
-- Role-Based Access Control (ROLE_USER, ROLE_ADMIN)
+## 🚀 Tính năng nổi bật
 
-✅ **Core E-commerce**
-- **Products & Categories**: Manage products, brands, and categories mapping.
-- **Dynamic Specs**: Technical specifications stored via JSONB for flexible queries.
-- **Inventory**: Quantity tracking, restock history, low-stock warnings.
-- **Orders & Checkout**: Cart management (via Redis), Order creation, Delivery tracking.
+### ✅ Trải nghiệm người dùng (Storefront)
+- **Mega Menu thông minh**: Phân loại sản phẩm theo nhu cầu (Thể thao, Thời trang, Sức khỏe).
+- **Hệ thống lọc "Hardcore"**: Lọc đa tầng theo Khoảng giá, Thương hiệu, Danh mục và Thông số kỹ thuật.
+- **Tìm kiếm Real-time**: Search sản phẩm với tốc độ cực cao, hiển thị kết quả ngay lập tức.
+- **Giỏ hàng & Thanh toán**: Quy trình Checkout tối ưu, tích hợp lưu trữ giỏ hàng lâu dài.
 
-✅ **System Architecture**
-- Global Exception Handling & Input Validation
-- PostgreSQL with Flyway schema migrations
-- MapStruct type-safe DTO mapping
-- Swagger/OpenAPI documentation
+### ✅ Quản trị hệ thống (Admin Dashboard)
+- **Quản lý Inventory**: Theo dõi tồn kho, cảnh báo hàng sắp hết.
+- **Data Seeding**: Cơ chế nạp dữ liệu tự động, tự động dọn dẹp và chống trùng lặp dữ liệu.
+- **Phân quyền**: Hệ thống bảo mật dựa trên vai trò (Admin/User).
 
-## Project Structure
+## 📂 Cấu trúc mã nguồn (Backend)
 
 ```
 backend/java-mastery/
-├── src/main/java/com/conglt/learning/springbootboilerplate/
-│   ├── configuration/              # Security, CORS, Swagger
-│   ├── controller/                 # REST APIs
-│   ├── dto/                        # Request/Response models used by APIs
-│   ├── exceptions/                 # Global error handling
-│   ├── model/                      # JPA Entities (User, Product, Brand, Order...)
-│   ├── repository/                 # Data access layer (JpaRepository)
-│   ├── security/                   # JWT processing chains
-│   └── service/                    # Business Logic Layer
+├── src/main/java/com/haihoan2874/techhub/
+│   ├── configuration/      # Cấu hình Security, CORS, Swagger
+│   ├── controller/         # Hệ thống REST APIs
+│   ├── dto/                # Request/Response models (Data Transfer Objects)
+│   ├── exception/          # Xử lý lỗi tập trung (Global Exception Handling)
+│   ├── model/              # JPA Entities (Lớp thực thể Database)
+│   ├── repository/         # Tầng giao tiếp Database (Spring Data JPA)
+│   ├── service/            # Tầng xử lý Logic nghiệp vụ (Business Logic)
+│   └── security/           # JWT & Authentication Filter
 │
 ├── src/main/resources/
-│   ├── application.properties      # Connection strings
-│   └── db/migration/               # Flyway SQL version scripts
+│   ├── application.properties  # Cấu hình hệ thống & Kết nối DB
+│   └── db/migration/           # Scripts quản lý phiên bản database (Flyway)
 │
-├── docker-compose.yml              # PostgreSQL + Redis environment
-└── build.gradle                    # Dependecies declaration
+└── build.gradle                # Quản lý dependencies & Build tool
 ```
 
-## Quick Start
+## 🛠️ Hướng dẫn cài đặt
 
-### 1. Start External Services (Database & Redis)
-Ensure Docker is installed, then spin up the required databases:
+### 1. Môi trường yêu cầu
+- Java 21 (LTS)
+- Docker (để chạy PostgreSQL & Redis)
+- Node.js (để chạy Frontend)
+
+### 2. Chạy Backend
 ```bash
-cp .env.example .env
-docker-compose up -d postgres
-# (Docker compose currently has postgres, soon to include redis)
+# Tại thư mục backend/java-mastery
+./gradlew bootRun
 ```
+Ứng dụng sẽ chạy tại: `http://localhost:8089`
 
-### 2. Build & Run Application
-For development with Hot-Reload enabled:
-```bash
-./gradlew bootRun -t
-```
-Alternatively, build entirely:
-```bash
-./gradlew clean build -x test
-```
+### 3. Nạp dữ liệu mẫu (Seeding)
+Sau khi ứng dụng chạy, truy cập endpoint sau để nạp 136 sản phẩm mẫu:
+`POST http://localhost:8089/api/v1/system/seed`
 
-### 3. Verify & Access
-**Swagger UI Documentation:**
-```
-http://localhost:8089/swagger-ui.html
-```
-
-**Health Check endpoint:**
-```bash
-curl http://localhost:8089/health
-```
+### 4. Tài liệu API (Swagger UI)
+Xem chi tiết các Endpoint và thử nghiệm API tại:
+`http://localhost:8089/swagger-ui.html`
 
 ---
 
-**Version**: 1.0.0 (Graduation Project Development Phase)
-**Author**: Hoan (S-Life Workspace)
-
+**Phiên bản**: 1.0.0-PRO (Giai đoạn hoàn thiện Đồ án tốt nghiệp)
+**Tác giả**: Hoan (S-Life Development Team)
+**Workspace**: `/home/hoan/Projects/DATN_TechHub`

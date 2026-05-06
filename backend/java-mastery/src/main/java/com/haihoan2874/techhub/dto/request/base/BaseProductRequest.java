@@ -40,7 +40,7 @@ public class BaseProductRequest {
     private UUID brandId;
 
     private String specs;
-
+    private String features;
     private String videoUrls;
 
     private Boolean isActive;

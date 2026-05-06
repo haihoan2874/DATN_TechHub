@@ -22,14 +22,11 @@ public final class ProductMapper {
         product.setCategoryId(request.getCategoryId());
         product.setBrandId(request.getBrandId());
         product.setSpecs(request.getSpecs());
+        product.setFeatures(request.getFeatures());
         product.setVideoUrls(request.getVideoUrls());
     }
 
     public static ProductResponse mapToResponse(ProductResponse productResponse) {
-        // Set default values for rating and reviews
-        // TODO: Calculate actual average rating and review count from reviews table
-        productResponse.setAverageRating(5.0);
-        productResponse.setReviewCount(10);
         return productResponse;
     }
 }

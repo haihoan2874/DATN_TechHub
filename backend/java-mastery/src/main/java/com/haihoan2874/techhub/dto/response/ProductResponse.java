@@ -26,6 +26,7 @@ public class ProductResponse {
     private Integer stockQuantity;
     private Boolean isActive;
     private String specs;
+    private String features;
     private String videoUrls;
     private LocalDateTime createdAt;
     private UUID createdBy;

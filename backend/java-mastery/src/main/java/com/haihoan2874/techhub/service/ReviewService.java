@@ -2,6 +2,7 @@ package com.haihoan2874.techhub.service;
 
 import com.haihoan2874.techhub.dto.request.CreateReviewRequest;
 import com.haihoan2874.techhub.dto.response.CreateReviewResponse;
+import com.haihoan2874.techhub.dto.response.ReviewResponse;
 import com.haihoan2874.techhub.model.Product;
 import com.haihoan2874.techhub.model.Review;
 import com.haihoan2874.techhub.model.User;
@@ -61,5 +62,28 @@ public class ReviewService {
                 .comment(savedReview.getComment())
                 .createdAt(savedReview.getCreatedAt())
                 .build();
+    }
+
+    public java.util.List<ReviewResponse> getReviewsByProductId(UUID productId) {
+        log.info("Fetching reviews for product: {}", productId);
+        return reviewRepository.findByProductId(productId).stream()
+                .map(review -> {
+                    String displayName = (review.getUser().getFirstName() != null ? review.getUser().getFirstName() : "")
+                            + " " + (review.getUser().getLastName() != null ? review.getUser().getLastName() : "");
+                    displayName = displayName.trim();
+                    if (displayName.isEmpty()) {
+                        displayName = review.getUser().getUsername();
+                    }
+                    return ReviewResponse.builder()
+                        .id(review.getId())
+                        .productId(review.getProduct().getId())
+                        .userId(review.getUser().getId())
+                        .userName(displayName)
+                        .rating(review.getRating())
+                        .comment(review.getComment())
+                        .createdAt(review.getCreatedAt())
+                        .build();
+                })
+                .collect(java.util.stream.Collectors.toList());
     }
 }

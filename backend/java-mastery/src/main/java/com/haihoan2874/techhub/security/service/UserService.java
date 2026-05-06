@@ -15,6 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import com.haihoan2874.techhub.service.FileStorageService;
 
 import java.util.UUID;
 
@@ -30,21 +33,88 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserMapper userMapper;
+    private final FileStorageService fileStorageService;
 
     public java.util.List<UserResponse> getAllUsers() {
         log.info("Admin is fetching all users");
         return userRepository.findAll().stream()
-                .map(user -> UserResponse.builder()
-                        .id(user.getId())
-                        .username(user.getUsername())
-                        .email(user.getEmail())
-                        .firstName(user.getFirstName())
-                        .lastName(user.getLastName())
-                        .role(user.getRole())
-                        .isActive(user.getIsActive())
-                        .createdAt(user.getCreatedAt())
-                        .build())
+                .map(this::mapToUserResponse)
                 .collect(java.util.stream.Collectors.toList());
+    }
+
+    private UserResponse mapToUserResponse(User user) {
+        return UserResponse.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .fullName((((user.getFirstName() != null && !user.getFirstName().equals("null")) ? user.getFirstName() : "") 
+                        + ((user.getLastName() != null && !user.getLastName().equals("null")) ? " " + user.getLastName() : "")).trim())
+                .phoneNumber(user.getPhoneNumber())
+                .imageUrl(user.getImageUrl())
+                .role(user.getRole())
+                .isActive(user.getIsActive())
+                .createdAt(user.getCreatedAt())
+                .build();
+    }
+
+    public UserResponse getMyInfo(org.springframework.security.core.Authentication authentication) {
+        String username = authentication.getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return mapToUserResponse(user);
+    }
+
+    @Transactional
+    public UserResponse updateProfile(com.haihoan2874.techhub.dto.request.UserUpdateRequest request, org.springframework.security.core.Authentication authentication) {
+        String username = authentication.getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        if (request.getFirstName() != null) user.setFirstName(request.getFirstName());
+        if (request.getLastName() != null) user.setLastName(request.getLastName());
+        if (request.getPhoneNumber() != null) user.setPhoneNumber(request.getPhoneNumber());
+        if (request.getImageUrl() != null) user.setImageUrl(request.getImageUrl());
+        
+        // Handle fullName sync
+        if (request.getFullName() != null && !request.getFullName().isBlank()) {
+            String fullName = request.getFullName().trim();
+            int lastSpaceIndex = fullName.lastIndexOf(" ");
+            if (lastSpaceIndex != -1) {
+                user.setFirstName(fullName.substring(lastSpaceIndex + 1));
+                user.setLastName(fullName.substring(0, lastSpaceIndex));
+            } else {
+                user.setFirstName(fullName);
+                user.setLastName("");
+            }
+        }
+
+        if (request.getEmail() != null) {
+            userRepository.findByEmail(request.getEmail()).ifPresent(existingUser -> {
+                if (!existingUser.getId().equals(user.getId())) {
+                    throw new IllegalArgumentException("Email already exists");
+                }
+            });
+            user.setEmail(request.getEmail());
+        }
+        if (request.getPhoneNumber() != null) user.setPhoneNumber(request.getPhoneNumber());
+        if (request.getImageUrl() != null) user.setImageUrl(request.getImageUrl());
+
+        User savedUser = userRepository.save(user);
+        return mapToUserResponse(savedUser);
+    }
+
+    @Transactional
+    public UserResponse uploadAvatar(MultipartFile file, Authentication authentication) {
+        String username = authentication.getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String imageUrl = fileStorageService.storeFile(file, "avatars");
+        user.setImageUrl(imageUrl);
+        
+        return mapToUserResponse(userRepository.save(user));
     }
 
     /**
@@ -128,7 +198,14 @@ public class UserService {
         String token = jwtTokenProvider.generateToken(user.getUsername(), role);
         log.info("JWT token generated for user: {} with role: {}", user.getUsername(), role);
 
-        return new LoginResponse(token, role, user.getUsername());
+        return new LoginResponse(
+                token, 
+                role, 
+                user.getUsername(), 
+                user.getFirstName(), 
+                user.getLastName(), 
+                user.getImageUrl()
+        );
     }
 
     /**
@@ -150,6 +227,32 @@ public class UserService {
                     .orElse(null);
         }
         return null;
+    }
+
+    @Transactional
+    public void deleteUser(UUID id) {
+        log.info("Admin deleting user with ID: {}", id);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        userRepository.delete(user);
+    }
+
+    @Transactional
+    public UserResponse toggleUserStatus(UUID id) {
+        log.info("Admin toggling status for user with ID: {}", id);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setIsActive(!user.getIsActive());
+        return mapToUserResponse(userRepository.save(user));
+    }
+
+    @Transactional
+    public UserResponse updateUserRole(UUID id, UserRole role) {
+        log.info("Admin updating role to {} for user with ID: {}", role, id);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setRole(role);
+        return mapToUserResponse(userRepository.save(user));
     }
 }
 

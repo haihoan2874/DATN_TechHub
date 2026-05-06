@@ -2,7 +2,10 @@ package com.haihoan2874.techhub.controller;
 
 import com.haihoan2874.techhub.dto.request.CreateReviewRequest;
 import com.haihoan2874.techhub.dto.response.CreateReviewResponse;
+import com.haihoan2874.techhub.dto.response.ReviewResponse;
 import com.haihoan2874.techhub.service.ReviewService;
+import org.springframework.web.bind.annotation.GetMapping;
+import java.util.List;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -48,5 +51,17 @@ public class ReviewController {
         CreateReviewResponse response = reviewService.createReview(productId, request, authentication);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/products/{productId}")
+    @Operation(summary = "Get product reviews", description = "Get all reviews for a specific product")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Retrieved successfully",
+                    content = @Content(schema = @Schema(implementation = List.class))),
+            @ApiResponse(responseCode = "404", description = "Product not found"),
+    })
+    public ResponseEntity<List<ReviewResponse>> getReviews(@PathVariable UUID productId) {
+        log.info("Rest request to get reviews for product: {}", productId);
+        return ResponseEntity.ok(reviewService.getReviewsByProductId(productId));
     }
 }

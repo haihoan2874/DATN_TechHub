@@ -9,6 +9,7 @@ import java.util.UUID;
 @Data
 public class ProductFilterRequest {
     private UUID categoryId;
+    private UUID brandId;
     private String name;
     private BigDecimal minPrice;
     private BigDecimal maxPrice;

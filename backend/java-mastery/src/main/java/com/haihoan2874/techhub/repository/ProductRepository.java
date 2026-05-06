@@ -36,17 +36,19 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
                 p.stockQuantity,
                 p.isActive,
                 p.specs,
+                p.features,
                 p.videoUrls,
                 p.createdAt,
                 p.createdBy,
                 p.updatedAt,
                 p.updatedBy,
-                CAST(0.0 AS double),
-                CAST(0 AS integer)
+                (SELECT COALESCE(AVG(r.rating), 5.0) FROM Review r WHERE r.product.id = p.id),
+                (SELECT CAST(COUNT(r.id) AS integer) FROM Review r WHERE r.product.id = p.id)
             )
             FROM Product p
             JOIN Category c ON p.categoryId = c.id
             WHERE (:#{#filter.categoryId} IS NULL OR p.categoryId = :#{#filter.categoryId})
+            AND (:#{#filter.brandId} IS NULL OR p.brandId = :#{#filter.brandId})
             AND (:#{#filter.name} IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :#{#filter.name},'%')))
             AND (:#{#filter.minPrice} IS NULL OR p.price >= :#{#filter.minPrice})
             AND (:#{#filter.maxPrice} IS NULL OR p.price <= :#{#filter.maxPrice})
@@ -56,6 +58,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
                     SELECT COUNT(p)
                     FROM Product p
                     WHERE (:#{#filter.categoryId} IS NULL OR p.categoryId = :#{#filter.categoryId})
+                    AND (:#{#filter.brandId} IS NULL OR p.brandId = :#{#filter.brandId})
                     AND (:#{#filter.name} IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :#{#filter.name},'%')))
                     AND (:#{#filter.minPrice} IS NULL OR p.price >= :#{#filter.minPrice})
                     AND (:#{#filter.maxPrice} IS NULL OR p.price <= :#{#filter.maxPrice})
@@ -82,13 +85,14 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
                         p.stockQuantity,
                         p.isActive,
                         p.specs,
+                        p.features,
                         p.videoUrls,
                         p.createdAt,
                         p.createdBy,
                         p.updatedAt,
                         p.updatedBy,
-                        CAST(0.0 AS double),
-                        CAST(0 AS integer)
+                        (SELECT COALESCE(AVG(r.rating), 5.0) FROM Review r WHERE r.product.id = p.id),
+                        (SELECT CAST(COUNT(r.id) AS integer) FROM Review r WHERE r.product.id = p.id)
                         )
                         FROM Product p
                         JOIN Category c ON p.categoryId=c.id

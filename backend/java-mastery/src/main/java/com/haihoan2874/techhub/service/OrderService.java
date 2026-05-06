@@ -202,7 +202,7 @@ public class OrderService {
     @Transactional(readOnly = true)
     public List<AdminOrderResponse> getAllOrdersAdmin() {
         log.info("Admin fetching all orders");
-        List<Order> orders = orderRepository.findAll();
+        List<Order> orders = orderRepository.findAllWithItems();
         return orders.stream().map(order -> {
             // Let's use a better way to get user info
             String customerName = "N/A";
