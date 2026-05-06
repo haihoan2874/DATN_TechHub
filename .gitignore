@@ -46,4 +46,10 @@ skills-lock.json
 # Gemini/Antigravity Metadata
 .gemini/
 .agent/
-\n# Data Crawler\nS-Life-Crawler/
+
+# Data Crawler
+S-Life-Crawler/
+
+# Uploads
+uploads/
+backend/java-mastery/uploads/
