@@ -9,6 +9,7 @@ import {
   ArrowRight, Trash, ShieldCheck, 
   Truck, CreditCard 
 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const Cart = () => {
   const { cartItems, updateQuantity, removeFromCart, cartTotal, clearCart } = useCart();
@@ -17,6 +18,31 @@ const Cart = () => {
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
+  };
+
+  const handleUpdateQuantity = async (productId, quantity) => {
+    try {
+      await updateQuantity(productId, quantity);
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Không thể cập nhật số lượng');
+    }
+  };
+
+  const handleRemoveItem = async (productId) => {
+    try {
+      await removeFromCart(productId);
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Không thể xóa sản phẩm');
+    }
+  };
+
+  const handleClearCart = async () => {
+    try {
+      await clearCart();
+      setIsConfirmClearOpen(false);
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Không thể xóa giỏ hàng');
+    }
   };
 
   if (cartItems.length === 0) {
@@ -44,10 +70,7 @@ const Cart = () => {
       <ConfirmModal 
         isOpen={isConfirmClearOpen}
         onClose={() => setIsConfirmClearOpen(false)}
-        onConfirm={() => {
-          clearCart();
-          setIsConfirmClearOpen(false);
-        }}
+        onConfirm={handleClearCart}
         title="Xác nhận xóa giỏ hàng"
         message="Bạn có chắc chắn muốn xóa tất cả sản phẩm trong giỏ hàng không?"
         confirmText="Xóa tất cả"
@@ -97,14 +120,14 @@ const Cart = () => {
                   <div className="flex items-center justify-between w-full sm:w-auto gap-4">
                     <div className="flex items-center gap-3 bg-slate-100/50 rounded-xl p-1 border border-slate-200">
                       <button 
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                        onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
                         className="p-1.5 hover:bg-white rounded-lg transition-colors text-slate-500"
                       >
                         <Minus size={14} />
                       </button>
                       <span className="w-6 text-center font-bold text-slate-900 text-sm">{item.quantity}</span>
                       <button 
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
                         className="p-1.5 hover:bg-white rounded-lg transition-colors text-slate-500"
                       >
                         <Plus size={14} />
@@ -119,7 +142,7 @@ const Cart = () => {
                     </div>
 
                     <button 
-                      onClick={() => removeFromCart(item.id)}
+                      onClick={() => handleRemoveItem(item.id)}
                       className="p-2 text-slate-300 hover:text-blue-500 transition-colors absolute top-4 right-4 sm:static"
                     >
                       <Trash2 size={20} />

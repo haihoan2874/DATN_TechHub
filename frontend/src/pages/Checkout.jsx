@@ -5,7 +5,6 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import orderService from '../services/orderService';
 import addressService from '../services/addressService';
-import paymentService from '../services/paymentService';
 import { 
   MapPin, Phone, User, CreditCard, 
   Truck, ShieldCheck, ChevronLeft, 
@@ -103,29 +102,19 @@ const Checkout = () => {
     setIsSubmitting(true);
     setStatus({ type: '', message: '' });
 
-    const selectedAddress = addresses.find(a => a.id === selectedAddressId);
-
-    const orderData = {
-      fullName: selectedAddress.fullName,
-      phone: selectedAddress.phone,
-      address: `${selectedAddress.address}, ${selectedAddress.city}`,
-      note: formData.note,
+    const checkoutData = {
+      shippingAddressId: selectedAddressId,
       paymentMethod: formData.paymentMethod,
-      items: cartItems.map(item => ({
-        productId: item.id,
-        quantity: item.quantity,
-        price: item.price
-      })),
-      totalAmount: cartTotal
+      notes: formData.note
     };
 
     try {
-      const response = await orderService.createOrder(orderData);
+      const response = await orderService.checkout(checkoutData);
       
-      if (formData.paymentMethod === 'ONLINE') {
+      if (formData.paymentMethod === 'VNPAY' && response.paymentUrl) {
         setStatus({ type: 'success', message: 'Đang chuyển hướng đến cổng thanh toán VNPay...' });
-        const paymentUrl = await paymentService.createVnPayUrl(cartTotal, response.orderNumber || response.id);
-        window.location.href = paymentUrl; // Redirect to VNPay
+        clearCart();
+        window.location.href = response.paymentUrl;
         return;
       }
 
@@ -272,13 +261,13 @@ const Checkout = () => {
                 </label>
 
                 <label className={`relative flex items-center gap-4 p-5 rounded-2xl border-2 cursor-pointer transition-all ${
-                  formData.paymentMethod === 'ONLINE' ? 'border-blue-600 bg-blue-50/50' : 'border-slate-100 hover:border-slate-200 bg-white'
+                  formData.paymentMethod === 'VNPAY' ? 'border-blue-600 bg-blue-50/50' : 'border-slate-100 hover:border-slate-200 bg-white'
                 }`}>
                   <input 
                     type="radio" 
                     name="paymentMethod" 
-                    value="ONLINE" 
-                    checked={formData.paymentMethod === 'ONLINE'}
+                    value="VNPAY" 
+                    checked={formData.paymentMethod === 'VNPAY'}
                     onChange={(e) => setFormData({ ...formData, paymentMethod: e.target.value })}
                     className="w-5 h-5 accent-blue-600"
                   />

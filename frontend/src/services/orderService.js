@@ -6,6 +6,11 @@ const orderService = {
     return axiosClient.post(url, orderData);
   },
 
+  checkout: (checkoutData) => {
+    const url = '/orders/checkout';
+    return axiosClient.post(url, checkoutData);
+  },
+
   getMyOrders: () => {
     const url = '/orders/my-orders';
     return axiosClient.get(url);

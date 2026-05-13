@@ -41,19 +41,22 @@ public class CartService {
     }
 
     public CartResponse addToCart(String userId, UUID productId, Integer quantity) {
+        validateQuantity(quantity);
         CartResponse cart = getCart(userId);
+        ProductResponse product = productService.getProductByCondition("id", productId.toString());
         
-        // Check if product already exists in cart
         Optional<CartItemResponse> existingItem = cart.getItems().stream()
                 .filter(item -> item.getProductId().equals(productId))
                 .findFirst();
 
         if (existingItem.isPresent()) {
-            existingItem.get().setQuantity(existingItem.get().getQuantity() + quantity);
-            existingItem.get().setSubTotal(existingItem.get().getPrice().multiply(BigDecimal.valueOf(existingItem.get().getQuantity())));
+            CartItemResponse item = existingItem.get();
+            int newQuantity = item.getQuantity() + quantity;
+            validateStock(product, newQuantity);
+            item.setQuantity(newQuantity);
+            item.setSubTotal(item.getPrice().multiply(BigDecimal.valueOf(newQuantity)));
         } else {
-            // Get product info from ProductService (which returns ProductResponse)
-            ProductResponse product = productService.getProductByCondition("id", productId.toString());
+            validateStock(product, quantity);
             
             CartItemResponse newItem = CartItemResponse.builder()
                     .productId(product.getId())
@@ -67,6 +70,24 @@ public class CartService {
             cart.getItems().add(newItem);
         }
 
+        cart.calculateTotal();
+        saveCart(cart);
+        return cart;
+    }
+
+    public CartResponse updateQuantity(String userId, UUID productId, Integer quantity) {
+        validateQuantity(quantity);
+        CartResponse cart = getCart(userId);
+        ProductResponse product = productService.getProductByCondition("id", productId.toString());
+        validateStock(product, quantity);
+
+        CartItemResponse item = cart.getItems().stream()
+                .filter(cartItem -> cartItem.getProductId().equals(productId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Sản phẩm không tồn tại trong giỏ hàng"));
+
+        item.setQuantity(quantity);
+        item.setSubTotal(item.getPrice().multiply(BigDecimal.valueOf(quantity)));
         cart.calculateTotal();
         saveCart(cart);
         return cart;
@@ -87,5 +108,23 @@ public class CartService {
     private void saveCart(CartResponse cart) {
         String key = CART_PREFIX + cart.getUserId();
         redisTemplate.opsForValue().set(key, cart, CART_TTL, TimeUnit.DAYS);
+    }
+
+    private void validateQuantity(Integer quantity) {
+        if (quantity == null || quantity < 1) {
+            throw new IllegalStateException("Số lượng sản phẩm phải lớn hơn 0");
+        }
+    }
+
+    private void validateStock(ProductResponse product, Integer quantity) {
+        if (Boolean.FALSE.equals(product.getIsActive())) {
+            throw new IllegalStateException("Sản phẩm hiện không còn kinh doanh");
+        }
+        if (product.getStockQuantity() == null || product.getStockQuantity() <= 0) {
+            throw new IllegalStateException("Sản phẩm đã hết hàng");
+        }
+        if (quantity > product.getStockQuantity()) {
+            throw new IllegalStateException("Sản phẩm hiện tại không đủ số lượng theo yêu cầu");
+        }
     }
 }

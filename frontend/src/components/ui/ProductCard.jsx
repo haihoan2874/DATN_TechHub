@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ShoppingCart, Star, ArrowRight, Check, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
+import toast from 'react-hot-toast';
 
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -13,11 +14,15 @@ const ProductCard = ({ product }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const handleQuickAdd = (e) => {
+  const handleQuickAdd = async (e) => {
     e.preventDefault();
-    const result = addToCart(product);
+    const result = await addToCart(product);
     if (!result.success) {
-      navigate('/login', { state: { from: location } });
+      if (result.authRequired) {
+        navigate('/login', { state: { from: location } });
+      } else {
+        toast.error(result.message);
+      }
       return;
     }
     setAdded(true);

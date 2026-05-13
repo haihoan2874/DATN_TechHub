@@ -92,6 +92,20 @@ public class CartController {
         return ResponseEntity.ok(cartService.removeFromCart(userId.toString(), productId));
     }
 
+    @PutMapping("/items/{productId}")
+    @Operation(summary = "Update item quantity", description = "Update quantity for a product in the current cart")
+    @ApiResponses({
+        @ApiResponse(responseCode = APIConstants.OK, description = "Item quantity updated successfully"),
+        @ApiResponse(responseCode = APIConstants.UNAUTHORIZED, description = APIConstants.MSG_UNAUTHORIZED)
+    })
+    public ResponseEntity<CartResponse> updateQuantity(
+            @PathVariable UUID productId,
+            @RequestParam Integer quantity,
+            Authentication authentication) {
+        UUID userId = userService.getCurrentUserId(authentication);
+        return ResponseEntity.ok(cartService.updateQuantity(userId.toString(), productId, quantity));
+    }
+
     /**
      * Clear the entire cart.
      *

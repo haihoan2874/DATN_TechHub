@@ -86,11 +86,13 @@ const ProductDetail = () => {
     }
   }, { scope: mainRef, dependencies: [loading, product] });
 
-  const handleAddToCart = () => {
-    const result = addToCart(product, quantity);
+  const handleAddToCart = async () => {
+    const result = await addToCart(product, quantity);
     if (!result.success) {
-      toast.error('Vui lòng đăng nhập để mua hàng');
-      navigate('/login', { state: { from: location } });
+      toast.error(result.message || 'Không thể thêm sản phẩm vào giỏ hàng');
+      if (result.authRequired) {
+        navigate('/login', { state: { from: location } });
+      }
       return;
     }
     toast.success(`Đã thêm ${quantity} sản phẩm vào giỏ hàng`);
