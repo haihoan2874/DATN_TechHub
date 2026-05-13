@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, X, Send, Bot, User, Loader2, Minimize2, Maximize2, Sparkles, Lock } from 'lucide-react';
-import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import { Link } from 'react-router-dom';
+import axiosClient from '../../api/axiosConfig';
 
 const AIChatbot = () => {
   const { user } = useAuth();
@@ -31,11 +31,11 @@ const AIChatbot = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:8089/api/v1/ai/consult', userMessage, {
+      const response = await axiosClient.post('/ai/consult', userMessage, {
         headers: { 'Content-Type': 'text/plain' }
       });
       
-      setMessages(prev => [...prev, { role: 'ai', content: response.data }]);
+      setMessages(prev => [...prev, { role: 'ai', content: response }]);
     } catch (error) {
       setMessages(prev => [...prev, { role: 'ai', content: 'Xin lỗi, tôi đang gặp chút vấn đề kỹ thuật. Bạn vui lòng thử lại sau nhé!' }]);
     } finally {

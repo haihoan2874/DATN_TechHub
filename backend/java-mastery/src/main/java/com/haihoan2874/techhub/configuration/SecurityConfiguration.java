@@ -73,13 +73,14 @@ public class SecurityConfiguration {
                                         "/swagger-ui.html",
                                         "/actuator/**",
                                         "/api/v1/system/**",
-                                        "/api/v1/ai/**",
                                         "/api/v1/files/**"
                                 ).permitAll()
                                 .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/api/v1/categories/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/brands/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/products/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/reviews/products/**").permitAll()
+                                .requestMatchers("/api/v1/ai/**").authenticated()
                                 .requestMatchers("/api/v1/cart/**").authenticated()
                                 .requestMatchers("/api/v1/orders/**").authenticated()
                                 .requestMatchers("/api/v1/addresses/**").authenticated()
