@@ -45,9 +45,10 @@ const Orders = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case 'PENDING': return 'bg-amber-500/10 text-amber-500 border-amber-500/20';
+      case 'CONFIRMED': return 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20';
       case 'PROCESSING': return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
-      case 'SHIPPING': return 'bg-purple-500/10 text-purple-500 border-purple-500/20';
-      case 'COMPLETED': return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20';
+      case 'SHIPPED': return 'bg-purple-500/10 text-purple-500 border-purple-500/20';
+      case 'DELIVERED': return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20';
       case 'CANCELLED': return 'bg-rose-500/10 text-rose-500 border-rose-500/20';
       default: return 'bg-slate-500/10 text-slate-500 border-slate-500/20';
     }
@@ -56,9 +57,10 @@ const Orders = () => {
   const getStatusText = (status) => {
     switch (status) {
       case 'PENDING': return 'Đang chờ';
+      case 'CONFIRMED': return 'Đã xác nhận';
       case 'PROCESSING': return 'Đang xử lý';
-      case 'SHIPPING': return 'Đang giao';
-      case 'COMPLETED': return 'Đã giao';
+      case 'SHIPPED': return 'Đang giao';
+      case 'DELIVERED': return 'Đã giao';
       case 'CANCELLED': return 'Đã hủy';
       default: return status;
     }
@@ -74,8 +76,8 @@ const Orders = () => {
 
   const stats = [
     { label: 'Tổng đơn hàng', value: orders.length, icon: <Package size={18} />, color: 'blue' },
-    { label: 'Đang xử lý', value: orders.filter(o => ['PENDING', 'PROCESSING', 'SHIPPING'].includes(o.status)).length, icon: <Zap size={18} />, color: 'amber' },
-    { label: 'Hoàn thành', value: orders.filter(o => o.status === 'COMPLETED').length, icon: <CheckCircle2 size={18} />, color: 'emerald' },
+    { label: 'Đang xử lý', value: orders.filter(o => ['PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPED'].includes(o.status)).length, icon: <Zap size={18} />, color: 'amber' },
+    { label: 'Hoàn thành', value: orders.filter(o => o.status === 'DELIVERED').length, icon: <CheckCircle2 size={18} />, color: 'emerald' },
   ];
 
   return (
@@ -123,7 +125,7 @@ const Orders = () => {
 
           <div className="flex items-center gap-4 mb-8 bg-white/50 backdrop-blur-md p-2 rounded-[2rem] border border-white sticky top-24 z-40 shadow-xl shadow-slate-200/20">
             <div className="flex items-center gap-1 overflow-x-auto no-scrollbar flex-grow p-1">
-              {['ALL', 'PENDING', 'SHIPPING', 'COMPLETED', 'CANCELLED'].map((f) => (
+              {['ALL', 'PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED'].map((f) => (
                 <button
                   key={f}
                   onClick={() => setFilter(f)}
@@ -176,7 +178,7 @@ const Orders = () => {
                                </div>
                                <div className="flex items-center gap-1.5 text-xs font-bold text-slate-600">
                                  <CreditCard size={14} className="text-slate-400" />
-                                 COD
+                                 {order.paymentMethod || 'COD'}
                                </div>
                             </div>
                           </div>
