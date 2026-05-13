@@ -27,6 +27,12 @@ const ProductManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
+  const [stockModal, setStockModal] = useState({
+    isOpen: false,
+    product: null,
+    quantity: ''
+  });
+  const [isUpdatingStock, setIsUpdatingStock] = useState(false);
   
   const [formData, setFormData] = useState({
     name: '',
@@ -184,21 +190,30 @@ const ProductManagement = () => {
   };
 
   const handleUpdateStock = async (product) => {
-    const newStock = window.prompt(`Cập nhật số lượng tồn kho cho ${product.name}:`, product.stockQuantity);
-    if (newStock === null) return;
-    
-    const stockNum = parseInt(newStock);
+    setStockModal({
+      isOpen: true,
+      product,
+      quantity: String(product.stockQuantity ?? 0)
+    });
+  };
+
+  const submitStockUpdate = async () => {
+    const stockNum = parseInt(stockModal.quantity, 10);
     if (isNaN(stockNum) || stockNum < 0) {
       toast.error('Số lượng không hợp lệ (Phải là số >= 0)');
       return;
     }
 
+    setIsUpdatingStock(true);
     try {
-      await adminService.updateStock(product.id, stockNum);
+      await adminService.updateStock(stockModal.product.id, stockNum);
       toast.success('Cập nhật tồn kho thành công');
+      setStockModal({ isOpen: false, product: null, quantity: '' });
       fetchData();
     } catch (err) {
-      toast.error('Không thể cập nhật tồn kho');
+      toast.error(err.response?.data?.message || 'Không thể cập nhật tồn kho');
+    } finally {
+      setIsUpdatingStock(false);
     }
   };
 
@@ -216,6 +231,43 @@ const ProductManagement = () => {
         message="Hành động này sẽ xóa vĩnh viễn sản phẩm khỏi hệ thống. Bạn có chắc chắn muốn thực hiện?"
         variant="danger"
       />
+
+      <Modal
+        isOpen={stockModal.isOpen}
+        onClose={() => setStockModal({ isOpen: false, product: null, quantity: '' })}
+        title="Cập nhật tồn kho"
+        size="sm"
+        closeOnOverlay={!isUpdatingStock}
+        footer={
+          <>
+            <Button
+              variant="ghost"
+              onClick={() => setStockModal({ isOpen: false, product: null, quantity: '' })}
+              disabled={isUpdatingStock}
+            >
+              Hủy
+            </Button>
+            <Button onClick={submitStockUpdate} isLoading={isUpdatingStock}>
+              Lưu tồn kho
+            </Button>
+          </>
+        }
+      >
+        <div className="space-y-5">
+          <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Sản phẩm</p>
+            <h4 className="text-base font-black text-slate-900">{stockModal.product?.name}</h4>
+          </div>
+          <Input
+            label="Số lượng tồn kho mới"
+            type="number"
+            min="0"
+            value={stockModal.quantity}
+            onChange={(event) => setStockModal(prev => ({ ...prev, quantity: event.target.value }))}
+            required
+          />
+        </div>
+      </Modal>
 
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
