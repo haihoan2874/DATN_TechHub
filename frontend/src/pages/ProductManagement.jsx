@@ -194,12 +194,7 @@ const ProductManagement = () => {
     }
 
     try {
-      await adminService.updateProduct(product.id, { 
-        ...product, 
-        stockQuantity: stockNum,
-        specs: typeof product.specs === 'object' ? JSON.stringify(product.specs) : product.specs,
-        features: typeof product.features === 'object' ? JSON.stringify(product.features) : product.features
-      });
+      await adminService.updateStock(product.id, stockNum);
       toast.success('Cập nhật tồn kho thành công');
       fetchData();
     } catch (err) {
