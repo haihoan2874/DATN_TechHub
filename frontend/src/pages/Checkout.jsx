@@ -5,11 +5,12 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import orderService from '../services/orderService';
 import addressService from '../services/addressService';
+import voucherService from '../services/voucherService';
 import { 
   MapPin, Phone, User, CreditCard, 
   Truck, ShieldCheck, ChevronLeft, 
   ArrowRight, AlertCircle, CheckCircle2,
-  Plus, Trash2, Home, Building, X
+  Plus, Trash2, Home, Building, X, Tag
 } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
@@ -38,6 +39,9 @@ const Checkout = () => {
     note: '',
     paymentMethod: 'COD'
   });
+  const [voucherCode, setVoucherCode] = useState('');
+  const [appliedVoucher, setAppliedVoucher] = useState(null);
+  const [voucherLoading, setVoucherLoading] = useState(false);
 
   const [status, setStatus] = useState({ type: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -62,6 +66,37 @@ const Checkout = () => {
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
+  };
+
+  const finalTotal = Math.max(cartTotal - Number(appliedVoucher?.discountAmount || 0), 0);
+
+  const handleApplyVoucher = async () => {
+    if (!voucherCode.trim()) {
+      setStatus({ type: 'error', message: 'Vui lòng nhập mã giảm giá.' });
+      return;
+    }
+
+    setVoucherLoading(true);
+    setStatus({ type: '', message: '' });
+    try {
+      const voucher = await voucherService.applyVoucher(voucherCode.trim());
+      setAppliedVoucher(voucher);
+      setVoucherCode(voucher.code);
+      setStatus({ type: 'success', message: voucher.message || 'Áp dụng mã giảm giá thành công.' });
+    } catch (error) {
+      setAppliedVoucher(null);
+      setStatus({
+        type: 'error',
+        message: error.response?.data?.message || 'Mã giảm giá không hợp lệ hoặc đã hết hạn sử dụng.'
+      });
+    } finally {
+      setVoucherLoading(false);
+    }
+  };
+
+  const handleRemoveVoucher = () => {
+    setAppliedVoucher(null);
+    setVoucherCode('');
   };
 
   const handleNewAddressChange = (e) => {
@@ -105,7 +140,8 @@ const Checkout = () => {
     const checkoutData = {
       shippingAddressId: selectedAddressId,
       paymentMethod: formData.paymentMethod,
-      notes: formData.note
+      notes: formData.note,
+      voucherCode: appliedVoucher?.code || null
     };
 
     try {
@@ -233,6 +269,41 @@ const Checkout = () => {
               />
             </section>
 
+            {/* Voucher Section */}
+            <section className="glass-card p-6 sm:p-8 rounded-3xl border border-white shadow-sm">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
+                  <Tag size={24} />
+                </div>
+                <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">Mã giảm giá</h2>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3">
+                <input
+                  value={voucherCode}
+                  onChange={(event) => setVoucherCode(event.target.value.toUpperCase())}
+                  disabled={Boolean(appliedVoucher)}
+                  placeholder="Nhập mã giảm giá"
+                  className="flex-grow px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-bold uppercase"
+                />
+                {appliedVoucher ? (
+                  <Button type="button" variant="outline" onClick={handleRemoveVoucher} icon={X}>
+                    Bỏ mã
+                  </Button>
+                ) : (
+                  <Button type="button" onClick={handleApplyVoucher} isLoading={voucherLoading}>
+                    Áp dụng
+                  </Button>
+                )}
+              </div>
+
+              {appliedVoucher && (
+                <div className="mt-4 rounded-2xl bg-emerald-50 border border-emerald-100 px-4 py-3 text-sm font-bold text-emerald-700">
+                  Đã giảm {formatPrice(appliedVoucher.discountAmount)} cho đơn hàng này.
+                </div>
+              )}
+            </section>
+
             {/* Payment Method Section */}
             <section className="glass-card p-6 sm:p-8 rounded-3xl border border-white shadow-sm">
               <div className="flex items-center gap-3 mb-6">
@@ -311,11 +382,17 @@ const Checkout = () => {
                   <span>Phí vận chuyển</span>
                   <span className="text-emerald-600 font-bold uppercase tracking-wider">Miễn phí</span>
                 </div>
+                {appliedVoucher && (
+                  <div className="flex justify-between text-emerald-600 text-sm">
+                    <span>Giảm giá ({appliedVoucher.code})</span>
+                    <span className="font-bold">-{formatPrice(appliedVoucher.discountAmount)}</span>
+                  </div>
+                )}
                 <div className="h-px bg-slate-100 my-2" />
                 <div className="flex justify-between items-end">
                   <span className="text-slate-900 font-bold">Tổng thanh toán</span>
                   <span className="text-2xl font-black text-blue-600">
-                    {formatPrice(cartTotal)}
+                    {formatPrice(finalTotal)}
                   </span>
                 </div>
               </div>

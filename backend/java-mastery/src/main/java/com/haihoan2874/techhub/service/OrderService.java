@@ -52,6 +52,7 @@ public class OrderService {
     private final InventoryService inventoryService;
     private final PaymentService paymentService;
     private final EmailService emailService;
+    private final VoucherService voucherService;
 
     @Transactional
     public CreateOrderResponse createOrder(CreateOrderRequest request, Authentication authentication) {
@@ -327,13 +328,14 @@ public class OrderService {
         CartResponse cart = validateCart(userId);
         CustomerAddress address = validateAddress(request.getShippingAddressId(), userId);
         
-        BigDecimal discountAmount = BigDecimal.ZERO;
+        BigDecimal discountAmount = calculateDiscount(request.getVoucherCode(), cart.getTotalPrice());
         
         BigDecimal finalTotal = cart.getTotalPrice().subtract(discountAmount);
         Order savedOrder = createInitialOrder(userId, finalTotal, discountAmount, address, request);
 
         List<OrderItem> orderItems = reserveInventoryAndCreateItems(savedOrder, cart.getItems());
         savedOrder.setItems(orderItems);
+        voucherService.consumeVoucher(request.getVoucherCode(), cart.getTotalPrice());
 
         String paymentUrl = generatePaymentUrlIfVnPay(savedOrder, request.getPaymentMethod(), servletRequest);
         
@@ -342,6 +344,13 @@ public class OrderService {
 
         log.info("Checkout successful for order: {}", savedOrder.getOrderNumber());
         return mapToCheckoutResponse(savedOrder, paymentUrl);
+    }
+
+    private BigDecimal calculateDiscount(String voucherCode, BigDecimal orderAmount) {
+        if (voucherCode == null || voucherCode.isBlank()) {
+            return BigDecimal.ZERO;
+        }
+        return voucherService.applyVoucher(voucherCode, orderAmount).getDiscountAmount();
     }
 
     private CartResponse validateCart(UUID userId) {
