@@ -8,6 +8,7 @@ import com.haihoan2874.techhub.dto.response.CheckoutResponse;
 import com.haihoan2874.techhub.dto.response.CreateOrderResponse;
 import com.haihoan2874.techhub.dto.response.GetOrderByOrderNumberResponse;
 import com.haihoan2874.techhub.dto.response.GetOrderByIdResponse;
+import com.haihoan2874.techhub.dto.response.OrderHistoryResponse;
 import com.haihoan2874.techhub.dto.response.PatchCancelOrderResponse;
 import com.haihoan2874.techhub.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -66,6 +67,13 @@ public class OrderController {
         log.info("Order created with id: {}", response.getId());
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/my-orders")
+    @Operation(summary = "Get current user order history", description = "Get all orders owned by the authenticated user")
+    @SecurityRequirement(name = APIConstants.BEARER)
+    public ResponseEntity<java.util.List<OrderHistoryResponse>> getMyOrders(Authentication authentication) {
+        return ResponseEntity.ok(orderService.getMyOrders(authentication));
     }
 
     @GetMapping("/{id}")

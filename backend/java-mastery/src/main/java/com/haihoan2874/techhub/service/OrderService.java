@@ -10,6 +10,7 @@ import com.haihoan2874.techhub.model.Product;
 import com.haihoan2874.techhub.dto.response.GetOrderByIdResponse;
 import com.haihoan2874.techhub.dto.response.PatchCancelOrderResponse;
 import com.haihoan2874.techhub.dto.response.AdminOrderResponse;
+import com.haihoan2874.techhub.dto.response.OrderHistoryResponse;
 import com.haihoan2874.techhub.model.*;
 import com.haihoan2874.techhub.repository.CustomerAddressRepository;
 import com.haihoan2874.techhub.repository.OrderItemRepository;
@@ -173,6 +174,32 @@ public class OrderService {
                                 .subtotal(item.getSubtotal()).build()).toList())
                 .createdAt(order.getCreatedAt())
                 .build();
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderHistoryResponse> getMyOrders(Authentication authentication) {
+        UUID userId = userService.getCurrentUserId(authentication);
+        log.info("Fetching order history for user id {}", userId);
+
+        return orderRepository.findByUserIdOrderByCreatedAtDesc(userId).stream()
+                .map(order -> OrderHistoryResponse.builder()
+                        .id(order.getId())
+                        .orderNumber(order.getOrderNumber())
+                        .status(order.getStatus())
+                        .totalAmount(order.getTotal())
+                        .paymentMethod(order.getPaymentMethod())
+                        .createdAt(order.getCreatedAt())
+                        .orderItems(order.getItems().stream()
+                                .map(item -> OrderHistoryResponse.OrderItemResponse.builder()
+                                        .productId(item.getProductId())
+                                        .productName(item.getProductName())
+                                        .quantity(item.getQuantity())
+                                        .price(item.getPrice())
+                                        .subtotal(item.getSubtotal())
+                                        .build())
+                                .toList())
+                        .build())
+                .toList();
     }
 
     @Transactional
