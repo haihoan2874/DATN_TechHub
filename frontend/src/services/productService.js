@@ -24,6 +24,11 @@ const productService = {
   getReviews: (productId) => {
     const url = `/reviews/products/${productId}`;
     return axiosClient.get(url);
+  },
+
+  createReview: (productId, reviewData) => {
+    const url = `/reviews/products/${productId}`;
+    return axiosClient.post(url, reviewData);
   }
 };
 

@@ -3,15 +3,22 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { 
   ShoppingBag, CheckCircle2, Package, Search,
-  ArrowRight, Zap, TrendingUp, Calendar, CreditCard
+  ArrowRight, Zap, TrendingUp, Calendar, CreditCard, Star
 } from 'lucide-react';
 import orderService from '../services/orderService';
+import productService from '../services/productService';
 import Button from '../components/ui/Button';
+import Modal from '../components/ui/Modal';
+import toast from 'react-hot-toast';
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('ALL');
+  const [reviewTarget, setReviewTarget] = useState(null);
+  const [reviewRating, setReviewRating] = useState(0);
+  const [reviewComment, setReviewComment] = useState('');
+  const [reviewSubmitting, setReviewSubmitting] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,6 +46,43 @@ const Orders = () => {
     } catch (error) {
       console.error('Failed to cancel order', error);
       alert(error.response?.data?.message || 'Không thể hủy đơn hàng vào lúc này.');
+    }
+  };
+
+  const openReviewModal = (order, item) => {
+    setReviewTarget({ orderId: order.id, productId: item.productId, productName: item.productName });
+    setReviewRating(0);
+    setReviewComment('');
+  };
+
+  const closeReviewModal = () => {
+    if (reviewSubmitting) return;
+    setReviewTarget(null);
+    setReviewRating(0);
+    setReviewComment('');
+  };
+
+  const handleSubmitReview = async () => {
+    if (!reviewTarget) return;
+    if (!reviewRating) {
+      toast.error('Vui lòng chọn số sao đánh giá');
+      return;
+    }
+
+    setReviewSubmitting(true);
+    try {
+      await productService.createReview(reviewTarget.productId, {
+        rating: reviewRating,
+        comment: reviewComment.trim()
+      });
+      toast.success('Cảm ơn bạn đã đánh giá sản phẩm');
+      setReviewTarget(null);
+      setReviewRating(0);
+      setReviewComment('');
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Không thể gửi đánh giá vào lúc này');
+    } finally {
+      setReviewSubmitting(false);
     }
   };
 
@@ -82,6 +126,68 @@ const Orders = () => {
 
   return (
     <div className="min-h-screen bg-[#f1f5f9] pt-24 lg:pt-32 pb-20 relative overflow-hidden">
+      <Modal
+        isOpen={Boolean(reviewTarget)}
+        onClose={closeReviewModal}
+        title="Đánh giá sản phẩm"
+        size="md"
+        closeOnOverlay={!reviewSubmitting}
+        footer={
+          <>
+            <Button variant="ghost" onClick={closeReviewModal} disabled={reviewSubmitting}>
+              Hủy
+            </Button>
+            <Button onClick={handleSubmitReview} isLoading={reviewSubmitting}>
+              Gửi đánh giá
+            </Button>
+          </>
+        }
+      >
+        {reviewTarget && (
+          <div className="space-y-6">
+            <div>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Sản phẩm</p>
+              <h4 className="text-xl font-black text-slate-900 uppercase tracking-tight">{reviewTarget.productName}</h4>
+            </div>
+
+            <div>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Số sao</p>
+              <div className="flex items-center gap-2">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    type="button"
+                    onClick={() => setReviewRating(star)}
+                    className={`w-12 h-12 rounded-2xl border flex items-center justify-center transition-all ${
+                      star <= reviewRating
+                        ? 'bg-amber-50 border-amber-200 text-amber-500'
+                        : 'bg-slate-50 border-slate-100 text-slate-300 hover:text-amber-400'
+                    }`}
+                  >
+                    <Star size={24} fill={star <= reviewRating ? 'currentColor' : 'none'} />
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="review-comment" className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">
+                Nội dung
+              </label>
+              <textarea
+                id="review-comment"
+                value={reviewComment}
+                onChange={(event) => setReviewComment(event.target.value)}
+                rows={5}
+                maxLength={1000}
+                placeholder="Chia sẻ cảm nhận của bạn về sản phẩm..."
+                className="w-full rounded-3xl border border-slate-100 bg-slate-50 px-5 py-4 text-sm font-medium text-slate-700 outline-none transition-all focus:border-blue-200 focus:bg-white focus:ring-4 focus:ring-blue-500/5 resize-none"
+              />
+            </div>
+          </div>
+        )}
+      </Modal>
+
       <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-blue-500/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/4 pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-1/3 h-1/3 bg-purple-500/5 blur-[120px] rounded-full translate-y-1/2 -translate-x-1/4 pointer-events-none" />
 
@@ -222,6 +328,21 @@ const Orders = () => {
                                   </span>
                                 ))}
                              </div>
+                             {order.status === 'DELIVERED' && (
+                               <div className="mt-5 flex flex-wrap gap-2">
+                                 {order.orderItems?.map((item, i) => (
+                                   <button
+                                     key={`${order.id}-${item.productId || i}`}
+                                     type="button"
+                                     onClick={() => openReviewModal(order, item)}
+                                     className="inline-flex items-center gap-2 rounded-xl border border-amber-100 bg-amber-50 px-3 py-2 text-[10px] font-black uppercase tracking-widest text-amber-600 transition-all hover:border-amber-200 hover:bg-amber-100"
+                                   >
+                                     <Star size={13} />
+                                     Đánh giá {item.productName}
+                                   </button>
+                                 ))}
+                               </div>
+                             )}
                            </div>
                         </div>
 
