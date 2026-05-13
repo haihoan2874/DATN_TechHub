@@ -6,6 +6,7 @@ import com.haihoan2874.techhub.dto.response.ReviewResponse;
 import com.haihoan2874.techhub.model.Product;
 import com.haihoan2874.techhub.model.Review;
 import com.haihoan2874.techhub.model.User;
+import com.haihoan2874.techhub.repository.OrderRepository;
 import com.haihoan2874.techhub.repository.ProductRepository;
 import com.haihoan2874.techhub.repository.ReviewRepository;
 import com.haihoan2874.techhub.repository.UserRepository;
@@ -27,6 +28,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
+    private final OrderRepository orderRepository;
     private final UserService userService;
 
     @Transactional
@@ -38,6 +40,10 @@ public class ReviewService {
 
         if (reviewRepository.existsByProductIdAndUserId(productId, userId)) {
             throw new RuntimeException("User already reviewed this product");
+        }
+
+        if (!orderRepository.existsDeliveredOrderContainingProduct(userId, productId)) {
+            throw new IllegalStateException("Bạn chỉ có thể đánh giá sản phẩm sau khi đơn hàng đã được giao thành công");
         }
 
         Product product = productRepository.findById(productId)

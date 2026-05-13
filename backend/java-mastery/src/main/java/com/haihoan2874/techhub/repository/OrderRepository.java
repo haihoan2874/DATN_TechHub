@@ -69,6 +69,16 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
     @Query("SELECT DISTINCT o FROM Order o LEFT JOIN FETCH o.items WHERE o.userId = :userId ORDER BY o.createdAt DESC")
     List<Order> findByUserIdOrderByCreatedAtDesc(@Param("userId") UUID userId);
 
+    @Query("""
+            SELECT COUNT(o) > 0
+            FROM Order o
+            JOIN o.items i
+            WHERE o.userId = :userId
+            AND o.status = com.haihoan2874.techhub.model.OrderStatus.DELIVERED
+            AND i.productId = :productId
+            """)
+    boolean existsDeliveredOrderContainingProduct(@Param("userId") UUID userId, @Param("productId") UUID productId);
+
     @Query("SELECT DISTINCT o FROM Order o LEFT JOIN FETCH o.items ORDER BY o.createdAt DESC")
     List<Order> findAllWithItems();
 }
