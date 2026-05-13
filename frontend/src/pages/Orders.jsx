@@ -9,6 +9,7 @@ import orderService from '../services/orderService';
 import productService from '../services/productService';
 import Button from '../components/ui/Button';
 import Modal from '../components/ui/Modal';
+import ConfirmModal from '../components/ui/ConfirmModal';
 import toast from 'react-hot-toast';
 
 const Orders = () => {
@@ -19,6 +20,8 @@ const Orders = () => {
   const [reviewRating, setReviewRating] = useState(0);
   const [reviewComment, setReviewComment] = useState('');
   const [reviewSubmitting, setReviewSubmitting] = useState(false);
+  const [cancelTarget, setCancelTarget] = useState(null);
+  const [cancelSubmitting, setCancelSubmitting] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,16 +39,19 @@ const Orders = () => {
     }
   };
 
-  const handleCancelOrder = async (orderId) => {
-    const confirmed = window.confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?');
-    if (!confirmed) return;
-
+  const handleCancelOrder = async () => {
+    if (!cancelTarget) return;
+    setCancelSubmitting(true);
     try {
-      await orderService.cancelOrder(orderId);
+      await orderService.cancelOrder(cancelTarget.id);
+      toast.success('Hủy đơn hàng thành công');
+      setCancelTarget(null);
       await fetchOrders();
     } catch (error) {
       console.error('Failed to cancel order', error);
-      alert(error.response?.data?.message || 'Không thể hủy đơn hàng vào lúc này.');
+      toast.error(error.response?.data?.message || 'Không thể hủy đơn hàng vào lúc này.');
+    } finally {
+      setCancelSubmitting(false);
     }
   };
 
@@ -187,6 +193,17 @@ const Orders = () => {
           </div>
         )}
       </Modal>
+
+      <ConfirmModal
+        isOpen={Boolean(cancelTarget)}
+        onClose={() => setCancelTarget(null)}
+        onConfirm={handleCancelOrder}
+        title="Xác nhận hủy đơn"
+        message={`Bạn có chắc chắn muốn hủy đơn ${cancelTarget?.orderNumber || cancelTarget?.id || ''}? Hệ thống chỉ cho phép hủy đơn đang chờ xử lý.`}
+        confirmText="Hủy đơn"
+        variant="danger"
+        isLoading={cancelSubmitting}
+      />
 
       <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-blue-500/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/4 pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-1/3 h-1/3 bg-purple-500/5 blur-[120px] rounded-full translate-y-1/2 -translate-x-1/4 pointer-events-none" />
@@ -355,7 +372,7 @@ const Orders = () => {
                            <div className="flex items-center gap-3 w-full lg:w-fit">
                              {order.status === 'PENDING' && (
                                <button
-                                 onClick={() => handleCancelOrder(order.id)}
+                                 onClick={() => setCancelTarget(order)}
                                  className="flex-grow lg:flex-none flex items-center justify-center gap-3 px-6 py-4 bg-rose-50 text-rose-600 rounded-[1.5rem] font-black text-[11px] uppercase tracking-widest hover:bg-rose-600 hover:text-white transition-all border border-rose-100 shadow-xl shadow-rose-900/5 active:scale-95"
                                >
                                  Hủy đơn
