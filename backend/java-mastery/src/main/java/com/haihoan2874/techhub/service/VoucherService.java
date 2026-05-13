@@ -1,6 +1,8 @@
 package com.haihoan2874.techhub.service;
 
+import com.haihoan2874.techhub.dto.request.SaveVoucherRequest;
 import com.haihoan2874.techhub.dto.response.VoucherApplyResponse;
+import com.haihoan2874.techhub.dto.response.VoucherResponse;
 import com.haihoan2874.techhub.model.DiscountType;
 import com.haihoan2874.techhub.model.Voucher;
 import com.haihoan2874.techhub.repository.VoucherRepository;
@@ -11,11 +13,64 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class VoucherService {
     private final VoucherRepository voucherRepository;
+
+    public List<VoucherResponse> getAllVouchers() {
+        return voucherRepository.findAll().stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    public VoucherResponse createVoucher(SaveVoucherRequest request) {
+        String code = normalizeCode(request.getCode());
+        if (voucherRepository.existsByCodeIgnoreCase(code)) {
+            throw new IllegalStateException("Mã giảm giá này đã tồn tại");
+        }
+
+        Voucher voucher = Voucher.builder()
+                .code(code)
+                .discountType(request.getDiscountType())
+                .discountValue(request.getDiscountValue())
+                .minOrderAmount(request.getMinOrderAmount())
+                .usageLimit(request.getUsageLimit())
+                .expiresAt(request.getExpiresAt())
+                .isActive(request.getIsActive() == null || request.getIsActive())
+                .build();
+        return mapToResponse(voucherRepository.save(voucher));
+    }
+
+    public VoucherResponse updateVoucher(UUID id, SaveVoucherRequest request) {
+        Voucher voucher = voucherRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("Mã giảm giá không tồn tại"));
+        String code = normalizeCode(request.getCode());
+        voucherRepository.findByCodeIgnoreCase(code)
+                .filter(existing -> !existing.getId().equals(id))
+                .ifPresent(existing -> {
+                    throw new IllegalStateException("Mã giảm giá này đã tồn tại");
+                });
+
+        voucher.setCode(code);
+        voucher.setDiscountType(request.getDiscountType());
+        voucher.setDiscountValue(request.getDiscountValue());
+        voucher.setMinOrderAmount(request.getMinOrderAmount());
+        voucher.setUsageLimit(request.getUsageLimit());
+        voucher.setExpiresAt(request.getExpiresAt());
+        voucher.setIsActive(request.getIsActive() == null || request.getIsActive());
+        return mapToResponse(voucherRepository.save(voucher));
+    }
+
+    public void deleteVoucher(UUID id) {
+        if (!voucherRepository.existsById(id)) {
+            throw new IllegalStateException("Mã giảm giá không tồn tại");
+        }
+        voucherRepository.deleteById(id);
+    }
 
     public VoucherApplyResponse applyVoucher(String code, BigDecimal orderAmount) {
         Voucher voucher = findValidVoucher(code, orderAmount);
@@ -74,5 +129,23 @@ public class VoucherService {
             discount = voucher.getDiscountValue();
         }
         return discount.min(orderAmount).max(BigDecimal.ZERO);
+    }
+
+    private String normalizeCode(String code) {
+        return code.trim().toUpperCase();
+    }
+
+    private VoucherResponse mapToResponse(Voucher voucher) {
+        return VoucherResponse.builder()
+                .id(voucher.getId())
+                .code(voucher.getCode())
+                .discountType(voucher.getDiscountType().name())
+                .discountValue(voucher.getDiscountValue())
+                .minOrderAmount(voucher.getMinOrderAmount())
+                .usageLimit(voucher.getUsageLimit())
+                .usedCount(voucher.getUsedCount())
+                .expiresAt(voucher.getExpiresAt())
+                .isActive(voucher.getIsActive())
+                .build();
     }
 }

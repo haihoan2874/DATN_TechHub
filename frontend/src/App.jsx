@@ -27,6 +27,7 @@ import Orders from './pages/Orders';
 import GuestRoute from './components/common/GuestRoute';
 import UserManagement from './pages/UserManagement';
 import ReviewManagement from './pages/ReviewManagement';
+import VoucherManagement from './pages/VoucherManagement';
 import ScrollToTop from './components/common/ScrollToTop';
 
 function App() {
@@ -90,6 +91,7 @@ function App() {
               <Route path="categories" element={<CategoryManagement />} />
               <Route path="brands" element={<BrandManagement />} />
               <Route path="reviews" element={<ReviewManagement />} />
+              <Route path="vouchers" element={<VoucherManagement />} />
             </Route>
           </Routes>
         </Router>

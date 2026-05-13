@@ -89,6 +89,20 @@ const adminService = {
   },
   deleteReview: (id) => {
     return axiosClient.delete(`/reviews/${id}`);
+  },
+
+  // Vouchers
+  getAllVouchers: () => {
+    return axiosClient.get('/vouchers');
+  },
+  createVoucher: (data) => {
+    return axiosClient.post('/vouchers', data);
+  },
+  updateVoucher: (id, data) => {
+    return axiosClient.put(`/vouchers/${id}`, data);
+  },
+  deleteVoucher: (id) => {
+    return axiosClient.delete(`/vouchers/${id}`);
   }
 };
 

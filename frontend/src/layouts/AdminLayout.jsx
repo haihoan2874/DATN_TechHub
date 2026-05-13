@@ -6,7 +6,7 @@ import {
   LayoutDashboard, Package, ShoppingCart, 
   Users, BarChart3, Settings, LogOut, 
   Menu, X, Bell, Search, ChevronRight,
-  Tag, Image as ImageIcon, Star
+  Tag, Image as ImageIcon, Star, TicketPercent
 } from 'lucide-react';
 
 import ConfirmModal from '../components/ui/ConfirmModal';
@@ -26,6 +26,7 @@ const AdminLayout = () => {
     { path: '/admin/categories', icon: <Tag size={20} />, label: 'Danh mục' },
     { path: '/admin/brands', icon: <ImageIcon size={20} />, label: 'Thương hiệu' },
     { path: '/admin/reviews', icon: <Star size={20} />, label: 'Đánh giá' },
+    { path: '/admin/vouchers', icon: <TicketPercent size={20} />, label: 'Voucher' },
   ];
 
   const handleLogout = () => {
