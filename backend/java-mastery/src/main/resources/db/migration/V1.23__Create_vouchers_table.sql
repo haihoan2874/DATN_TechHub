@@ -12,6 +12,34 @@ CREATE TABLE IF NOT EXISTS vouchers (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+ALTER TABLE vouchers ADD COLUMN IF NOT EXISTS discount_type VARCHAR(20);
+ALTER TABLE vouchers ADD COLUMN IF NOT EXISTS discount_value NUMERIC(10, 2);
+ALTER TABLE vouchers ADD COLUMN IF NOT EXISTS min_order_amount NUMERIC(10, 2) DEFAULT 0;
+ALTER TABLE vouchers ADD COLUMN IF NOT EXISTS usage_limit INTEGER;
+ALTER TABLE vouchers ADD COLUMN IF NOT EXISTS used_count INTEGER DEFAULT 0;
+ALTER TABLE vouchers ADD COLUMN IF NOT EXISTS expires_at TIMESTAMP;
+ALTER TABLE vouchers ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE;
+ALTER TABLE vouchers ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE vouchers ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+
+UPDATE vouchers SET discount_type = 'AMOUNT' WHERE discount_type IS NULL;
+UPDATE vouchers SET discount_value = 0 WHERE discount_value IS NULL;
+UPDATE vouchers SET min_order_amount = 0 WHERE min_order_amount IS NULL;
+UPDATE vouchers SET used_count = 0 WHERE used_count IS NULL;
+UPDATE vouchers SET expires_at = CURRENT_TIMESTAMP + INTERVAL '1 year' WHERE expires_at IS NULL;
+UPDATE vouchers SET is_active = TRUE WHERE is_active IS NULL;
+UPDATE vouchers SET created_at = CURRENT_TIMESTAMP WHERE created_at IS NULL;
+UPDATE vouchers SET updated_at = CURRENT_TIMESTAMP WHERE updated_at IS NULL;
+
+ALTER TABLE vouchers ALTER COLUMN discount_type SET NOT NULL;
+ALTER TABLE vouchers ALTER COLUMN discount_value SET NOT NULL;
+ALTER TABLE vouchers ALTER COLUMN min_order_amount SET NOT NULL;
+ALTER TABLE vouchers ALTER COLUMN used_count SET NOT NULL;
+ALTER TABLE vouchers ALTER COLUMN expires_at SET NOT NULL;
+ALTER TABLE vouchers ALTER COLUMN is_active SET NOT NULL;
+ALTER TABLE vouchers ALTER COLUMN created_at SET NOT NULL;
+ALTER TABLE vouchers ALTER COLUMN updated_at SET NOT NULL;
+
 CREATE INDEX IF NOT EXISTS idx_vouchers_code ON vouchers (code);
 
 INSERT INTO vouchers (code, discount_type, discount_value, min_order_amount, usage_limit, expires_at)
