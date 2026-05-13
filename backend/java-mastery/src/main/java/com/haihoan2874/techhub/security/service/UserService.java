@@ -185,6 +185,11 @@ public class UserService {
 
         log.info("User found: [{}], Role: [{}]", user.getUsername(), user.getRole());
 
+        if (Boolean.FALSE.equals(user.getIsActive())) {
+            log.warn("Inactive user attempted to login: [{}]", loginRequest.getUsername());
+            throw new IllegalArgumentException("Tài khoản của bạn đã bị khóa, vui lòng liên hệ Admin");
+        }
+
         // Verify password
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             log.warn("Password mismatch for user: [{}]", loginRequest.getUsername());
@@ -238,8 +243,14 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponse toggleUserStatus(UUID id) {
+    public UserResponse toggleUserStatus(UUID id, Authentication authentication) {
         log.info("Admin toggling status for user with ID: {}", id);
+
+        UUID currentUserId = getCurrentUserId(authentication);
+        if (id.equals(currentUserId)) {
+            throw new IllegalArgumentException("Bạn không thể tự khóa tài khoản của chính mình");
+        }
+
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         user.setIsActive(!user.getIsActive());
@@ -255,4 +266,3 @@ public class UserService {
         return mapToUserResponse(userRepository.save(user));
     }
 }
-

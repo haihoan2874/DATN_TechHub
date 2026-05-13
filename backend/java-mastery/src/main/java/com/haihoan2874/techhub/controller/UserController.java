@@ -70,8 +70,9 @@ public class UserController {
     @Operation(summary = "Toggle user status", description = "Enable or disable a user account")
     @SecurityRequirement(name = APIConstants.BEARER)
     @PreAuthorize(APIConstants.ROLE_ADMIN)
-    public ResponseEntity<UserResponse> toggleUserStatus(@org.springframework.web.bind.annotation.PathVariable java.util.UUID id) {
-        return ResponseEntity.ok(userService.toggleUserStatus(id));
+    public ResponseEntity<UserResponse> toggleUserStatus(@org.springframework.web.bind.annotation.PathVariable java.util.UUID id,
+                                                         org.springframework.security.core.Authentication authentication) {
+        return ResponseEntity.ok(userService.toggleUserStatus(id, authentication));
     }
 
     @org.springframework.web.bind.annotation.PutMapping("/{id}/role")
