@@ -282,7 +282,9 @@ public class OrderService {
         log.info("Admin updating order status for id {} to {}", id, newStatus);
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Order not found"));
-        
+
+        validateOrderStatusTransition(order.getStatus(), newStatus);
+
         order.setStatus(newStatus);
         Order savedOrder = orderRepository.save(order);
         
@@ -292,6 +294,29 @@ public class OrderService {
                 .status(savedOrder.getStatus())
                 .total(savedOrder.getTotal())
                 .build();
+    }
+
+    private void validateOrderStatusTransition(OrderStatus currentStatus, OrderStatus newStatus) {
+        if (currentStatus == newStatus) {
+            return;
+        }
+
+        boolean validTransition = switch (currentStatus) {
+            case PENDING -> newStatus == OrderStatus.CONFIRMED
+                    || newStatus == OrderStatus.PROCESSING
+                    || newStatus == OrderStatus.CANCELLED;
+            case CONFIRMED -> newStatus == OrderStatus.PROCESSING
+                    || newStatus == OrderStatus.SHIPPED
+                    || newStatus == OrderStatus.CANCELLED;
+            case PROCESSING -> newStatus == OrderStatus.SHIPPED
+                    || newStatus == OrderStatus.CANCELLED;
+            case SHIPPED -> newStatus == OrderStatus.DELIVERED;
+            case DELIVERED, CANCELLED -> false;
+        };
+
+        if (!validTransition) {
+            throw new IllegalStateException("Cannot change order status from " + currentStatus + " to " + newStatus);
+        }
     }
 
     @Transactional
