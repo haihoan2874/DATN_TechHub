@@ -29,6 +29,19 @@ const Orders = () => {
     }
   };
 
+  const handleCancelOrder = async (orderId) => {
+    const confirmed = window.confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?');
+    if (!confirmed) return;
+
+    try {
+      await orderService.cancelOrder(orderId);
+      await fetchOrders();
+    } catch (error) {
+      console.error('Failed to cancel order', error);
+      alert(error.response?.data?.message || 'Không thể hủy đơn hàng vào lúc này.');
+    }
+  };
+
   const getStatusColor = (status) => {
     switch (status) {
       case 'PENDING': return 'bg-amber-500/10 text-amber-500 border-amber-500/20';
@@ -217,6 +230,14 @@ const Orders = () => {
                            </div>
                            
                            <div className="flex items-center gap-3 w-full lg:w-fit">
+                             {order.status === 'PENDING' && (
+                               <button
+                                 onClick={() => handleCancelOrder(order.id)}
+                                 className="flex-grow lg:flex-none flex items-center justify-center gap-3 px-6 py-4 bg-rose-50 text-rose-600 rounded-[1.5rem] font-black text-[11px] uppercase tracking-widest hover:bg-rose-600 hover:text-white transition-all border border-rose-100 shadow-xl shadow-rose-900/5 active:scale-95"
+                               >
+                                 Hủy đơn
+                               </button>
+                             )}
                              <button 
                                onClick={() => navigate(`/order-success/${order.id}`)}
                                className="flex-grow lg:flex-none flex items-center justify-center gap-3 px-8 py-4 bg-slate-900 text-white rounded-[1.5rem] font-black text-[11px] uppercase tracking-widest hover:bg-blue-600 transition-all shadow-xl shadow-slate-900/10 active:scale-95"

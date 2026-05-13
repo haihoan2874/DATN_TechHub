@@ -175,6 +175,7 @@ public class OrderService {
                 .build();
     }
 
+    @Transactional
     public PatchCancelOrderResponse cancelOrder(UUID id, Authentication authentication) {
         UUID userId = userService.getCurrentUserId(authentication);
 
@@ -183,10 +184,11 @@ public class OrderService {
         Order order = orderRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new EntityNotFoundException("Order not found"));
 
-        if (order.getStatus() != OrderStatus.PENDING && order.getStatus() != OrderStatus.CONFIRMED) {
+        if (order.getStatus() != OrderStatus.PENDING) {
             throw new IllegalStateException("Cannot cancel order with status " + order.getStatus());
         }
 
+        restoreCancelledOrderStock(order);
         order.setStatus(OrderStatus.CANCELLED);
 
         Order savedOrder = orderRepository.save(order);
@@ -197,6 +199,23 @@ public class OrderService {
                 .status(savedOrder.getStatus())
                 .updatedAt(savedOrder.getUpdatedAt())
                 .build();
+    }
+
+    private void restoreCancelledOrderStock(Order order) {
+        for (OrderItem item : order.getItems()) {
+            Product product = productRepository.findById(item.getProductId())
+                    .orElseThrow(() -> new EntityNotFoundException("Product not found"));
+
+            int restoredStock = product.getStockQuantity() + item.getQuantity();
+            product.setStockQuantity(restoredStock);
+            productRepository.save(product);
+
+            try {
+                inventoryService.updateStock(product.getId(), restoredStock);
+            } catch (EntityNotFoundException ex) {
+                log.warn("Inventory not found while restoring stock for product {}", product.getId());
+            }
+        }
     }
 
     @Transactional(readOnly = true)

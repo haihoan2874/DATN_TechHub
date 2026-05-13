@@ -18,7 +18,7 @@ const orderService = {
 
   cancelOrder: (orderId) => {
     const url = `/orders/${orderId}/cancel`;
-    return axiosClient.post(url);
+    return axiosClient.patch(url);
   }
 };
 
