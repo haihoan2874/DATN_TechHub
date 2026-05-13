@@ -1,11 +1,6 @@
 import axiosClient from '../api/axiosConfig';
 
 const orderService = {
-  createOrder: (orderData) => {
-    const url = '/orders';
-    return axiosClient.post(url, orderData);
-  },
-
   checkout: (checkoutData) => {
     const url = '/orders/checkout';
     return axiosClient.post(url, checkoutData);

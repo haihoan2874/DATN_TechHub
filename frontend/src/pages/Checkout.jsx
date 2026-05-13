@@ -17,7 +17,7 @@ import Input from '../components/ui/Input';
 import Modal from '../components/ui/Modal';
 
 const Checkout = () => {
-  const { cartItems, cartTotal, clearCart } = useCart();
+  const { cartItems, cartTotal, clearCart, cartLoading } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
   
@@ -149,15 +149,15 @@ const Checkout = () => {
       
       if (formData.paymentMethod === 'VNPAY' && response.paymentUrl) {
         setStatus({ type: 'success', message: 'Đang chuyển hướng đến cổng thanh toán VNPay...' });
-        clearCart();
+        await clearCart();
         window.location.href = response.paymentUrl;
         return;
       }
 
       setStatus({ type: 'success', message: 'Đặt hàng thành công! Đang chuyển hướng...' });
-      setTimeout(() => {
-        clearCart();
-        navigate(`/order-success/${response.id || ''}`);
+      setTimeout(async () => {
+        await clearCart();
+        navigate(`/order-success/${response.orderNumber || response.orderId}`);
       }, 2000);
     } catch (error) {
       setStatus({ 
@@ -167,6 +167,14 @@ const Checkout = () => {
       setIsSubmitting(false);
     }
   };
+
+  if (cartLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 pt-24 lg:pt-32 pb-20 flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-blue-600/20 border-t-blue-600 rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   if (cartItems.length === 0) {
     navigate('/cart');

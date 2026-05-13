@@ -93,6 +93,20 @@ const OrderManagement = () => {
     return statuses.find(s => s.value === statusValue) || statuses[0];
   };
 
+  const getAllowedStatuses = (currentStatus) => {
+    const allowedMap = {
+      PENDING: ['PENDING', 'CONFIRMED', 'PROCESSING', 'CANCELLED'],
+      CONFIRMED: ['CONFIRMED', 'PROCESSING', 'SHIPPED', 'CANCELLED'],
+      PROCESSING: ['PROCESSING', 'SHIPPED', 'CANCELLED'],
+      SHIPPED: ['SHIPPED', 'DELIVERED'],
+      DELIVERED: ['DELIVERED'],
+      CANCELLED: ['CANCELLED']
+    };
+    return statuses.filter(status => allowedMap[currentStatus]?.includes(status.value));
+  };
+
+  const isTerminalStatus = (status) => ['DELIVERED', 'CANCELLED'].includes(status);
+
   return (
     <div className="space-y-8 animate-in fade-in duration-700">
       <ConfirmModal 
@@ -151,7 +165,7 @@ const OrderManagement = () => {
         
         <div className="flex items-center gap-3 w-full lg:w-auto overflow-x-auto no-scrollbar pb-2 lg:pb-0">
            <div className="flex bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
-              {['ALL', 'PENDING', 'SHIPPED', 'DELIVERED'].map(status => (
+              {['ALL', 'PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED'].map(status => (
                 <button
                   key={status}
                   onClick={() => setStatusFilter(status)}
@@ -232,12 +246,12 @@ const OrderManagement = () => {
                       <td className="px-6 py-6 text-right">
                         <div className="relative inline-block text-left group-hover:scale-105 transition-transform">
                           <select 
-                            disabled={isUpdating === order.id}
+                            disabled={isUpdating === order.id || isTerminalStatus(order.status)}
                             value={order.status}
                             onChange={(e) => handleUpdateStatus(order.id, e.target.value)}
                             className="text-[10px] font-black uppercase tracking-widest bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500/20 appearance-none pr-10 cursor-pointer disabled:opacity-50"
                           >
-                            {statuses.map(s => (
+                            {getAllowedStatuses(order.status).map(s => (
                               <option key={s.value} value={s.value}>{s.label}</option>
                             ))}
                           </select>
