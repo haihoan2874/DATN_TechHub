@@ -15,6 +15,7 @@ import java.util.UUID;
 public class ReviewResponse {
     private UUID id;
     private UUID productId;
+    private String productName;
     private UUID userId;
     private String userName;
     private Integer rating;

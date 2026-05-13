@@ -4,6 +4,8 @@ import com.haihoan2874.techhub.dto.request.CreateReviewRequest;
 import com.haihoan2874.techhub.dto.response.CreateReviewResponse;
 import com.haihoan2874.techhub.dto.response.ReviewResponse;
 import com.haihoan2874.techhub.service.ReviewService;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import java.util.List;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,6 +37,14 @@ import java.util.UUID;
 public class ReviewController {
     private final ReviewService reviewService;
 
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    @SecurityRequirement(name = "bearer")
+    @Operation(summary = "Get all reviews", description = "Admin: get all customer reviews")
+    public ResponseEntity<List<ReviewResponse>> getAllReviews() {
+        return ResponseEntity.ok(reviewService.getAllReviews());
+    }
+
     @SecurityRequirement(name = "bearer")
     @PostMapping("/products/{productId}")
     @Operation(summary = "Create review", description = "Create a review for a product")
@@ -63,5 +73,14 @@ public class ReviewController {
     public ResponseEntity<List<ReviewResponse>> getReviews(@PathVariable UUID productId) {
         log.info("Rest request to get reviews for product: {}", productId);
         return ResponseEntity.ok(reviewService.getReviewsByProductId(productId));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @SecurityRequirement(name = "bearer")
+    @Operation(summary = "Delete review", description = "Admin: delete an inappropriate review")
+    public ResponseEntity<Void> deleteReview(@PathVariable UUID id) {
+        reviewService.deleteReview(id);
+        return ResponseEntity.noContent().build();
     }
 }

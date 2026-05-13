@@ -67,23 +67,42 @@ public class ReviewService {
     public java.util.List<ReviewResponse> getReviewsByProductId(UUID productId) {
         log.info("Fetching reviews for product: {}", productId);
         return reviewRepository.findByProductId(productId).stream()
-                .map(review -> {
-                    String displayName = (review.getUser().getFirstName() != null ? review.getUser().getFirstName() : "")
-                            + " " + (review.getUser().getLastName() != null ? review.getUser().getLastName() : "");
-                    displayName = displayName.trim();
-                    if (displayName.isEmpty()) {
-                        displayName = review.getUser().getUsername();
-                    }
-                    return ReviewResponse.builder()
-                        .id(review.getId())
-                        .productId(review.getProduct().getId())
-                        .userId(review.getUser().getId())
-                        .userName(displayName)
-                        .rating(review.getRating())
-                        .comment(review.getComment())
-                        .createdAt(review.getCreatedAt())
-                        .build();
-                })
+                .map(this::mapToReviewResponse)
                 .collect(java.util.stream.Collectors.toList());
+    }
+
+    public java.util.List<ReviewResponse> getAllReviews() {
+        log.info("Admin fetching all reviews");
+        return reviewRepository.findAllWithProductAndUser().stream()
+                .map(this::mapToReviewResponse)
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    @Transactional
+    public void deleteReview(UUID id) {
+        if (!reviewRepository.existsById(id)) {
+            throw new EntityNotFoundException("Review not found");
+        }
+        reviewRepository.deleteById(id);
+    }
+
+    private ReviewResponse mapToReviewResponse(Review review) {
+        String displayName = (review.getUser().getFirstName() != null ? review.getUser().getFirstName() : "")
+                + " " + (review.getUser().getLastName() != null ? review.getUser().getLastName() : "");
+        displayName = displayName.trim();
+        if (displayName.isEmpty()) {
+            displayName = review.getUser().getUsername();
+        }
+
+        return ReviewResponse.builder()
+                .id(review.getId())
+                .productId(review.getProduct().getId())
+                .productName(review.getProduct().getName())
+                .userId(review.getUser().getId())
+                .userName(displayName)
+                .rating(review.getRating())
+                .comment(review.getComment())
+                .createdAt(review.getCreatedAt())
+                .build();
     }
 }
