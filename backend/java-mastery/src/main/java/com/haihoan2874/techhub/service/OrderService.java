@@ -277,7 +277,12 @@ public class OrderService {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Order not found"));
 
-        validateOrderStatusTransition(order.getStatus(), newStatus);
+        OrderStatus currentStatus = order.getStatus();
+        validateOrderStatusTransition(currentStatus, newStatus);
+
+        if (newStatus == OrderStatus.CANCELLED && currentStatus != OrderStatus.CANCELLED) {
+            restoreCancelledOrderStock(order);
+        }
 
         order.setStatus(newStatus);
         Order savedOrder = orderRepository.save(order);
