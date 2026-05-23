@@ -191,7 +191,7 @@ const LoadingSkeleton = () => (
       <div className="w-16 h-16 border-t-2 border-black rounded-full animate-spin absolute top-0 left-0" />
     </div>
     <div className="text-center">
-      <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-900">DATN TechHub</p>
+      <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-900">S-LIFE</p>
       <p className="text-[8px] font-bold uppercase tracking-[0.2em] text-slate-400 mt-1">Building Landing Experience...</p>
     </div>
   </div>

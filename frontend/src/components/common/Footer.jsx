@@ -63,7 +63,7 @@ const Footer = () => {
 
         <div className="pt-12 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center gap-8">
           <p className="text-slate-400 text-sm font-medium">
-            © 2026 S-LIFE TECHHUB. Đồ án tốt nghiệp - Trịnh Hải Hoàn.
+            © 2026 S-LIFE. Đồ án tốt nghiệp - Trịnh Hải Hoàn.
           </p>
           <div className="flex items-center gap-8">
              <img src="https://img.icons8.com/color/48/000000/visa.png" alt="Visa" className="h-8 grayscale opacity-30 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer" />

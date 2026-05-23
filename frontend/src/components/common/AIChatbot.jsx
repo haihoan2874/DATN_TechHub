@@ -94,7 +94,7 @@ const AIChatbot = () => {
                     </div>
                     <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight mb-3">Yêu cầu đăng nhập</h4>
                     <p className="text-xs text-slate-500 font-medium leading-relaxed mb-8">
-                      Vui lòng đăng nhập tài khoản TechHub để bắt đầu sử dụng trợ lý tư vấn AI thông minh.
+                      Vui lòng đăng nhập tài khoản S-LIFE để bắt đầu sử dụng trợ lý tư vấn AI thông minh.
                     </p>
                     <Link 
                       to="/login" 

@@ -197,7 +197,7 @@ const BrandManagement = () => {
                     </td>
                     <td className="px-6 py-6">
                       <p className="text-sm text-slate-500 line-clamp-1 max-w-lg">
-                        {brand.description || 'Đối tác chiến lược của TechHub trong lĩnh vực thiết bị y tế.'}
+                        {brand.description || 'Đối tác chiến lược của S-LIFE trong lĩnh vực thiết bị y tế.'}
                       </p>
                     </td>
                     <td className="px-6 py-6">

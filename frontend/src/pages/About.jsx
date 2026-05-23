@@ -36,7 +36,7 @@ const About = () => {
               transition={{ delay: 0.2 }}
               className="text-lg lg:text-xl text-slate-500 font-medium leading-relaxed max-w-2xl mx-auto mb-12"
             >
-              S-Life TechHub không chỉ là một cửa hàng. Chúng tôi là điểm đến cho những người khao khát kết hợp sức mạnh của công nghệ vào hành trình rèn luyện sức khỏe và phong cách sống hiện đại.
+              S-LIFE không chỉ là một cửa hàng. Chúng tôi là điểm đến cho những người khao khát kết hợp sức mạnh của công nghệ vào hành trình rèn luyện sức khỏe và phong cách sống hiện đại.
             </motion.p>
 
             <motion.div

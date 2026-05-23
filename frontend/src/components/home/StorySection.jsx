@@ -20,7 +20,7 @@ const StorySection = () => {
               <img 
                 src="https://images.unsplash.com/photo-1510017803434-a899398421b3?auto=format&fit=crop&q=80&w=2070" 
                 className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000 scale-110 hover:scale-100" 
-                alt="TechHub Vision" 
+                alt="S-LIFE Vision" 
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
               <div className="absolute bottom-10 left-10 right-10">
@@ -66,7 +66,7 @@ const StorySection = () => {
                 transition={{ delay: 0.2 }}
                 className="text-slate-500 font-medium leading-relaxed text-lg"
               >
-                S-Life TechHub ra đời với sứ mệnh mang những đỉnh cao công nghệ đeo tay (Wearables) đến gần hơn với người Việt. Chúng tôi tin rằng, mỗi nhịp đập con tim đều xứng đáng được theo dõi bằng những thiết bị tinh hoa nhất.
+                S-LIFE ra đời với sứ mệnh mang những đỉnh cao công nghệ đeo tay (Wearables) đến gần hơn với người Việt. Chúng tôi tin rằng, mỗi nhịp đập con tim đều xứng đáng được theo dõi bằng những thiết bị tinh hoa nhất.
               </motion.p>
             </div>
 

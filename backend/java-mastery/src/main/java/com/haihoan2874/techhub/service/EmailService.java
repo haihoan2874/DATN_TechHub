@@ -45,9 +45,9 @@ public class EmailService {
     }
 
     public void sendVerificationEmail(String to, String token) {
-        String subject = "Verify your account - TechHub";
+        String subject = "Verify your account - S-LIFE";
         String verificationUrl = "http://localhost:8089/api/v1/auth/verify?token=" + token;
-        String content = "<h3>Welcome to TechHub!</h3>" +
+        String content = "<h3>Welcome to S-LIFE!</h3>" +
                 "<p>Please click the link below to verify your account:</p>" +
                 "<a href=\"" + verificationUrl + "\">Verify Account</a>" +
                 "<p>The link will expire in 24 hours.</p>";
