@@ -32,6 +32,7 @@ public class VoucherService {
         if (voucherRepository.existsByCodeIgnoreCase(code)) {
             throw new IllegalStateException("Mã giảm giá này đã tồn tại");
         }
+        validateDiscountConfiguration(request);
 
         Voucher voucher = Voucher.builder()
                 .code(code)
@@ -54,6 +55,7 @@ public class VoucherService {
                 .ifPresent(existing -> {
                     throw new IllegalStateException("Mã giảm giá này đã tồn tại");
                 });
+        validateDiscountConfiguration(request);
 
         voucher.setCode(code);
         voucher.setDiscountType(request.getDiscountType());
@@ -133,6 +135,16 @@ public class VoucherService {
 
     private String normalizeCode(String code) {
         return code.trim().toUpperCase();
+    }
+
+    private void validateDiscountConfiguration(SaveVoucherRequest request) {
+        if (request.getUsageLimit() != null && request.getUsageLimit() < 0) {
+            throw new IllegalStateException("Số lượt sử dụng không hợp lệ");
+        }
+        if (request.getDiscountType() == DiscountType.PERCENT
+                && request.getDiscountValue().compareTo(BigDecimal.valueOf(100)) > 0) {
+            throw new IllegalStateException("Phần trăm giảm giá không được vượt quá 100");
+        }
     }
 
     private VoucherResponse mapToResponse(Voucher voucher) {

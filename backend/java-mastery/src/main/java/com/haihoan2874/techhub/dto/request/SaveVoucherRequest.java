@@ -3,6 +3,7 @@ package com.haihoan2874.techhub.dto.request;
 import com.haihoan2874.techhub.model.DiscountType;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -26,6 +27,7 @@ public class SaveVoucherRequest {
     @DecimalMin(value = "0", message = "Minimum order amount must be greater than or equal to 0")
     private BigDecimal minOrderAmount;
 
+    @Min(value = 0, message = "Usage limit must be greater than or equal to 0")
     private Integer usageLimit;
 
     @NotNull(message = "Expiration date is required")
