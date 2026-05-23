@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { 
-  LayoutDashboard, Package, ShoppingCart, 
-  Users, BarChart3, Settings, LogOut, 
-  Menu, X, Bell, Search, ChevronRight,
-  Tag, Image as ImageIcon, Star, TicketPercent
+  Bell,
+  ChevronRight,
+  LogOut,
+  Menu,
+  Search,
+  Users,
+  X
 } from 'lucide-react';
 
 import ConfirmModal from '../components/ui/ConfirmModal';
+import { adminNavigation } from '../config/adminNavigation';
 
 const AdminLayout = () => {
   const { logout, user } = useAuth();
@@ -17,17 +21,6 @@ const AdminLayout = () => {
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-
-  const menuItems = [
-    { path: '/admin/dashboard', icon: <LayoutDashboard size={20} />, label: 'Tổng quan' },
-    { path: '/admin/products', icon: <Package size={20} />, label: 'Sản phẩm' },
-    { path: '/admin/orders', icon: <ShoppingCart size={20} />, label: 'Đơn hàng' },
-    { path: '/admin/users', icon: <Users size={20} />, label: 'Người dùng' },
-    { path: '/admin/categories', icon: <Tag size={20} />, label: 'Danh mục' },
-    { path: '/admin/brands', icon: <ImageIcon size={20} />, label: 'Thương hiệu' },
-    { path: '/admin/reviews', icon: <Star size={20} />, label: 'Đánh giá' },
-    { path: '/admin/vouchers', icon: <TicketPercent size={20} />, label: 'Voucher' },
-  ];
 
   const handleLogout = () => {
     logout();
@@ -59,8 +52,9 @@ const AdminLayout = () => {
 
         {/* Navigation */}
         <nav className="flex-1 px-3 space-y-1 overflow-y-auto no-scrollbar">
-          {menuItems.map((item) => {
+          {adminNavigation.map((item) => {
             const isActive = location.pathname === item.path;
+            const Icon = item.icon;
             return (
               <Link
                 key={item.path}
@@ -72,7 +66,7 @@ const AdminLayout = () => {
                 }`}
               >
                 <span className={`${isActive ? 'text-white' : 'text-slate-400 group-hover:text-blue-400'} transition-colors`}>
-                  {item.icon}
+                  <Icon size={20} />
                 </span>
                 {isSidebarOpen && (
                   <span className="font-bold text-[14px] whitespace-nowrap">
