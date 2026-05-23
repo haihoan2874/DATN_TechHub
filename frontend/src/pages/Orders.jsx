@@ -11,6 +11,7 @@ import Button from '../components/ui/Button';
 import Modal from '../components/ui/Modal';
 import ConfirmModal from '../components/ui/ConfirmModal';
 import toast from 'react-hot-toast';
+import { getOrderStatusLabel, ORDER_STATUS_VALUES } from '../constants/orderStatus';
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -105,15 +106,7 @@ const Orders = () => {
   };
 
   const getStatusText = (status) => {
-    switch (status) {
-      case 'PENDING': return 'Đang chờ';
-      case 'CONFIRMED': return 'Đã xác nhận';
-      case 'PROCESSING': return 'Đang xử lý';
-      case 'SHIPPED': return 'Đang giao';
-      case 'DELIVERED': return 'Đã giao';
-      case 'CANCELLED': return 'Đã hủy';
-      default: return status;
-    }
+    return getOrderStatusLabel(status);
   };
 
   const formatPrice = (price) => {
@@ -126,8 +119,8 @@ const Orders = () => {
 
   const stats = [
     { label: 'Tổng đơn hàng', value: orders.length, icon: <Package size={18} />, color: 'blue' },
-    { label: 'Đang xử lý', value: orders.filter(o => ['PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPED'].includes(o.status)).length, icon: <Zap size={18} />, color: 'amber' },
-    { label: 'Hoàn thành', value: orders.filter(o => o.status === 'DELIVERED').length, icon: <CheckCircle2 size={18} />, color: 'emerald' },
+    { label: 'Đang xử lý', value: orders.filter(o => ['PENDING', 'CONFIRMED', 'PROCESSING'].includes(o.status)).length, icon: <Zap size={18} />, color: 'amber' },
+    { label: 'Đã giao', value: orders.filter(o => o.status === 'DELIVERED').length, icon: <CheckCircle2 size={18} />, color: 'emerald' },
   ];
 
   return (
@@ -248,7 +241,7 @@ const Orders = () => {
 
           <div className="flex items-center gap-4 mb-8 bg-white/50 backdrop-blur-md p-2 rounded-[2rem] border border-white sticky top-24 z-40 shadow-xl shadow-slate-200/20">
             <div className="flex items-center gap-1 overflow-x-auto no-scrollbar flex-grow p-1">
-              {['ALL', 'PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED'].map((f) => (
+              {['ALL', ...ORDER_STATUS_VALUES].map((f) => (
                 <button
                   key={f}
                   onClick={() => setFilter(f)}

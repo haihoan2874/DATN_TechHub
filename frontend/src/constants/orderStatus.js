@@ -1,0 +1,30 @@
+export const ORDER_STATUS_VALUES = [
+  'PENDING',
+  'CONFIRMED',
+  'PROCESSING',
+  'SHIPPED',
+  'DELIVERED',
+  'CANCELLED'
+];
+
+export const ORDER_STATUS_LABELS = {
+  PENDING: 'Chờ xử lý',
+  CONFIRMED: 'Đã xác nhận',
+  PROCESSING: 'Đang xử lý',
+  SHIPPED: 'Đang giao',
+  DELIVERED: 'Đã giao',
+  CANCELLED: 'Đã hủy'
+};
+
+export const ORDER_STATUS_TRANSITIONS = {
+  PENDING: ['PENDING', 'CONFIRMED', 'PROCESSING', 'CANCELLED'],
+  CONFIRMED: ['CONFIRMED', 'PROCESSING', 'SHIPPED', 'CANCELLED'],
+  PROCESSING: ['PROCESSING', 'SHIPPED', 'CANCELLED'],
+  SHIPPED: ['SHIPPED', 'DELIVERED'],
+  DELIVERED: ['DELIVERED'],
+  CANCELLED: ['CANCELLED']
+};
+
+export const ORDER_TERMINAL_STATUSES = ['DELIVERED', 'CANCELLED'];
+
+export const getOrderStatusLabel = (status) => ORDER_STATUS_LABELS[status] || status;

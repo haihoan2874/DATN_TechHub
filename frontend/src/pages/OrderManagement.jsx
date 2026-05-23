@@ -11,6 +11,12 @@ import {
 import Button from '../components/ui/Button';
 import ConfirmModal from '../components/ui/ConfirmModal';
 import toast from 'react-hot-toast';
+import {
+  ORDER_STATUS_LABELS,
+  ORDER_STATUS_TRANSITIONS,
+  ORDER_STATUS_VALUES,
+  ORDER_TERMINAL_STATUSES
+} from '../constants/orderStatus';
 
 const OrderManagement = () => {
   const [orders, setOrders] = useState([]);
@@ -27,12 +33,12 @@ const OrderManagement = () => {
   });
 
   const statuses = [
-    { value: 'PENDING', label: 'Chờ xử lý', color: 'bg-amber-50 text-amber-600 border-amber-200', icon: <Clock size={12} /> },
-    { value: 'CONFIRMED', label: 'Đã xác nhận', color: 'bg-blue-50 text-blue-600 border-blue-200', icon: <CheckCircle2 size={12} /> },
-    { value: 'PROCESSING', label: 'Đang đóng gói', color: 'bg-indigo-50 text-indigo-600 border-indigo-200', icon: <Package size={12} /> },
-    { value: 'SHIPPED', label: 'Đang giao', color: 'bg-cyan-50 text-cyan-600 border-cyan-200', icon: <Truck size={12} /> },
-    { value: 'DELIVERED', label: 'Đã giao', color: 'bg-emerald-50 text-emerald-600 border-emerald-200', icon: <CheckCircle2 size={12} /> },
-    { value: 'CANCELLED', label: 'Đã hủy', color: 'bg-rose-50 text-rose-600 border-rose-200', icon: <XCircle size={12} /> }
+    { value: 'PENDING', label: ORDER_STATUS_LABELS.PENDING, color: 'bg-amber-50 text-amber-600 border-amber-200', icon: <Clock size={12} /> },
+    { value: 'CONFIRMED', label: ORDER_STATUS_LABELS.CONFIRMED, color: 'bg-blue-50 text-blue-600 border-blue-200', icon: <CheckCircle2 size={12} /> },
+    { value: 'PROCESSING', label: ORDER_STATUS_LABELS.PROCESSING, color: 'bg-indigo-50 text-indigo-600 border-indigo-200', icon: <Package size={12} /> },
+    { value: 'SHIPPED', label: ORDER_STATUS_LABELS.SHIPPED, color: 'bg-cyan-50 text-cyan-600 border-cyan-200', icon: <Truck size={12} /> },
+    { value: 'DELIVERED', label: ORDER_STATUS_LABELS.DELIVERED, color: 'bg-emerald-50 text-emerald-600 border-emerald-200', icon: <CheckCircle2 size={12} /> },
+    { value: 'CANCELLED', label: ORDER_STATUS_LABELS.CANCELLED, color: 'bg-rose-50 text-rose-600 border-rose-200', icon: <XCircle size={12} /> }
   ];
 
   useEffect(() => {
@@ -94,18 +100,10 @@ const OrderManagement = () => {
   };
 
   const getAllowedStatuses = (currentStatus) => {
-    const allowedMap = {
-      PENDING: ['PENDING', 'CONFIRMED', 'PROCESSING', 'CANCELLED'],
-      CONFIRMED: ['CONFIRMED', 'PROCESSING', 'SHIPPED', 'CANCELLED'],
-      PROCESSING: ['PROCESSING', 'SHIPPED', 'CANCELLED'],
-      SHIPPED: ['SHIPPED', 'DELIVERED'],
-      DELIVERED: ['DELIVERED'],
-      CANCELLED: ['CANCELLED']
-    };
-    return statuses.filter(status => allowedMap[currentStatus]?.includes(status.value));
+    return statuses.filter(status => ORDER_STATUS_TRANSITIONS[currentStatus]?.includes(status.value));
   };
 
-  const isTerminalStatus = (status) => ['DELIVERED', 'CANCELLED'].includes(status);
+  const isTerminalStatus = (status) => ORDER_TERMINAL_STATUSES.includes(status);
 
   return (
     <div className="space-y-8 animate-in fade-in duration-700">
@@ -165,7 +163,7 @@ const OrderManagement = () => {
         
         <div className="flex items-center gap-3 w-full lg:w-auto overflow-x-auto no-scrollbar pb-2 lg:pb-0">
            <div className="flex bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
-              {['ALL', 'PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED'].map(status => (
+              {['ALL', ...ORDER_STATUS_VALUES].map(status => (
                 <button
                   key={status}
                   onClick={() => setStatusFilter(status)}
