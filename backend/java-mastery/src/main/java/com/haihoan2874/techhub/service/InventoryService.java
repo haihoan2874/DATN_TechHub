@@ -1,7 +1,9 @@
 package com.haihoan2874.techhub.service;
 
 import com.haihoan2874.techhub.model.Inventory;
+import com.haihoan2874.techhub.model.Product;
 import com.haihoan2874.techhub.repository.InventoryRepository;
+import com.haihoan2874.techhub.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +18,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class InventoryService {
     private final InventoryRepository inventoryRepository;
+    private final ProductRepository productRepository;
 
     @Transactional
     public void initializeInventory(UUID productId, Integer initialStock) {
@@ -38,6 +41,7 @@ public class InventoryService {
         inventory.setQuantityAvailable(newStock);
         inventory.setLastRestockDate(LocalDateTime.now());
         inventoryRepository.save(inventory);
+        syncProductStock(productId, inventory.getQuantityAvailable());
     }
 
     @Transactional
@@ -55,6 +59,7 @@ public class InventoryService {
         inventory.setQuantityAvailable(inventory.getQuantityAvailable() - quantity);
         inventory.setQuantityReserved(inventory.getQuantityReserved() + quantity);
         inventoryRepository.save(inventory);
+        syncProductStock(productId, inventory.getQuantityAvailable());
         return true;
     }
 
@@ -67,6 +72,7 @@ public class InventoryService {
         inventory.setQuantityReserved(Math.max(0, inventory.getQuantityReserved() - quantity));
         inventory.setQuantityAvailable(inventory.getQuantityAvailable() + quantity);
         inventoryRepository.save(inventory);
+        syncProductStock(productId, inventory.getQuantityAvailable());
     }
 
     @Transactional
@@ -83,5 +89,12 @@ public class InventoryService {
         return inventoryRepository.findByProductId(productId)
                 .map(Inventory::getQuantityAvailable)
                 .orElse(0);
+    }
+
+    private void syncProductStock(UUID productId, Integer availableStock) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new EntityNotFoundException("Product not found: " + productId));
+        product.setStockQuantity(availableStock);
+        productRepository.save(product);
     }
 }

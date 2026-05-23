@@ -231,17 +231,10 @@ public class OrderService {
 
     private void restoreCancelledOrderStock(Order order) {
         for (OrderItem item : order.getItems()) {
-            Product product = productRepository.findById(item.getProductId())
-                    .orElseThrow(() -> new EntityNotFoundException("Product not found"));
-
-            int restoredStock = product.getStockQuantity() + item.getQuantity();
-            product.setStockQuantity(restoredStock);
-            productRepository.save(product);
-
             try {
-                inventoryService.updateStock(product.getId(), restoredStock);
+                inventoryService.releaseStock(item.getProductId(), item.getQuantity());
             } catch (EntityNotFoundException ex) {
-                log.warn("Inventory not found while restoring stock for product {}", product.getId());
+                log.warn("Inventory not found while restoring stock for product {}", item.getProductId());
             }
         }
     }
