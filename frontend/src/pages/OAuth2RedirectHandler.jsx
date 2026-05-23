@@ -25,7 +25,7 @@ const OAuth2RedirectHandler = () => {
             
             // Redirect based on role
             if (role === 'ROLE_ADMIN') {
-                navigate('/admin/dashboard');
+                navigate('/admin');
             } else {
                 navigate('/');
             }

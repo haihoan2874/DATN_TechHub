@@ -230,7 +230,7 @@ const Navbar = () => {
                       </div>
                       <div className="space-y-1">
                         {user.role === 'ROLE_ADMIN' && (
-                          <Link to="/admin/dashboard" className="flex items-center gap-3 p-3 rounded-2xl bg-blue-600 text-white text-[11px] font-black transition-all hover:bg-blue-700 shadow-lg shadow-blue-600/20 mb-2" onClick={() => setIsUserMenuOpen(false)}>
+                          <Link to="/admin" className="flex items-center gap-3 p-3 rounded-2xl bg-blue-600 text-white text-[11px] font-black transition-all hover:bg-blue-700 shadow-lg shadow-blue-600/20 mb-2" onClick={() => setIsUserMenuOpen(false)}>
                             <Settings size={16} /> QUẢN TRỊ HỆ THỐNG
                           </Link>
                         )}

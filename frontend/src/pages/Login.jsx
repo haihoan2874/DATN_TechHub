@@ -19,7 +19,6 @@ const Login = () => {
   const [status, setStatus] = useState({ type: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Redirect to previous page or home after login
   const from = location.state?.from?.pathname || "/";
 
   const handleChange = (e) => {
@@ -43,7 +42,7 @@ const Login = () => {
 
       setTimeout(() => {
         if (userRole === 'ROLE_ADMIN') {
-          navigate('/admin/dashboard', { replace: true });
+          navigate('/admin', { replace: true });
         } else {
           navigate(from, { replace: true });
         }
