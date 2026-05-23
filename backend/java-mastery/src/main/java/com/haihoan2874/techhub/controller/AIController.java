@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -20,6 +21,7 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/api/v1/ai")
 @RequiredArgsConstructor
 @Tag(name = "AI", description = "AI product advisory using Gemini 1.5 Flash")
+@PreAuthorize("isAuthenticated()")
 public class AIController {
 
     private final AIService aiService;
