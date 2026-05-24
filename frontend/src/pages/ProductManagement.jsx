@@ -1,19 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useMemo } from 'react';
 import adminService from '../services/adminService';
 import { 
-  Plus, Search, Filter, RefreshCw, 
+  Plus, Search, RefreshCw,
   Info, List, Layout, Settings, Save, Trash2, Package
 } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import Modal from '../components/ui/Modal';
 import ConfirmModal from '../components/ui/ConfirmModal';
+import PageShell from '../components/layout/PageShell';
+import PageHeader from '../components/layout/PageHeader';
+import Toolbar from '../components/layout/Toolbar';
+import Pagination from '../components/data/Pagination';
 import toast from 'react-hot-toast';
 import ImageUpload from '../components/admin/ImageUpload';
 import ProductTable from './ProductManagement/components/ProductTable';
 import SpecsEditor from './ProductManagement/components/SpecsEditor';
 import FeaturesEditor from './ProductManagement/components/FeaturesEditor';
+
+const PAGE_SIZE = 8;
 
 const ProductManagement = () => {
   const [products, setProducts] = useState([]);
@@ -25,6 +30,8 @@ const ProductManagement = () => {
   const [activeTab, setActiveTab] = useState('basic');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
   const [stockModal, setStockModal] = useState({
@@ -217,12 +224,34 @@ const ProductManagement = () => {
     }
   };
 
-  const filteredProducts = products.filter(p => 
-    p.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredProducts = useMemo(() => {
+    const keyword = searchTerm.trim().toLowerCase();
+    return products.filter((product) => {
+      const matchesKeyword = !keyword || product.name.toLowerCase().includes(keyword) || product.slug?.toLowerCase().includes(keyword);
+      const productCategoryId = product.category?.id || product.categoryId;
+      const matchesCategory = categoryFilter === 'all' || productCategoryId === categoryFilter;
+      return matchesKeyword && matchesCategory;
+    });
+  }, [products, searchTerm, categoryFilter]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE));
+  const paginatedProducts = useMemo(() => {
+    const startIndex = (currentPage - 1) * PAGE_SIZE;
+    return filteredProducts.slice(startIndex, startIndex + PAGE_SIZE);
+  }, [filteredProducts, currentPage]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, categoryFilter]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   return (
-    <div className="space-y-8">
+    <PageShell>
       <ConfirmModal 
         isOpen={isDeleteConfirmOpen}
         onClose={() => setIsDeleteConfirmOpen(false)}
@@ -269,45 +298,52 @@ const ProductManagement = () => {
         </div>
       </Modal>
 
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
-           <div className="flex items-center gap-2 text-blue-600 font-bold text-xs uppercase tracking-widest mb-2">
-              <Package size={14} />
-              Quản lý kho hàng
-           </div>
-           <h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase">Danh sách thiết bị</h1>
+      <PageHeader
+        eyebrow="Quản lý kho hàng"
+        title="Sản phẩm và tồn kho"
+        description="Theo dõi danh sách thiết bị, giá bán, phân loại và số lượng tồn kho."
+        icon={Package}
+        action={<Button onClick={() => handleOpenModal()} icon={Plus}>Tạo sản phẩm</Button>}
+      />
+
+      <Toolbar>
+        <div className="relative w-full flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+          <input
+            type="text"
+            placeholder="Tìm theo tên hoặc slug sản phẩm..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-10 pr-4 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
+          />
         </div>
-        <Button onClick={() => handleOpenModal()} icon={Plus} className="shadow-xl shadow-blue-600/20">Thiết lập sản phẩm mới</Button>
-      </div>
+        <select
+          value={categoryFilter}
+          onChange={(e) => setCategoryFilter(e.target.value)}
+          className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm font-semibold text-slate-700 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 lg:w-56"
+        >
+          <option value="all">Tất cả danh mục</option>
+          {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+        </select>
+        <span className="whitespace-nowrap rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-600">
+          {filteredProducts.length} sản phẩm
+        </span>
+        <button onClick={fetchData} className="rounded-xl border border-slate-300 bg-white p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900">
+          <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
+        </button>
+      </Toolbar>
 
-      {/* Filters Bar */}
-      <div className="bg-white p-6 rounded-[2.5rem] border border-slate-200 shadow-sm flex flex-col lg:flex-row gap-6 items-center">
-         <div className="relative flex-1 w-full">
-            <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
-            <input 
-               type="text" 
-               placeholder="Tìm kiếm theo tên sản phẩm, SKU hoặc mô tả..."
-               value={searchTerm}
-               onChange={(e) => setSearchTerm(e.target.value)}
-               className="w-full pl-14 pr-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black/5 transition-all font-medium text-sm"
-            />
-         </div>
-         <div className="flex gap-4 w-full lg:w-auto">
-            <select className="bg-slate-50 border border-slate-100 rounded-2xl px-6 py-3.5 text-xs font-black uppercase tracking-widest outline-none focus:ring-2 focus:ring-black/5">
-               <option>Tất cả danh mục</option>
-               {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-            </select>
-            <button onClick={fetchData} className="p-3.5 bg-slate-50 border border-slate-100 rounded-2xl text-slate-400 hover:text-black transition-colors shadow-sm">
-               <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
-            </button>
-         </div>
-      </div>
-
-      {/* Table */}
       <ProductTable 
-        products={filteredProducts} 
+        products={paginatedProducts}
         loading={loading}
+        footer={!loading && filteredProducts.length > 0 ? (
+          <Pagination
+            page={currentPage}
+            pageSize={PAGE_SIZE}
+            totalItems={filteredProducts.length}
+            onPageChange={setCurrentPage}
+          />
+        ) : null}
         onEdit={handleOpenModal}
         onDelete={(id) => { setProductToDelete(id); setIsDeleteConfirmOpen(true); }}
         onUpdateStock={handleUpdateStock}
@@ -500,7 +536,7 @@ const ProductManagement = () => {
           </div>
         </div>
       </Modal>
-    </div>
+    </PageShell>
   );
 };
 
