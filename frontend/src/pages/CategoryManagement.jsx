@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import adminService from '../services/adminService';
 import { 
   Plus, Search, Edit2, Trash2, 
@@ -12,8 +12,11 @@ import PageShell from '../components/layout/PageShell';
 import PageHeader from '../components/layout/PageHeader';
 import Toolbar from '../components/layout/Toolbar';
 import DataTable from '../components/data/DataTable';
+import Pagination from '../components/data/Pagination';
 import EmptyState from '../components/feedback/EmptyState';
 import toast from 'react-hot-toast';
+
+const PAGE_SIZE = 8;
 
 const tableColumns = [
   { key: 'name', label: 'Tên danh mục' },
@@ -28,6 +31,7 @@ const CategoryManagement = () => {
   const [currentCategory, setCurrentCategory] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
   
@@ -124,9 +128,27 @@ const CategoryManagement = () => {
     }
   };
 
-  const filteredCategories = categories.filter(c => 
-    c.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredCategories = useMemo(() => {
+    const keyword = searchTerm.trim().toLowerCase();
+    if (!keyword) return categories;
+    return categories.filter((category) => category.name.toLowerCase().includes(keyword));
+  }, [categories, searchTerm]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredCategories.length / PAGE_SIZE));
+  const paginatedCategories = useMemo(() => {
+    const startIndex = (currentPage - 1) * PAGE_SIZE;
+    return filteredCategories.slice(startIndex, startIndex + PAGE_SIZE);
+  }, [filteredCategories, currentPage]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   return (
     <PageShell>
@@ -158,12 +180,25 @@ const CategoryManagement = () => {
             className="w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-10 pr-4 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
           />
         </div>
+        <span className="whitespace-nowrap rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-600">
+          {filteredCategories.length} danh mục
+        </span>
         <button onClick={fetchCategories} className="rounded-xl border border-slate-300 bg-white p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900">
           <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
         </button>
       </Toolbar>
 
-      <DataTable columns={tableColumns}>
+      <DataTable
+        columns={tableColumns}
+        footer={!loading && filteredCategories.length > 0 ? (
+          <Pagination
+            page={currentPage}
+            pageSize={PAGE_SIZE}
+            totalItems={filteredCategories.length}
+            onPageChange={setCurrentPage}
+          />
+        ) : null}
+      >
               {loading ? (
                 Array(5).fill(0).map((_, i) => (
                   <tr key={i} className="animate-pulse">
@@ -175,7 +210,7 @@ const CategoryManagement = () => {
                   <td colSpan="3"><EmptyState title="Không có danh mục" description="Thử đổi từ khóa tìm kiếm hoặc tạo danh mục mới." /></td>
                 </tr>
               ) : (
-                filteredCategories.map((category) => (
+                paginatedCategories.map((category) => (
                   <tr key={category.id} className="hover:bg-slate-50">
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-4">

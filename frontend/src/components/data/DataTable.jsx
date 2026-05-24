@@ -1,6 +1,6 @@
 import React from 'react';
 
-const DataTable = ({ columns, children, className = '' }) => {
+const DataTable = ({ columns, children, footer, className = '' }) => {
   return (
     <div className={`overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm ${className}`}>
       <div className="overflow-x-auto">
@@ -20,6 +20,11 @@ const DataTable = ({ columns, children, className = '' }) => {
           <tbody className="divide-y divide-slate-100">{children}</tbody>
         </table>
       </div>
+      {footer ? (
+        <div className="border-t border-slate-200 bg-white px-5 py-4">
+          {footer}
+        </div>
+      ) : null}
     </div>
   );
 };
