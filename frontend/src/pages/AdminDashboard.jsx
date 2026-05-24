@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { 
   Users, Package, ShoppingCart, 
-  BarChart3, ArrowUpRight, ArrowDownRight,
-  TrendingUp, Calendar, Filter, FileText,
+  TrendingUp, FileText,
   RefreshCw
 } from 'lucide-react';
 import Button from '../components/ui/Button';
@@ -14,6 +12,9 @@ import {
 import adminService from '../services/adminService';
 import toast from 'react-hot-toast';
 import ReportExportModal from '../components/admin/ReportExportModal';
+import PageShell from '../components/layout/PageShell';
+import PageHeader from '../components/layout/PageHeader';
+import MetricCard from '../components/data/MetricCard';
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
@@ -38,81 +39,54 @@ const AdminDashboard = () => {
 
   if (loading || !stats) {
     return (
-      <div className="h-[60vh] flex flex-col items-center justify-center space-y-4">
+      <div className="flex h-[60vh] flex-col items-center justify-center space-y-4">
         <RefreshCw className="animate-spin text-blue-600" size={40} />
-        <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">Đang đồng bộ dữ liệu hệ thống...</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Đang tải dữ liệu tổng quan...</p>
       </div>
     );
   }
 
+  const metricItems = [
+    { label: 'Tổng doanh thu', value: `${stats.totalRevenue.toLocaleString()} ₫`, icon: TrendingUp, tone: 'blue' },
+    { label: 'Đơn hàng', value: stats.totalOrders, icon: ShoppingCart, tone: 'green' },
+    { label: 'Khách hàng', value: stats.totalCustomers.toLocaleString(), icon: Users, tone: 'amber' },
+    { label: 'Sản phẩm', value: stats.totalProducts, icon: Package, tone: 'indigo' }
+  ];
+
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight uppercase italic">Bảng điều khiển</h1>
-          <p className="text-slate-500 mt-1 font-medium">Theo dõi hoạt động kinh doanh thời gian thực.</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <Button variant="outline" icon={RefreshCw} onClick={fetchStats}>Cập nhật mới</Button>
-          <Button 
-            variant="primary" 
-            icon={FileText} 
-            onClick={() => setIsReportModalOpen(true)}
-            className="bg-slate-900 hover:bg-black shadow-lg shadow-slate-900/10"
-          >
-            TỔNG HỢP BÁO CÁO
-          </Button>
-        </div>
-      </div>
+    <PageShell>
+      <PageHeader
+        eyebrow="Tổng quan quản trị"
+        title="Bảng điều khiển"
+        description="Theo dõi doanh thu, đơn hàng, khách hàng và phân bố danh mục sản phẩm."
+        icon={TrendingUp}
+        action={
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Button variant="outline" icon={RefreshCw} onClick={fetchStats}>Cập nhật</Button>
+            <Button icon={FileText} onClick={() => setIsReportModalOpen(true)}>
+              Xuất báo cáo
+            </Button>
+          </div>
+        }
+      />
 
       <ReportExportModal 
         isOpen={isReportModalOpen} 
         onClose={() => setIsReportModalOpen(false)} 
       />
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard 
-          title="Tổng doanh thu" 
-          value={`${stats.totalRevenue.toLocaleString()} ₫`} 
-          trend="+12.5%" 
-          isUp={true} 
-          icon={<TrendingUp size={24} />} 
-          color="blue"
-        />
-        <StatCard 
-          title="Đơn hàng mới" 
-          value={stats.totalOrders} 
-          trend="+8.2%" 
-          isUp={true} 
-          icon={<ShoppingCart size={24} />} 
-          color="emerald"
-        />
-        <StatCard 
-          title="Khách hàng" 
-          value={stats.totalCustomers.toLocaleString()} 
-          trend="-2.4%" 
-          isUp={false} 
-          icon={<Users size={24} />} 
-          color="amber"
-        />
-        <StatCard 
-          title="Sản phẩm" 
-          value={stats.totalProducts} 
-          trend="+4" 
-          isUp={true} 
-          icon={<Package size={24} />} 
-          color="purple"
-        />
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {metricItems.map((metric) => (
+          <MetricCard key={metric.label} {...metric} />
+        ))}
       </div>
 
-      {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm relative overflow-hidden">
-          <div className="flex items-center justify-between mb-8">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:col-span-2">
+          <div className="mb-6 flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-black text-slate-900 tracking-tight uppercase italic">Doanh thu tuần này</h3>
-              <p className="text-sm text-slate-400 font-medium">Dữ liệu tổng hợp từ các đơn hàng đã hoàn tất</p>
+              <h3 className="text-base font-bold text-slate-950">Doanh thu tuần này</h3>
+              <p className="mt-1 text-sm text-slate-500">Tổng hợp từ các đơn hàng đã hoàn tất.</p>
             </div>
           </div>
           
@@ -129,7 +103,7 @@ const AdminDashboard = () => {
                 <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12, fontWeight: 600 }} dy={10} />
                 <YAxis hide={true} />
                 <Tooltip 
-                  contentStyle={{ backgroundColor: '#1e293b', borderRadius: '16px', border: 'none', color: '#fff', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
+                  contentStyle={{ backgroundColor: '#1e293b', borderRadius: '12px', border: 'none', color: '#fff' }}
                   itemStyle={{ color: '#fff', fontSize: '14px', fontWeight: 'bold' }}
                   labelStyle={{ color: '#94a3b8', marginBottom: '4px' }}
                   formatter={(value) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value)}
@@ -140,9 +114,12 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm flex flex-col">
-          <div className="flex items-center justify-between mb-8">
-            <h3 className="text-lg font-black text-slate-900 tracking-tight uppercase italic">Tỉ trọng Danh mục</h3>
+        <div className="flex flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="mb-6 flex items-center justify-between">
+            <div>
+              <h3 className="text-base font-bold text-slate-950">Tỉ trọng danh mục</h3>
+              <p className="mt-1 text-sm text-slate-500">Phân bố theo nhóm sản phẩm.</p>
+            </div>
           </div>
           
           <div className="flex-1 min-h-[250px]">
@@ -161,48 +138,20 @@ const AdminDashboard = () => {
             </ResponsiveContainer>
           </div>
 
-          <div className="mt-8 space-y-4">
+          <div className="mt-6 space-y-3">
              {stats.topCategories.map((item, idx) => (
                <div key={idx} className="flex items-center justify-between">
                  <div className="flex items-center gap-2">
                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
-                   <span className="text-sm font-bold text-slate-600">{item.name}</span>
+                   <span className="text-sm font-semibold text-slate-600">{item.name}</span>
                  </div>
-                 <span className="text-sm font-black text-slate-900">{item.value}%</span>
+                 <span className="text-sm font-bold text-slate-900">{item.value}%</span>
                </div>
              ))}
           </div>
         </div>
       </div>
-    </div>
-  );
-};
-
-const StatCard = ({ title, value, trend, isUp, icon, color }) => {
-  const colorClasses = {
-    blue: 'bg-blue-50 text-blue-600',
-    emerald: 'bg-emerald-50 text-emerald-600',
-    amber: 'bg-amber-50 text-amber-600',
-    purple: 'bg-purple-50 text-purple-600'
-  };
-
-  return (
-    <motion.div 
-      whileHover={{ y: -5 }}
-      className="bg-white p-7 rounded-[32px] border border-slate-100 shadow-sm transition-all"
-    >
-      <div className="flex items-center justify-between mb-5">
-        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${colorClasses[color]}`}>
-          {icon}
-        </div>
-        <div className={`flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-black ${isUp ? 'bg-emerald-50 text-emerald-600' : 'bg-blue-50 text-blue-600'}`}>
-          {isUp ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
-          {trend}
-        </div>
-      </div>
-      <div className="text-slate-400 text-xs font-bold uppercase tracking-widest">{title}</div>
-      <div className="text-3xl font-black text-slate-900 mt-2 tracking-tight">{value}</div>
-    </motion.div>
+    </PageShell>
   );
 };
 
