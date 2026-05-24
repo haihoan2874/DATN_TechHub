@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import adminService from '../services/adminService';
 import { 
   Plus, Search, RefreshCw,
-  Info, List, Layout, Settings, Save, Trash2, Package
+  Info, List, Layout, Settings, Save, Package
 } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
@@ -349,113 +349,100 @@ const ProductManagement = () => {
         onUpdateStock={handleUpdateStock}
       />
 
-      {/* Builder Modal - Redesigned as a Full-Screen Builder */}
+      {/* Product form modal */}
       <Modal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)}
-        title={currentProduct ? 'Hệ thống thiết lập thiết bị' : 'Kiến tạo thiết bị mới'}
+        title={currentProduct ? 'Cập nhật sản phẩm' : 'Tạo sản phẩm mới'}
         size="full"
         footer={
-          <div className="flex items-center justify-between w-full px-10 py-6 bg-slate-900 text-white rounded-t-[3rem]">
-            <div className="flex items-center gap-4">
-               <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center font-black italic">S</div>
-               <div>
-                  <div className="text-[10px] font-black uppercase tracking-widest opacity-40">Trạng thái</div>
-                  <div className="text-xs font-bold">{currentProduct ? 'Đang cập nhật phiên bản' : 'Bản nháp mới'}</div>
-               </div>
+          <div className="flex w-full flex-col gap-3 border-t border-slate-200 bg-white px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <div className="text-sm font-semibold text-slate-900">{currentProduct ? 'Lưu thay đổi sản phẩm' : 'Tạo sản phẩm và đưa vào hệ thống'}</div>
+              <div className="text-xs text-slate-500">Thông tin sản phẩm, phân loại và tồn kho sẽ được cập nhật sau khi lưu.</div>
             </div>
-            <div className="flex gap-4">
+            <div className="flex justify-end gap-3">
               <button 
                 onClick={() => setIsModalOpen(false)}
-                className="px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-white/10 transition-all"
+                className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
               >
-                Đóng lại
+                Hủy
               </button>
-              <Button type="button" onClick={handleSubmit} isLoading={isSubmitting} icon={Save} className="shadow-2xl shadow-blue-500/40">
-                {currentProduct ? 'Cập nhật & Xuất bản' : 'Khởi tạo & Đăng bán'}
+              <Button type="button" onClick={handleSubmit} isLoading={isSubmitting} icon={Save}>
+                {currentProduct ? 'Lưu thay đổi' : 'Tạo sản phẩm'}
               </Button>
             </div>
           </div>
         }
       >
         <div className="flex h-[80vh] overflow-hidden bg-slate-50">
-          {/* Left Sidebar - Navigation & Quick Info */}
-          <div className="w-80 flex flex-col border-r border-slate-200 bg-white">
-            <div className="p-8 space-y-6 flex-1">
+          <div className="flex w-72 flex-col border-r border-slate-200 bg-white">
+            <div className="flex-1 space-y-6 p-6">
                <div className="space-y-2">
-                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Điều hướng thiết lập</p>
+                 <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Nhóm thông tin</p>
                  <div className="space-y-1">
                     {[
-                      { id: 'basic', label: 'Thông tin cốt lõi', icon: Info },
+                      { id: 'basic', label: 'Thông tin cơ bản', icon: Info },
                       { id: 'specs', label: 'Cấu hình kỹ thuật', icon: List },
-                      { id: 'landing', label: 'Thiết kế Story', icon: Layout },
-                      { id: 'settings', label: 'Cấu hình nâng cao', icon: Settings }
+                      { id: 'landing', label: 'Tính năng nổi bật', icon: Layout },
+                      { id: 'settings', label: 'Hiển thị và mô tả', icon: Settings }
                     ].map(tab => (
                       <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.15em] transition-all ${
+                        className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-colors ${
                           activeTab === tab.id 
-                            ? 'bg-blue-600 text-white shadow-xl shadow-blue-600/20 translate-x-1' 
-                            : 'text-slate-400 hover:bg-slate-50 hover:text-slate-900'
+                            ? 'bg-slate-900 text-white'
+                            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950'
                         }`}
                       >
-                        <tab.icon size={18} />
+                        <tab.icon size={17} />
                         {tab.label}
                       </button>
                     ))}
                  </div>
                </div>
 
-               <div className="pt-8 space-y-4">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Xem trước nhanh</p>
-                  <div className="aspect-square rounded-3xl bg-slate-50 border border-slate-100 p-4 flex items-center justify-center overflow-hidden">
+               <div className="space-y-4 pt-4">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Xem trước nhanh</p>
+                  <div className="flex aspect-square items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 p-4">
                      {formData.imageUrl ? (
-                       <img src={formData.imageUrl.startsWith('http') ? formData.imageUrl : `http://localhost:8089${formData.imageUrl}`} className="w-full h-full object-contain" alt="" />
+                       <img src={formData.imageUrl.startsWith('http') ? formData.imageUrl : `http://localhost:8089${formData.imageUrl}`} className="h-full w-full object-contain" alt="" />
                      ) : (
                        <Package size={48} className="text-slate-200" />
                      )}
                   </div>
                   <div className="space-y-1 px-2">
-                     <div className="text-sm font-black text-slate-900 italic uppercase truncate">{formData.name || 'Tên thiết bị'}</div>
-                     <div className="text-[11px] font-black text-blue-600 italic">{(formData.price || 0).toLocaleString()} ₫</div>
+                     <div className="truncate text-sm font-semibold text-slate-950">{formData.name || 'Tên sản phẩm'}</div>
+                     <div className="text-sm font-bold text-blue-700">{(formData.price || 0).toLocaleString()} ₫</div>
                   </div>
                </div>
             </div>
-
-            <div className="p-8 bg-blue-50/50">
-               <div className="flex items-center gap-2 mb-2">
-                  <div className="w-1 h-1 bg-blue-500 rounded-full animate-pulse" />
-                  <span className="text-[9px] font-black uppercase tracking-widest text-blue-500">Auto-save Enabled</span>
-               </div>
-               <p className="text-[10px] text-blue-400 font-medium leading-relaxed italic">Hệ thống tự động đồng bộ hóa các thuộc tính kỹ thuật khi bạn nhập liệu.</p>
-            </div>
           </div>
 
-          {/* Main Content Area */}
-          <div className="flex-1 overflow-y-auto bg-slate-50/50 custom-scrollbar">
-            <div className="max-w-4xl mx-auto py-12 px-12">
+          <div className="flex-1 overflow-y-auto bg-slate-50 custom-scrollbar">
+            <div className="mx-auto max-w-4xl space-y-8 px-8 py-8">
                {activeTab === 'basic' && (
-                 <div className="space-y-12 animate-in fade-in slide-in-from-right-8 duration-500">
+                 <div className="space-y-8">
                     <section className="space-y-6">
-                       <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Thông tin định danh</h2>
-                       <div className="grid grid-cols-1 gap-8 p-10 bg-white rounded-[3rem] border border-slate-200 shadow-sm">
+                       <h2 className="text-lg font-bold text-slate-950">Thông tin định danh</h2>
+                       <div className="grid grid-cols-1 gap-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                           <Input label="Tên gọi thiết bị" name="name" required value={formData.name} onChange={handleInputChange} placeholder="VD: Garmin Forerunner 265..." />
-                          <Input label="Đường dẫn tĩnh (Slug)" name="slug" required value={formData.slug} onChange={handleInputChange} className="font-mono text-[10px] uppercase tracking-tighter bg-slate-50 border-none" />
+                          <Input label="Đường dẫn tĩnh (Slug)" name="slug" required value={formData.slug} onChange={handleInputChange} className="font-mono text-xs" />
                        </div>
                     </section>
 
                     <section className="space-y-6">
-                       <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Giá trị & Kho vận</h2>
-                       <div className="grid grid-cols-2 gap-10 p-10 bg-white rounded-[3rem] border border-slate-200 shadow-sm">
+                       <h2 className="text-lg font-bold text-slate-950">Giá bán và tồn kho</h2>
+                       <div className="grid grid-cols-1 gap-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:grid-cols-2">
                           <Input label="Giá niêm yết (₫)" type="number" name="price" required value={formData.price} onChange={handleInputChange} />
                           <Input label="Số lượng tồn kho" type="number" name="stockQuantity" required value={formData.stockQuantity} onChange={handleInputChange} />
                        </div>
                     </section>
 
                     <section className="space-y-6">
-                       <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Hình ảnh đại diện</h2>
-                       <div className="p-10 bg-white rounded-[3rem] border border-slate-200 shadow-sm">
+                       <h2 className="text-lg font-bold text-slate-950">Hình ảnh đại diện</h2>
+                       <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                           <ImageUpload 
                             label="Tải lên hình ảnh sản phẩm chất lượng cao" 
                             value={formData.imageUrl} 
@@ -466,17 +453,17 @@ const ProductManagement = () => {
                     </section>
 
                     <section className="space-y-6">
-                       <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Phân loại & Thương hiệu</h2>
-                       <div className="grid grid-cols-2 gap-10 p-10 bg-white rounded-[3rem] border border-slate-200 shadow-sm">
+                       <h2 className="text-lg font-bold text-slate-950">Phân loại và thương hiệu</h2>
+                       <div className="grid grid-cols-1 gap-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:grid-cols-2">
                           <div className="space-y-3">
-                             <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Danh mục hệ thống</label>
-                             <select name="categoryId" value={formData.categoryId} onChange={handleInputChange} className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold outline-none focus:ring-2 focus:ring-black/5 transition-all">
+                             <label className="ml-1 text-xs font-semibold uppercase tracking-wide text-slate-500">Danh mục hệ thống</label>
+                             <select name="categoryId" value={formData.categoryId} onChange={handleInputChange} className="w-full rounded-xl border border-slate-300 bg-white p-3 text-sm font-semibold outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10">
                                 {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                              </select>
                           </div>
                           <div className="space-y-3">
-                             <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Hãng sản xuất</label>
-                             <select name="brandId" value={formData.brandId} onChange={handleInputChange} className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold outline-none focus:ring-2 focus:ring-black/5 transition-all">
+                             <label className="ml-1 text-xs font-semibold uppercase tracking-wide text-slate-500">Hãng sản xuất</label>
+                             <select name="brandId" value={formData.brandId} onChange={handleInputChange} className="w-full rounded-xl border border-slate-300 bg-white p-3 text-sm font-semibold outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10">
                                 {brands.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
                              </select>
                           </div>
@@ -486,30 +473,30 @@ const ProductManagement = () => {
                )}
 
                {activeTab === 'specs' && (
-                 <div className="animate-in fade-in slide-in-from-right-8 duration-500">
+                 <div>
                     <SpecsEditor specs={formData.specs} setSpecs={(s) => setFormData(prev => ({ ...prev, specs: s }))} />
                  </div>
                )}
 
                {activeTab === 'landing' && (
-                 <div className="animate-in fade-in slide-in-from-right-8 duration-500">
+                 <div>
                     <FeaturesEditor features={formData.features} setFeatures={(f) => setFormData(prev => ({ ...prev, features: f }))} />
                  </div>
                )}
 
                {activeTab === 'settings' && (
-                 <div className="space-y-12 animate-in fade-in slide-in-from-right-8 duration-500">
+                 <div className="space-y-8">
                     <section className="space-y-6">
-                       <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Cấu hình hiển thị</h2>
-                       <div className="p-10 bg-slate-900 rounded-[3.5rem] text-white shadow-2xl shadow-slate-900/20">
+                       <h2 className="text-lg font-bold text-slate-950">Cấu hình hiển thị</h2>
+                       <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                           <label className="flex items-center justify-between cursor-pointer group">
                              <div className="space-y-2">
-                                <p className="text-sm font-black uppercase italic tracking-tighter group-hover:text-blue-400 transition-colors">Kích hoạt sản phẩm</p>
-                                <p className="text-xs text-white/40 font-medium">Sản phẩm sẽ ngay lập tức có mặt trên hệ thống bán lẻ sau khi xuất bản.</p>
+                                <p className="text-sm font-semibold text-slate-950">Kích hoạt sản phẩm</p>
+                                <p className="text-xs text-slate-500">Sản phẩm sẽ hiển thị cho khách hàng nếu đang hoạt động.</p>
                              </div>
                              <div className="relative">
                                 <input type="checkbox" name="isActive" checked={formData.isActive} onChange={handleInputChange} className="sr-only" />
-                                <div className={`w-14 h-8 rounded-full transition-colors ${formData.isActive ? 'bg-blue-600' : 'bg-slate-700'}`} />
+                                <div className={`w-14 h-8 rounded-full transition-colors ${formData.isActive ? 'bg-blue-600' : 'bg-slate-300'}`} />
                                 <div className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full transition-transform ${formData.isActive ? 'translate-x-6' : ''}`} />
                              </div>
                           </label>
@@ -517,15 +504,15 @@ const ProductManagement = () => {
                     </section>
 
                     <section className="space-y-6">
-                       <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Tiếp thị & SEO</h2>
-                       <div className="space-y-3 p-10 bg-white rounded-[3.5rem] border border-slate-200 shadow-sm">
-                          <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Mô tả tóm tắt</label>
+                       <h2 className="text-lg font-bold text-slate-950">Mô tả sản phẩm</h2>
+                       <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                          <label className="ml-1 text-xs font-semibold uppercase tracking-wide text-slate-500">Mô tả tóm tắt</label>
                           <textarea 
                             name="description" 
                             value={formData.description} 
                             onChange={handleInputChange} 
                             rows="8" 
-                            className="w-full p-8 bg-slate-50 border border-slate-100 rounded-[2.5rem] text-sm font-medium outline-none focus:ring-2 focus:ring-black/5 transition-all resize-none leading-relaxed" 
+                            className="w-full resize-none rounded-xl border border-slate-300 bg-white p-4 text-sm font-medium leading-relaxed outline-none transition-colors focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
                             placeholder="Nhập nội dung tiếp thị ngắn gọn cho sản phẩm này..."
                           />
                        </div>
