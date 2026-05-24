@@ -9,7 +9,6 @@ const ProductSpecs = ({ specs }) => {
       parsed = {};
     }
     
-    // If it's the grouped format, flatten it for the Shopee style
     const isCategorized = Object.values(parsed).some(val => typeof val === 'object' && val !== null && !Array.isArray(val));
     
     if (isCategorized) {
@@ -32,19 +31,17 @@ const ProductSpecs = ({ specs }) => {
   if (!Object.keys(flatSpecs).length) return null;
 
   return (
-    <section className="bg-white rounded-sm shadow-sm border border-slate-100 overflow-hidden">
-      {/* Header Shopee Style */}
-      <div className="bg-slate-50/50 px-6 py-4 border-b border-slate-100">
-        <h3 className="text-[14px] font-bold text-slate-900 uppercase tracking-tight">CHI TIẾT SẢN PHẨM</h3>
+    <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div className="border-b border-slate-100 bg-slate-50 px-6 py-4">
+        <h3 className="text-lg font-bold text-slate-900">Chi tiết sản phẩm</h3>
       </div>
-      
-      {/* Specs List */}
+
       <div className="p-6">
         <div className="space-y-4">
           {Object.entries(flatSpecs).map(([key, value], i) => (
-            <div key={i} className="flex text-[14px] leading-relaxed">
-              <span className="w-1/4 text-slate-500 font-medium">{key}</span>
-              <span className="flex-1 text-slate-900 font-semibold pl-4">
+            <div key={i} className="grid gap-1 text-sm leading-relaxed sm:grid-cols-[220px_1fr]">
+              <span className="font-medium text-slate-500">{key}</span>
+              <span className="font-semibold text-slate-900">
                 {typeof value === 'string' && value.startsWith('http') ? (
                    <img src={value} alt={key} className="max-w-[100px] rounded-lg border" />
                 ) : (

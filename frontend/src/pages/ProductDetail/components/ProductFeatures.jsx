@@ -12,30 +12,28 @@ const ProductFeatures = ({ features }) => {
   if (!parsedFeatures || parsedFeatures.length === 0) return null;
 
   return (
-    <section className="bg-white rounded-sm shadow-sm border border-slate-100 overflow-hidden">
-      {/* Header Shopee Style */}
-      <div className="bg-slate-50/50 px-6 py-4 border-b border-slate-100">
-        <h3 className="text-[14px] font-bold text-slate-900 uppercase tracking-tight">MÔ TẢ SẢN PHẨM</h3>
+    <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div className="border-b border-slate-100 bg-slate-50 px-6 py-4">
+        <h3 className="text-lg font-bold text-slate-900">Mô tả sản phẩm</h3>
       </div>
-      
-      {/* Content Shopee Style */}
-      <div className="p-8 space-y-10">
+
+      <div className="space-y-8 p-6 sm:p-8">
         {parsedFeatures.map((block, index) => (
-          <div key={index} className="space-y-6">
+          <div key={index} className="space-y-4">
             {block.title && (
-              <h4 className="text-[16px] font-bold text-slate-900 leading-tight">
+              <h4 className="text-base font-bold leading-tight text-slate-900">
                 {block.title}
               </h4>
             )}
             
             {block.description && (
-              <p className="text-[14px] text-slate-700 leading-relaxed whitespace-pre-wrap">
+              <p className="whitespace-pre-wrap text-sm leading-6 text-slate-700">
                 {block.description}
               </p>
             )}
 
             {block.image && (
-              <div className="rounded-xl overflow-hidden shadow-md">
+              <div className="overflow-hidden rounded-xl border border-slate-100">
                 <img 
                   src={block.image} 
                   alt={block.title || 'Product detail'} 
@@ -45,12 +43,12 @@ const ProductFeatures = ({ features }) => {
             )}
 
             {block.items && block.items.length > 0 && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+              <div className="grid grid-cols-1 gap-4 pt-2 sm:grid-cols-2">
                 {block.items.map((item, i) => (
-                  <div key={i} className="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-100">
+                  <div key={i} className="flex items-start gap-4 rounded-xl border border-slate-100 bg-slate-50 p-4">
                     <div className="flex-1">
-                      <p className="text-[13px] font-bold text-slate-900">{item.title}</p>
-                      <p className="text-[12px] text-slate-500 mt-1">{item.description}</p>
+                      <p className="text-sm font-bold text-slate-900">{item.title}</p>
+                      <p className="mt-1 text-sm text-slate-500">{item.description}</p>
                     </div>
                   </div>
                 ))}
