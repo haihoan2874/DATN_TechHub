@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Filter, Grid, List, ChevronDown, SlidersHorizontal, Search, X, Check, Star, Tag, Smartphone, Watch, Headphones, Activity } from 'lucide-react';
+import { Grid, ChevronDown, SlidersHorizontal, Search, X, Check, Tag, Smartphone, Watch, Headphones, Activity } from 'lucide-react';
 import ProductCard from '../components/ui/ProductCard';
 import productService from '../services/productService';
 import Button from '../components/ui/Button';
@@ -35,7 +34,7 @@ const Shop = () => {
   // Pagination state
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [pageSize, setPageSize] = useState(12);
+  const pageSize = 12;
 
   const location = useLocation();
   
@@ -58,10 +57,27 @@ const Shop = () => {
   }, [location.search, categories]);
 
   useEffect(() => {
-    fetchInitialData();
+    fetchFilterData();
+  }, []);
+
+  useEffect(() => {
+    fetchProducts();
   }, [selectedCategory, selectedBrand, selectedPriceRange, sortOrder, sortDirection, currentPage, searchQuery]);
 
-  const fetchInitialData = async () => {
+  const fetchFilterData = async () => {
+    try {
+      const [cats, brs] = await Promise.all([
+        productService.getCategories(),
+        productService.getBrands()
+      ]);
+      setCategories(cats?.contents || cats || []);
+      setBrands(brs || []);
+    } catch (error) {
+      console.error('Failed to fetch shop filters:', error);
+    }
+  };
+
+  const fetchProducts = async () => {
     setLoading(true);
     try {
       const params = {
@@ -77,7 +93,6 @@ const Shop = () => {
       };
       
       const response = await productService.getAllProducts(params);
-      
       if (response && response.contents) {
         setProducts(response.contents);
         setTotalPages(response.totalPages || 1);
@@ -85,13 +100,6 @@ const Shop = () => {
         setProducts([]);
         setTotalPages(0);
       }
-      
-      const cats = await productService.getCategories();
-      setCategories(cats?.contents || cats || []);
-      
-      const brs = await productService.getBrands();
-      setBrands(brs || []);
-      
     } catch (error) {
       console.error('Failed to fetch shop data:', error);
       setProducts([]);
@@ -226,7 +234,7 @@ const Shop = () => {
   );
 
   return (
-    <div className="min-h-screen pt-32 lg:pt-44 pb-20 bg-[#f8fafc]">
+    <div className="min-h-screen bg-slate-50 pb-16 pt-28 lg:pt-36">
       <ConfirmModal 
         isOpen={isConfirmClearOpen}
         onClose={() => setIsConfirmClearOpen(false)}
@@ -236,43 +244,40 @@ const Shop = () => {
         confirmText="Xác nhận xóa"
       />
 
-      <div className="container mx-auto px-6 lg:px-8">
-        
-        {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-5 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
           <span>Trang chủ</span>
           <span className="text-slate-200">/</span>
           <span className="text-slate-900">Tất cả sản phẩm</span>
         </div>
 
-        {/* Page Title & Sort */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mb-12">
+        <div className="mb-8 flex flex-col items-start justify-between gap-5 lg:flex-row lg:items-end">
           <div className="max-w-2xl">
-            <h1 className="text-4xl lg:text-5xl font-black text-slate-900 tracking-tighter mb-4 uppercase">
-              S-<span className="text-primary">LIFE</span> KHÁM PHÁ
+            <h1 className="mb-3 text-3xl font-bold tracking-tight text-slate-950 lg:text-4xl">
+              Khám phá sản phẩm S-LIFE
             </h1>
-            <p className="text-slate-500 font-medium leading-relaxed">
-              Trang bị những công nghệ đeo tay tiên tiến nhất. Từ Garmin đến Apple, mọi thứ bạn cần để nâng tầm lối sống năng động.
+            <p className="text-sm leading-relaxed text-slate-500 sm:text-base">
+              Tìm kiếm thiết bị sức khỏe, công nghệ đeo và phụ kiện phù hợp với nhu cầu của bạn.
             </p>
           </div>
           
-          <div className="flex items-center gap-4 w-full lg:w-auto">
-             <div className="flex items-center gap-2 bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm">
+          <div className="flex w-full items-center gap-3 overflow-x-auto lg:w-auto">
+             <div className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-white p-1.5 shadow-sm">
                 <button 
                   onClick={() => { setSortOrder('price'); setSortDirection('asc'); }}
-                  className={`px-4 py-2 rounded-xl text-xs font-black transition-all ${sortOrder === 'price' && sortDirection === 'asc' ? 'bg-slate-900 text-white' : 'text-slate-500 hover:bg-slate-50'}`}
+                  className={`rounded-xl px-4 py-2 text-xs font-semibold transition-colors ${sortOrder === 'price' && sortDirection === 'asc' ? 'bg-slate-900 text-white' : 'text-slate-500 hover:bg-slate-50'}`}
                 >
                   Giá thấp
                 </button>
                 <button 
                   onClick={() => { setSortOrder('price'); setSortDirection('desc'); }}
-                  className={`px-4 py-2 rounded-xl text-xs font-black transition-all ${sortOrder === 'price' && sortDirection === 'desc' ? 'bg-slate-900 text-white' : 'text-slate-500 hover:bg-slate-50'}`}
+                  className={`rounded-xl px-4 py-2 text-xs font-semibold transition-colors ${sortOrder === 'price' && sortDirection === 'desc' ? 'bg-slate-900 text-white' : 'text-slate-500 hover:bg-slate-50'}`}
                 >
                   Giá cao
                 </button>
                 <button 
                   onClick={() => { setSortOrder('updatedAt'); setSortDirection('desc'); }}
-                  className={`px-4 py-2 rounded-xl text-xs font-black transition-all ${sortOrder === 'updatedAt' ? 'bg-slate-900 text-white' : 'text-slate-500 hover:bg-slate-50'}`}
+                  className={`rounded-xl px-4 py-2 text-xs font-semibold transition-colors ${sortOrder === 'updatedAt' ? 'bg-slate-900 text-white' : 'text-slate-500 hover:bg-slate-50'}`}
                 >
                   Mới nhất
                 </button>
@@ -288,84 +293,52 @@ const Shop = () => {
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-12">
-          {/* Mobile Filter Sidebar Drawer */}
-          <AnimatePresence>
-            {isFilterOpen && (
-              <>
-                <motion.div 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  onClick={() => setIsFilterOpen(false)}
-                  className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[60] lg:hidden"
-                />
-                <motion.aside 
-                  initial={{ x: '-100%' }}
-                  animate={{ x: 0 }}
-                  exit={{ x: '-100%' }}
-                  transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-                  className="fixed top-0 left-0 bottom-0 w-[90%] max-w-sm bg-white z-[70] p-8 overflow-y-auto lg:hidden flex flex-col"
-                >
-                  <div className="flex items-center justify-between mb-10">
-                    <h2 className="text-2xl font-black text-slate-900 uppercase">BỘ LỌC <span className="text-primary">S-LIFE</span></h2>
-                    <button onClick={() => setIsFilterOpen(false)} className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors">
+        <div className="flex flex-col gap-8 lg:flex-row">
+          {isFilterOpen && (
+            <>
+                <div
+                onClick={() => setIsFilterOpen(false)}
+                className="fixed inset-0 z-[60] bg-slate-900/50 lg:hidden"
+              />
+              <aside className="fixed bottom-0 left-0 top-0 z-[70] flex w-[90%] max-w-sm flex-col overflow-y-auto bg-white p-6 lg:hidden">
+                <div className="mb-8 flex items-center justify-between">
+                  <h2 className="text-xl font-bold text-slate-950">Bộ lọc S-LIFE</h2>
+                    <button onClick={() => setIsFilterOpen(false)} className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:text-slate-900">
                       <X size={20} />
                     </button>
                   </div>
                   <SidebarContent />
-                </motion.aside>
-              </>
-            )}
-          </AnimatePresence>
+              </aside>
+            </>
+          )}
 
-          {/* Desktop Sidebar */}
-          <aside className="hidden lg:block lg:w-[300px] shrink-0">
-            <div className="sticky top-44">
+          <aside className="hidden shrink-0 lg:block lg:w-[300px]">
+            <div className="sticky top-32 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
               <SidebarContent />
             </div>
           </aside>
 
-          {/* Product Grid & Pagination */}
           <main className="flex-grow">
-            <AnimatePresence mode="wait">
               {loading ? (
-                <motion.div 
-                  key="skeleton"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8"
-                >
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
                   {[...Array(pageSize)].map((_, i) => <SkeletonCard key={i} />)}
-                </motion.div>
+                </div>
               ) : (
-                <div className="flex flex-col gap-16">
-                  <motion.div 
-                    key="products"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8"
-                  >
-                    {products.map((product, idx) => (
-                      <motion.div
-                        key={product.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: idx * 0.05 }}
-                      >
+                <div className="flex flex-col gap-10">
+                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                    {products.map((product) => (
+                      <div key={product.id}>
                         <ProductCard product={product} />
-                      </motion.div>
+                      </div>
                     ))}
-                  </motion.div>
+                  </div>
 
-                  {/* Pagination UI */}
                   {totalPages > 1 && (
-                    <div className="flex justify-center items-center gap-3 py-12 border-t border-slate-200">
+                    <div className="flex items-center justify-center gap-3 border-t border-slate-200 py-8">
                       <button 
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 0}
-                        className="w-12 h-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-600 hover:border-primary hover:text-primary disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
+                        className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:border-blue-400 hover:text-blue-700 disabled:cursor-not-allowed disabled:opacity-30"
                       >
                         <ChevronDown className="rotate-90" size={20} />
                       </button>
@@ -377,7 +350,7 @@ const Shop = () => {
                       <button 
                         onClick={() => handlePageChange(currentPage + 1)}
                         disabled={currentPage === totalPages - 1}
-                        className="w-12 h-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-600 hover:border-primary hover:text-primary disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
+                        className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:border-blue-400 hover:text-blue-700 disabled:cursor-not-allowed disabled:opacity-30"
                       >
                         <ChevronDown className="-rotate-90" size={20} />
                       </button>
@@ -385,26 +358,21 @@ const Shop = () => {
                   )}
                 </div>
               )}
-            </AnimatePresence>
             
             {!loading && products.length === 0 && (
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="text-center py-32 bg-white rounded-[40px] border border-slate-100 shadow-sm"
-              >
-                <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-6">
+              <div className="rounded-2xl border border-slate-200 bg-white py-24 text-center shadow-sm">
+                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-50">
                   <Search size={32} className="text-slate-300" />
                 </div>
-                <h3 className="text-xl font-black text-slate-900 mb-2 uppercase">Không tìm thấy sản phẩm</h3>
-                <p className="text-slate-400 mb-8 max-w-xs mx-auto">Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm của bạn xem sao.</p>
+                <h3 className="mb-2 text-lg font-bold text-slate-950">Không tìm thấy sản phẩm</h3>
+                <p className="mx-auto mb-8 max-w-xs text-sm text-slate-500">Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm.</p>
                 <Button 
                   variant="primary" 
                   onClick={() => setIsConfirmClearOpen(true)}
                 >
                   Xóa tất cả bộ lọc
                 </Button>
-              </motion.div>
+              </div>
             )}
           </main>
         </div>
@@ -456,7 +424,6 @@ const getCategoryIcon = (name) => {
 
 const renderPaginationItems = (currentPage, totalPages, handlePageChange) => {
   const items = [];
-  const maxVisible = 4;
   
   for (let i = 0; i < totalPages; i++) {
     if (
@@ -468,10 +435,10 @@ const renderPaginationItems = (currentPage, totalPages, handlePageChange) => {
         <button
           key={i}
           onClick={() => handlePageChange(i)}
-          className={`w-12 h-12 rounded-2xl text-sm font-black transition-all ${
+          className={`h-11 w-11 rounded-xl text-sm font-semibold transition-colors ${
             currentPage === i 
-            ? 'bg-slate-900 text-white shadow-xl shadow-slate-900/20' 
-            : 'bg-white border border-slate-200 text-slate-600 hover:border-primary hover:text-primary shadow-sm'
+            ? 'bg-slate-900 text-white'
+            : 'border border-slate-200 bg-white text-slate-600 hover:border-blue-400 hover:text-blue-700'
           }`}
         >
           {i + 1}
@@ -486,13 +453,13 @@ const renderPaginationItems = (currentPage, totalPages, handlePageChange) => {
 };
 
 const SkeletonCard = () => (
-  <div className="bg-white rounded-[40px] p-6 h-[450px] border border-slate-100 shadow-sm flex flex-col gap-4">
-    <div className="w-full h-64 bg-slate-50 rounded-[32px] animate-pulse" />
-    <div className="h-6 w-3/4 bg-slate-50 rounded-full animate-pulse" />
-    <div className="h-4 w-1/2 bg-slate-50 rounded-full animate-pulse" />
+  <div className="flex h-[390px] flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="h-56 w-full animate-pulse rounded-xl bg-slate-100" />
+    <div className="h-5 w-3/4 animate-pulse rounded-full bg-slate-100" />
+    <div className="h-4 w-1/2 animate-pulse rounded-full bg-slate-100" />
     <div className="mt-auto flex justify-between">
-      <div className="h-8 w-24 bg-slate-50 rounded-full animate-pulse" />
-      <div className="h-10 w-10 bg-slate-50 rounded-xl animate-pulse" />
+      <div className="h-8 w-24 animate-pulse rounded-full bg-slate-100" />
+      <div className="h-10 w-10 animate-pulse rounded-xl bg-slate-100" />
     </div>
   </div>
 );
