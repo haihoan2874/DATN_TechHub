@@ -110,7 +110,7 @@ const CategoryManagement = () => {
       fetchCategories();
       setIsDeleteConfirmOpen(false);
     } catch (err) {
-      toast.error('Không thể xóa danh mục này');
+      toast.error(err.response?.data?.message || 'Không thể xóa danh mục này');
     }
   };
 

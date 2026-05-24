@@ -133,7 +133,7 @@ public class CategoryService {
 
         if (productRepository.existsByCategoryId(id)) {
             log.error("Cannot delete category with id: {} as it has associated products", id);
-            throw new IllegalStateException("Cannot delete category source it has associated products. Please delete or move products first.");
+            throw new IllegalStateException("Không thể xóa danh mục này vì đang có sản phẩm thuộc về. Vui lòng chuyển sản phẩm sang danh mục khác trước.");
         }
 
         categoryRepository.delete(category);

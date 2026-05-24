@@ -113,7 +113,7 @@ const BrandManagement = () => {
       fetchBrands();
       setIsDeleteConfirmOpen(false);
     } catch (err) {
-      toast.error('Không thể xóa thương hiệu này');
+      toast.error(err.response?.data?.message || 'Không thể xóa thương hiệu này');
     }
   };
 

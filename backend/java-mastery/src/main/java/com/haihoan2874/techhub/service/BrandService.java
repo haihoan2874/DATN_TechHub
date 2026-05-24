@@ -101,7 +101,7 @@ public class BrandService {
 
         if (productRepository.existsByBrandId(id)) {
             log.error("Cannot delete brand id: {} as it has associated products", id);
-            throw new IllegalStateException("Cannot delete brand as it has associated products. Please delete or move products first.");
+            throw new IllegalStateException("Không thể xóa thương hiệu này vì đang có sản phẩm thuộc về. Vui lòng chuyển sản phẩm sang thương hiệu khác trước.");
         }
 
         brandRepository.delete(brand);
