@@ -1,15 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useMemo } from 'react';
 import adminService from '../services/adminService';
 import { 
-  Search, Eye, Clock, Truck, 
-  CheckCircle2, XCircle, MoreVertical,
-  Filter, RefreshCw, ChevronLeft,  ChevronRight, Calendar, User, 
-  CreditCard, Package, ChevronDown, ShoppingCart, TrendingUp,
-  ArrowUpRight, ExternalLink
+  Search, Clock, Truck,
+  CheckCircle2, XCircle,
+  RefreshCw,
+  CreditCard, Package, ChevronDown, ShoppingCart, TrendingUp
 } from 'lucide-react';
-import Button from '../components/ui/Button';
 import ConfirmModal from '../components/ui/ConfirmModal';
+import PageShell from '../components/layout/PageShell';
+import PageHeader from '../components/layout/PageHeader';
+import Toolbar from '../components/layout/Toolbar';
+import DataTable from '../components/data/DataTable';
+import MetricCard from '../components/data/MetricCard';
+import Pagination from '../components/data/Pagination';
+import EmptyState from '../components/feedback/EmptyState';
+import StatusBadge from '../components/status/StatusBadge';
 import toast from 'react-hot-toast';
 import {
   ORDER_STATUS_LABELS,
@@ -18,11 +23,31 @@ import {
   ORDER_TERMINAL_STATUSES
 } from '../constants/orderStatus';
 
+const PAGE_SIZE = 8;
+
+const tableColumns = [
+  { key: 'order', label: 'Đơn hàng' },
+  { key: 'customer', label: 'Khách hàng' },
+  { key: 'payment', label: 'Thanh toán' },
+  { key: 'status', label: 'Trạng thái' },
+  { key: 'actions', label: 'Cập nhật', className: 'text-right' }
+];
+
+const statusToneMap = {
+  PENDING: 'amber',
+  CONFIRMED: 'blue',
+  PROCESSING: 'blue',
+  SHIPPED: 'blue',
+  DELIVERED: 'green',
+  CANCELLED: 'red'
+};
+
 const OrderManagement = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
+  const [currentPage, setCurrentPage] = useState(1);
   const [isUpdating, setIsUpdating] = useState(null);
   const [confirmModal, setConfirmModal] = useState({
     isOpen: false,
@@ -33,12 +58,12 @@ const OrderManagement = () => {
   });
 
   const statuses = [
-    { value: 'PENDING', label: ORDER_STATUS_LABELS.PENDING, color: 'bg-amber-50 text-amber-600 border-amber-200', icon: <Clock size={12} /> },
-    { value: 'CONFIRMED', label: ORDER_STATUS_LABELS.CONFIRMED, color: 'bg-blue-50 text-blue-600 border-blue-200', icon: <CheckCircle2 size={12} /> },
-    { value: 'PROCESSING', label: ORDER_STATUS_LABELS.PROCESSING, color: 'bg-indigo-50 text-indigo-600 border-indigo-200', icon: <Package size={12} /> },
-    { value: 'SHIPPED', label: ORDER_STATUS_LABELS.SHIPPED, color: 'bg-cyan-50 text-cyan-600 border-cyan-200', icon: <Truck size={12} /> },
-    { value: 'DELIVERED', label: ORDER_STATUS_LABELS.DELIVERED, color: 'bg-emerald-50 text-emerald-600 border-emerald-200', icon: <CheckCircle2 size={12} /> },
-    { value: 'CANCELLED', label: ORDER_STATUS_LABELS.CANCELLED, color: 'bg-rose-50 text-rose-600 border-rose-200', icon: <XCircle size={12} /> }
+    { value: 'PENDING', label: ORDER_STATUS_LABELS.PENDING, icon: Clock },
+    { value: 'CONFIRMED', label: ORDER_STATUS_LABELS.CONFIRMED, icon: CheckCircle2 },
+    { value: 'PROCESSING', label: ORDER_STATUS_LABELS.PROCESSING, icon: Package },
+    { value: 'SHIPPED', label: ORDER_STATUS_LABELS.SHIPPED, icon: Truck },
+    { value: 'DELIVERED', label: ORDER_STATUS_LABELS.DELIVERED, icon: CheckCircle2 },
+    { value: 'CANCELLED', label: ORDER_STATUS_LABELS.CANCELLED, icon: XCircle }
   ];
 
   useEffect(() => {
@@ -56,6 +81,17 @@ const OrderManagement = () => {
       setLoading(false);
     }
   };
+
+  const metrics = useMemo(() => {
+    const deliveredOrders = orders.filter((order) => order.status === 'DELIVERED');
+    const revenue = deliveredOrders.reduce((acc, order) => acc + (Number(order.total) || 0), 0);
+    return [
+      { label: 'Tổng đơn hàng', value: orders.length, icon: ShoppingCart, tone: 'blue' },
+      { label: 'Chờ xử lý', value: orders.filter((order) => order.status === 'PENDING').length, icon: Clock, tone: 'amber' },
+      { label: 'Đang giao', value: orders.filter((order) => order.status === 'SHIPPED').length, icon: Truck, tone: 'blue' },
+      { label: 'Doanh thu', value: `${revenue.toLocaleString()} ₫`, icon: TrendingUp, tone: 'green' }
+    ];
+  }, [orders]);
 
   const handleUpdateStatus = async (orderId, newStatus) => {
     if (newStatus === 'CANCELLED' || newStatus === 'DELIVERED') {
@@ -87,13 +123,34 @@ const OrderManagement = () => {
     }
   };
 
-  const filteredOrders = orders.filter(order => {
-    const matchesSearch = 
-      order.orderNumber?.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      order.customerName?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === 'ALL' || order.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+  const filteredOrders = useMemo(() => {
+    const keyword = searchTerm.trim().toLowerCase();
+    return orders.filter(order => {
+      const matchesSearch =
+        !keyword ||
+        order.orderNumber?.toLowerCase().includes(keyword) ||
+        order.customerName?.toLowerCase().includes(keyword) ||
+        order.customerEmail?.toLowerCase().includes(keyword);
+      const matchesStatus = statusFilter === 'ALL' || order.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    });
+  }, [orders, searchTerm, statusFilter]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredOrders.length / PAGE_SIZE));
+  const paginatedOrders = useMemo(() => {
+    const startIndex = (currentPage - 1) * PAGE_SIZE;
+    return filteredOrders.slice(startIndex, startIndex + PAGE_SIZE);
+  }, [filteredOrders, currentPage]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, statusFilter]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   const getStatusInfo = (statusValue) => {
     return statuses.find(s => s.value === statusValue) || statuses[0];
@@ -106,7 +163,7 @@ const OrderManagement = () => {
   const isTerminalStatus = (status) => ORDER_TERMINAL_STATUSES.includes(status);
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-700">
+    <PageShell>
       <ConfirmModal 
         isOpen={confirmModal.isOpen}
         onClose={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
@@ -117,137 +174,116 @@ const OrderManagement = () => {
         isLoading={isUpdating === confirmModal.orderId}
       />
 
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div className="space-y-2">
-          <div className="flex items-center gap-2 text-indigo-600 font-bold text-xs uppercase tracking-widest">
-            <ShoppingCart size={14} />
-            Quản lý vận hành
-          </div>
-          <h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase">Đơn hàng</h1>
-        </div>
+      <PageHeader
+        eyebrow="Quản lý vận hành"
+        title="Đơn hàng"
+        description="Theo dõi đơn hàng và cập nhật trạng thái xử lý theo đúng luồng nghiệp vụ."
+        icon={ShoppingCart}
+      />
+
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+        {metrics.map((metric) => (
+          <MetricCard key={metric.label} {...metric} />
+        ))}
       </div>
 
-      {/* Stats Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-         {[
-           { label: 'Tổng đơn hàng', val: orders.length, icon: ShoppingCart, color: 'blue' },
-           { label: 'Chờ xử lý', val: orders.filter(o => o.status === 'PENDING').length, icon: Clock, color: 'amber' },
-           { label: 'Đang giao', val: orders.filter(o => o.status === 'SHIPPED').length, icon: Truck, color: 'cyan' },
-           { label: 'Doanh thu', val: orders.filter(o => o.status === 'DELIVERED').reduce((acc, o) => acc + o.total, 0).toLocaleString() + ' ₫', icon: TrendingUp, color: 'emerald' }
-         ].map((stat, i) => (
-           <div key={i} className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm flex items-center gap-6">
-              <div className={`w-12 h-12 rounded-2xl bg-${stat.color}-50 flex items-center justify-center text-${stat.color}-600`}>
-                 <stat.icon size={24} />
-              </div>
-              <div>
-                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">{stat.label}</p>
-                 <p className="text-2xl font-black text-slate-900 tracking-tighter">{stat.val}</p>
-              </div>
-           </div>
-         ))}
-      </div>
-
-      {/* Filters Bar */}
-      <div className="bg-white p-6 rounded-[2.5rem] border border-slate-200 shadow-sm flex flex-col lg:flex-row gap-6 items-center">
-        <div className="relative flex-1 w-full">
-          <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+      <Toolbar>
+        <div className="relative w-full flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
           <input 
             type="text" 
-            placeholder="Tìm theo mã đơn hoặc tên khách hàng..."
+            placeholder="Tìm theo mã đơn, tên hoặc email khách hàng..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-14 pr-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-black/5 transition-all text-sm font-medium"
+            className="w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-10 pr-4 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
           />
         </div>
-        
-        <div className="flex items-center gap-3 w-full lg:w-auto overflow-x-auto no-scrollbar pb-2 lg:pb-0">
-           <div className="flex bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
+        <div className="flex w-full items-center gap-2 overflow-x-auto lg:w-auto">
               {['ALL', ...ORDER_STATUS_VALUES].map(status => (
                 <button
                   key={status}
                   onClick={() => setStatusFilter(status)}
-                  className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase transition-all whitespace-nowrap ${statusFilter === status ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                  className={`whitespace-nowrap rounded-xl border px-3 py-2 text-xs font-semibold transition-colors ${
+                    statusFilter === status
+                      ? 'border-slate-900 bg-slate-900 text-white'
+                      : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+                  }`}
                 >
                   {status === 'ALL' ? 'Tất cả' : statuses.find(s => s.value === status)?.label}
                 </button>
               ))}
-           </div>
-           <button onClick={fetchOrders} className="p-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-400 hover:text-blue-600 transition-colors shrink-0">
-              <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
-           </button>
         </div>
-      </div>
+        <span className="whitespace-nowrap rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-600">
+          {filteredOrders.length} đơn hàng
+        </span>
+        <button onClick={fetchOrders} className="rounded-xl border border-slate-300 bg-white p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900">
+          <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
+        </button>
+      </Toolbar>
 
-      {/* Table Container */}
-      <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-50 border-b border-slate-100">
-                <th className="pl-10 pr-6 py-6 text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Đơn hàng</th>
-                <th className="px-6 py-6 text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Khách hàng</th>
-                <th className="px-6 py-6 text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Thanh toán</th>
-                <th className="px-6 py-6 text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Trạng thái</th>
-                <th className="px-6 py-6 text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 text-right">Cập nhật</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-50">
+      <DataTable
+        columns={tableColumns}
+        footer={!loading && filteredOrders.length > 0 ? (
+          <Pagination
+            page={currentPage}
+            pageSize={PAGE_SIZE}
+            totalItems={filteredOrders.length}
+            onPageChange={setCurrentPage}
+          />
+        ) : null}
+      >
               {loading ? (
                 Array(5).fill(0).map((_, i) => (
                   <tr key={i} className="animate-pulse">
-                    <td colSpan="5" className="px-10 py-8"><div className="h-6 bg-slate-100 rounded w-full"></div></td>
+                    <td colSpan="5" className="px-5 py-4"><div className="h-5 w-full rounded bg-slate-100"></div></td>
                   </tr>
                 ))
               ) : filteredOrders.length === 0 ? (
                 <tr>
-                  <td colSpan="5" className="px-10 py-20 text-center text-slate-400 font-bold uppercase tracking-widest text-[11px]">Không tìm thấy đơn hàng nào</td>
+                  <td colSpan="5"><EmptyState title="Không có đơn hàng" description="Thử đổi bộ lọc hoặc từ khóa tìm kiếm." /></td>
                 </tr>
               ) : (
-                filteredOrders.map((order) => {
+                paginatedOrders.map((order) => {
                   const statusInfo = getStatusInfo(order.status);
                   return (
-                    <tr key={order.id} className="group hover:bg-slate-50/50 transition-colors">
-                      <td className="pl-10 pr-6 py-6">
+                    <tr key={order.id} className="hover:bg-slate-50">
+                      <td className="px-5 py-4">
                         <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center flex-shrink-0">
+                          <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-slate-100">
                              <Package size={20} className="text-slate-400" />
                           </div>
                           <div>
-                            <div className="text-sm font-black text-slate-900 font-mono tracking-tighter">#{order.orderNumber}</div>
-                            <div className="text-[10px] font-bold text-blue-500 uppercase tracking-widest mt-1 flex items-center gap-1">
-                              {order.itemCount} sản phẩm <ExternalLink size={10} />
-                            </div>
+                            <div className="font-mono text-sm font-semibold text-slate-950">#{order.orderNumber}</div>
+                            <div className="mt-1 text-xs font-medium text-slate-400">{order.itemCount || 0} sản phẩm</div>
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-6">
+                      <td className="px-5 py-4">
                         <div>
-                          <div className="text-sm font-black text-slate-800 uppercase tracking-tight">{order.customerName}</div>
-                          <div className="text-[10px] font-medium text-slate-400 truncate max-w-[150px]">{order.customerEmail}</div>
+                          <div className="text-sm font-semibold text-slate-900">{order.customerName}</div>
+                          <div className="max-w-44 truncate text-xs font-medium text-slate-400">{order.customerEmail}</div>
                         </div>
                       </td>
-                      <td className="px-6 py-6">
+                      <td className="px-5 py-4">
                         <div className="space-y-1">
-                          <div className="text-[13px] font-black text-slate-900">{order.total?.toLocaleString()} ₫</div>
-                          <div className="flex items-center gap-1.5 text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                          <div className="text-sm font-bold text-slate-900">{order.total?.toLocaleString()} ₫</div>
+                          <div className="flex items-center gap-1.5 text-xs font-medium text-slate-400">
                             <CreditCard size={10} /> {order.paymentMethod}
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-6">
-                        <span className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${statusInfo.color}`}>
-                          {statusInfo.icon}
+                      <td className="px-5 py-4">
+                        <StatusBadge tone={statusToneMap[order.status]} icon={statusInfo.icon}>
                           {statusInfo.label}
-                        </span>
+                        </StatusBadge>
                       </td>
-                      <td className="px-6 py-6 text-right">
-                        <div className="relative inline-block text-left group-hover:scale-105 transition-transform">
+                      <td className="px-5 py-4 text-right">
+                        <div className="relative inline-block text-left">
                           <select 
                             disabled={isUpdating === order.id || isTerminalStatus(order.status)}
                             value={order.status}
                             onChange={(e) => handleUpdateStatus(order.id, e.target.value)}
-                            className="text-[10px] font-black uppercase tracking-widest bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500/20 appearance-none pr-10 cursor-pointer disabled:opacity-50"
+                            className="cursor-pointer appearance-none rounded-xl border border-slate-300 bg-white px-3 py-2 pr-9 text-xs font-semibold text-slate-700 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 disabled:cursor-not-allowed disabled:opacity-50"
                           >
                             {getAllowedStatuses(order.status).map(s => (
                               <option key={s.value} value={s.value}>{s.label}</option>
@@ -262,11 +298,8 @@ const OrderManagement = () => {
                   );
                 })
               )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+      </DataTable>
+    </PageShell>
   );
 };
 
