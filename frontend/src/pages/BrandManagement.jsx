@@ -1,16 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import adminService from '../services/adminService';
 import { 
   Plus, Search, Edit2, Trash2, 
-  RefreshCw, Building2, Save, ExternalLink, Link
+  RefreshCw, Building2, Save, Link
 } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import Modal from '../components/ui/Modal';
 import ConfirmModal from '../components/ui/ConfirmModal';
+import PageShell from '../components/layout/PageShell';
+import PageHeader from '../components/layout/PageHeader';
+import Toolbar from '../components/layout/Toolbar';
+import DataTable from '../components/data/DataTable';
+import EmptyState from '../components/feedback/EmptyState';
 import toast from 'react-hot-toast';
 import ImageUpload from '../components/admin/ImageUpload';
+
+const tableColumns = [
+  { key: 'brand', label: 'Thương hiệu' },
+  { key: 'description', label: 'Mô tả' },
+  { key: 'actions', label: 'Hành động', className: 'text-right' }
+];
 
 const BrandManagement = () => {
   const [brands, setBrands] = useState([]);
@@ -122,7 +132,7 @@ const BrandManagement = () => {
   );
 
   return (
-    <div className="space-y-8">
+    <PageShell>
       <ConfirmModal 
         isOpen={isDeleteConfirmOpen}
         onClose={() => setIsDeleteConfirmOpen(false)}
@@ -132,91 +142,75 @@ const BrandManagement = () => {
         variant="danger"
       />
       
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
-          <div className="flex items-center gap-2 text-blue-600 font-bold text-xs uppercase tracking-widest mb-2">
-            <Building2 size={14} />
-            Hệ thống đối tác
-          </div>
-          <h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase">Thương hiệu</h1>
-        </div>
-        <Button onClick={() => handleOpenModal()} icon={Plus}>Tạo thương hiệu mới</Button>
-      </div>
+      <PageHeader
+        eyebrow="Phân loại sản phẩm"
+        title="Thương hiệu"
+        description="Quản lý thương hiệu sản phẩm dùng trong cửa hàng S-LIFE."
+        icon={Building2}
+        action={<Button onClick={() => handleOpenModal()} icon={Plus}>Tạo thương hiệu</Button>}
+      />
 
-      <div className="bg-white p-6 rounded-[2.5rem] border border-slate-200 shadow-sm flex flex-col lg:flex-row gap-6 items-center">
-        <div className="relative flex-1 w-full">
-          <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+      <Toolbar>
+        <div className="relative w-full flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
           <input 
             type="text" 
             placeholder="Tìm kiếm thương hiệu..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-14 pr-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black/5 transition-all text-sm font-medium"
+            className="w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-10 pr-4 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
           />
         </div>
-        <button onClick={fetchBrands} className="p-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-400 hover:text-blue-600 transition-colors">
+        <button onClick={fetchBrands} className="rounded-xl border border-slate-300 bg-white p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900">
           <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
         </button>
-      </div>
+      </Toolbar>
 
-      <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-50 border-b border-slate-100">
-                <th className="pl-10 pr-6 py-6 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Thương hiệu</th>
-                <th className="px-6 py-6 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Mô tả đối tác</th>
-                <th className="px-6 py-6 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Hành động</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-50">
+      <DataTable columns={tableColumns}>
               {loading ? (
                 Array(5).fill(0).map((_, i) => (
                   <tr key={i} className="animate-pulse">
-                    <td colSpan="3" className="px-10 py-6"><div className="h-4 bg-slate-100 rounded w-full"></div></td>
+                    <td colSpan="3" className="px-5 py-4"><div className="h-4 w-full rounded bg-slate-100"></div></td>
                   </tr>
                 ))
               ) : filteredBrands.length === 0 ? (
                 <tr>
-                  <td colSpan="3" className="px-10 py-20 text-center text-slate-400 font-bold uppercase tracking-widest text-[11px]">Không có dữ liệu</td>
+                  <td colSpan="3"><EmptyState title="Không có thương hiệu" description="Thử đổi từ khóa tìm kiếm hoặc tạo thương hiệu mới." /></td>
                 </tr>
               ) : (
                 filteredBrands.map((brand) => (
-                  <tr key={brand.id} className="group hover:bg-slate-50/50 transition-colors">
-                    <td className="pl-10 pr-6 py-6">
-                      <div className="flex items-center gap-6">
-                        <div className="w-16 h-16 rounded-[1.5rem] bg-white border border-slate-100 flex items-center justify-center p-2 overflow-hidden shadow-sm">
+                  <tr key={brand.id} className="hover:bg-slate-50">
+                    <td className="px-5 py-4">
+                      <div className="flex items-center gap-4">
+                        <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-white p-2">
                           {brand.logoUrl ? (
                             <img src={brand.logoUrl.startsWith('http') ? brand.logoUrl : `http://localhost:8089${brand.logoUrl}`} alt={brand.name} className="w-full h-full object-contain" />
                           ) : (
                             <Building2 size={24} className="text-slate-200" />
                           )}
                         </div>
-                        <span className="font-bold text-slate-900 text-lg tracking-tight">{brand.name}</span>
+                        <span className="font-semibold text-slate-950">{brand.name}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-6">
-                      <p className="text-sm text-slate-500 line-clamp-1 max-w-lg">
+                    <td className="px-5 py-4">
+                      <p className="line-clamp-1 max-w-lg text-sm text-slate-500">
                         {brand.description || 'Đối tác chiến lược của S-LIFE trong lĩnh vực thiết bị y tế.'}
                       </p>
                     </td>
-                    <td className="px-6 py-6">
-                      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => handleOpenModal(brand)} className="p-3 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-2xl transition-all">
-                          <Edit2 size={18} />
+                    <td className="px-5 py-4">
+                      <div className="flex justify-end gap-2">
+                        <button onClick={() => handleOpenModal(brand)} className="rounded-lg p-2 text-slate-500 hover:bg-blue-50 hover:text-blue-700">
+                          <Edit2 size={16} />
                         </button>
-                        <button onClick={() => { setBrandToDelete(brand.id); setIsDeleteConfirmOpen(true); }} className="p-3 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-2xl transition-all">
-                          <Trash2 size={18} />
+                        <button onClick={() => { setBrandToDelete(brand.id); setIsDeleteConfirmOpen(true); }} className="rounded-lg p-2 text-slate-500 hover:bg-rose-50 hover:text-rose-700">
+                          <Trash2 size={16} />
                         </button>
                       </div>
                     </td>
                   </tr>
                 ))
               )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      </DataTable>
 
       <Modal 
         isOpen={isModalOpen}
@@ -230,9 +224,9 @@ const BrandManagement = () => {
           </>
         }
       >
-        <form onSubmit={handleSubmit} className="space-y-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-            <div className="space-y-8">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <div className="space-y-6">
               <Input 
                 label="Tên thương hiệu"
                 name="name"
@@ -258,7 +252,7 @@ const BrandManagement = () => {
                   name="description" rows="4"
                   value={formData.description} onChange={handleInputChange}
                   placeholder="Giới thiệu ngắn về lịch sử và thế mạnh của thương hiệu..."
-                  className="w-full p-6 bg-slate-50 border border-slate-100 rounded-[2.5rem] text-sm font-medium outline-none focus:ring-2 focus:ring-black/5 transition-all resize-none leading-relaxed"
+                  className="w-full resize-none rounded-xl border border-slate-300 bg-white p-4 text-sm font-medium leading-relaxed outline-none transition-colors focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
                 />
               </div>
             </div>
@@ -276,7 +270,7 @@ const BrandManagement = () => {
           </div>
         </form>
       </Modal>
-    </div>
+    </PageShell>
   );
 };
 

@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 
 const Button = ({ 
   children, 
@@ -11,27 +10,25 @@ const Button = ({
   iconPosition = 'left',
   ...props 
 }) => {
-  const baseStyles = "relative inline-flex items-center justify-center font-black uppercase tracking-wider transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden";
+  const baseStyles = "inline-flex items-center justify-center font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
   
   const variants = {
-    primary: "bg-slate-900 text-white hover:bg-primary shadow-lg shadow-slate-900/10",
-    secondary: "bg-primary text-white hover:bg-slate-900 shadow-lg shadow-primary/20",
-    outline: "bg-transparent border-2 border-slate-200 text-slate-700 hover:border-slate-900 hover:text-slate-900",
-    ghost: "bg-transparent text-slate-500 hover:bg-slate-50 hover:text-slate-900",
-    danger: "bg-red-500 text-white hover:bg-red-600 shadow-lg shadow-red-500/20"
+    primary: "bg-slate-900 text-white hover:bg-slate-800 shadow-sm",
+    secondary: "bg-blue-600 text-white hover:bg-blue-700 shadow-sm",
+    outline: "bg-white border border-slate-300 text-slate-700 hover:bg-slate-50",
+    ghost: "bg-transparent text-slate-600 hover:bg-slate-100 hover:text-slate-900",
+    danger: "bg-rose-600 text-white hover:bg-rose-700 shadow-sm"
   };
 
   const sizes = {
-    sm: "px-4 py-2 text-[10px] rounded-xl",
-    md: "px-8 py-3.5 text-[11px] rounded-2xl",
-    lg: "px-10 py-4.5 text-[13px] rounded-[24px]",
-    icon: "p-3 rounded-2xl"
+    sm: "px-3 py-2 text-xs rounded-lg",
+    md: "px-4 py-2.5 text-sm rounded-xl",
+    lg: "px-5 py-3 text-sm rounded-xl",
+    icon: "p-2.5 rounded-xl"
   };
 
   return (
-    <motion.button
-      whileHover={{ y: -2 }}
-      whileTap={{ scale: 0.98 }}
+    <button
       className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
       disabled={isLoading}
       {...props}
@@ -45,10 +42,7 @@ const Button = ({
           {Icon && iconPosition === 'right' && <Icon size={size === 'sm' ? 14 : 18} />}
         </div>
       )}
-      
-      {/* Subtle Glow Effect on Hover */}
-      <div className="absolute inset-0 bg-white/10 opacity-0 hover:opacity-100 transition-opacity pointer-events-none" />
-    </motion.button>
+    </button>
   );
 };
 

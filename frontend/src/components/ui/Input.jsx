@@ -13,7 +13,7 @@ const Input = ({
   return (
     <div className={`flex flex-col gap-2 w-full ${className}`}>
       {label && (
-        <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">
+        <label className="ml-1 text-xs font-semibold text-slate-700">
           {label}
         </label>
       )}
@@ -27,13 +27,12 @@ const Input = ({
         
         <input
           className={`
-            w-full bg-slate-50 border-2 border-transparent 
-            focus:bg-white focus:border-primary rounded-2xl 
-            py-3 px-4 text-sm font-bold text-slate-900 
-            placeholder:text-slate-300 focus:outline-none 
-            transition-all shadow-inner
+            w-full rounded-xl border border-slate-300 bg-white
+            px-4 py-2.5 text-sm font-medium text-slate-900
+            placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10
+            transition-colors
             ${Icon ? 'pl-12' : ''}
-            ${error ? 'border-red-500 bg-red-50/30' : ''}
+            ${error ? 'border-rose-500 bg-rose-50/30' : ''}
           `}
           {...props}
         />
@@ -50,7 +49,7 @@ const Input = ({
       </div>
       
       {error && (
-        <span className="text-[10px] font-bold text-red-500 ml-1">
+        <span className="ml-1 text-xs font-semibold text-rose-600">
           {error}
         </span>
       )}

@@ -1,15 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import adminService from '../services/adminService';
 import { 
   Plus, Search, Edit2, Trash2, 
-  Tag, RefreshCw, Layers, ChevronRight, Info, Save, Link
+  Tag, RefreshCw, Layers, Save, Link
 } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import Modal from '../components/ui/Modal';
 import ConfirmModal from '../components/ui/ConfirmModal';
+import PageShell from '../components/layout/PageShell';
+import PageHeader from '../components/layout/PageHeader';
+import Toolbar from '../components/layout/Toolbar';
+import DataTable from '../components/data/DataTable';
+import EmptyState from '../components/feedback/EmptyState';
 import toast from 'react-hot-toast';
+
+const tableColumns = [
+  { key: 'name', label: 'Tên danh mục' },
+  { key: 'slug', label: 'Đường dẫn' },
+  { key: 'actions', label: 'Hành động', className: 'text-right' }
+];
 
 const CategoryManagement = () => {
   const [categories, setCategories] = useState([]);
@@ -119,7 +129,7 @@ const CategoryManagement = () => {
   );
 
   return (
-    <div className="space-y-8">
+    <PageShell>
       <ConfirmModal 
         isOpen={isDeleteConfirmOpen}
         onClose={() => setIsDeleteConfirmOpen(false)}
@@ -129,87 +139,71 @@ const CategoryManagement = () => {
         variant="danger"
       />
       
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
-          <div className="flex items-center gap-2 text-blue-600 font-bold text-xs uppercase tracking-widest mb-2">
-            <Layers size={14} />
-            Phân loại hệ thống
-          </div>
-          <h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase">Danh mục</h1>
-        </div>
-        <Button onClick={() => handleOpenModal()} icon={Plus}>Tạo danh mục mới</Button>
-      </div>
+      <PageHeader
+        eyebrow="Phân loại sản phẩm"
+        title="Danh mục"
+        description="Quản lý nhóm sản phẩm hiển thị trên cửa hàng S-LIFE."
+        icon={Layers}
+        action={<Button onClick={() => handleOpenModal()} icon={Plus}>Tạo danh mục</Button>}
+      />
 
-      <div className="bg-white p-6 rounded-[2.5rem] border border-slate-200 shadow-sm flex flex-col lg:flex-row gap-6 items-center">
-        <div className="relative flex-1 w-full">
-          <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+      <Toolbar>
+        <div className="relative w-full flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
           <input 
             type="text" 
             placeholder="Tìm kiếm danh mục..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-14 pr-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black/5 transition-all text-sm font-medium"
+            className="w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-10 pr-4 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
           />
         </div>
-        <button onClick={fetchCategories} className="p-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-400 hover:text-blue-600 transition-colors">
+        <button onClick={fetchCategories} className="rounded-xl border border-slate-300 bg-white p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900">
           <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
         </button>
-      </div>
+      </Toolbar>
 
-      <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-50 border-b border-slate-100">
-                <th className="pl-10 pr-6 py-6 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Tên danh mục</th>
-                <th className="px-6 py-6 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Đường dẫn (Slug)</th>
-                <th className="px-6 py-6 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Hành động</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-50">
+      <DataTable columns={tableColumns}>
               {loading ? (
                 Array(5).fill(0).map((_, i) => (
                   <tr key={i} className="animate-pulse">
-                    <td colSpan="3" className="px-10 py-6"><div className="h-4 bg-slate-100 rounded w-full"></div></td>
+                    <td colSpan="3" className="px-5 py-4"><div className="h-4 w-full rounded bg-slate-100"></div></td>
                   </tr>
                 ))
               ) : filteredCategories.length === 0 ? (
                 <tr>
-                  <td colSpan="3" className="px-10 py-20 text-center text-slate-400 font-bold uppercase tracking-widest text-[11px]">Không có dữ liệu</td>
+                  <td colSpan="3"><EmptyState title="Không có danh mục" description="Thử đổi từ khóa tìm kiếm hoặc tạo danh mục mới." /></td>
                 </tr>
               ) : (
                 filteredCategories.map((category) => (
-                  <tr key={category.id} className="group hover:bg-slate-50/50 transition-colors">
-                    <td className="pl-10 pr-6 py-6">
+                  <tr key={category.id} className="hover:bg-slate-50">
+                    <td className="px-5 py-4">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-black text-xs">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-sm font-bold text-blue-700">
                           {category.name.charAt(0)}
                         </div>
-                        <span className="font-bold text-slate-900 text-lg">{category.name}</span>
+                        <span className="font-semibold text-slate-950">{category.name}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-6">
-                      <code className="text-xs font-mono bg-slate-100 px-2 py-1 rounded text-slate-600">
+                    <td className="px-5 py-4">
+                      <code className="rounded bg-slate-100 px-2 py-1 font-mono text-xs text-slate-600">
                         {category.slug}
                       </code>
                     </td>
-                    <td className="px-6 py-6">
-                      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => handleOpenModal(category)} className="p-3 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-2xl transition-all">
-                          <Edit2 size={18} />
+                    <td className="px-5 py-4">
+                      <div className="flex justify-end gap-2">
+                        <button onClick={() => handleOpenModal(category)} className="rounded-lg p-2 text-slate-500 hover:bg-blue-50 hover:text-blue-700">
+                          <Edit2 size={16} />
                         </button>
-                        <button onClick={() => { setCategoryToDelete(category.id); setIsDeleteConfirmOpen(true); }} className="p-3 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-2xl transition-all">
-                          <Trash2 size={18} />
+                        <button onClick={() => { setCategoryToDelete(category.id); setIsDeleteConfirmOpen(true); }} className="rounded-lg p-2 text-slate-500 hover:bg-rose-50 hover:text-rose-700">
+                          <Trash2 size={16} />
                         </button>
                       </div>
                     </td>
                   </tr>
                 ))
               )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      </DataTable>
 
       <Modal 
         isOpen={isModalOpen}
@@ -247,12 +241,12 @@ const CategoryManagement = () => {
             <textarea 
               name="description" rows="4"
               value={formData.description} onChange={handleInputChange}
-              className="w-full p-6 bg-slate-50 border border-slate-100 rounded-[2.5rem] text-sm font-medium outline-none focus:ring-2 focus:ring-black/5 transition-all resize-none leading-relaxed"
+              className="w-full resize-none rounded-xl border border-slate-300 bg-white p-4 text-sm font-medium leading-relaxed outline-none transition-colors focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
             />
           </div>
         </form>
       </Modal>
-    </div>
+    </PageShell>
   );
 };
 

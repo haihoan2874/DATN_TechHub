@@ -1,8 +1,7 @@
 import React from 'react';
 import Modal from './Modal';
 import Button from './Button';
-import { AlertTriangle, AlertCircle, ShieldAlert, Info, Trash2 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { AlertTriangle, ShieldAlert, Info } from 'lucide-react';
 
 const ConfirmModal = ({ 
   isOpen, 
@@ -18,31 +17,28 @@ const ConfirmModal = ({
   
   const variants = {
     danger: {
-      bg: "bg-red-50/50",
-      iconBg: "bg-red-500",
+      bg: "bg-rose-50",
+      iconBg: "bg-rose-600",
       iconColor: "text-white",
       icon: ShieldAlert,
       button: "danger",
-      border: "border-red-100",
-      glow: "shadow-red-500/20"
+      border: "border-rose-200"
     },
     warning: {
-      bg: "bg-amber-50/50",
+      bg: "bg-amber-50",
       iconBg: "bg-amber-500",
       iconColor: "text-white",
       icon: AlertTriangle,
       button: "primary",
-      border: "border-amber-100",
-      glow: "shadow-amber-500/20"
+      border: "border-amber-200"
     },
     info: {
-      bg: "bg-blue-50/50",
+      bg: "bg-blue-50",
       iconBg: "bg-blue-600",
       iconColor: "text-white",
       icon: Info,
       button: "primary",
-      border: "border-blue-100",
-      glow: "shadow-blue-500/20"
+      border: "border-blue-200"
     }
   };
 
@@ -51,30 +47,24 @@ const ConfirmModal = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} showClose={false} size="sm">
-      <div className="p-2">
-        <div className={`rounded-[2.5rem] ${style.bg} border-2 border-dashed ${style.border} p-10 flex flex-col items-center text-center`}>
-          <motion.div 
-            initial={{ scale: 0.5, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: "spring", damping: 15 }}
-            className={`w-20 h-20 rounded-[2rem] ${style.iconBg} ${style.iconColor} flex items-center justify-center mb-8 shadow-2xl ${style.glow}`}
-          >
+      <div className={`rounded-2xl ${style.bg} border ${style.border} p-6 text-center`}>
+          <div className={`mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl ${style.iconBg} ${style.iconColor}`}>
             <Icon size={36} />
-          </motion.div>
+          </div>
           
-          <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-4">
+          <h3 className="mb-3 text-xl font-bold text-slate-950">
             {title}
           </h3>
           
-          <p className="text-sm text-slate-500 font-medium leading-relaxed mb-10 max-w-[280px]">
+          <p className="mx-auto mb-6 max-w-[300px] text-sm leading-6 text-slate-600">
             {message}
           </p>
 
-          <div className="flex flex-col gap-3 w-full">
+          <div className="flex flex-col gap-2">
             <Button 
               variant={style.button} 
               onClick={onConfirm} 
-              className="w-full h-14 rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl"
+              className="w-full"
               isLoading={isLoading}
             >
               {confirmText}
@@ -82,12 +72,11 @@ const ConfirmModal = ({
             <button 
               onClick={onClose} 
               disabled={isLoading}
-              className="w-full py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-slate-900 transition-colors disabled:opacity-50"
+              className="w-full rounded-xl py-2.5 text-sm font-semibold text-slate-500 hover:bg-white/60 hover:text-slate-900 disabled:opacity-50"
             >
               {cancelText}
             </button>
           </div>
-        </div>
       </div>
     </Modal>
   );
