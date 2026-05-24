@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import orderService from '../services/orderService';
 import addressService from '../services/addressService';
 import voucherService from '../services/voucherService';
 import { 
-  MapPin, Phone, User, CreditCard, 
-  Truck, ShieldCheck, ChevronLeft, 
+  MapPin, Phone, CreditCard,
+  ChevronLeft,
   ArrowRight, AlertCircle, CheckCircle2,
-  Plus, Trash2, Home, Building, X, Tag
+  Plus, X, Tag
 } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
@@ -49,6 +48,12 @@ const Checkout = () => {
   useEffect(() => {
     fetchAddresses();
   }, []);
+
+  useEffect(() => {
+    if (!cartLoading && cartItems.length === 0) {
+      navigate('/cart', { replace: true });
+    }
+  }, [cartItems.length, cartLoading, navigate]);
 
   const fetchAddresses = async () => {
     try {
@@ -177,34 +182,37 @@ const Checkout = () => {
   }
 
   if (cartItems.length === 0) {
-    navigate('/cart');
     return null;
   }
 
   return (
     <div className="min-h-screen bg-slate-50 pt-24 lg:pt-32 pb-20">
       <div className="container mx-auto px-6">
-        <Link to="/cart" className="inline-flex items-center gap-2 text-slate-500 hover:text-blue-600 font-medium mb-8 transition-colors">
+        <Link to="/cart" className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-blue-600">
           <ChevronLeft size={20} /> Quay lại giỏ hàng
         </Link>
 
-        <h1 className="text-3xl font-black text-slate-900 mb-10 uppercase tracking-tight">Thanh toán</h1>
+        <div className="mb-8">
+          <p className="text-sm font-medium text-slate-500">Kiểm tra địa chỉ, phương thức thanh toán và xác nhận đơn hàng</p>
+          <h1 className="mt-1 text-3xl font-bold text-slate-900">Thanh toán</h1>
+        </div>
 
-        <div className="flex flex-col lg:flex-row gap-12">
-          {/* Checkout Main Content */}
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-start">
           <div className="lg:w-2/3 space-y-8">
-            {/* Address Selection Section */}
-            <section className="glass-card p-6 sm:p-8 rounded-3xl border border-white shadow-sm">
-              <div className="flex items-center justify-between mb-8">
+            <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+              <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
-                    <MapPin size={24} />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+                    <MapPin size={22} />
                   </div>
-                  <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">Địa chỉ nhận hàng</h2>
+                  <div>
+                    <h2 className="text-lg font-bold text-slate-900">Địa chỉ nhận hàng</h2>
+                    <p className="text-sm text-slate-500">Chọn địa chỉ dùng cho đơn hàng này</p>
+                  </div>
                 </div>
                 <button 
                   onClick={() => setShowAddressModal(true)}
-                  className="flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors"
+                  className="inline-flex w-fit items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-blue-600 transition-colors hover:border-blue-200 hover:bg-blue-50"
                 >
                   <Plus size={18} /> Thêm địa chỉ mới
                 </button>
@@ -219,10 +227,10 @@ const Checkout = () => {
                   {addresses.map(addr => (
                     <label 
                       key={addr.id}
-                      className={`relative p-5 rounded-2xl border-2 cursor-pointer transition-all ${
+                      className={`relative cursor-pointer rounded-2xl border p-5 transition-all ${
                         selectedAddressId === addr.id 
-                          ? 'border-blue-600 bg-blue-50/50 shadow-md shadow-blue-600/5' 
-                          : 'border-slate-100 hover:border-slate-200 bg-white'
+                          ? 'border-blue-600 bg-blue-50/50 shadow-sm shadow-blue-600/5'
+                          : 'border-slate-200 bg-white hover:border-slate-300'
                       }`}
                     >
                       <input 
@@ -235,7 +243,7 @@ const Checkout = () => {
                       <div className="flex justify-between items-start mb-2">
                         <div className="font-bold text-slate-900">{addr.fullName}</div>
                         {addr.isDefault && (
-                          <span className="text-[10px] font-black uppercase tracking-wider text-blue-600 bg-blue-100 px-2 py-0.5 rounded-full">Mặc định</span>
+                          <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[11px] font-semibold text-blue-600">Mặc định</span>
                         )}
                       </div>
                       <div className="flex items-center gap-2 text-slate-500 text-sm mb-1">
@@ -249,11 +257,11 @@ const Checkout = () => {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-10 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
+                <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 py-10 text-center">
                   <p className="text-slate-500 mb-4">Bạn chưa có địa chỉ nhận hàng nào.</p>
                   <button 
                     onClick={() => setShowAddressModal(true)}
-                    className="px-6 py-2.5 bg-blue-600 text-white rounded-xl font-bold text-sm hover:bg-blue-700 transition-all"
+                    className="rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white transition-all hover:bg-blue-700"
                   >
                     Thêm ngay
                   </button>
@@ -261,29 +269,27 @@ const Checkout = () => {
               )}
             </section>
 
-            {/* Note Section */}
-            <section className="glass-card p-6 sm:p-8 rounded-3xl border border-white shadow-sm">
+            <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-600">
-                  <AlertCircle size={24} />
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
+                  <AlertCircle size={22} />
                 </div>
-                <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">Ghi chú đơn hàng</h2>
+                <h2 className="text-lg font-bold text-slate-900">Ghi chú đơn hàng</h2>
               </div>
               <textarea
                 value={formData.note}
                 onChange={(e) => setFormData({ ...formData, note: e.target.value })}
-                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all min-h-[100px]"
+                className="min-h-[100px] w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition-all focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
                 placeholder="Ví dụ: Giao giờ hành chính, gọi trước khi giao..."
               />
             </section>
 
-            {/* Voucher Section */}
-            <section className="glass-card p-6 sm:p-8 rounded-3xl border border-white shadow-sm">
+            <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
-                  <Tag size={24} />
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+                  <Tag size={22} />
                 </div>
-                <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">Mã giảm giá</h2>
+                <h2 className="text-lg font-bold text-slate-900">Mã giảm giá</h2>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3">
@@ -292,7 +298,7 @@ const Checkout = () => {
                   onChange={(event) => setVoucherCode(event.target.value.toUpperCase())}
                   disabled={Boolean(appliedVoucher)}
                   placeholder="Nhập mã giảm giá"
-                  className="flex-grow px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-bold uppercase"
+                  className="flex-grow rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold uppercase outline-none transition-all focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
                 />
                 {appliedVoucher ? (
                   <Button type="button" variant="outline" onClick={handleRemoveVoucher} icon={X}>
@@ -306,23 +312,22 @@ const Checkout = () => {
               </div>
 
               {appliedVoucher && (
-                <div className="mt-4 rounded-2xl bg-emerald-50 border border-emerald-100 px-4 py-3 text-sm font-bold text-emerald-700">
+                <div className="mt-4 rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">
                   Đã giảm {formatPrice(appliedVoucher.discountAmount)} cho đơn hàng này.
                 </div>
               )}
             </section>
 
-            {/* Payment Method Section */}
-            <section className="glass-card p-6 sm:p-8 rounded-3xl border border-white shadow-sm">
+            <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-cyan-50 flex items-center justify-center text-cyan-600">
-                  <CreditCard size={24} />
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600">
+                  <CreditCard size={22} />
                 </div>
-                <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">Phương thức thanh toán</h2>
+                <h2 className="text-lg font-bold text-slate-900">Phương thức thanh toán</h2>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <label className={`relative flex items-center gap-4 p-5 rounded-2xl border-2 cursor-pointer transition-all ${
+                <label className={`relative flex cursor-pointer items-center gap-4 rounded-2xl border p-5 transition-all ${
                   formData.paymentMethod === 'COD' ? 'border-blue-600 bg-blue-50/50' : 'border-slate-100 hover:border-slate-200 bg-white'
                 }`}>
                   <input 
@@ -339,7 +344,7 @@ const Checkout = () => {
                   </div>
                 </label>
 
-                <label className={`relative flex items-center gap-4 p-5 rounded-2xl border-2 cursor-pointer transition-all ${
+                <label className={`relative flex cursor-pointer items-center gap-4 rounded-2xl border p-5 transition-all ${
                   formData.paymentMethod === 'VNPAY' ? 'border-blue-600 bg-blue-50/50' : 'border-slate-100 hover:border-slate-200 bg-white'
                 }`}>
                   <input 
@@ -359,15 +364,14 @@ const Checkout = () => {
             </section>
           </div>
 
-          {/* Order Summary Sidebar */}
           <div className="lg:w-1/3">
-            <div className="glass-card p-8 rounded-3xl border border-white shadow-xl shadow-slate-200/50 sticky top-28">
-              <h2 className="text-xl font-black text-slate-900 mb-6 uppercase tracking-tight">Đơn hàng của bạn</h2>
+            <div className="sticky top-28 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+              <h2 className="mb-6 text-xl font-bold text-slate-900">Đơn hàng của bạn</h2>
               
               <div className="max-h-[300px] overflow-y-auto mb-6 pr-2 space-y-4 custom-scrollbar">
                 {cartItems.map(item => (
                   <div key={item.id} className="flex gap-4">
-                    <div className="w-16 h-16 bg-slate-50 rounded-xl overflow-hidden flex-shrink-0 border border-slate-100">
+                    <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl border border-slate-100 bg-slate-50">
                       <img src={item.imageUrl || '/logo_final.png'} alt={item.name} className="w-full h-full object-contain p-1" />
                     </div>
                     <div className="flex-grow min-w-0">
@@ -382,13 +386,13 @@ const Checkout = () => {
               </div>
 
               <div className="space-y-4 py-6 border-t border-slate-100">
-                <div className="flex justify-between text-slate-500 text-sm">
+                <div className="flex justify-between text-sm text-slate-500">
                   <span>Tạm tính</span>
                   <span className="font-semibold text-slate-900">{formatPrice(cartTotal)}</span>
                 </div>
-                <div className="flex justify-between text-slate-500 text-sm">
+                <div className="flex justify-between text-sm text-slate-500">
                   <span>Phí vận chuyển</span>
-                  <span className="text-emerald-600 font-bold uppercase tracking-wider">Miễn phí</span>
+                  <span className="font-semibold text-emerald-600">Miễn phí</span>
                 </div>
                 {appliedVoucher && (
                   <div className="flex justify-between text-emerald-600 text-sm">
@@ -398,24 +402,22 @@ const Checkout = () => {
                 )}
                 <div className="h-px bg-slate-100 my-2" />
                 <div className="flex justify-between items-end">
-                  <span className="text-slate-900 font-bold">Tổng thanh toán</span>
-                  <span className="text-2xl font-black text-blue-600">
+                  <span className="font-semibold text-slate-900">Tổng thanh toán</span>
+                  <span className="text-2xl font-bold text-blue-600">
                     {formatPrice(finalTotal)}
                   </span>
                 </div>
               </div>
 
               {status.message && (
-                <motion.div 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className={`p-4 rounded-xl mb-6 flex items-center gap-3 text-sm font-medium ${
-                    status.type === 'error' ? 'bg-blue-50 text-blue-600' : 'bg-emerald-50 text-emerald-600'
+                <div
+                  className={`mb-6 flex items-center gap-3 rounded-xl p-4 text-sm font-medium ${
+                    status.type === 'error' ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'
                   }`}
                 >
                   {status.type === 'error' ? <AlertCircle size={18} /> : <CheckCircle2 size={18} />}
                   {status.message}
-                </motion.div>
+                </div>
               )}
 
               <Button 
@@ -473,19 +475,19 @@ const Checkout = () => {
               />
             </div>
             <div className="col-span-1 md:col-span-2">
-              <label className="block text-sm font-black text-slate-900 mb-2 uppercase tracking-wide">Địa chỉ chi tiết</label>
+              <label className="mb-2 block text-sm font-semibold text-slate-900">Địa chỉ chi tiết</label>
               <textarea
                 name="address"
                 required
                 rows="3"
                 value={newAddress.address}
                 onChange={handleNewAddressChange}
-                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-medium"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                 placeholder="Số nhà, tên đường, phường/xã..."
               />
             </div>
             <div className="col-span-1 md:col-span-2">
-              <label className="flex items-center gap-3 cursor-pointer group">
+              <label className="group flex cursor-pointer items-center gap-3">
                 <input 
                   type="checkbox" 
                   name="isDefault" 
@@ -493,20 +495,21 @@ const Checkout = () => {
                   onChange={handleNewAddressChange}
                   className="w-5 h-5 accent-blue-600 rounded-lg border-slate-200" 
                 />
-                <span className="text-sm font-bold text-slate-600 group-hover:text-slate-900 transition-colors uppercase tracking-tight">Đặt làm địa chỉ mặc định</span>
+                <span className="text-sm font-semibold text-slate-600 transition-colors group-hover:text-slate-900">Đặt làm địa chỉ mặc định</span>
               </label>
             </div>
           </div>
 
           <div className="flex gap-4 pt-4">
-            <Button 
+            <Button
+              type="button"
               variant="outline" 
               className="flex-grow"
               onClick={() => setShowAddressModal(false)}
             >
               Hủy
             </Button>
-            <Button 
+            <Button
               type="submit" 
               className="flex-grow"
             >
