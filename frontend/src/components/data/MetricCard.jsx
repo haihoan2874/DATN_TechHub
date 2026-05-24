@@ -5,6 +5,8 @@ const MetricCard = ({ label, value, icon: Icon, tone = 'blue' }) => {
     blue: 'bg-blue-50 text-blue-700',
     green: 'bg-emerald-50 text-emerald-700',
     amber: 'bg-amber-50 text-amber-700',
+    red: 'bg-rose-50 text-rose-700',
+    indigo: 'bg-indigo-50 text-indigo-700',
     slate: 'bg-slate-100 text-slate-700'
   }[tone] || 'bg-slate-100 text-slate-700';
 
