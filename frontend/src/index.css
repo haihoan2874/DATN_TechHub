@@ -18,16 +18,43 @@
   body {
     @apply bg-background text-slate-900 font-sans antialiased;
     min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
   }
 
   a, button {
     @apply transition-colors duration-200 ease-in-out;
+    touch-action: manipulation;
   }
 }
 
 @layer components {
   .glass-card {
     @apply rounded-2xl border border-slate-200 bg-white shadow-sm;
+  }
+
+  .form-label {
+    @apply ml-1 text-xs font-semibold text-slate-700;
+  }
+
+  .form-label-strong {
+    @apply ml-1 text-xs font-bold uppercase tracking-wide text-slate-500;
+  }
+
+  .form-input {
+    @apply w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-900 placeholder:text-slate-400 transition-colors focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400;
+  }
+
+  .form-select {
+    @apply w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 outline-none transition-colors focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400;
+  }
+
+  .form-textarea {
+    @apply w-full resize-none rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-medium leading-relaxed text-slate-900 placeholder:text-slate-400 outline-none transition-colors focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400;
+  }
+
+  .form-check {
+    @apply h-5 w-5 rounded border-slate-300 text-blue-600 accent-blue-600;
   }
   
   .btn-primary {

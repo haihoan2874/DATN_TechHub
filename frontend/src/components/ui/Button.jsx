@@ -1,6 +1,7 @@
 import React from 'react';
 
 const Button = ({ 
+  type = 'button',
   children, 
   variant = 'primary', 
   size = 'md', 
@@ -8,9 +9,10 @@ const Button = ({
   isLoading = false, 
   icon: Icon,
   iconPosition = 'left',
+  disabled = false,
   ...props 
 }) => {
-  const baseStyles = "inline-flex items-center justify-center font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
+  const baseStyles = "inline-flex items-center justify-center font-semibold transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed";
   
   const variants = {
     primary: "bg-slate-900 text-white hover:bg-slate-800 shadow-sm",
@@ -29,8 +31,9 @@ const Button = ({
 
   return (
     <button
+      type={type}
       className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
-      disabled={isLoading}
+      disabled={isLoading || disabled}
       {...props}
     >
       {isLoading ? (

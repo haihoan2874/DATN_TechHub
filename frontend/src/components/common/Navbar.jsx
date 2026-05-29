@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, User, Search, Menu, X, ChevronDown, LogOut, Settings, Loader2, Heart, Watch, Headphones, Tag, Smartphone, Activity } from 'lucide-react';
+import { ShoppingCart, User, Search, Menu, X, ChevronDown, LogOut, Settings, Loader2, Watch, Headphones, Tag, Activity } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
@@ -8,6 +8,7 @@ import productService from '../../services/productService';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
 import ConfirmModal from '../ui/ConfirmModal';
+import { resolveApiAssetUrl } from '../../config/api';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -37,6 +38,30 @@ const Navbar = () => {
     }
   }, [user]);
 
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+    setIsUserMenuOpen(false);
+    setIsLogoutConfirmOpen(false);
+    setSearchResults([]);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    document.body.style.overflow = isMobileMenuOpen ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen]);
+
+  const handleConfirmLogout = () => {
+    setIsLogoutConfirmOpen(false);
+    setIsUserMenuOpen(false);
+    setIsMobileMenuOpen(false);
+    setSearchQuery('');
+    setSearchResults([]);
+    logout();
+    navigate('/', { replace: true });
+  };
+
   // Real-time search logic with debounce
   useEffect(() => {
     const delayDebounceFn = setTimeout(async () => {
@@ -62,24 +87,25 @@ const Navbar = () => {
   }, [searchQuery]);
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${
+    <>
+    <nav className={`sticky top-0 left-0 right-0 z-[100] border-b border-slate-200 bg-white/95 backdrop-blur-md transition-shadow duration-300 ${
       isScrolled 
-        ? 'bg-white/90 backdrop-blur-xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] py-3 border-b border-slate-200/50' 
-        : 'bg-white py-5 border-b border-slate-200/60'
+        ? 'shadow-sm'
+        : 'shadow-none'
     }`}>
-      <div className="container mx-auto px-4 lg:px-10">
-        <div className="flex items-center justify-between gap-6 lg:gap-12">
+      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+        <div className="flex h-16 items-center justify-between gap-3 lg:gap-6">
           
           {/* 1. Logo & Brand */}
-          <Link to="/" className="flex items-center gap-3 group shrink-0">
-            <div className="w-10 h-10 lg:w-12 lg:h-12 overflow-hidden transform group-hover:scale-110 transition-transform duration-500">
+          <Link to="/" className="flex items-center gap-2.5 group shrink-0">
+            <div className="h-8 w-8 overflow-hidden transition-transform duration-300 group-hover:scale-105 sm:h-9 sm:w-9">
               <img src="/logo_final.png" alt="S-Life Logo" className="w-full h-full object-contain" />
             </div>
-            <span className="font-black text-2xl lg:text-3xl tracking-tighter text-slate-900 group-hover:text-blue-600 transition-all duration-300">S-LIFE</span>
+            <span className="text-xl font-black tracking-tight text-slate-900 transition-colors duration-300 group-hover:text-blue-600 sm:text-2xl">S-LIFE</span>
           </Link>
 
           {/* 2. Navigation Links (Desktop) */}
-          <div className="hidden xl:flex items-center gap-10 shrink-0">
+          <div className="hidden xl:flex items-center gap-8 shrink-0">
             <NavLink to="/" active={location.pathname === '/'}>TRANG CHỦ</NavLink>
             <NavLink to="/shop" active={location.pathname === '/shop'}>CỬA HÀNG</NavLink>
             
@@ -90,41 +116,50 @@ const Navbar = () => {
               </NavLink>
               
               {/* Mega Menu Content */}
-              <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                <div className="bg-white rounded-[40px] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.15)] border border-slate-100 p-10 min-w-[800px] flex gap-12">
-                  
-                  {/* Category Column 1: Watches */}
+              <div className="invisible absolute left-1/2 top-full z-50 w-[720px] -translate-x-1/2 pt-4 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
+                <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-xl shadow-slate-900/10">
+                  <div className="grid grid-cols-2 gap-2">
                   <MegaMenuColumn 
                     icon={<Watch size={24} className="text-blue-600" />}
                     title="Đồng hồ thể thao"
                     slug="dong-ho-the-thao"
-                    items={["Garmin Series", "Apple Watch", "Samsung Galaxy", "Suunto / Coros"]}
+                    description="GPS, luyện tập, theo dõi sức khỏe 24/7."
+                    image="/assets/categories/sports_watch.png"
                   />
 
-                  {/* Category Column 2: Audio */}
                   <MegaMenuColumn 
                     icon={<Headphones size={24} className="text-blue-600" />}
                     title="Tai nghe Bluetooth"
                     slug="tai-nghe-bluetooth"
-                    items={["Sony Audio", "Apple AirPods", "Jabra Sports", "JBL / Marshall"]}
+                    description="Âm thanh gọn nhẹ cho làm việc và vận động."
+                    image="/assets/categories/earbuds.png"
                   />
 
-                  {/* Category Column 3: Health */}
                   <MegaMenuColumn 
                     icon={<Activity size={24} className="text-blue-600" />}
                     title="Theo dõi sức khỏe"
                     slug="vong-theo-doi-suc-khoe"
-                    items={["Fitbit Band", "Xiaomi Smartband", "Whoop Strap", "Oura Ring"]}
+                    description="Vòng đeo tay, nhịp tim, giấc ngủ, SpO2."
+                    image="/assets/categories/health_band.png"
                   />
 
-                  {/* Category Column 4: Accessories */}
                   <MegaMenuColumn 
                     icon={<Tag size={24} className="text-blue-600" />}
                     title="Phụ kiện cao cấp"
                     slug="phu-kien-dong-ho"
-                    items={["Dây da thủ công", "Dây Nylon / Silicon", "Cường lực & Bảo vệ", "Dock sạc thông minh"]}
+                    description="Dây đeo, bảo vệ màn hình và dock sạc."
+                    image="/assets/categories/straps.png"
                   />
-
+                  </div>
+                  <div className="mt-2 border-t border-slate-100 px-2 pt-3">
+                    <Link
+                      to="/categories"
+                      className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-blue-700 hover:text-blue-800"
+                    >
+                      Xem tất cả danh mục
+                      <ChevronDown size={14} className="-rotate-90" />
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
@@ -132,10 +167,10 @@ const Navbar = () => {
           </div>
 
           {/* 3. Search Pill (Compact) */}
-          <div className="hidden lg:flex flex-grow max-w-sm relative">
+          <div className="hidden lg:flex flex-grow max-w-md relative">
             <Input
               icon={Search}
-              placeholder="Tìm sản phẩm..."
+              placeholder="Tìm sản phẩm…"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full"
@@ -150,7 +185,7 @@ const Navbar = () => {
               {(searchResults.length > 0 || (searchQuery.trim().length > 1 && !isSearching)) && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 5 }}
-                  className="absolute top-full left-0 right-0 mt-3 bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden z-[60] p-2"
+                  className="absolute top-full left-0 right-0 z-[60] mt-3 overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-xl shadow-slate-900/10"
                 >
                   {searchResults.length > 0 ? (
                     <div className="space-y-1">
@@ -185,7 +220,7 @@ const Navbar = () => {
 
           {/* 4. Action Buttons */}
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-            <Link to="/cart" className="relative p-3 group bg-slate-50 rounded-xl hover:bg-blue-600 transition-all duration-300">
+            <Link to="/cart" className="group relative rounded-xl bg-slate-50 p-2.5 transition-colors duration-200 hover:bg-blue-600" aria-label="Giỏ hàng">
               <ShoppingCart size={20} className="text-slate-900 group-hover:text-white transition-colors" />
               <AnimatePresence>
                 {cartCount > 0 && (
@@ -201,13 +236,14 @@ const Navbar = () => {
 
             {user ? (
               <div className="relative hidden sm:block">
-                <button 
+                <button
+                  type="button"
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                   className="flex items-center gap-2.5 p-1 rounded-xl bg-slate-50 hover:bg-slate-100 transition-all border border-slate-100 pr-3 group"
                 >
                   <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center text-white font-black text-xs overflow-hidden">
                     {user?.imageUrl ? (
-                      <img src={user.imageUrl.startsWith('http') ? user.imageUrl : `http://localhost:8089${user.imageUrl}`} alt="Avatar" className="w-full h-full object-cover" />
+                      <img src={resolveApiAssetUrl(user.imageUrl)} alt="Avatar" className="w-full h-full object-cover" />
                     ) : (
                       user?.firstName?.charAt(0) || user?.username?.charAt(0) || 'U'
                     )}
@@ -222,7 +258,7 @@ const Navbar = () => {
                   {isUserMenuOpen && (
                     <motion.div
                       initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 5 }}
-                      className="absolute right-0 mt-3 w-64 bg-white rounded-3xl shadow-2xl border border-slate-100 p-2 z-50 overflow-hidden"
+                      className="absolute right-0 z-50 mt-3 w-64 overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-xl shadow-slate-900/10"
                     >
                       <div className="px-5 py-4 border-b border-slate-50 mb-1">
                         <p className="text-sm font-black text-slate-900 truncate">{user?.firstName} {user?.lastName}</p>
@@ -263,69 +299,115 @@ const Navbar = () => {
             )}
 
             {/* Mobile Trigger */}
-            <button className="xl:hidden p-3 bg-slate-50 rounded-xl text-slate-900 active:scale-90 transition-transform" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+            <button
+              type="button"
+              className="rounded-xl bg-slate-50 p-2.5 text-slate-900 transition-transform active:scale-95 xl:hidden"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Mở menu"
+            >
               <Menu size={24} />
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsMobileMenuOpen(false)} className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[110] xl:hidden" />
-            <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: 'spring', damping: 25, stiffness: 200 }} className="fixed top-0 right-0 bottom-0 w-full max-w-[300px] bg-white z-[120] xl:hidden shadow-2xl flex flex-col p-8" >
-              <div className="flex justify-between items-center mb-12">
-                <div className="flex items-center gap-3">
-                  <img src="/logo_final.png" alt="Logo" className="w-10 h-10" />
-                  <span className="font-black text-2xl tracking-tighter text-slate-900">S-LIFE</span>
-                </div>
-                <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 bg-slate-50 rounded-xl"><X size={20} /></button>
-              </div>
+	    </nav>
+	    <AnimatePresence>
+	      {isMobileMenuOpen && (
+	        <>
+	          <motion.div
+	            initial={{ opacity: 0 }}
+	            animate={{ opacity: 1 }}
+	            exit={{ opacity: 0 }}
+	            onClick={() => setIsMobileMenuOpen(false)}
+	            className="fixed inset-0 z-[110] bg-slate-950/70 backdrop-blur-sm xl:hidden"
+	          />
+	          <motion.div
+	            initial={{ y: 24, opacity: 0 }}
+	            animate={{ y: 0, opacity: 1 }}
+	            exit={{ y: 24, opacity: 0 }}
+	            transition={{ duration: 0.2, ease: 'easeOut' }}
+	            className="fixed inset-x-3 top-3 bottom-3 z-[120] flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl xl:hidden"
+	            role="dialog"
+	            aria-modal="true"
+	            aria-label="Menu điều hướng"
+	          >
+	            <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+	              <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="flex min-w-0 items-center gap-3">
+	                <img src="/logo_final.png" alt="S-LIFE" className="h-9 w-9 shrink-0 object-contain" />
+	                <span className="truncate text-xl font-black tracking-tight text-slate-950" translate="no">S-LIFE</span>
+	              </Link>
+	              <button
+	                type="button"
+	                onClick={() => setIsMobileMenuOpen(false)}
+	                className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 text-slate-600 hover:bg-slate-100 hover:text-slate-950"
+	                aria-label="Đóng menu"
+	              >
+	                <X size={20} />
+	              </button>
+	            </div>
 
-              <div className="space-y-2 mb-12">
-                <MobileNavLink to="/" onClick={() => setIsMobileMenuOpen(false)}>Trang chủ</MobileNavLink>
-                <MobileNavLink to="/shop" onClick={() => setIsMobileMenuOpen(false)}>Cửa hàng</MobileNavLink>
-                <MobileNavLink to="/categories" onClick={() => setIsMobileMenuOpen(false)}>Danh mục</MobileNavLink>
-              </div>
+	            <div className="flex-1 overflow-y-auto p-5">
+	              <div className="mb-5">
+	                <Input
+	                  icon={Search}
+	                  value={searchQuery}
+	                  onChange={(event) => setSearchQuery(event.target.value)}
+	                  placeholder="Tìm sản phẩm…"
+	                  name="mobileSearch"
+	                  autoComplete="off"
+	                />
+	              </div>
 
-              <div className="mt-auto">
-                {!user ? (
-                  <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center justify-center p-4 bg-slate-900 text-white rounded-2xl font-black text-[11px] tracking-widest">
-                    ĐĂNG NHẬP
-                  </Link>
-                ) : (
-                  <button 
-                    onClick={() => { 
-                      setIsMobileMenuOpen(false);
-                      setIsLogoutConfirmOpen(true);
-                    }} 
-                    className="w-full p-4 bg-blue-50 text-blue-600 rounded-2xl font-black text-[11px]"
-                  >
-                    ĐĂNG XUẤT
-                  </button>
-                )}
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-      {/* Logout Confirmation Modal */}
-      <ConfirmModal 
-        isOpen={isLogoutConfirmOpen}
-        onClose={() => setIsLogoutConfirmOpen(false)}
-        onConfirm={async () => {
-          setIsLogoutConfirmOpen(false);
-          await logout();
-          navigate('/');
-        }}
-        title="Xác nhận đăng xuất"
-        message="Bạn có chắc chắn muốn rời khỏi tài khoản S-Life của mình không?"
-        confirmText="Đăng xuất"
-        variant="danger"
-      />
-    </nav>
+	              <div className="space-y-2">
+	                <MobileNavLink to="/" active={location.pathname === '/'} onClick={() => setIsMobileMenuOpen(false)}>Trang chủ</MobileNavLink>
+	                <MobileNavLink to="/shop" active={location.pathname === '/shop'} onClick={() => setIsMobileMenuOpen(false)}>Cửa hàng</MobileNavLink>
+	                <MobileNavLink to="/categories" active={location.pathname === '/categories'} onClick={() => setIsMobileMenuOpen(false)}>Danh mục</MobileNavLink>
+	                {user && (
+	                  <>
+	                    <MobileNavLink to="/profile" active={location.pathname === '/profile'} onClick={() => setIsMobileMenuOpen(false)}>Trang cá nhân</MobileNavLink>
+	                    <MobileNavLink to="/orders" active={location.pathname.startsWith('/orders')} onClick={() => setIsMobileMenuOpen(false)}>Lịch sử đơn hàng</MobileNavLink>
+	                  </>
+	                )}
+	              </div>
+	            </div>
+
+	            <div className="border-t border-slate-100 p-5">
+	              {!user ? (
+	                <Link
+	                  to="/login"
+	                  onClick={() => setIsMobileMenuOpen(false)}
+	                  className="flex items-center justify-center rounded-xl bg-slate-900 p-4 text-[11px] font-black uppercase tracking-widest text-white hover:bg-slate-800"
+	                >
+	                  Đăng nhập
+	                </Link>
+	              ) : (
+	                <button
+	                  type="button"
+	                  onClick={() => {
+	                    setIsMobileMenuOpen(false);
+	                    setIsLogoutConfirmOpen(true);
+	                  }}
+	                  className="w-full rounded-xl bg-rose-50 p-4 text-[11px] font-black uppercase tracking-widest text-rose-600 hover:bg-rose-100"
+	                >
+	                  Đăng xuất
+	                </button>
+	              )}
+	            </div>
+	          </motion.div>
+	        </>
+	      )}
+	    </AnimatePresence>
+    <ConfirmModal
+      isOpen={isLogoutConfirmOpen}
+      onClose={() => setIsLogoutConfirmOpen(false)}
+      onConfirm={handleConfirmLogout}
+      title="Xác nhận đăng xuất"
+      message="Bạn có chắc chắn muốn rời khỏi tài khoản S-Life của mình không?"
+      confirmText="Đăng xuất"
+      variant="danger"
+    />
+    </>
   );
 };
 
@@ -340,10 +422,16 @@ const NavLink = ({ to, children, active }) => (
   </Link>
 );
 
-const MobileNavLink = ({ to, onClick, children }) => (
-  <Link to={to} onClick={onClick} className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 text-slate-900 font-bold hover:bg-blue-600 hover:text-white transition-all group">
+const MobileNavLink = ({ to, onClick, children, active = false }) => (
+  <Link
+    to={to}
+    onClick={onClick}
+    className={`group flex items-center justify-between rounded-xl p-4 font-bold transition-colors ${
+      active ? 'bg-slate-900 text-white' : 'bg-slate-50 text-slate-900 hover:bg-blue-50 hover:text-blue-700'
+    }`}
+  >
     <span className="text-xs uppercase tracking-widest">{children}</span>
-    <ChevronDown size={18} className="-rotate-90 opacity-30" />
+    <ChevronDown size={18} className="-rotate-90 opacity-40" />
   </Link>
 );
 
@@ -354,29 +442,26 @@ const MenuOption = ({ to, icon, label, onClick }) => (
   </Link>
 );
 
-const MegaMenuColumn = ({ icon, title, slug, items }) => (
-  <div className="flex-1 space-y-6">
-    <Link to={`/shop?category=${slug}`} className="flex items-center gap-3 group/title">
-      <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center group-hover/title:bg-blue-600 group-hover/title:text-white transition-all">
+const MegaMenuColumn = ({ icon, title, slug, description, image }) => (
+  <Link
+    to={`/shop?category=${slug}`}
+    className="group/menu grid min-h-[130px] grid-cols-[1fr_92px] gap-3 rounded-xl border border-transparent bg-slate-50 p-4 transition-all hover:border-blue-200 hover:bg-white hover:shadow-sm"
+  >
+    <div className="min-w-0">
+      <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-sm transition-colors group-hover/menu:bg-blue-50">
         {icon}
       </div>
-      <div>
-        <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight group-hover/title:text-blue-600 transition-colors">{title}</h4>
-        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Khám phá ngay</p>
-      </div>
-    </Link>
-    <div className="space-y-3 pl-15">
-      {items.map((item, i) => (
-        <Link 
-          key={i} 
-          to={`/shop?category=${slug}&search=${item.split(' ')[0]}`} 
-          className="block text-xs font-bold text-slate-500 hover:text-blue-600 hover:translate-x-1 transition-all"
-        >
-          {item}
-        </Link>
-      ))}
+      <h4 className="text-sm font-black uppercase leading-snug tracking-tight text-slate-950 transition-colors group-hover/menu:text-blue-700">
+        {title}
+      </h4>
+      <p className="mt-1.5 line-clamp-2 text-xs font-medium leading-relaxed text-slate-500">
+        {description}
+      </p>
     </div>
-  </div>
+    <div className="flex items-center justify-center rounded-xl bg-white p-2">
+      <img src={image} alt={title} className="h-16 w-16 object-contain transition-transform group-hover/menu:scale-105" />
+    </div>
+  </Link>
 );
 
 export default Navbar;

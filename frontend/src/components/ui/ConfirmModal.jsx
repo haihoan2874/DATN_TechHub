@@ -70,6 +70,7 @@ const ConfirmModal = ({
               {confirmText}
             </Button>
             <button 
+              type="button"
               onClick={onClose} 
               disabled={isLoading}
               className="w-full rounded-xl py-2.5 text-sm font-semibold text-slate-500 hover:bg-white/60 hover:text-slate-900 disabled:opacity-50"

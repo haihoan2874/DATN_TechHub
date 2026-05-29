@@ -34,7 +34,7 @@ const Modal = ({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-3 sm:p-5">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -54,12 +54,13 @@ const Modal = ({
           >
             {/* Header */}
             {title && (
-              <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
+              <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3 sm:px-5">
                 <h3 className="text-lg font-bold text-slate-950">
                   {title}
                 </h3>
                 {showClose && (
                   <button 
+                    type="button"
                     onClick={onClose}
                     className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-900"
                   >
@@ -70,13 +71,13 @@ const Modal = ({
             )}
 
             {/* Content */}
-            <div className="flex-grow overflow-y-auto p-6 no-scrollbar">
+            <div className="no-scrollbar flex-grow overflow-y-auto p-4 sm:p-5">
               {children}
             </div>
 
             {/* Footer */}
             {footer && (
-              <div className="flex items-center justify-end gap-3 border-t border-slate-200 bg-slate-50 px-6 py-4">
+              <div className="flex items-center justify-end gap-3 border-t border-slate-200 bg-slate-50 px-4 py-3 sm:px-5">
                 {footer}
               </div>
             )}

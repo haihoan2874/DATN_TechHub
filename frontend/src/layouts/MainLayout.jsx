@@ -6,7 +6,7 @@ import AIChatbot from '../components/common/AIChatbot';
 
 const MainLayout = () => {
   return (
-    <div className="flex flex-col min-h-screen relative">
+    <div className="relative flex min-h-screen flex-col bg-slate-50">
       <Navbar />
       <main className="flex-grow">
         <Outlet />

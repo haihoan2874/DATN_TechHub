@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useId } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 
 const Input = ({ 
@@ -6,14 +6,18 @@ const Input = ({
   error, 
   icon: Icon, 
   className = '', 
+  inputClassName = '',
   showPassword,
   togglePassword,
   ...props 
 }) => {
+  const generatedId = useId();
+  const inputId = props.id || props.name || generatedId;
+
   return (
     <div className={`flex flex-col gap-2 w-full ${className}`}>
       {label && (
-        <label className="ml-1 text-xs font-semibold text-slate-700">
+        <label htmlFor={inputId} className="form-label">
           {label}
         </label>
       )}
@@ -26,13 +30,14 @@ const Input = ({
         )}
         
         <input
+          id={inputId}
+          aria-invalid={Boolean(error)}
+          aria-describedby={error ? `${inputId}-error` : undefined}
           className={`
-            w-full rounded-xl border border-slate-300 bg-white
-            px-4 py-2.5 text-sm font-medium text-slate-900
-            placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10
-            transition-colors
+            form-input
             ${Icon ? 'pl-12' : ''}
             ${error ? 'border-rose-500 bg-rose-50/30' : ''}
+            ${inputClassName}
           `}
           {...props}
         />
@@ -41,7 +46,8 @@ const Input = ({
           <button
             type="button"
             onClick={togglePassword}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors focus:outline-none"
+            aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+            className="absolute right-4 top-1/2 -translate-y-1/2 rounded-lg p-1 text-slate-400 transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
           >
             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
@@ -49,7 +55,7 @@ const Input = ({
       </div>
       
       {error && (
-        <span className="ml-1 text-xs font-semibold text-rose-600">
+        <span id={`${inputId}-error`} className="ml-1 text-xs font-semibold text-rose-600">
           {error}
         </span>
       )}

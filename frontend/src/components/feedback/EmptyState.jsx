@@ -1,7 +1,7 @@
 import React from 'react';
 import { Inbox } from 'lucide-react';
 
-const EmptyState = ({ title = 'Không có dữ liệu', description, icon: Icon = Inbox }) => {
+const EmptyState = ({ title = 'Chưa có nội dung', description, icon: Icon = Inbox }) => {
   return (
     <div className="flex flex-col items-center justify-center px-6 py-14 text-center">
       <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
