@@ -27,7 +27,7 @@ const ReportExportModal = ({ isOpen, onClose }) => {
     toast.promise(
       new Promise((resolve) => setTimeout(resolve, 2500)),
       {
-        loading: 'Hệ thống đang trích xuất dữ liệu...',
+        loading: 'Đang chuẩn bị báo cáo...',
         success: 'Đã tạo báo cáo thành công!',
         error: 'Có lỗi trong quá trình tạo báo cáo.',
       }
@@ -60,13 +60,14 @@ const ReportExportModal = ({ isOpen, onClose }) => {
       <div className="space-y-8 py-2">
         {/* 1. Select Report Type */}
         <div className="space-y-4">
-          <label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 ml-2">1. Loại báo cáo cần xuất</label>
+          <label className="form-label ml-2">1. Loại báo cáo cần xuất</label>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {reportTypes.map((type) => (
               <button
+                type="button"
                 key={type.id}
                 onClick={() => setReportType(type.id)}
-                className={`flex items-start gap-4 p-5 rounded-[2rem] border-2 transition-all text-left group ${
+                className={`flex items-start gap-4 rounded-2xl border-2 p-5 text-left transition-all group ${
                   reportType === type.id 
                     ? 'border-blue-600 bg-blue-50/50 shadow-lg shadow-blue-600/5' 
                     : 'border-slate-100 hover:border-slate-200 bg-white'
@@ -96,8 +97,8 @@ const ReportExportModal = ({ isOpen, onClose }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           {/* 2. Select Period */}
           <div className="space-y-4">
-            <label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 ml-2">2. Khoảng thời gian</label>
-            <div className="bg-slate-50 p-2 rounded-[2rem] border border-slate-100 grid grid-cols-2 gap-2">
+            <label className="form-label ml-2">2. Khoảng thời gian</label>
+            <div className="grid grid-cols-2 gap-2 rounded-2xl border border-slate-100 bg-slate-50 p-2">
               {[
                 { id: 'DAY', label: 'Hôm nay' },
                 { id: 'WEEK', label: 'Tuần này' },
@@ -105,6 +106,7 @@ const ReportExportModal = ({ isOpen, onClose }) => {
                 { id: 'CUSTOM', label: 'Tùy chọn' }
               ].map((p) => (
                 <button
+                  type="button"
                   key={p.id}
                   onClick={() => setPeriod(p.id)}
                   className={`py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${
@@ -122,11 +124,11 @@ const ReportExportModal = ({ isOpen, onClose }) => {
               >
                 <div className="relative">
                   <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none" size={14} />
-                  <input type="date" className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-xs font-bold focus:ring-2 focus:ring-blue-500/10 transition-all outline-none appearance-none" />
+                  <input type="date" className="form-input pl-10 text-xs font-bold" />
                 </div>
                 <div className="relative">
                   <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none" size={14} />
-                  <input type="date" className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-xs font-bold focus:ring-2 focus:ring-blue-500/10 transition-all outline-none appearance-none" />
+                  <input type="date" className="form-input pl-10 text-xs font-bold" />
                 </div>
               </motion.div>
             )}
@@ -134,11 +136,12 @@ const ReportExportModal = ({ isOpen, onClose }) => {
 
           {/* 3. Select Format */}
           <div className="space-y-4">
-            <label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 ml-2">3. Định dạng tệp tin</label>
+            <label className="form-label ml-2">3. Định dạng tệp tin</label>
             <div className="flex gap-4">
               <button
+                type="button"
                 onClick={() => setFormat('EXCEL')}
-                className={`flex-1 flex flex-col items-center justify-center p-6 rounded-[2rem] border-2 transition-all gap-3 ${
+                className={`flex flex-1 flex-col items-center justify-center gap-3 rounded-2xl border-2 p-6 transition-all ${
                   format === 'EXCEL' ? 'border-emerald-500 bg-emerald-50/50 text-emerald-700' : 'border-slate-100 hover:border-slate-200 bg-white text-slate-400'
                 }`}
               >
@@ -146,8 +149,9 @@ const ReportExportModal = ({ isOpen, onClose }) => {
                 <span className="text-[10px] font-black uppercase tracking-widest">Microsoft Excel</span>
               </button>
               <button
+                type="button"
                 onClick={() => setFormat('PDF')}
-                className={`flex-1 flex flex-col items-center justify-center p-6 rounded-[2rem] border-2 transition-all gap-3 ${
+                className={`flex flex-1 flex-col items-center justify-center gap-3 rounded-2xl border-2 p-6 transition-all ${
                   format === 'PDF' ? 'border-blue-500 bg-blue-50/50 text-blue-700' : 'border-slate-100 hover:border-slate-200 bg-white text-slate-400'
                 }`}
               >
@@ -159,17 +163,17 @@ const ReportExportModal = ({ isOpen, onClose }) => {
         </div>
 
         {/* Warning Note */}
-        <div className="p-6 bg-amber-50 rounded-[2rem] border border-amber-100 flex gap-4 items-center">
+        <div className="flex items-center gap-4 rounded-2xl border border-amber-100 bg-amber-50 p-6">
            <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0">
               <Calendar size={20} />
            </div>
            <p className="text-[11px] text-amber-800 font-bold leading-relaxed italic">
-             Lưu ý: Dữ liệu báo cáo được trích xuất trực tiếp từ cơ sở dữ liệu thời gian thực. Vui lòng kiểm tra kỹ các tiêu chí trước khi khởi tạo.
+             Lưu ý: Báo cáo được tổng hợp theo số liệu vận hành hiện tại. Vui lòng kiểm tra kỹ tiêu chí trước khi xuất tệp.
            </p>
         </div>
       </div>
     </Modal>
   );
 };
-1 
+
 export default ReportExportModal;

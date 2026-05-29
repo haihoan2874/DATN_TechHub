@@ -272,11 +272,11 @@ const CategoryManagement = () => {
             className="font-mono text-[11px]"
           />
           <div className="space-y-3">
-            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Mô tả chi tiết</label>
+            <label className="form-label-strong">Mô tả chi tiết</label>
             <textarea 
               name="description" rows="4"
               value={formData.description} onChange={handleInputChange}
-              className="w-full resize-none rounded-xl border border-slate-300 bg-white p-4 text-sm font-medium leading-relaxed outline-none transition-colors focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+              className="form-textarea"
             />
           </div>
         </form>

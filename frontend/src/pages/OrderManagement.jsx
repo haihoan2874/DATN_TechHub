@@ -177,7 +177,7 @@ const OrderManagement = () => {
       <PageHeader
         eyebrow="Quản lý vận hành"
         title="Đơn hàng"
-        description="Theo dõi đơn hàng và cập nhật trạng thái xử lý theo đúng luồng nghiệp vụ."
+        description="Theo dõi đơn hàng và cập nhật trạng thái xử lý theo đúng quy trình vận hành."
         icon={ShoppingCart}
       />
 
@@ -283,7 +283,7 @@ const OrderManagement = () => {
                             disabled={isUpdating === order.id || isTerminalStatus(order.status)}
                             value={order.status}
                             onChange={(e) => handleUpdateStatus(order.id, e.target.value)}
-                            className="cursor-pointer appearance-none rounded-xl border border-slate-300 bg-white px-3 py-2 pr-9 text-xs font-semibold text-slate-700 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 disabled:cursor-not-allowed disabled:opacity-50"
+                            className="form-select cursor-pointer appearance-none pr-9 text-xs disabled:opacity-50"
                           >
                             {getAllowedStatuses(order.status).map(s => (
                               <option key={s.value} value={s.value}>{s.label}</option>

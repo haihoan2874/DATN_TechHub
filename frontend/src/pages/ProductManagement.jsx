@@ -17,6 +17,7 @@ import ImageUpload from '../components/admin/ImageUpload';
 import ProductTable from './ProductManagement/components/ProductTable';
 import SpecsEditor from './ProductManagement/components/SpecsEditor';
 import FeaturesEditor from './ProductManagement/components/FeaturesEditor';
+import { resolveApiAssetUrl } from '../config/api';
 
 const PAGE_SIZE = 8;
 
@@ -75,7 +76,7 @@ const ProductManagement = () => {
         setFormData(prev => ({ ...prev, categoryId: catRes[0].id }));
       }
     } catch (err) {
-      toast.error('Không thể tải dữ liệu');
+      toast.error('Không thể tải danh sách sản phẩm');
     } finally {
       setLoading(false);
     }
@@ -257,7 +258,7 @@ const ProductManagement = () => {
         onClose={() => setIsDeleteConfirmOpen(false)}
         onConfirm={confirmDelete}
         title="Xác nhận xóa sản phẩm"
-        message="Hành động này sẽ xóa vĩnh viễn sản phẩm khỏi hệ thống. Bạn có chắc chắn muốn thực hiện?"
+        message="Sản phẩm sẽ bị xóa vĩnh viễn khỏi danh sách bán hàng. Bạn có chắc chắn muốn thực hiện?"
         variant="danger"
       />
 
@@ -320,7 +321,7 @@ const ProductManagement = () => {
         <select
           value={categoryFilter}
           onChange={(e) => setCategoryFilter(e.target.value)}
-          className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm font-semibold text-slate-700 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 lg:w-56"
+          className="form-select lg:w-56"
         >
           <option value="all">Tất cả danh mục</option>
           {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -328,7 +329,7 @@ const ProductManagement = () => {
         <span className="whitespace-nowrap rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-600">
           {filteredProducts.length} sản phẩm
         </span>
-        <button onClick={fetchData} className="rounded-xl border border-slate-300 bg-white p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900">
+        <button type="button" onClick={fetchData} className="rounded-xl border border-slate-300 bg-white p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900">
           <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
         </button>
       </Toolbar>
@@ -358,7 +359,7 @@ const ProductManagement = () => {
         footer={
           <div className="flex w-full flex-col gap-3 border-t border-slate-200 bg-white px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <div className="text-sm font-semibold text-slate-900">{currentProduct ? 'Lưu thay đổi sản phẩm' : 'Tạo sản phẩm và đưa vào hệ thống'}</div>
+              <div className="text-sm font-semibold text-slate-900">{currentProduct ? 'Lưu thay đổi sản phẩm' : 'Tạo sản phẩm và mở bán'}</div>
               <div className="text-xs text-slate-500">Thông tin sản phẩm, phân loại và tồn kho sẽ được cập nhật sau khi lưu.</div>
             </div>
             <div className="flex justify-end gap-3">
@@ -407,7 +408,7 @@ const ProductManagement = () => {
                   <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Xem trước nhanh</p>
                   <div className="flex aspect-square items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 p-4">
                      {formData.imageUrl ? (
-                       <img src={formData.imageUrl.startsWith('http') ? formData.imageUrl : `http://localhost:8089${formData.imageUrl}`} className="h-full w-full object-contain" alt="" />
+                       <img src={resolveApiAssetUrl(formData.imageUrl)} className="h-full w-full object-contain" alt="" />
                      ) : (
                        <Package size={48} className="text-slate-200" />
                      )}
@@ -456,14 +457,14 @@ const ProductManagement = () => {
                        <h2 className="text-lg font-bold text-slate-950">Phân loại và thương hiệu</h2>
                        <div className="grid grid-cols-1 gap-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:grid-cols-2">
                           <div className="space-y-3">
-                             <label className="ml-1 text-xs font-semibold uppercase tracking-wide text-slate-500">Danh mục hệ thống</label>
-                             <select name="categoryId" value={formData.categoryId} onChange={handleInputChange} className="w-full rounded-xl border border-slate-300 bg-white p-3 text-sm font-semibold outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10">
+                             <label className="form-label-strong">Danh mục sản phẩm</label>
+                             <select name="categoryId" value={formData.categoryId} onChange={handleInputChange} className="form-select">
                                 {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                              </select>
                           </div>
                           <div className="space-y-3">
-                             <label className="ml-1 text-xs font-semibold uppercase tracking-wide text-slate-500">Hãng sản xuất</label>
-                             <select name="brandId" value={formData.brandId} onChange={handleInputChange} className="w-full rounded-xl border border-slate-300 bg-white p-3 text-sm font-semibold outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10">
+                             <label className="form-label-strong">Hãng sản xuất</label>
+                             <select name="brandId" value={formData.brandId} onChange={handleInputChange} className="form-select">
                                 {brands.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
                              </select>
                           </div>
@@ -506,13 +507,13 @@ const ProductManagement = () => {
                     <section className="space-y-6">
                        <h2 className="text-lg font-bold text-slate-950">Mô tả sản phẩm</h2>
                        <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                          <label className="ml-1 text-xs font-semibold uppercase tracking-wide text-slate-500">Mô tả tóm tắt</label>
+                          <label className="form-label-strong">Mô tả tóm tắt</label>
                           <textarea 
                             name="description" 
                             value={formData.description} 
                             onChange={handleInputChange} 
                             rows="8" 
-                            className="w-full resize-none rounded-xl border border-slate-300 bg-white p-4 text-sm font-medium leading-relaxed outline-none transition-colors focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+                            className="form-textarea"
                             placeholder="Nhập nội dung tiếp thị ngắn gọn cho sản phẩm này..."
                           />
                        </div>

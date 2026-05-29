@@ -62,7 +62,7 @@ const UserManagement = () => {
   const handleDeleteUser = async () => {
     try {
       await adminService.deleteUser(selectedUser.id);
-      toast.success('Đã xóa người dùng khỏi hệ thống');
+      toast.success('Đã xóa người dùng khỏi danh sách');
       setShowDeleteModal(false);
       fetchUsers();
     } catch (error) {
@@ -131,9 +131,9 @@ const UserManagement = () => {
   return (
     <PageShell>
       <PageHeader
-        eyebrow="Hệ thống tài khoản"
+        eyebrow="Quản lý tài khoản"
         title="Người dùng"
-        description="Theo dõi tài khoản, vai trò và trạng thái truy cập của người dùng hệ thống."
+        description="Theo dõi tài khoản, vai trò và trạng thái đăng nhập của khách hàng."
         icon={Users}
       />
 
@@ -282,7 +282,7 @@ const UserManagement = () => {
         onClose={() => setShowDeleteModal(false)}
         onConfirm={handleDeleteUser}
         title="XÓA NGƯỜI DÙNG"
-        message={`Hành động này sẽ xóa vĩnh viễn tài khoản @${selectedUser?.username} khỏi hệ thống. Bạn có chắc chắn muốn tiếp tục?`}
+        message={`Tài khoản @${selectedUser?.username} sẽ bị xóa vĩnh viễn khỏi danh sách người dùng. Bạn có chắc chắn muốn tiếp tục?`}
         variant="danger"
       />
 
@@ -292,7 +292,7 @@ const UserManagement = () => {
         onConfirm={handleToggleStatus}
         title={selectedUser?.isActive ? "KHÓA TÀI KHOẢN" : "MỞ KHÓA TÀI KHOẢN"}
         message={selectedUser?.isActive 
-          ? `Người dùng @${selectedUser?.username} sẽ không thể đăng nhập vào hệ thống nữa. Bạn xác nhận muốn khóa?`
+          ? `Người dùng @${selectedUser?.username} sẽ không thể đăng nhập nữa. Bạn xác nhận muốn khóa?`
           : `Tài khoản @${selectedUser?.username} sẽ được khôi phục quyền truy cập. Bạn xác nhận?`}
         variant={selectedUser?.isActive ? "danger" : "warning"}
       />
@@ -322,7 +322,7 @@ const UserManagement = () => {
             >
               <Shield size={22} />
               <span className="mt-3 block text-sm font-semibold">Quản trị viên</span>
-              <span className="mt-1 block text-xs text-slate-500">Truy cập phân hệ quản trị và dữ liệu vận hành.</span>
+              <span className="mt-1 block text-xs text-slate-500">Quản lý sản phẩm, đơn hàng, khách hàng và báo cáo.</span>
             </button>
           </div>
         </div>

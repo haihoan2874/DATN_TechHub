@@ -40,12 +40,14 @@ const FeaturesEditor = ({ features, setFeatures }) => {
         
         <div className="flex gap-4">
            <button 
+             type="button"
              onClick={() => addBlock('text-image')}
              className="flex-1 flex items-center justify-center gap-3 py-4 bg-slate-900 text-white rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-black transition-all shadow-xl shadow-slate-900/10"
            >
              <Type size={16} /> Thêm đoạn văn bản
            </button>
            <button 
+             type="button"
              onClick={() => addBlock('image-only')}
              className="flex-1 flex items-center justify-center gap-3 py-4 bg-white border-2 border-slate-900 text-slate-900 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all"
            >
@@ -76,6 +78,7 @@ const FeaturesEditor = ({ features, setFeatures }) => {
                   </div>
                   <div className="flex items-center gap-2">
                     <button 
+                      type="button"
                       onClick={(e) => { e.stopPropagation(); removeBlock(idx); }} 
                       className="p-2 text-slate-300 hover:text-red-500 transition-all"
                     >
@@ -90,14 +93,14 @@ const FeaturesEditor = ({ features, setFeatures }) => {
                     {block.type === 'text-image' && (
                       <div className="space-y-4">
                         <input 
-                          className="w-full bg-white border border-slate-200 p-4 rounded-xl text-sm font-bold text-slate-900 outline-none focus:border-black transition-all"
+                          className="form-input font-bold"
                           value={block.title}
                           onChange={(e) => updateBlock(idx, { title: e.target.value })}
                           placeholder="Tiêu đề đoạn (Không bắt buộc)..."
                         />
                         <textarea 
                           rows="6"
-                          className="w-full bg-white border border-slate-200 p-6 rounded-2xl text-sm font-medium text-slate-700 outline-none focus:border-black transition-all leading-relaxed"
+                          className="form-textarea"
                           value={block.description}
                           onChange={(e) => updateBlock(idx, { description: e.target.value })}
                           placeholder="Nhập nội dung mô tả chi tiết tại đây..."

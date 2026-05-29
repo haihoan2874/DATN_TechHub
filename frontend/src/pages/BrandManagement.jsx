@@ -16,6 +16,7 @@ import Pagination from '../components/data/Pagination';
 import EmptyState from '../components/feedback/EmptyState';
 import toast from 'react-hot-toast';
 import ImageUpload from '../components/admin/ImageUpload';
+import { resolveApiAssetUrl } from '../config/api';
 
 const PAGE_SIZE = 8;
 
@@ -219,7 +220,7 @@ const BrandManagement = () => {
                       <div className="flex items-center gap-4">
                         <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-white p-2">
                           {brand.logoUrl ? (
-                            <img src={brand.logoUrl.startsWith('http') ? brand.logoUrl : `http://localhost:8089${brand.logoUrl}`} alt={brand.name} className="w-full h-full object-contain" />
+                            <img src={resolveApiAssetUrl(brand.logoUrl)} alt={brand.name} className="w-full h-full object-contain" />
                           ) : (
                             <Building2 size={24} className="text-slate-200" />
                           )}
@@ -282,12 +283,12 @@ const BrandManagement = () => {
                 className="font-mono text-[11px]"
               />
               <div className="space-y-3">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Mô tả đối tác</label>
+                <label className="form-label-strong">Mô tả đối tác</label>
                 <textarea 
                   name="description" rows="4"
                   value={formData.description} onChange={handleInputChange}
                   placeholder="Giới thiệu ngắn về lịch sử và thế mạnh của thương hiệu..."
-                  className="w-full resize-none rounded-xl border border-slate-300 bg-white p-4 text-sm font-medium leading-relaxed outline-none transition-colors focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+                  className="form-textarea"
                 />
               </div>
             </div>

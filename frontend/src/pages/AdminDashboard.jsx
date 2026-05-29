@@ -41,7 +41,7 @@ const AdminDashboard = () => {
     return (
       <div className="flex h-[60vh] flex-col items-center justify-center space-y-4">
         <RefreshCw className="animate-spin text-blue-600" size={40} />
-        <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Đang tải dữ liệu tổng quan...</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Đang tải tổng quan vận hành...</p>
       </div>
     );
   }

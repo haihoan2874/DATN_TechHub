@@ -74,6 +74,7 @@ const SpecsEditor = ({ specs, setSpecs }) => {
         <div className="flex flex-wrap gap-2">
            {presets.map(p => (
              <button 
+               type="button"
                key={p} 
                onClick={() => addSpec(p)}
                disabled={!!flatSpecs[p]}
@@ -113,6 +114,7 @@ const SpecsEditor = ({ specs, setSpecs }) => {
                   />
                </div>
                <button 
+                 type="button"
                  onClick={() => removeSpec(key)}
                  className="p-3 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all"
                >
@@ -123,6 +125,7 @@ const SpecsEditor = ({ specs, setSpecs }) => {
         </AnimatePresence>
 
         <button 
+          type="button"
           onClick={() => addSpec()}
           className="w-full py-6 mt-4 border-2 border-dashed border-slate-100 rounded-2xl text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] hover:border-black hover:text-black transition-all flex items-center justify-center gap-3"
         >

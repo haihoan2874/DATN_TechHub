@@ -202,12 +202,12 @@ const VoucherManagement = () => {
           <Input label="Mã voucher" name="code" value={form.code} onChange={handleChange} required />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <label className="block">
-              <span className="block text-sm font-black text-slate-900 mb-2 uppercase tracking-wide">Loại giảm</span>
+              <span className="form-label mb-2 block">Loại giảm</span>
               <select
                 name="discountType"
                 value={form.discountType}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm font-bold"
+                className="form-select"
               >
                 <option value="PERCENT">Phần trăm</option>
                 <option value="AMOUNT">Số tiền</option>
@@ -274,7 +274,7 @@ const VoucherManagement = () => {
         <span className="whitespace-nowrap rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-600">
           {filteredVouchers.length} mã
         </span>
-        <button onClick={fetchVouchers} className="rounded-xl border border-slate-300 bg-white p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900">
+        <button type="button" onClick={fetchVouchers} className="rounded-xl border border-slate-300 bg-white p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900">
           <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
         </button>
       </Toolbar>

@@ -2,6 +2,7 @@ import React from 'react';
 import { Edit2, Trash2, Package, Plus } from 'lucide-react';
 import DataTable from '../../../components/data/DataTable';
 import EmptyState from '../../../components/feedback/EmptyState';
+import { resolveApiAssetUrl } from '../../../config/api';
 
 const tableColumns = [
   { key: 'product', label: 'Sản phẩm' },
@@ -12,9 +13,7 @@ const tableColumns = [
 
 const ProductTable = ({ products, loading, footer, onEdit, onDelete, onUpdateStock }) => {
   const getImageUrl = (url) => {
-    if (!url) return '';
-    if (url.startsWith('http')) return url;
-    return `http://localhost:8089${url}`;
+    return resolveApiAssetUrl(url, '');
   };
 
   if (loading) {

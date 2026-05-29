@@ -124,7 +124,7 @@ const ReviewManagement = () => {
         onClose={() => setShowDeleteModal(false)}
         onConfirm={handleDeleteReview}
         title="Xác nhận xóa đánh giá"
-        message="Hành động này sẽ xóa vĩnh viễn đánh giá của khách hàng khỏi hệ thống. Bạn có chắc chắn muốn tiếp tục?"
+        message="Đánh giá này sẽ bị xóa vĩnh viễn khỏi trang sản phẩm. Bạn có chắc chắn muốn tiếp tục?"
         variant="danger"
       />
 

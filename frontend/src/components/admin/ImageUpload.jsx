@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Upload, X, ImageIcon, Loader2 } from 'lucide-react';
 import adminService from '../../services/adminService';
 import toast from 'react-hot-toast';
+import { resolveApiAssetUrl } from '../../config/api';
 
 const ImageUpload = ({ value, onChange, label, folder = 'products' }) => {
   const [uploading, setUploading] = useState(false);
@@ -47,18 +48,16 @@ const ImageUpload = ({ value, onChange, label, folder = 'products' }) => {
   };
 
   const getImageUrl = (url) => {
-    if (!url) return '';
-    if (url.startsWith('http')) return url;
-    return `http://localhost:8089${url}`;
+    return resolveApiAssetUrl(url, '');
   };
 
   return (
     <div className="space-y-2">
-      {label && <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{label}</label>}
+      {label && <label className="form-label-strong">{label}</label>}
       
       <div className="relative group">
         {value ? (
-          <div className="relative aspect-video lg:aspect-[21/9] rounded-[2rem] overflow-hidden border border-slate-200 bg-slate-50 group">
+          <div className="group relative aspect-video overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 lg:aspect-[21/9]">
             <img src={getImageUrl(value)} alt="Preview" className="w-full h-full object-contain" />
             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
               <button 
@@ -81,7 +80,7 @@ const ImageUpload = ({ value, onChange, label, folder = 'products' }) => {
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="w-full aspect-video lg:aspect-[21/9] rounded-[2rem] border-2 border-dashed border-slate-200 bg-slate-50 flex flex-col items-center justify-center gap-4 hover:border-blue-500 hover:bg-blue-50 transition-all group"
+            className="group flex aspect-video w-full flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 transition-all hover:border-blue-500 hover:bg-blue-50 lg:aspect-[21/9]"
           >
             <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-slate-400 group-hover:text-blue-500 shadow-sm transition-colors">
               {uploading ? <Loader2 size={32} className="animate-spin" /> : <ImageIcon size={32} />}
@@ -109,7 +108,7 @@ const ImageUpload = ({ value, onChange, label, folder = 'products' }) => {
            value={value}
            onChange={(e) => onChange(e.target.value)}
            placeholder="Hoặc dán URL hình ảnh tại đây..."
-           className="w-full pl-4 pr-10 py-3 bg-slate-50 border border-slate-100 rounded-xl text-[10px] font-mono focus:ring-2 focus:ring-black/5 outline-none transition-all"
+           className="form-input pr-10 font-mono text-xs"
          />
          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300">
            <ImageIcon size={14} />
