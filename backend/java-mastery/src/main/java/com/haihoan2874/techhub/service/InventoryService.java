@@ -47,8 +47,7 @@ public class InventoryService {
     @Transactional
     public boolean reserveStock(UUID productId, Integer quantity) {
         log.info("Reserving stock for product {}: quantity {}", productId, quantity);
-        Inventory inventory = inventoryRepository.findByProductId(productId)
-                .orElseThrow(() -> new EntityNotFoundException("Inventory not found"));
+        Inventory inventory = getOrCreateInventory(productId);
 
         if (inventory.getQuantityAvailable() < quantity) {
             log.warn("Not enough stock for product {}: requested {}, available {}",
@@ -89,6 +88,23 @@ public class InventoryService {
         return inventoryRepository.findByProductId(productId)
                 .map(Inventory::getQuantityAvailable)
                 .orElse(0);
+    }
+
+    private Inventory getOrCreateInventory(UUID productId) {
+        return inventoryRepository.findByProductId(productId)
+                .orElseGet(() -> {
+                    Product product = productRepository.findById(productId)
+                            .orElseThrow(() -> new EntityNotFoundException("Product not found: " + productId));
+                    int stock = Math.max(0, product.getStockQuantity() == null ? 0 : product.getStockQuantity());
+                    log.warn("Inventory not found for product {}. Creating inventory from product stock: {}", productId, stock);
+                    return inventoryRepository.save(Inventory.builder()
+                            .productId(productId)
+                            .quantityAvailable(stock)
+                            .quantityReserved(0)
+                            .minStockLevel(10)
+                            .lastRestockDate(LocalDateTime.now())
+                            .build());
+                });
     }
 
     private void syncProductStock(UUID productId, Integer availableStock) {

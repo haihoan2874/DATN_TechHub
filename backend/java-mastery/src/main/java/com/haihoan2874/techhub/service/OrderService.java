@@ -1,26 +1,28 @@
 package com.haihoan2874.techhub.service;
 
+import com.haihoan2874.techhub.dto.request.CheckoutRequest;
 import com.haihoan2874.techhub.dto.request.CreateOrderRequest;
+import com.haihoan2874.techhub.dto.response.AdminOrderResponse;
+import com.haihoan2874.techhub.dto.response.CartItemResponse;
+import com.haihoan2874.techhub.dto.response.CartResponse;
+import com.haihoan2874.techhub.dto.response.CheckoutResponse;
 import com.haihoan2874.techhub.dto.response.CreateOrderResponse;
+import com.haihoan2874.techhub.dto.response.GetOrderByIdResponse;
 import com.haihoan2874.techhub.dto.response.GetOrderByOrderNumberResponse;
+import com.haihoan2874.techhub.dto.response.OrderHistoryResponse;
+import com.haihoan2874.techhub.dto.response.PatchCancelOrderResponse;
 import com.haihoan2874.techhub.model.CustomerAddress;
 import com.haihoan2874.techhub.model.Order;
+import com.haihoan2874.techhub.model.OrderItem;
 import com.haihoan2874.techhub.model.OrderStatus;
 import com.haihoan2874.techhub.model.Product;
-import com.haihoan2874.techhub.dto.response.GetOrderByIdResponse;
-import com.haihoan2874.techhub.dto.response.PatchCancelOrderResponse;
-import com.haihoan2874.techhub.dto.response.AdminOrderResponse;
-import com.haihoan2874.techhub.dto.response.OrderHistoryResponse;
-import com.haihoan2874.techhub.model.*;
+import com.haihoan2874.techhub.model.User;
 import com.haihoan2874.techhub.repository.CustomerAddressRepository;
 import com.haihoan2874.techhub.repository.OrderItemRepository;
 import com.haihoan2874.techhub.repository.OrderRepository;
 import com.haihoan2874.techhub.repository.ProductRepository;
 import com.haihoan2874.techhub.repository.UserRepository;
 import com.haihoan2874.techhub.security.service.UserService;
-import com.haihoan2874.techhub.dto.request.CheckoutRequest;
-import com.haihoan2874.techhub.dto.response.CartResponse;
-import com.haihoan2874.techhub.dto.response.CheckoutResponse;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -62,11 +64,12 @@ public class OrderService {
                 .orElseThrow(() -> new EntityNotFoundException("Address not found"));
 
         List<UUID> productIds = request.getItems().stream()
-                .map(CreateOrderRequest.ItemRequest::getProductId).toList();
+                .map(CreateOrderRequest.ItemRequest::getProductId)
+                .toList();
 
         List<Product> products = productRepository.findProductsByIds(productIds);
         Map<UUID, Product> productMap = products.stream()
-                .collect(Collectors.toMap(Product::getId, p -> p));
+                .collect(Collectors.toMap(Product::getId, product -> product));
 
         Order order = Order.builder()
                 .orderNumber(generateOrderNumber())
@@ -80,13 +83,11 @@ public class OrderService {
                 .build();
 
         Order savedOrder = orderRepository.saveAndFlush(order);
-
         List<OrderItem> savedItems = createOrderItems(request.getItems(), productMap, savedOrder);
 
         BigDecimal total = calculateTotal(savedItems);
         savedOrder.setTotal(total);
         orderRepository.save(savedOrder);
-
         productRepository.saveAll(products);
 
         return CreateOrderResponse.builder()
@@ -95,26 +96,20 @@ public class OrderService {
                 .userId(savedOrder.getUserId())
                 .status(savedOrder.getStatus())
                 .total(savedOrder.getTotal())
-                .shippingAddress(String.format("%s || %s || %s", address.getFullName(), address.getPhone(), address.getAddress()))
+                .shippingAddress(formatAddress(address))
                 .paymentMethod(savedOrder.getPaymentMethod())
                 .notes(savedOrder.getNotes())
-                .items(savedItems.stream().map(item ->
-                        CreateOrderResponse.ItemResponse.builder()
-                                .id(item.getId())
-                                .productId(item.getProductId())
-                                .productName(item.getProductName())
-                                .quantity(item.getQuantity())
-                                .price(item.getPrice())
-                                .subtotal(item.getSubtotal())
-                                .build()).toList())
+                .items(savedItems.stream()
+                        .map(this::mapToCreateOrderItemResponse)
+                        .toList())
                 .createdAt(savedOrder.getCreatedAt())
                 .build();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public GetOrderByIdResponse getDetailOrderById(UUID id, Authentication authentication) {
         UUID userId = userService.getCurrentUserId(authentication);
-        log.info("Getting order by id {} for user id {} ", id, userId);
+        log.info("Getting order by id {} for user id {}", id, userId);
 
         Order order = orderRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new EntityNotFoundException("Order not found"));
@@ -128,27 +123,20 @@ public class OrderService {
                 .userId(order.getUserId())
                 .status(order.getStatus())
                 .total(order.getTotal())
-                .shippingAddress(String.format("%s || %s || %s", address.getFullName(), address.getPhone(), address.getAddress()))
+                .shippingAddress(formatAddress(address))
                 .paymentMethod(order.getPaymentMethod())
                 .notes(order.getNotes())
-                .items(order.getItems().stream().map(item ->
-                        GetOrderByIdResponse.ItemResponse.builder()
-                                .id(item.getId())
-                                .productId(item.getProductId())
-                                .productName(item.getProductName())
-                                .quantity(item.getQuantity())
-                                .price(item.getPrice())
-                                .subtotal(item.getSubtotal())
-                                .build()).toList())
+                .items(order.getItems().stream()
+                        .map(this::mapToGetOrderByIdItemResponse)
+                        .toList())
                 .createdAt(order.getCreatedAt())
                 .build();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public GetOrderByOrderNumberResponse getDetailByOrderNumber(String orderNumber, Authentication authentication) {
         UUID userId = userService.getCurrentUserId(authentication);
-
-        log.info("Getting order by orderNumber {} for user id {}", orderNumber, authentication);
+        log.info("Getting order by orderNumber {} for user id {}", orderNumber, userId);
 
         Order order = orderRepository.findByOrderNumberAndUserId(orderNumber, userId)
                 .orElseThrow(() -> new EntityNotFoundException("Order not found"));
@@ -162,17 +150,12 @@ public class OrderService {
                 .userId(order.getUserId())
                 .status(order.getStatus())
                 .total(order.getTotal())
-                .shippingAddress(String.format("%s || %s || %s", address.getFullName(), address.getPhone(), address.getAddress()))
+                .shippingAddress(formatAddress(address))
                 .paymentMethod(order.getPaymentMethod())
                 .notes(order.getNotes())
-                .items(order.getItems().stream().map(item ->
-                        GetOrderByOrderNumberResponse.ItemResponse.builder()
-                                .id(item.getId())
-                                .productId(item.getProductId())
-                                .productName(item.getProductName())
-                                .quantity(item.getQuantity())
-                                .price(item.getPrice())
-                                .subtotal(item.getSubtotal()).build()).toList())
+                .items(order.getItems().stream()
+                        .map(this::mapToGetOrderByNumberItemResponse)
+                        .toList())
                 .createdAt(order.getCreatedAt())
                 .build();
     }
@@ -206,7 +189,6 @@ public class OrderService {
     @Transactional
     public PatchCancelOrderResponse cancelOrder(UUID id, Authentication authentication) {
         UUID userId = userService.getCurrentUserId(authentication);
-
         log.info("Canceling order with id {} for userId {}", id, userId);
 
         Order order = orderRepository.findByIdAndUserId(id, userId)
@@ -229,46 +211,14 @@ public class OrderService {
                 .build();
     }
 
-    private void restoreCancelledOrderStock(Order order) {
-        for (OrderItem item : order.getItems()) {
-            try {
-                inventoryService.releaseStock(item.getProductId(), item.getQuantity());
-            } catch (EntityNotFoundException ex) {
-                log.warn("Inventory not found while restoring stock for product {}", item.getProductId());
-            }
-        }
-    }
-
     @Transactional(readOnly = true)
     public List<AdminOrderResponse> getAllOrdersAdmin() {
         log.info("Admin fetching all orders");
         List<Order> orders = orderRepository.findAllWithItems();
-        return orders.stream().map(order -> {
-            // Let's use a better way to get user info
-            String customerName = "N/A";
-            String customerEmail = "N/A";
-            try {
-                User u = userRepository.findById(order.getUserId()).orElse(null);
-                if (u != null) {
-                    customerName = u.getFirstName() + " " + u.getLastName();
-                    customerEmail = u.getEmail();
-                }
-            } catch (Exception e) {
-                log.error("Error fetching user for order: {}", order.getOrderNumber());
-            }
 
-            return AdminOrderResponse.builder()
-                    .id(order.getId())
-                    .orderNumber(order.getOrderNumber())
-                    .status(order.getStatus())
-                    .total(order.getTotal())
-                    .customerName(customerName)
-                    .customerEmail(customerEmail)
-                    .itemCount(order.getItems().size())
-                    .paymentMethod(order.getPaymentMethod())
-                    .createdAt(order.getCreatedAt())
-                    .build();
-        }).collect(Collectors.toList());
+        return orders.stream()
+                .map(this::mapToAdminOrderResponse)
+                .toList();
     }
 
     @Transactional
@@ -286,13 +236,176 @@ public class OrderService {
 
         order.setStatus(newStatus);
         Order savedOrder = orderRepository.save(order);
-        
-        return AdminOrderResponse.builder()
-                .id(savedOrder.getId())
-                .orderNumber(savedOrder.getOrderNumber())
-                .status(savedOrder.getStatus())
-                .total(savedOrder.getTotal())
+
+        return mapToAdminOrderResponse(savedOrder);
+    }
+
+    @Transactional
+    public CheckoutResponse checkout(CheckoutRequest request, HttpServletRequest servletRequest, Authentication authentication) {
+        UUID userId = userService.getCurrentUserId(authentication);
+        log.info("Starting checkout for user: {}", userId);
+
+        CartResponse cart = validateCart(userId);
+        CustomerAddress address = validateAddress(request.getShippingAddressId(), userId);
+        BigDecimal discountAmount = calculateDiscount(request.getVoucherCode(), cart.getTotalPrice());
+        BigDecimal finalTotal = cart.getTotalPrice().subtract(discountAmount);
+
+        Order savedOrder = createInitialOrder(userId, finalTotal, discountAmount, address, request);
+        List<OrderItem> orderItems = reserveInventoryAndCreateItems(savedOrder, cart.getItems());
+        savedOrder.setItems(orderItems);
+
+        voucherService.consumeVoucher(request.getVoucherCode(), cart.getTotalPrice());
+        String paymentUrl = generatePaymentUrlIfVnPay(savedOrder, request.getPaymentMethod(), servletRequest);
+
+        cartService.clearCart(userId.toString());
+        sendOrderEmail(authentication.getName(), savedOrder);
+
+        log.info("Checkout successful for order: {}", savedOrder.getOrderNumber());
+        return mapToCheckoutResponse(savedOrder, paymentUrl);
+    }
+
+    @Transactional
+    public void processPaymentSuccess(String orderNumber) {
+        log.info("Processing successful payment for order: {}", orderNumber);
+        Order order = orderRepository.findByOrderNumber(orderNumber)
+                .orElseThrow(() -> new EntityNotFoundException("Order not found: " + orderNumber));
+
+        if (order.getStatus() != OrderStatus.PENDING) {
+            log.warn("Order {} is already in status {}", orderNumber, order.getStatus());
+            return;
+        }
+
+        order.setStatus(OrderStatus.CONFIRMED);
+        orderRepository.save(order);
+
+        for (OrderItem item : order.getItems()) {
+            inventoryService.confirmSale(item.getProductId(), item.getQuantity());
+        }
+
+        log.info("Order {} confirmed and inventory updated", orderNumber);
+    }
+
+    private List<OrderItem> reserveInventoryAndCreateItems(Order order, List<CartItemResponse> cartItems) {
+        List<OrderItem> orderItems = new ArrayList<>();
+
+        for (CartItemResponse cartItem : cartItems) {
+            if (!inventoryService.reserveStock(cartItem.getProductId(), cartItem.getQuantity())) {
+                throw new RuntimeException("Product " + cartItem.getProductName() + " is out of stock");
+            }
+
+            orderItems.add(OrderItem.builder()
+                    .order(order)
+                    .productId(cartItem.getProductId())
+                    .productName(cartItem.getProductName())
+                    .quantity(cartItem.getQuantity())
+                    .price(cartItem.getPrice())
+                    .subtotal(cartItem.getSubTotal())
+                    .build());
+        }
+
+        return orderItemRepository.saveAll(orderItems);
+    }
+
+    private List<OrderItem> createOrderItems(List<CreateOrderRequest.ItemRequest> itemRequests,
+                                             Map<UUID, Product> productMap,
+                                             Order order) {
+        List<OrderItem> orderItems = new ArrayList<>();
+
+        for (CreateOrderRequest.ItemRequest itemReq : itemRequests) {
+            Product product = productMap.get(itemReq.getProductId());
+
+            if (product == null) {
+                throw new EntityNotFoundException("Product not found");
+            }
+
+            if (product.getStockQuantity() < itemReq.getQuantity()) {
+                throw new RuntimeException("Product " + product.getName() + " is out of stock");
+            }
+
+            product.setStockQuantity(product.getStockQuantity() - itemReq.getQuantity());
+
+            BigDecimal subtotal = product.getPrice().multiply(BigDecimal.valueOf(itemReq.getQuantity()));
+
+            orderItems.add(OrderItem.builder()
+                    .order(order)
+                    .productId(product.getId())
+                    .productName(product.getName())
+                    .quantity(itemReq.getQuantity())
+                    .price(product.getPrice())
+                    .subtotal(subtotal)
+                    .build());
+        }
+
+        return orderItemRepository.saveAll(orderItems);
+    }
+
+    private Order createInitialOrder(UUID userId, BigDecimal total, BigDecimal discountAmount,
+                                     CustomerAddress address, CheckoutRequest request) {
+        Order order = Order.builder()
+                .orderNumber(generateOrderNumber())
+                .userId(userId)
+                .status(OrderStatus.PENDING)
+                .total(total)
+                .discountAmount(discountAmount)
+                .voucherCode(request.getVoucherCode())
+                .shippingAddress(address)
+                .paymentMethod(request.getPaymentMethod())
+                .notes(request.getNotes())
+                .items(new ArrayList<>())
                 .build();
+
+        return orderRepository.saveAndFlush(order);
+    }
+
+    private CartResponse validateCart(UUID userId) {
+        CartResponse cart = cartService.getCart(userId.toString());
+        if (cart == null || cart.getItems().isEmpty()) {
+            throw new IllegalStateException("Cart is empty");
+        }
+        return cart;
+    }
+
+    private CustomerAddress validateAddress(UUID addressId, UUID userId) {
+        return customerAddressRepository.findByIdAndUserId(addressId, userId)
+                .orElseThrow(() -> new EntityNotFoundException("Shipping address not found"));
+    }
+
+    private BigDecimal calculateDiscount(String voucherCode, BigDecimal orderAmount) {
+        if (voucherCode == null || voucherCode.isBlank()) {
+            return BigDecimal.ZERO;
+        }
+        return voucherService.applyVoucher(voucherCode, orderAmount).getDiscountAmount();
+    }
+
+    private String generatePaymentUrlIfVnPay(Order order, String paymentMethod, HttpServletRequest request) {
+        if ("VNPAY".equalsIgnoreCase(paymentMethod)) {
+            return paymentService.createPaymentUrl(
+                    request,
+                    order.getTotal().longValue(),
+                    "Thanh toan don hang " + order.getOrderNumber(),
+                    order.getOrderNumber()
+            );
+        }
+        return null;
+    }
+
+    private void sendOrderEmail(String username, Order order) {
+        emailService.sendEmail(
+                userService.getUserByUsername(username).getEmail(),
+                "S-Life - Xác nhận đặt hàng " + order.getOrderNumber(),
+                "Cảm ơn bạn đã tin tưởng chọn S-Life. Đơn hàng của bạn đang được chuẩn bị để bắt đầu hành trình chăm sóc sức khỏe. Mã đơn hàng: " + order.getOrderNumber(),
+                false
+        );
+    }
+
+    private void restoreCancelledOrderStock(Order order) {
+        for (OrderItem item : order.getItems()) {
+            try {
+                inventoryService.releaseStock(item.getProductId(), item.getQuantity());
+            } catch (EntityNotFoundException ex) {
+                log.warn("Inventory not found while restoring stock for product {}", item.getProductId());
+            }
+        }
     }
 
     private void validateOrderStatusTransition(OrderStatus currentStatus, OrderStatus newStatus) {
@@ -318,109 +431,85 @@ public class OrderService {
         }
     }
 
-    @Transactional
-    public CheckoutResponse checkout(CheckoutRequest request, HttpServletRequest servletRequest, Authentication authentication) {
-        UUID userId = userService.getCurrentUserId(authentication);
-        log.info("Starting checkout for user: {}", userId);
-
-        CartResponse cart = validateCart(userId);
-        CustomerAddress address = validateAddress(request.getShippingAddressId(), userId);
-        
-        BigDecimal discountAmount = calculateDiscount(request.getVoucherCode(), cart.getTotalPrice());
-        
-        BigDecimal finalTotal = cart.getTotalPrice().subtract(discountAmount);
-        Order savedOrder = createInitialOrder(userId, finalTotal, discountAmount, address, request);
-
-        List<OrderItem> orderItems = reserveInventoryAndCreateItems(savedOrder, cart.getItems());
-        savedOrder.setItems(orderItems);
-        voucherService.consumeVoucher(request.getVoucherCode(), cart.getTotalPrice());
-
-        String paymentUrl = generatePaymentUrlIfVnPay(savedOrder, request.getPaymentMethod(), servletRequest);
-        
-        cartService.clearCart(userId.toString());
-        sendOrderEmail(authentication.getName(), savedOrder);
-
-        log.info("Checkout successful for order: {}", savedOrder.getOrderNumber());
-        return mapToCheckoutResponse(savedOrder, paymentUrl);
+    private String generateOrderNumber() {
+        LocalDateTime startOfDay = LocalDateTime.now().toLocalDate().atStartOfDay();
+        LocalDateTime endOfDay = startOfDay.plusDays(1);
+        Long todayOrderCount = orderRepository.countByCreatedAtBetween(startOfDay, endOfDay);
+        String dateStr = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        return String.format("ORD-%s-%03d", dateStr, todayOrderCount + 1);
     }
 
-    private BigDecimal calculateDiscount(String voucherCode, BigDecimal orderAmount) {
-        if (voucherCode == null || voucherCode.isBlank()) {
-            return BigDecimal.ZERO;
-        }
-        return voucherService.applyVoucher(voucherCode, orderAmount).getDiscountAmount();
+    private BigDecimal calculateTotal(List<OrderItem> orderItems) {
+        return orderItems.stream()
+                .map(OrderItem::getSubtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    private CartResponse validateCart(UUID userId) {
-        CartResponse cart = cartService.getCart(userId.toString());
-        if (cart == null || cart.getItems().isEmpty()) {
-            throw new IllegalStateException("Cart is empty");
-        }
-        return cart;
+    private String formatAddress(CustomerAddress address) {
+        return String.format("%s || %s || %s", address.getFullName(), address.getPhone(), address.getAddress());
     }
 
-    private CustomerAddress validateAddress(UUID addressId, UUID userId) {
-        return customerAddressRepository.findByIdAndUserId(addressId, userId)
-                .orElseThrow(() -> new EntityNotFoundException("Shipping address not found"));
-    }
+    private AdminOrderResponse mapToAdminOrderResponse(Order order) {
+        String customerName = "N/A";
+        String customerEmail = "N/A";
 
-    private Order createInitialOrder(UUID userId, BigDecimal total, BigDecimal discountAmount, CustomerAddress address, CheckoutRequest request) {
-        Order order = Order.builder()
-                .orderNumber(generateOrderNumber())
-                .userId(userId)
-                .status(OrderStatus.PENDING)
-                .total(total)
-                .discountAmount(discountAmount)
-                .voucherCode(request.getVoucherCode())
-                .shippingAddress(address)
-                .paymentMethod(request.getPaymentMethod())
-                .notes(request.getNotes())
-                .items(new ArrayList<>())
-                .build();
-        return orderRepository.saveAndFlush(order);
-    }
-
-    private List<OrderItem> reserveInventoryAndCreateItems(Order order, List<?> cartItems) {
-        List<OrderItem> orderItems = new ArrayList<>();
-        // Note: Using a generic list to avoid casting issues in this internal helper if needed, 
-        // but here we know they are CartItemResponse.
-        for (Object itemObj : cartItems) {
-            com.haihoan2874.techhub.dto.response.CartItemResponse cartItem = (com.haihoan2874.techhub.dto.response.CartItemResponse) itemObj;
-            if (!inventoryService.reserveStock(cartItem.getProductId(), cartItem.getQuantity())) {
-                throw new RuntimeException("Product " + cartItem.getProductName() + " is out of stock");
+        User user = userRepository.findById(order.getUserId()).orElse(null);
+        if (user != null) {
+            customerName = String.format("%s %s", nullToEmpty(user.getFirstName()), nullToEmpty(user.getLastName())).trim();
+            if (customerName.isBlank()) {
+                customerName = user.getUsername();
             }
-
-            orderItems.add(OrderItem.builder()
-                    .order(order)
-                    .productId(cartItem.getProductId())
-                    .productName(cartItem.getProductName())
-                    .quantity(cartItem.getQuantity())
-                    .price(cartItem.getPrice())
-                    .subtotal(cartItem.getSubTotal())
-                    .build());
+            customerEmail = user.getEmail();
         }
-        return orderItemRepository.saveAll(orderItems);
+
+        return AdminOrderResponse.builder()
+                .id(order.getId())
+                .orderNumber(order.getOrderNumber())
+                .status(order.getStatus())
+                .total(order.getTotal())
+                .customerName(customerName)
+                .customerEmail(customerEmail)
+                .itemCount(order.getItems() == null ? 0 : order.getItems().size())
+                .paymentMethod(order.getPaymentMethod())
+                .createdAt(order.getCreatedAt())
+                .build();
     }
 
-    private String generatePaymentUrlIfVnPay(Order order, String paymentMethod, HttpServletRequest request) {
-        if ("VNPAY".equalsIgnoreCase(paymentMethod)) {
-            return paymentService.createPaymentUrl(
-                    request,
-                    order.getTotal().longValue(),
-                    "Thanh toan don hang " + order.getOrderNumber(),
-                    order.getOrderNumber()
-            );
-        }
-        return null;
+    private String nullToEmpty(String value) {
+        return value == null ? "" : value;
     }
 
-    private void sendOrderEmail(String username, Order order) {
-        emailService.sendEmail(
-                userService.getUserByUsername(username).getEmail(),
-                "S-Life - Xác nhận đặt hàng " + order.getOrderNumber(),
-                "Cảm ơn bạn đã tin tưởng chọn S-Life. Đơn hàng của bạn đang được chuẩn bị để bắt đầu hành trình chăm sóc sức khỏe. Mã đơn hàng: " + order.getOrderNumber(),
-                false
-        );
+    private CreateOrderResponse.ItemResponse mapToCreateOrderItemResponse(OrderItem item) {
+        return CreateOrderResponse.ItemResponse.builder()
+                .id(item.getId())
+                .productId(item.getProductId())
+                .productName(item.getProductName())
+                .quantity(item.getQuantity())
+                .price(item.getPrice())
+                .subtotal(item.getSubtotal())
+                .build();
+    }
+
+    private GetOrderByIdResponse.ItemResponse mapToGetOrderByIdItemResponse(OrderItem item) {
+        return GetOrderByIdResponse.ItemResponse.builder()
+                .id(item.getId())
+                .productId(item.getProductId())
+                .productName(item.getProductName())
+                .quantity(item.getQuantity())
+                .price(item.getPrice())
+                .subtotal(item.getSubtotal())
+                .build();
+    }
+
+    private GetOrderByOrderNumberResponse.ItemResponse mapToGetOrderByNumberItemResponse(OrderItem item) {
+        return GetOrderByOrderNumberResponse.ItemResponse.builder()
+                .id(item.getId())
+                .productId(item.getProductId())
+                .productName(item.getProductName())
+                .quantity(item.getQuantity())
+                .price(item.getPrice())
+                .subtotal(item.getSubtotal())
+                .build();
     }
 
     private CheckoutResponse mapToCheckoutResponse(Order order, String paymentUrl) {
@@ -434,79 +523,4 @@ public class OrderService {
                 .message("Order created successfully")
                 .build();
     }
-
-    @Transactional
-    public void processPaymentSuccess(String orderNumber) {
-        log.info("Processing successful payment for order: {}", orderNumber);
-        Order order = orderRepository.findByOrderNumber(orderNumber)
-                .orElseThrow(() -> new EntityNotFoundException("Order not found: " + orderNumber));
-
-        if (order.getStatus() != OrderStatus.PENDING) {
-            log.warn("Order {} is already in status {}", orderNumber, order.getStatus());
-            return;
-        }
-
-        // 1. Update Order Status
-        order.setStatus(OrderStatus.CONFIRMED);
-        orderRepository.save(order);
-
-        // 2. Confirm Inventory Sale (Release Reserved -> Actually deduct)
-        for (OrderItem item : order.getItems()) {
-            inventoryService.confirmSale(item.getProductId(), item.getQuantity());
-        }
-
-
-        log.info("Order {} confirmed and inventory updated", orderNumber);
-    }
-
-    private List<OrderItem> createOrderItems(List<CreateOrderRequest.ItemRequest> itemRequests,
-                                             Map<UUID, Product> productMap,
-                                             Order order) {
-        List<OrderItem> orderItems = new ArrayList<>();
-
-        for (CreateOrderRequest.ItemRequest itemReq : itemRequests) {
-            Product product = productMap.get(itemReq.getProductId());
-
-            if (product == null) {
-                throw new EntityNotFoundException("Product not found");
-            }
-
-            if (product.getStockQuantity() < itemReq.getQuantity()) {
-                throw new RuntimeException("Product " + product.getName() + " is out of stock");
-            }
-
-            product.setStockQuantity(product.getStockQuantity() - itemReq.getQuantity());
-
-            BigDecimal subtotal = product.getPrice().multiply(BigDecimal.valueOf(itemReq.getQuantity()));
-
-            OrderItem item = OrderItem.builder()
-                    .order(order)
-                    .productId(product.getId())
-                    .productName(product.getName())
-                    .quantity(itemReq.getQuantity())
-                    .price(product.getPrice())
-                    .subtotal(subtotal)
-                    .build();
-
-            orderItems.add(item);
-        }
-        return orderItemRepository.saveAll(orderItems);
-    }
-
-    private String generateOrderNumber() {
-        LocalDateTime startOfDay = LocalDateTime.now().toLocalDate().atStartOfDay();
-        LocalDateTime endOfDay = startOfDay.plusDays(1);
-
-        Long todayOrderCount = orderRepository.countByCreatedAtBetween(startOfDay, endOfDay);
-        String dateStr = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-
-        return String.format("ORD-%s-%03d", dateStr, todayOrderCount + 1);
-    }
-
-    private BigDecimal calculateTotal(List<OrderItem> orderItems) {
-        return orderItems.stream()
-                .map(OrderItem::getSubtotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
 }

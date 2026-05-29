@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
+import java.math.BigDecimal;
 
 @RestController
 @RequiredArgsConstructor
@@ -69,12 +70,28 @@ public class VoucherController {
 
     @GetMapping("/apply")
     @Operation(summary = "Apply voucher", description = "Validate and calculate discount for current cart")
-    public ResponseEntity<VoucherApplyResponse> applyVoucher(@RequestParam String code, Authentication authentication) {
+    public ResponseEntity<VoucherApplyResponse> applyVoucher(
+            @RequestParam String code,
+            @RequestParam(required = false) List<UUID> selectedProductIds,
+            Authentication authentication) {
         UUID userId = userService.getCurrentUserId(authentication);
         CartResponse cart = cartService.getCart(userId.toString());
         if (cart.getItems().isEmpty()) {
             throw new IllegalStateException("Giỏ hàng của bạn đang trống");
         }
-        return ResponseEntity.ok(voucherService.applyVoucher(code, cart.getTotalPrice()));
+
+        BigDecimal orderAmount = cart.getTotalPrice();
+        if (selectedProductIds != null && !selectedProductIds.isEmpty()) {
+            orderAmount = cart.getItems().stream()
+                    .filter(item -> selectedProductIds.contains(item.getProductId()))
+                    .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            if (BigDecimal.ZERO.compareTo(orderAmount) == 0) {
+                throw new IllegalStateException("Không có sản phẩm nào được chọn để áp dụng mã giảm giá");
+            }
+        }
+
+        return ResponseEntity.ok(voucherService.applyVoucher(code, orderAmount));
     }
 }

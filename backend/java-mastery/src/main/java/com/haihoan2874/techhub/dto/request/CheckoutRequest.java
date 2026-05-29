@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -19,4 +20,5 @@ public class CheckoutRequest {
     private String paymentMethod; // e.g., "COD", "VNPAY"
     private String notes;
     private String voucherCode;
+    private List<UUID> selectedProductIds;
 }

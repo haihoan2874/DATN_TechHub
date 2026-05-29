@@ -10,8 +10,11 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -24,19 +27,30 @@ public class CartService {
     
     private static final String CART_PREFIX = "cart:";
     private static final long CART_TTL = 7; // days
+    private final Map<String, CartResponse> fallbackCarts = new ConcurrentHashMap<>();
 
     public CartResponse getCart(String userId) {
         String key = CART_PREFIX + userId;
-        CartResponse cart = (CartResponse) redisTemplate.opsForValue().get(key);
-        
-        if (cart == null) {
-            cart = CartResponse.builder()
-                    .userId(userId)
-                    .items(new ArrayList<>())
-                    .totalPrice(BigDecimal.ZERO)
-                    .totalItems(0)
-                    .build();
+        Object cachedCart;
+        try {
+            cachedCart = redisTemplate.opsForValue().get(key);
+        } catch (Exception ex) {
+            log.warn("Cannot read cart cache for user {}. Using in-memory cart fallback.", userId, ex);
+            return getFallbackCart(userId);
         }
+
+        if (cachedCart == null) {
+            return createEmptyCart(userId);
+        }
+
+        if (!(cachedCart instanceof CartResponse cart)) {
+            log.warn("Unexpected cart cache type {} for user {}. Resetting cart cache.",
+                    cachedCart.getClass().getName(), userId);
+            deleteRedisCart(key);
+            return createEmptyCart(userId);
+        }
+
+        normalizeCart(cart, userId);
         return cart;
     }
 
@@ -101,13 +115,66 @@ public class CartService {
         return cart;
     }
 
+    public CartResponse removeItemsFromCart(String userId, List<UUID> productIds) {
+        if (productIds == null || productIds.isEmpty()) {
+            return getCart(userId);
+        }
+
+        CartResponse cart = getCart(userId);
+        cart.getItems().removeIf(item -> productIds.contains(item.getProductId()));
+        cart.calculateTotal();
+        saveCart(cart);
+        return cart;
+    }
+
     public void clearCart(String userId) {
-        redisTemplate.delete(CART_PREFIX + userId);
+        fallbackCarts.remove(userId);
+        deleteRedisCart(CART_PREFIX + userId);
     }
 
     private void saveCart(CartResponse cart) {
         String key = CART_PREFIX + cart.getUserId();
-        redisTemplate.opsForValue().set(key, cart, CART_TTL, TimeUnit.DAYS);
+        try {
+            redisTemplate.opsForValue().set(key, cart, CART_TTL, TimeUnit.DAYS);
+        } catch (Exception ex) {
+            log.warn("Cannot save cart cache for user {}. Saving to in-memory fallback.", cart.getUserId(), ex);
+            fallbackCarts.put(cart.getUserId(), cart);
+        }
+    }
+
+    private CartResponse createEmptyCart(String userId) {
+        return CartResponse.builder()
+                .userId(userId)
+                .items(new ArrayList<>())
+                .totalPrice(BigDecimal.ZERO)
+                .totalItems(0)
+                .build();
+    }
+
+    private void normalizeCart(CartResponse cart, String userId) {
+        if (cart.getUserId() == null) {
+            cart.setUserId(userId);
+        }
+        if (cart.getItems() == null) {
+            cart.setItems(new ArrayList<>());
+        }
+        if (cart.getTotalPrice() == null || cart.getTotalItems() == null) {
+            cart.calculateTotal();
+        }
+    }
+
+    private CartResponse getFallbackCart(String userId) {
+        CartResponse cart = fallbackCarts.computeIfAbsent(userId, this::createEmptyCart);
+        normalizeCart(cart, userId);
+        return cart;
+    }
+
+    private void deleteRedisCart(String key) {
+        try {
+            redisTemplate.delete(key);
+        } catch (Exception ex) {
+            log.warn("Cannot delete Redis cart key {}. Ignoring because fallback cart is available.", key, ex);
+        }
     }
 
     private void validateQuantity(Integer quantity) {
