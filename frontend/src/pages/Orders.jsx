@@ -137,7 +137,7 @@ const Orders = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 pt-24 pb-20 lg:pt-32">
+    <div className="min-h-screen bg-slate-50 py-6 sm:py-8 lg:py-10">
       <Modal
         isOpen={Boolean(reviewTarget)}
         onClose={closeReviewModal}
@@ -184,7 +184,7 @@ const Orders = () => {
             </div>
 
             <div>
-              <label htmlFor="review-comment" className="mb-2 block text-sm font-medium text-slate-500">
+              <label htmlFor="review-comment" className="form-label mb-2 block">
                 Nội dung
               </label>
               <textarea
@@ -194,7 +194,7 @@ const Orders = () => {
                 rows={5}
                 maxLength={1000}
                 placeholder="Chia sẻ cảm nhận của bạn về sản phẩm..."
-                className="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700 outline-none transition-all focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
+                className="form-textarea"
               />
             </div>
           </div>
@@ -212,31 +212,31 @@ const Orders = () => {
         isLoading={cancelSubmitting}
       />
 
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-4 sm:px-6">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="text-sm font-medium text-slate-500">Theo dõi trạng thái, hủy đơn chờ xử lý và đánh giá sản phẩm đã giao</p>
-              <h1 className="mt-1 text-3xl font-bold text-slate-900">Lịch sử đơn hàng</h1>
+              <h1 className="mt-1 text-2xl font-bold text-slate-900 lg:text-3xl">Lịch sử đơn hàng</h1>
             </div>
             <Button variant="outline" onClick={() => navigate('/shop')} icon={ArrowRight} iconPosition="right">
               Tiếp tục mua sắm
             </Button>
           </div>
 
-          <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
             {stats.map((stat) => (
               <MetricCard key={stat.label} {...stat} />
             ))}
           </div>
 
-          <div className="sticky top-20 z-20 mb-6 rounded-2xl border border-slate-200 bg-white p-2 shadow-sm">
+          <div className="mb-5 rounded-2xl border border-slate-200 bg-white p-2 shadow-sm">
             <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
               {['ALL', ...ORDER_STATUS_VALUES].map((status) => (
                 <button
                   key={status}
                   onClick={() => setFilter(status)}
-                  className={`whitespace-nowrap rounded-xl px-4 py-2 text-sm font-semibold transition-colors ${
+                  className={`whitespace-nowrap rounded-xl px-3 py-2 text-sm font-semibold transition-colors ${
                     filter === status
                       ? 'bg-slate-900 text-white'
                       : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
@@ -251,14 +251,14 @@ const Orders = () => {
           {loading ? (
             <div className="space-y-4">
               {[...Array(3)].map((_, index) => (
-                <div key={index} className="h-48 animate-pulse rounded-2xl border border-slate-200 bg-white" />
+                <div key={index} className="h-40 animate-pulse rounded-2xl border border-slate-200 bg-white" />
               ))}
             </div>
           ) : filteredOrders.length > 0 ? (
             <div className="space-y-4">
               {filteredOrders.map((order) => (
-                <article key={order.id} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-                  <div className="flex flex-col gap-4 border-b border-slate-100 pb-5 sm:flex-row sm:items-start sm:justify-between">
+                <article key={order.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+                  <div className="flex flex-col gap-4 border-b border-slate-100 pb-4 sm:flex-row sm:items-start sm:justify-between">
                     <div>
                       <div className="flex flex-wrap items-center gap-3">
                         <h2 className="text-lg font-bold text-slate-900">
@@ -286,7 +286,7 @@ const Orders = () => {
                     </div>
                   </div>
 
-                  <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
+                  <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
                     <div className="space-y-3">
                       {order.orderItems?.map((item, index) => (
                         <div key={`${order.id}-${item.productId || index}`} className="flex items-center gap-3">
@@ -318,7 +318,7 @@ const Orders = () => {
                           Hủy đơn
                         </Button>
                       )}
-                      <Button onClick={() => navigate(`/order-success/${order.id}`)} icon={ArrowRight} iconPosition="right">
+                      <Button onClick={() => navigate(`/orders/${order.id}`)} icon={ArrowRight} iconPosition="right">
                         Xem chi tiết
                       </Button>
                     </div>

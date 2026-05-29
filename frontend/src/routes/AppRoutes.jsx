@@ -8,6 +8,7 @@ import PageLoader from '../components/common/PageLoader';
 
 const Home = lazy(() => import('../pages/Home'));
 const Shop = lazy(() => import('../pages/Shop'));
+const About = lazy(() => import('../pages/About'));
 const ProductDetail = lazy(() => import('../pages/ProductDetail/index'));
 const Login = lazy(() => import('../pages/Login'));
 const Register = lazy(() => import('../pages/Register'));
@@ -17,6 +18,7 @@ const ResetPassword = lazy(() => import('../pages/ResetPassword'));
 const Cart = lazy(() => import('../pages/Cart'));
 const Checkout = lazy(() => import('../pages/Checkout'));
 const OrderSuccess = lazy(() => import('../pages/OrderSuccess'));
+const OrderDetail = lazy(() => import('../pages/OrderDetail'));
 const OAuth2RedirectHandler = lazy(() => import('../pages/OAuth2RedirectHandler'));
 const CategoryList = lazy(() => import('../pages/CategoryList'));
 const Profile = lazy(() => import('../pages/Profile'));
@@ -41,6 +43,7 @@ const AppRoutes = () => (
       <Route element={<MainLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<Shop />} />
+        <Route path="/about" element={<About />} />
         <Route path="/product/:slug" element={<ProductDetail />} />
         <Route path="/login" element={withGuestRoute(<Login />)} />
         <Route path="/register" element={withGuestRoute(<Register />)} />
@@ -54,6 +57,7 @@ const AppRoutes = () => (
         <Route path="/categories" element={<CategoryList />} />
         <Route path="/profile" element={withProtectedRoute(<Profile />)} />
         <Route path="/orders" element={withProtectedRoute(<Orders />)} />
+        <Route path="/orders/:id" element={withProtectedRoute(<OrderDetail />)} />
       </Route>
 
       <Route path="/admin" element={withAdminRoute(<AdminLayout />)}>

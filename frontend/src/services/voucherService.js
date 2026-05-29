@@ -1,9 +1,12 @@
 import axiosClient from '../api/axiosConfig';
 
 const voucherService = {
-  applyVoucher: (code) => {
+  applyVoucher: (code, selectedProductIds = []) => {
     return axiosClient.get('/vouchers/apply', {
-      params: { code }
+      params: { code, selectedProductIds },
+      paramsSerializer: {
+        indexes: null
+      }
     });
   }
 };

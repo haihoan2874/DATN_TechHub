@@ -10,7 +10,7 @@ const OrderSuccess = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center pt-20">
+    <div className="flex min-h-[80vh] items-center justify-center py-12">
       <motion.div 
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}

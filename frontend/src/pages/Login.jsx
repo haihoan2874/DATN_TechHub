@@ -2,13 +2,10 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
-import { 
-  User, Lock, Eye, EyeOff, 
-  ArrowRight, Chrome, 
-  AlertCircle, CheckCircle2 
-} from 'lucide-react';
+import { User, Lock, ArrowRight, AlertCircle, CheckCircle2, ShieldCheck, Truck, BadgeCheck } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
+import { getOAuthUrl } from '../config/api';
 
 const Login = () => {
   const { login } = useAuth();
@@ -34,7 +31,7 @@ const Login = () => {
     const result = await login(formData);
     
     if (result.success) {
-      setStatus({ type: 'success', message: 'Đăng nhập thành công! Đang chuyển hướng...' });
+      setStatus({ type: 'success', message: 'Đăng nhập thành công. Đang chuyển hướng…' });
       
       // Get the role from the saved user in localStorage or the result (if returned)
       const savedUser = JSON.parse(localStorage.getItem('user'));
@@ -54,38 +51,51 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-12 flex flex-col justify-center relative overflow-hidden bg-slate-50">
-      {/* Background Orbs */}
-      <div className="absolute top-1/4 -left-20 w-80 h-80 bg-blue-400/20 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-cyan-400/20 rounded-full blur-3xl animate-pulse delay-1000" />
-
+    <div className="flex min-h-screen items-center bg-slate-50 px-4 py-8 sm:px-6 lg:px-8">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="container mx-auto px-6 relative z-10"
+        className="mx-auto w-full max-w-4xl"
       >
-        <div className="max-w-md mx-auto">
-          {/* Logo Area */}
-          <div className="text-center mb-8">
-            <Link to="/" className="inline-block mb-4">
-              <span className="text-3xl font-black text-slate-900">
+        <div className="grid overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm lg:grid-cols-[0.9fr_1fr]">
+          <aside className="hidden bg-slate-950 p-8 text-white lg:flex lg:flex-col lg:justify-between">
+            <div>
+              <Link to="/" className="inline-flex items-center gap-3 text-2xl font-black" translate="no">
                 S-LIFE
-              </span>
-            </Link>
-            <h1 className="text-2xl font-black text-slate-900 uppercase tracking-tight">Chào mừng trở lại</h1>
-            <p className="text-slate-500 mt-2 font-medium">Đăng nhập để tiếp tục hành trình sức khỏe của bạn</p>
-          </div>
+              </Link>
+              <div className="mt-12">
+                <p className="mb-4 text-xs font-bold uppercase tracking-[0.24em] text-blue-300">Thiết bị sức khỏe thông minh</p>
+                <h2 className="text-3xl font-black leading-tight text-balance">Quản lý mua sắm dễ dàng trên một nền tảng.</h2>
+                <p className="mt-5 text-sm leading-7 text-slate-300">
+                  Đăng nhập để nhận các đặc quyền thành viên, theo dõi tiến trình giao hàng và sử dụng trợ lý AI hỗ trợ mua sắm 24/7.
+                </p>
+              </div>
+            </div>
+            <div className="grid gap-3 text-sm font-semibold text-slate-200">
+              <div className="flex items-center gap-3"><ShieldCheck size={18} className="text-blue-300" /> Bảo mật thông tin an toàn</div>
+              <div className="flex items-center gap-3"><Truck size={18} className="text-blue-300" /> Theo dõi đơn hàng trực tuyến</div>
+              <div className="flex items-center gap-3"><BadgeCheck size={18} className="text-blue-300" /> Đánh giá sản phẩm đã mua</div>
+            </div>
+          </aside>
 
-          {/* Login Card */}
-          <div className="glass-card p-8 rounded-3xl border border-white/50 shadow-2xl shadow-blue-500/5">
-            <form onSubmit={handleSubmit} className="space-y-5">
+          <main className="p-5 sm:p-7 lg:p-8">
+            <div className="mb-6">
+              <Link to="/" className="mb-6 inline-block text-2xl font-black text-slate-900 lg:hidden" translate="no">
+                S-LIFE
+              </Link>
+              <h1 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">Đăng nhập</h1>
+              <p className="mt-2 text-sm font-medium leading-6 text-slate-500">Chào mừng bạn quay trở lại. Vui lòng đăng nhập để tiếp tục.</p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
               {/* Status Message */}
               {status.message && (
                 <motion.div 
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
-                  className={`p-3 rounded-xl flex items-center gap-3 text-sm font-medium ${
-                    status.type === 'error' ? 'bg-blue-50 text-blue-600' : 'bg-emerald-50 text-emerald-600'
+                  aria-live="polite"
+                  className={`flex items-center gap-3 rounded-xl p-3 text-sm font-medium ${
+                    status.type === 'error' ? 'bg-rose-50 text-rose-700' : 'bg-emerald-50 text-emerald-700'
                   }`}
                 >
                   {status.type === 'error' ? <AlertCircle size={18} /> : <CheckCircle2 size={18} />}
@@ -99,8 +109,10 @@ const Login = () => {
                 required
                 value={formData.username}
                 onChange={handleChange}
-                placeholder="Nhập tên đăng nhập"
+                placeholder="Nhập tên đăng nhập…"
                 icon={User}
+                autoComplete="username"
+                spellCheck={false}
               />
 
               <div className="space-y-1">
@@ -120,6 +132,7 @@ const Login = () => {
                   icon={Lock}
                   togglePassword={() => setShowPassword(!showPassword)}
                   showPassword={showPassword}
+                  autoComplete="current-password"
                 />
               </div>
 
@@ -141,9 +154,10 @@ const Login = () => {
               </div>
 
               <Button 
+                type="button"
                 variant="outline"
                 className="w-full"
-                onClick={() => window.location.href = "http://localhost:8089/oauth2/authorization/google"}
+                onClick={() => window.location.href = getOAuthUrl('google')}
               >
                 <div className="flex items-center gap-3">
                   <svg width="20" height="20" viewBox="0 0 24 24">
@@ -156,15 +170,14 @@ const Login = () => {
                 </div>
               </Button>
             </form>
-          </div>
 
-          {/* Register Link */}
-          <p className="text-center mt-8 text-slate-500 font-medium">
+          <p className="mt-6 text-center text-sm font-medium text-slate-500">
             Chưa có tài khoản?{' '}
             <Link to="/register" className="text-blue-600 hover:text-blue-700 font-bold decoration-2 underline-offset-4 hover:underline transition-all">
               Tạo tài khoản mới
             </Link>
           </p>
+          </main>
         </div>
       </motion.div>
     </div>

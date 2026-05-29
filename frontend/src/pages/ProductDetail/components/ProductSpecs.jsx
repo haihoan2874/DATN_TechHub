@@ -31,17 +31,17 @@ const ProductSpecs = ({ specs }) => {
   if (!Object.keys(flatSpecs).length) return null;
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <section className="h-fit overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm xl:sticky xl:top-28">
       <div className="border-b border-slate-100 bg-slate-50 px-6 py-4">
-        <h3 className="text-lg font-bold text-slate-900">Chi tiết sản phẩm</h3>
+        <h3 className="text-lg font-bold text-slate-900">Thông số kỹ thuật</h3>
       </div>
 
       <div className="p-6">
-        <div className="space-y-4">
+        <div className="divide-y divide-slate-100">
           {Object.entries(flatSpecs).map(([key, value], i) => (
-            <div key={i} className="grid gap-1 text-sm leading-relaxed sm:grid-cols-[220px_1fr]">
+            <div key={i} className="grid gap-1 py-3 text-sm leading-relaxed first:pt-0 last:pb-0">
               <span className="font-medium text-slate-500">{key}</span>
-              <span className="font-semibold text-slate-900">
+              <span className="font-semibold text-slate-950">
                 {typeof value === 'string' && value.startsWith('http') ? (
                    <img src={value} alt={key} className="max-w-[100px] rounded-lg border" />
                 ) : (

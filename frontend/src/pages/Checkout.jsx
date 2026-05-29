@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useMemo, useState, useEffect } from 'react';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import orderService from '../services/orderService';
@@ -14,11 +14,24 @@ import {
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import Modal from '../components/ui/Modal';
+import toast from 'react-hot-toast';
 
 const Checkout = () => {
-  const { cartItems, cartTotal, clearCart, cartLoading } = useCart();
+  const { cartItems, fetchCart, cartLoading } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [selectedProductIds] = useState(() => {
+    if (location.state?.selectedProductIds?.length) {
+      return location.state.selectedProductIds;
+    }
+
+    try {
+      return JSON.parse(sessionStorage.getItem('checkoutProductIds') || '[]');
+    } catch (error) {
+      return [];
+    }
+  });
   
   const [addresses, setAddresses] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
@@ -73,7 +86,22 @@ const Checkout = () => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
   };
 
-  const finalTotal = Math.max(cartTotal - Number(appliedVoucher?.discountAmount || 0), 0);
+  const selectedIdSet = useMemo(() => new Set(selectedProductIds), [selectedProductIds]);
+  const checkoutItems = useMemo(() => {
+    if (selectedProductIds.length === 0) return cartItems;
+    return cartItems.filter((item) => selectedIdSet.has(item.id));
+  }, [cartItems, selectedIdSet, selectedProductIds.length]);
+  const checkoutTotal = useMemo(
+    () => checkoutItems.reduce((total, item) => total + Number(item.price) * item.quantity, 0),
+    [checkoutItems]
+  );
+  const finalTotal = Math.max(checkoutTotal - Number(appliedVoucher?.discountAmount || 0), 0);
+
+  useEffect(() => {
+    if (!cartLoading && cartItems.length > 0 && checkoutItems.length === 0) {
+      navigate('/cart', { replace: true });
+    }
+  }, [cartItems.length, cartLoading, checkoutItems.length, navigate]);
 
   const handleApplyVoucher = async () => {
     if (!voucherCode.trim()) {
@@ -84,7 +112,7 @@ const Checkout = () => {
     setVoucherLoading(true);
     setStatus({ type: '', message: '' });
     try {
-      const voucher = await voucherService.applyVoucher(voucherCode.trim());
+      const voucher = await voucherService.applyVoucher(voucherCode.trim(), checkoutItems.map((item) => item.id));
       setAppliedVoucher(voucher);
       setVoucherCode(voucher.code);
       setStatus({ type: 'success', message: voucher.message || 'Áp dụng mã giảm giá thành công.' });
@@ -128,13 +156,15 @@ const Checkout = () => {
         isDefault: false
       });
     } catch (error) {
-      alert('Không thể thêm địa chỉ. Vui lòng kiểm tra lại.');
+      const message = error.response?.data?.message || 'Không thể thêm địa chỉ. Vui lòng kiểm tra lại.';
+      setStatus({ type: 'error', message });
+      toast.error(message);
     }
   };
 
   const handleSubmitOrder = async (e) => {
     e.preventDefault();
-    if (cartItems.length === 0 || !selectedAddressId) {
+    if (checkoutItems.length === 0 || !selectedAddressId) {
       setStatus({ type: 'error', message: 'Vui lòng chọn địa chỉ giao hàng.' });
       return;
     }
@@ -146,7 +176,8 @@ const Checkout = () => {
       shippingAddressId: selectedAddressId,
       paymentMethod: formData.paymentMethod,
       notes: formData.note,
-      voucherCode: appliedVoucher?.code || null
+      voucherCode: appliedVoucher?.code || null,
+      selectedProductIds: checkoutItems.map((item) => item.id)
     };
 
     try {
@@ -154,16 +185,16 @@ const Checkout = () => {
       
       if (formData.paymentMethod === 'VNPAY' && response.paymentUrl) {
         setStatus({ type: 'success', message: 'Đang chuyển hướng đến cổng thanh toán VNPay...' });
-        await clearCart();
+        sessionStorage.removeItem('checkoutProductIds');
+        await fetchCart();
         window.location.href = response.paymentUrl;
         return;
       }
 
       setStatus({ type: 'success', message: 'Đặt hàng thành công! Đang chuyển hướng...' });
-      setTimeout(async () => {
-        await clearCart();
-        navigate(`/order-success/${response.orderNumber || response.orderId}`);
-      }, 2000);
+      sessionStorage.removeItem('checkoutProductIds');
+      fetchCart();
+      navigate('/orders', { replace: true });
     } catch (error) {
       setStatus({ 
         type: 'error', 
@@ -175,7 +206,7 @@ const Checkout = () => {
 
   if (cartLoading) {
     return (
-      <div className="min-h-screen bg-slate-50 pt-24 lg:pt-32 pb-20 flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-slate-50 py-12">
         <div className="w-10 h-10 border-4 border-blue-600/20 border-t-blue-600 rounded-full animate-spin" />
       </div>
     );
@@ -186,21 +217,24 @@ const Checkout = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 pt-24 lg:pt-32 pb-20">
-      <div className="container mx-auto px-6">
-        <Link to="/cart" className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-blue-600">
+    <div className="min-h-screen bg-slate-50 py-6 sm:py-8 lg:py-10">
+      <div className="container mx-auto max-w-6xl px-4 sm:px-6">
+        <Link to="/cart" className="mb-5 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-blue-600">
           <ChevronLeft size={20} /> Quay lại giỏ hàng
         </Link>
 
-        <div className="mb-8">
+        <div className="mb-6">
           <p className="text-sm font-medium text-slate-500">Kiểm tra địa chỉ, phương thức thanh toán và xác nhận đơn hàng</p>
-          <h1 className="mt-1 text-3xl font-bold text-slate-900">Thanh toán</h1>
+          <h1 className="mt-1 text-2xl font-bold text-slate-900 lg:text-3xl">Thanh toán</h1>
+          <p className="mt-2 text-sm text-slate-500">
+            Đang thanh toán {checkoutItems.length} sản phẩm đã chọn từ giỏ hàng.
+          </p>
         </div>
 
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-start">
-          <div className="lg:w-2/3 space-y-8">
-            <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-              <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start lg:gap-6">
+          <div className="space-y-5">
+            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+              <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
                     <MapPin size={22} />
@@ -211,6 +245,7 @@ const Checkout = () => {
                   </div>
                 </div>
                 <button 
+                  type="button"
                   onClick={() => setShowAddressModal(true)}
                   className="inline-flex w-fit items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-blue-600 transition-colors hover:border-blue-200 hover:bg-blue-50"
                 >
@@ -223,11 +258,11 @@ const Checkout = () => {
                   <div className="w-8 h-8 border-4 border-blue-600/20 border-t-blue-600 rounded-full animate-spin" />
                 </div>
               ) : addresses.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                   {addresses.map(addr => (
                     <label 
                       key={addr.id}
-                      className={`relative cursor-pointer rounded-2xl border p-5 transition-all ${
+                      className={`relative cursor-pointer rounded-2xl border p-4 transition-all ${
                         selectedAddressId === addr.id 
                           ? 'border-blue-600 bg-blue-50/50 shadow-sm shadow-blue-600/5'
                           : 'border-slate-200 bg-white hover:border-slate-300'
@@ -260,6 +295,7 @@ const Checkout = () => {
                 <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 py-10 text-center">
                   <p className="text-slate-500 mb-4">Bạn chưa có địa chỉ nhận hàng nào.</p>
                   <button 
+                    type="button"
                     onClick={() => setShowAddressModal(true)}
                     className="rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white transition-all hover:bg-blue-700"
                   >
@@ -269,8 +305,8 @@ const Checkout = () => {
               )}
             </section>
 
-            <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-              <div className="flex items-center gap-3 mb-6">
+            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+              <div className="mb-5 flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
                   <AlertCircle size={22} />
                 </div>
@@ -279,13 +315,13 @@ const Checkout = () => {
               <textarea
                 value={formData.note}
                 onChange={(e) => setFormData({ ...formData, note: e.target.value })}
-                className="min-h-[100px] w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition-all focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
+                className="form-textarea min-h-[100px]"
                 placeholder="Ví dụ: Giao giờ hành chính, gọi trước khi giao..."
               />
             </section>
 
-            <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-              <div className="flex items-center gap-3 mb-6">
+            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+              <div className="mb-5 flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
                   <Tag size={22} />
                 </div>
@@ -318,15 +354,15 @@ const Checkout = () => {
               )}
             </section>
 
-            <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-              <div className="flex items-center gap-3 mb-6">
+            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+              <div className="mb-5 flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600">
                   <CreditCard size={22} />
                 </div>
                 <h2 className="text-lg font-bold text-slate-900">Phương thức thanh toán</h2>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                 <label className={`relative flex cursor-pointer items-center gap-4 rounded-2xl border p-5 transition-all ${
                   formData.paymentMethod === 'COD' ? 'border-blue-600 bg-blue-50/50' : 'border-slate-100 hover:border-slate-200 bg-white'
                 }`}>
@@ -364,12 +400,12 @@ const Checkout = () => {
             </section>
           </div>
 
-          <div className="lg:w-1/3">
-            <div className="sticky top-28 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-              <h2 className="mb-6 text-xl font-bold text-slate-900">Đơn hàng của bạn</h2>
+          <div>
+            <div className="sticky top-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+              <h2 className="mb-5 text-lg font-bold text-slate-900">Đơn hàng của bạn</h2>
               
-              <div className="max-h-[300px] overflow-y-auto mb-6 pr-2 space-y-4 custom-scrollbar">
-                {cartItems.map(item => (
+              <div className="custom-scrollbar mb-5 max-h-[260px] space-y-3 overflow-y-auto pr-2">
+                {checkoutItems.map(item => (
                   <div key={item.id} className="flex gap-4">
                     <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl border border-slate-100 bg-slate-50">
                       <img src={item.imageUrl || '/logo_final.png'} alt={item.name} className="w-full h-full object-contain p-1" />
@@ -385,10 +421,10 @@ const Checkout = () => {
                 ))}
               </div>
 
-              <div className="space-y-4 py-6 border-t border-slate-100">
+              <div className="space-y-3 border-t border-slate-100 py-5">
                 <div className="flex justify-between text-sm text-slate-500">
                   <span>Tạm tính</span>
-                  <span className="font-semibold text-slate-900">{formatPrice(cartTotal)}</span>
+                  <span className="font-semibold text-slate-900">{formatPrice(checkoutTotal)}</span>
                 </div>
                 <div className="flex justify-between text-sm text-slate-500">
                   <span>Phí vận chuyển</span>
@@ -403,7 +439,7 @@ const Checkout = () => {
                 <div className="h-px bg-slate-100 my-2" />
                 <div className="flex justify-between items-end">
                   <span className="font-semibold text-slate-900">Tổng thanh toán</span>
-                  <span className="text-2xl font-bold text-blue-600">
+                  <span className="text-xl font-bold text-blue-600 sm:text-2xl">
                     {formatPrice(finalTotal)}
                   </span>
                 </div>
@@ -475,14 +511,14 @@ const Checkout = () => {
               />
             </div>
             <div className="col-span-1 md:col-span-2">
-              <label className="mb-2 block text-sm font-semibold text-slate-900">Địa chỉ chi tiết</label>
+              <label className="form-label mb-2 block">Địa chỉ chi tiết</label>
               <textarea
                 name="address"
                 required
                 rows="3"
                 value={newAddress.address}
                 onChange={handleNewAddressChange}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                className="form-textarea"
                 placeholder="Số nhà, tên đường, phường/xã..."
               />
             </div>

@@ -1,122 +1,79 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { ShieldCheck, Zap, Users, ArrowUpRight } from 'lucide-react';
+import { Activity, ArrowRight, BatteryCharging, HeartPulse, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
+
+const GUIDES = [
+  {
+    icon: HeartPulse,
+    title: 'Theo dõi sức khỏe',
+    description: 'Phù hợp người cần theo dõi nhịp tim, giấc ngủ, SpO2 và vận động hằng ngày.',
+    to: '/shop?category=vong-theo-doi-suc-khoe',
+  },
+  {
+    icon: Activity,
+    title: 'Luyện tập thể thao',
+    description: 'GPS, chế độ tập luyện, pin bền và khả năng chống nước cho chạy bộ, gym, bơi.',
+    to: '/shop?category=dong-ho-the-thao',
+  },
+  {
+    icon: BatteryCharging,
+    title: 'Phụ kiện sử dụng lâu dài',
+    description: 'Dây đeo, dock sạc và phụ kiện giúp cá nhân hóa thiết bị theo phong cách riêng.',
+    to: '/shop?category=phu-kien-dong-ho',
+  },
+];
 
 const StorySection = () => {
   return (
-    <section className="py-24 lg:py-32 overflow-hidden">
-      <div className="container mx-auto px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-20 items-center">
-          
-          {/* Left: Visuals */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="relative"
-          >
-            <div className="aspect-[4/5] rounded-[3.5rem] overflow-hidden shadow-2xl relative z-10">
-              <img 
-                src="https://images.unsplash.com/photo-1510017803434-a899398421b3?auto=format&fit=crop&q=80&w=2070" 
-                className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000 scale-110 hover:scale-100" 
-                alt="S-LIFE Vision" 
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
-              <div className="absolute bottom-10 left-10 right-10">
-                 <p className="text-white text-2xl font-black italic tracking-tighter uppercase leading-tight">
-                   "Công nghệ không chỉ là thiết bị, <br /> đó là phong cách sống."
-                 </p>
-              </div>
+    <section className="bg-white py-10 lg:py-12">
+      <div className="container mx-auto max-w-6xl px-4 sm:px-6">
+        <div className="grid gap-5 lg:grid-cols-[0.82fr_1.18fr] lg:items-stretch">
+          <div className="rounded-2xl border border-slate-200 bg-slate-950 p-5 text-white shadow-sm lg:p-7">
+            <div className="mb-5 inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-600/20 text-blue-300">
+              <ShieldCheck size={24} />
             </div>
-            
-            {/* Floating Decorative Elements */}
-            <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-600 rounded-[2.5rem] flex items-center justify-center p-6 text-white shadow-2xl z-20 hidden md:flex">
-               <Zap size={40} className="fill-white" />
-            </div>
-            <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-slate-900 rounded-[3rem] border border-slate-800 p-8 z-0 hidden md:block" />
-          </motion.div>
-
-          {/* Right: Content */}
-          <div className="space-y-12">
-            <div className="space-y-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-full text-[10px] font-black uppercase tracking-[0.2em]"
-              >
-                <ShieldCheck size={14} /> Câu chuyện S-Life
-              </motion.div>
-              
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 }}
-                className="text-4xl lg:text-6xl font-black text-slate-900 uppercase tracking-tighter leading-[0.9]"
-              >
-                Nâng tầm <span className="text-blue-600">tương lai</span> <br /> sức khỏe việt
-              </motion.h2>
-              
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.2 }}
-                className="text-slate-500 font-medium leading-relaxed text-lg"
-              >
-                S-LIFE ra đời với sứ mệnh mang những đỉnh cao công nghệ đeo tay (Wearables) đến gần hơn với người Việt. Chúng tôi tin rằng, mỗi nhịp đập con tim đều xứng đáng được theo dõi bằng những thiết bị tinh hoa nhất.
-              </motion.p>
-            </div>
-
-            <div className="grid sm:grid-cols-2 gap-8">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.3 }}
-                className="p-8 rounded-[2.5rem] bg-slate-50 border border-slate-100 hover:border-blue-600 hover:bg-white transition-all group"
-              >
-                <Users className="text-slate-400 group-hover:text-blue-600 mb-4 transition-colors" size={32} />
-                <h4 className="text-sm font-black text-slate-900 uppercase mb-2">Cộng đồng</h4>
-                <p className="text-xs text-slate-500 leading-relaxed font-medium">Hơn 50,000 người dùng đã thay đổi lối sống cùng S-Life.</p>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.4 }}
-                className="p-8 rounded-[2.5rem] bg-slate-50 border border-slate-100 hover:border-blue-600 hover:bg-white transition-all group"
-              >
-                <Zap className="text-slate-400 group-hover:text-blue-600 mb-4 transition-colors" size={32} />
-                <h4 className="text-sm font-black text-slate-900 uppercase mb-2">Công nghệ</h4>
-                <p className="text-xs text-slate-500 leading-relaxed font-medium">Cập nhật nhanh nhất các siêu phẩm từ Garmin, Apple, Samsung.</p>
-              </motion.div>
-            </div>
-
-            <motion.div
-               initial={{ opacity: 0, y: 20 }}
-               whileInView={{ opacity: 1, y: 0 }}
-               viewport={{ once: true }}
-               transition={{ delay: 0.5 }}
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-blue-300">Gợi ý lựa chọn</p>
+            <h2 className="mb-4 text-2xl font-bold leading-tight tracking-tight lg:text-3xl">
+              Chọn đúng thiết bị cho thói quen của bạn
+            </h2>
+            <p className="text-sm leading-relaxed text-slate-300 lg:text-base">
+              S-LIFE tập trung vào thiết bị sức khỏe thông minh: dễ dùng, thông số rõ, phù hợp cả luyện tập lẫn theo dõi hằng ngày.
+            </p>
+            <Link
+              to="/shop"
+              className="mt-6 inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-slate-950 transition-colors hover:bg-blue-50"
             >
-              <Link 
-                to="/shop" 
-                className="inline-flex items-center gap-3 text-sm font-black text-slate-900 uppercase tracking-widest group hover:text-blue-600 transition-colors"
-              >
-                Khám phá bộ sưu tập sản phẩm 
-                <div className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center group-hover:bg-blue-600 group-hover:border-blue-600 group-hover:text-white transition-all">
-                   <ArrowUpRight size={18} />
-                </div>
-              </Link>
-            </motion.div>
+              Xem toàn bộ sản phẩm <ArrowRight size={16} />
+            </Link>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-3">
+            {GUIDES.map((item) => (
+              <GuideCard key={item.title} {...item} />
+            ))}
           </div>
         </div>
       </div>
     </section>
   );
 };
+
+function GuideCard({ icon: Icon, title, description, to }) {
+  return (
+    <Link
+      to={to}
+      className="group flex min-h-[210px] flex-col rounded-2xl border border-slate-200 bg-slate-50 p-5 transition-all hover:border-blue-200 hover:bg-white hover:shadow-md"
+    >
+      <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-blue-700 shadow-sm">
+        <Icon size={23} />
+      </div>
+      <h3 className="mb-2 text-base font-bold text-slate-950">{title}</h3>
+      <p className="text-sm leading-relaxed text-slate-500">{description}</p>
+      <div className="mt-auto flex items-center gap-2 pt-4 text-sm font-bold text-blue-700">
+        Khám phá <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+      </div>
+    </Link>
+  );
+}
 
 export default StorySection;

@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import authService from '../services/authService';
-import {  Lock, Eye, EyeOff, ArrowRight, 
-  AlertCircle, CheckCircle2 
-} from 'lucide-react';
+import { Lock, ArrowRight, AlertCircle, CheckCircle2 } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 
@@ -38,7 +36,7 @@ const ResetPassword = () => {
         otp, 
         newPassword: formData.newPassword 
       });
-      setStatus({ type: 'success', message: 'Đặt lại mật khẩu thành công! Đang chuyển hướng...' });
+      setStatus({ type: 'success', message: 'Đặt lại mật khẩu thành công. Đang chuyển hướng…' });
       setTimeout(() => navigate('/login'), 2000);
     } catch (error) {
       setStatus({ 
@@ -51,25 +49,23 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-12 flex flex-col justify-center relative overflow-hidden bg-slate-50">
-      <div className="absolute top-1/4 -left-20 w-80 h-80 bg-blue-400/20 rounded-full blur-3xl animate-pulse" />
-      
+    <div className="flex min-h-screen items-center bg-slate-50 px-4 py-8 sm:px-6 lg:px-8">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="container mx-auto px-6 relative z-10"
+        className="mx-auto w-full max-w-md"
       >
-        <div className="max-w-md mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-black text-slate-900 uppercase tracking-tight">Mật khẩu mới</h1>
+        <div>
+          <div className="mb-8 text-center">
+            <h1 className="text-3xl font-black tracking-tight text-slate-900">Mật khẩu mới</h1>
             <p className="text-slate-500 mt-2 font-medium">Vui lòng thiết lập mật khẩu mới cho tài khoản của bạn</p>
           </div>
 
-          <div className="glass-card p-8 rounded-3xl border border-white shadow-2xl shadow-blue-500/5">
+          <div className="glass-card rounded-2xl border border-white p-6 shadow-2xl shadow-blue-500/5 sm:p-8">
             <form onSubmit={handleSubmit} className="space-y-6">
               {status.message && (
-                <div className={`p-4 rounded-xl flex items-center gap-3 text-sm font-medium ${
-                  status.type === 'error' ? 'bg-blue-50 text-blue-600' : 'bg-emerald-50 text-emerald-600'
+                <div aria-live="polite" className={`flex items-center gap-3 rounded-xl p-4 text-sm font-medium ${
+                  status.type === 'error' ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'
                 }`}>
                   {status.type === 'error' ? <AlertCircle size={18} /> : <CheckCircle2 size={18} />}
                   {status.message}
@@ -87,6 +83,8 @@ const ResetPassword = () => {
                 placeholder="••••••••"
                 togglePassword={() => setShowPassword(!showPassword)}
                 showPassword={showPassword}
+                name="newPassword"
+                autoComplete="new-password"
               />
 
               <Input 
@@ -97,6 +95,8 @@ const ResetPassword = () => {
                 value={formData.confirmPassword}
                 onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                 placeholder="••••••••"
+                name="confirmPassword"
+                autoComplete="new-password"
               />
 
               <Button

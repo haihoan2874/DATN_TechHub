@@ -24,14 +24,14 @@ const ProductReviews = ({ productId, averageRating, reviewCount }) => {
   }, [productId]);
 
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-      <div className="mb-8 grid gap-6 lg:grid-cols-[260px_1fr]">
+    <section id="product-reviews" className="scroll-mt-28 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+      <div className="grid gap-5 lg:grid-cols-[220px_1fr]">
         <div>
           <h2 className="text-xl font-bold text-slate-900">Đánh giá sản phẩm</h2>
           <p className="mt-1 text-sm text-slate-500">Dựa trên {reviewCount || 0} lượt đánh giá sau mua hàng</p>
 
-          <div className="mt-5 flex items-end gap-3">
-            <span className="text-5xl font-bold text-slate-950">{Number(averageRating || 0).toFixed(1)}</span>
+          <div className="mt-4 flex items-end gap-3">
+            <span className="text-4xl font-bold text-slate-950">{Number(averageRating || 0).toFixed(1)}</span>
             <div className="pb-1">
               <div className="flex text-amber-400">
                 {[1, 2, 3, 4, 5].map((star) => (

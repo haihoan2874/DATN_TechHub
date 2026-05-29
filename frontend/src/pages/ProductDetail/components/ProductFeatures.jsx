@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 
-const ProductFeatures = ({ features }) => {
+const ProductFeatures = ({ features, description }) => {
   const parsedFeatures = useMemo(() => {
     try {
       return typeof features === 'string' ? JSON.parse(features) : (features || []);
@@ -9,7 +9,7 @@ const ProductFeatures = ({ features }) => {
     }
   }, [features]);
 
-  if (!parsedFeatures || parsedFeatures.length === 0) return null;
+  if ((!parsedFeatures || parsedFeatures.length === 0) && !description) return null;
 
   return (
     <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
@@ -18,7 +18,11 @@ const ProductFeatures = ({ features }) => {
       </div>
 
       <div className="space-y-8 p-6 sm:p-8">
-        {parsedFeatures.map((block, index) => (
+        {parsedFeatures.length === 0 && description ? (
+          <p className="whitespace-pre-wrap text-sm leading-7 text-slate-700">
+            {description}
+          </p>
+        ) : parsedFeatures.map((block, index) => (
           <div key={index} className="space-y-4">
             {block.title && (
               <h4 className="text-base font-bold leading-tight text-slate-900">

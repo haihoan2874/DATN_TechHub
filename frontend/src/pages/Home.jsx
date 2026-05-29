@@ -4,20 +4,25 @@ import Hero from "../components/home/Hero";
 import CategorySection from "../components/home/CategorySection";
 import FeaturedSection from "../components/home/FeaturedSection";
 import BenefitsSection from "../components/home/BenefitsSection";
-import CTASection from "../components/home/CTASection";
 import StorySection from "../components/home/StorySection";
 
 function Home() {
   const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchFeatured = async () => {
       try {
-        const response = await productService.getAllProducts({ pageSize: 4 });
-        if (response && response.contents) {
-          setFeaturedProducts(response.contents);
+        const [productResponse, categoryResponse] = await Promise.all([
+          productService.getAllProducts({ pageSize: 4 }),
+          productService.getCategories()
+        ]);
+
+        if (productResponse?.contents) {
+          setFeaturedProducts(productResponse.contents);
         }
+        setCategories(categoryResponse?.contents || categoryResponse || []);
       } catch (error) {
         console.error("Home fetch error:", error);
       } finally {
@@ -28,13 +33,12 @@ function Home() {
   }, []);
 
   return (
-    <div className="flex flex-col bg-white">
+    <div className="flex flex-col bg-slate-50">
       <Hero />
-      <CategorySection />
+      <CategorySection categories={categories} />
       <StorySection />
       <FeaturedSection products={featuredProducts} loading={loading} />
       <BenefitsSection />
-      <CTASection />
     </div>
   );
 }

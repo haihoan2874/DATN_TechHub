@@ -30,12 +30,13 @@ function FeaturedSection({ products, loading }) {
   }, { scope: sectionRef, dependencies: [loading, products] });
 
   return (
-    <section ref={sectionRef} className="py-24 bg-white">
-      <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
+    <section ref={sectionRef} className="bg-slate-50 py-10 lg:py-12">
+      <div className="container mx-auto max-w-6xl px-4 sm:px-6">
+        <div className="mb-6 flex flex-col items-start justify-between gap-3 md:flex-row md:items-end">
           <div>
-            <h2 className="text-4xl font-black text-slate-900 mb-2 tracking-tight">SẢN PHẨM NỔI BẬT</h2>
-            <p className="text-slate-500 font-medium text-lg">Những thiết bị được khách hàng tin dùng nhất tuần qua.</p>
+            <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-blue-600">Sản phẩm nổi bật</p>
+            <h2 className="mb-2 text-2xl font-bold tracking-tight text-slate-950 lg:text-3xl">Được quan tâm nhiều</h2>
+            <p className="text-sm leading-relaxed text-slate-500 sm:text-base">Những thiết bị được khách hàng tin dùng nhất tuần qua.</p>
           </div>
           <Link to="/shop" className="group flex items-center gap-2 text-blue-600 font-bold">
             <span className="relative">
@@ -46,10 +47,10 @@ function FeaturedSection({ products, loading }) {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {loading ? (
              [...Array(4)].map((_, i) => (
-               <div key={i} className="h-[450px] bg-slate-50 animate-pulse rounded-[40px] border border-slate-100" />
+               <div key={i} className="h-[340px] animate-pulse rounded-2xl border border-slate-200 bg-white" />
              ))
           ) : (
             products.map(product => (

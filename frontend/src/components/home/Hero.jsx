@@ -1,6 +1,5 @@
 import React, { useRef } from "react";
-import { motion } from "framer-motion";
-import { Sparkles, ShoppingBag } from "lucide-react";
+import { Activity, CheckCircle2, ShieldCheck, ShoppingBag, Star, Truck, Watch } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -14,7 +13,7 @@ function Hero() {
 
   useGSAP(() => {
     const tl = gsap.timeline();
-    
+
     tl.from(".hero-content > *", {
       y: 50,
       opacity: 0,
@@ -38,59 +37,108 @@ function Hero() {
   }, { scope: containerRef });
 
   return (
-    <section ref={containerRef} className="relative pt-32 pb-16 lg:pt-48 lg:pb-32 overflow-hidden bg-slate-50">
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="flex flex-col lg:flex-row items-center gap-12">
-          <div className="lg:w-1/2 text-center lg:text-left hero-content">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-600/10 text-blue-600 font-bold text-xs mb-6 uppercase tracking-widest">
-              <Sparkles size={14} />
-              <span>New Arrival: Nexus Pro X</span>
+    <section ref={containerRef} className="relative overflow-hidden bg-slate-50 py-8 sm:py-10 lg:py-14">
+      <div className="container relative z-10 mx-auto max-w-6xl px-4 sm:px-6">
+        <div className="grid items-center gap-7 lg:grid-cols-[0.95fr_1.05fr] lg:gap-10">
+          <div className="hero-content text-center lg:text-left">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-blue-700">
+              <Activity size={14} />
+              <span>Thiết bị sức khỏe thông minh</span>
             </div>
-            
-            <h1 ref={titleRef} className="text-5xl lg:text-7xl font-black text-slate-900 leading-[1.1] mb-6 tracking-tight">
-              NÂNG TẦM <br /> 
+
+            <h1 ref={titleRef} className="mb-4 text-4xl font-black leading-[1.05] tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">
+              NÂNG TẦM <br />
               <span className="text-blue-600">SỨC KHỎE</span>
             </h1>
-            
-            <p className="text-slate-500 text-lg mb-10 leading-relaxed max-w-[45ch]">
-              Sở hữu ngay công nghệ theo dõi sức khỏe đỉnh cao. 
+
+            <p className="mx-auto mb-6 max-w-[48ch] text-sm leading-relaxed text-slate-500 sm:text-base lg:mx-0">
+              Sở hữu ngay công nghệ theo dõi sức khỏe đỉnh cao.
               Chính xác, tinh tế và luôn bên bạn mọi lúc mọi nơi.
             </p>
 
-            <div className="flex flex-wrap justify-center lg:justify-start gap-4">
-              <Button 
+            <div className="mb-6 flex flex-wrap justify-center gap-3 lg:justify-start">
+              <Button
                 onClick={() => navigate('/shop')}
                 size="lg"
                 icon={ShoppingBag}
-                className="px-10 shadow-xl shadow-blue-600/20 hover:shadow-blue-600/40 transition-shadow"
+                className="px-6 shadow-lg shadow-blue-600/15 transition-shadow hover:shadow-blue-600/30 sm:px-8"
               >
                 Sắm ngay
               </Button>
-              <Button 
+              <Button
                 variant="outline"
                 onClick={() => navigate('/about')}
                 size="lg"
-                className="px-10"
+                className="px-6 sm:px-8"
               >
                 Tìm hiểu thêm
               </Button>
             </div>
+
+            <div className="grid grid-cols-3 gap-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:max-w-xl lg:max-w-lg">
+              <TrustItem value="100%" label="Chính hãng" />
+              <TrustItem value="24/7" label="Theo dõi" />
+              <TrustItem value="2 năm" label="Bảo hành" />
+            </div>
           </div>
 
-          <div className="lg:w-1/2 relative">
-            <div ref={imageRef} className="relative z-10">
-              <img 
-                src="/premium_health_watch_hero_1777260130733.png" 
-                alt="Nexus Pro Watch" 
-                className="w-full max-w-xl mx-auto drop-shadow-[0_50px_50px_rgba(37,99,235,0.15)] pointer-events-none" 
-              />
+          <div className="relative">
+            <div ref={imageRef} className="relative z-10 mx-auto max-w-xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+              <div className="grid gap-0 lg:grid-cols-[1fr_170px]">
+                <div className="flex min-h-[280px] items-center justify-center bg-slate-50 p-4 sm:min-h-[340px] sm:p-6">
+                  <img
+                    src="/assets/categories/sports_watch.png"
+                    alt="Đồng hồ sức khỏe thông minh S-LIFE"
+                    className="h-[240px] w-full object-contain sm:h-[300px] lg:h-[340px]"
+                  />
+                </div>
+                <div className="flex flex-col justify-between border-t border-slate-100 p-4 lg:border-l lg:border-t-0">
+                  <div>
+                    <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-50 text-blue-700">
+                      <Watch size={22} />
+                    </div>
+                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Bộ sưu tập</p>
+                    <h2 className="mt-2 text-lg font-bold leading-tight text-slate-950">Đồng hồ thể thao thông minh</h2>
+                    <p className="mt-2 text-xs leading-relaxed text-slate-500 sm:text-sm">
+                      GPS, nhịp tim, giấc ngủ và luyện tập trong một thiết bị gọn nhẹ.
+                    </p>
+                  </div>
+                  <div className="mt-4 space-y-2">
+                    <HeroMetric icon={CheckCircle2} label="Sẵn hàng" value="99+" />
+                    <HeroMetric icon={Truck} label="Giao hàng" value="Toàn quốc" />
+                    <HeroMetric icon={ShieldCheck} label="Cam kết" value="Chính hãng" />
+                  </div>
+                </div>
+              </div>
             </div>
-            {/* Background Glow */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-blue-500/10 rounded-full blur-[120px] -z-10" />
           </div>
         </div>
       </div>
     </section>
+  );
+}
+
+function HeroMetric({ icon: Icon, label, value }) {
+  return (
+    <div className="flex items-center gap-3 rounded-2xl bg-slate-50 p-3">
+      <Icon size={18} className="shrink-0 text-blue-600" />
+      <div>
+        <p className="text-[11px] font-semibold text-slate-400">{label}</p>
+        <p className="text-sm font-bold text-slate-950">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+function TrustItem({ value, label }) {
+  return (
+    <div className="rounded-xl bg-slate-50 px-3 py-3 text-left">
+      <div className="mb-1 flex items-center gap-1.5 text-blue-700">
+        <Star size={13} className="fill-current" />
+        <span className="text-sm font-black">{value}</span>
+      </div>
+      <p className="text-xs font-semibold text-slate-500">{label}</p>
+    </div>
   );
 }
 
