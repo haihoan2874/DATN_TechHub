@@ -4,10 +4,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication
 @EnableJpaRepositories(basePackages = "com.haihoan2874.techhub.repository")
 @EnableAspectJAutoProxy
+@EnableAsync
 public class SlifeApplication {
 
     public static void main(String[] args) {

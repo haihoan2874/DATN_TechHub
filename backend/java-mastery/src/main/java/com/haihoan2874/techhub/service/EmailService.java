@@ -22,6 +22,9 @@ public class EmailService {
     @Value("${spring.mail.username}")
     private String fromEmail;
 
+    @Value("${app.backend-url}")
+    private String backendUrl;
+
     @Async
     public void sendEmail(String to, String subject, String content, boolean isHtml) {
         try {
@@ -46,7 +49,7 @@ public class EmailService {
 
     public void sendVerificationEmail(String to, String token) {
         String subject = "Verify your account - S-LIFE";
-        String verificationUrl = "http://localhost:8089/api/v1/auth/verify?token=" + token;
+        String verificationUrl = backendUrl + "/api/v1/auth/verify?token=" + token;
         String content = "<h3>Welcome to S-LIFE!</h3>" +
                 "<p>Please click the link below to verify your account:</p>" +
                 "<a href=\"" + verificationUrl + "\">Verify Account</a>" +
@@ -57,7 +60,7 @@ public class EmailService {
 
     public void sendPasswordResetEmail(String to, String token) {
         String subject = "Đặt lại mật khẩu của bạn - S-Life Health Tech";
-        String resetUrl = "http://localhost:8089/api/v1/auth/reset-password?token=" + token;
+        String resetUrl = backendUrl + "/api/v1/auth/reset-password?token=" + token;
         String content = "<h3>Password Reset Request</h3>" +
                 "<p>Click the link below to reset your password:</p>" +
                 "<a href=\"" + resetUrl + "\">Reset Password</a>" +

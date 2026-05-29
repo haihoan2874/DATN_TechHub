@@ -9,7 +9,7 @@ plugins {
 
 group = 'com.haihoan2874'
 version = '1.0.0'
-description = 'S-Life Backend - Spring Boot E-commerce API. This is the backend service for the S-Life Graduation Project (E-commerce platform for Health Devices).'
+description = 'S-Life Backend - Spring Boot e-commerce API for smart health devices.'
 
 java {
     toolchain {
