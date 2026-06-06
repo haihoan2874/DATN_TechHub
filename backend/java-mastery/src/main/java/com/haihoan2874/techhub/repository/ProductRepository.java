@@ -107,4 +107,13 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
             Where p.id IN :ids
             """)
     List<Product> findProductsByIds(@Param("ids") List<UUID> id);
+
+    @Query(value = """
+            SELECT p.name, p.image_url, p.stock_quantity
+            FROM products p
+            WHERE p.is_active = true
+            ORDER BY p.stock_quantity ASC, p.updated_at DESC
+            LIMIT :limit
+            """, nativeQuery = true)
+    List<Object[]> findLowStockProducts(@Param("limit") int limit);
 }

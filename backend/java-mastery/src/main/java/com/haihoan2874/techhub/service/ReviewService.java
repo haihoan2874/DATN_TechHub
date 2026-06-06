@@ -43,7 +43,7 @@ public class ReviewService {
         }
 
         if (!orderRepository.existsDeliveredOrderContainingProduct(userId, productId)) {
-            throw new IllegalStateException("Bạn chỉ có thể đánh giá sản phẩm sau khi đơn hàng đã được giao thành công");
+            throw new IllegalStateException("Only users who purchased and received this product can review it");
         }
 
         Product product = productRepository.findById(productId)

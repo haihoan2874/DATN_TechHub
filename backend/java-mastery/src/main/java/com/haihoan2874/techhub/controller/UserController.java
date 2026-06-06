@@ -4,15 +4,16 @@ import com.haihoan2874.techhub.constant.APIConstants;
 import com.haihoan2874.techhub.dto.response.UserResponse;
 import com.haihoan2874.techhub.security.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -46,7 +47,7 @@ public class UserController {
     @PutMapping("/profile")
     @Operation(summary = "Update profile", description = "Update current authenticated user profile")
     @SecurityRequirement(name = APIConstants.BEARER)
-    public ResponseEntity<UserResponse> updateProfile(@RequestBody com.haihoan2874.techhub.dto.request.UserUpdateRequest request, org.springframework.security.core.Authentication authentication) {
+    public ResponseEntity<UserResponse> updateProfile(@Valid @RequestBody com.haihoan2874.techhub.dto.request.UserUpdateRequest request, org.springframework.security.core.Authentication authentication) {
         return ResponseEntity.ok(userService.updateProfile(request, authentication));
     }
 

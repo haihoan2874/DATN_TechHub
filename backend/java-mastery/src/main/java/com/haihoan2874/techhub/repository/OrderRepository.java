@@ -17,25 +17,84 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
     @Query("SELECT SUM(o.total) FROM Order o")
     java.math.BigDecimal sumTotalRevenue();
 
+    @Query("""
+            SELECT COALESCE(SUM(o.total), 0)
+            FROM Order o
+            WHERE o.status = com.haihoan2874.techhub.model.OrderStatus.DELIVERED
+            AND o.createdAt BETWEEN :startDate AND :endDate
+            """)
+    java.math.BigDecimal sumDeliveredRevenueBetween(
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate
+    );
+
+    @Query("""
+            SELECT COUNT(o)
+            FROM Order o
+            WHERE o.createdAt BETWEEN :startDate AND :endDate
+            """)
+    long countOrdersBetween(
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate
+    );
+
     @Query(value = """
             SELECT DATE(created_at) as date, SUM(total) as revenue
             FROM orders
-            WHERE created_at >= :since
+            WHERE status = 'DELIVERED'
+            AND created_at BETWEEN :startDate AND :endDate
             GROUP BY DATE(created_at)
             ORDER BY DATE(created_at) ASC
             """, nativeQuery = true)
-    List<Object[]> getDailyRevenue(@Param("since") LocalDateTime since);
+    List<Object[]> getDailyRevenue(
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate
+    );
 
     @Query(value = """
             SELECT c.name, COUNT(oi.id) as count
             FROM categories c
             JOIN products p ON c.id = p.category_id
             JOIN order_items oi ON p.id = oi.product_id
+            JOIN orders o ON o.id = oi.order_id
+            WHERE o.status <> 'CANCELLED'
+            AND o.created_at BETWEEN :startDate AND :endDate
             GROUP BY c.name
             ORDER BY count DESC
             LIMIT 4
             """, nativeQuery = true)
-    List<Object[]> getTopCategorySales();
+    List<Object[]> getTopCategorySales(
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate
+    );
+
+    @Query(value = """
+            SELECT status, COUNT(*) as count
+            FROM orders
+            WHERE created_at BETWEEN :startDate AND :endDate
+            GROUP BY status
+            ORDER BY count DESC
+            """, nativeQuery = true)
+    List<Object[]> getOrderStatusSummary(
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate
+    );
+
+    @Query(value = """
+            SELECT p.name, p.image_url, SUM(oi.quantity) as quantity, SUM(oi.subtotal) as revenue
+            FROM order_items oi
+            JOIN orders o ON o.id = oi.order_id
+            JOIN products p ON p.id = oi.product_id
+            WHERE o.status <> 'CANCELLED'
+            AND o.created_at BETWEEN :startDate AND :endDate
+            GROUP BY p.id, p.name, p.image_url
+            ORDER BY quantity DESC, revenue DESC
+            LIMIT 5
+            """, nativeQuery = true)
+    List<Object[]> getTopSellingProducts(
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate
+    );
     @Query(value = """
             SELECT COUNT(*)
             FROM orders
@@ -81,4 +140,17 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
 
     @Query("SELECT DISTINCT o FROM Order o LEFT JOIN FETCH o.items ORDER BY o.createdAt DESC")
     List<Order> findAllWithItems();
+
+    @Query("""
+            SELECT DISTINCT o
+            FROM Order o
+            LEFT JOIN FETCH o.items
+            LEFT JOIN FETCH o.shippingAddress
+            WHERE o.createdAt BETWEEN :startDate AND :endDate
+            ORDER BY o.createdAt DESC
+            """)
+    List<Order> findReportOrdersBetween(
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate
+    );
 }

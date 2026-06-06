@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -90,6 +91,19 @@ public class CartController {
             Authentication authentication) {
         UUID userId = userService.getCurrentUserId(authentication);
         return ResponseEntity.ok(cartService.removeFromCart(userId.toString(), productId));
+    }
+
+    @DeleteMapping("/items")
+    @Operation(summary = "Remove selected cart items", description = "Remove multiple products from the current cart")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Items removed successfully"),
+        @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
+    public ResponseEntity<CartResponse> removeItemsFromCart(
+            @RequestParam List<UUID> productIds,
+            Authentication authentication) {
+        UUID userId = userService.getCurrentUserId(authentication);
+        return ResponseEntity.ok(cartService.removeItemsFromCart(userId.toString(), productIds));
     }
 
     @PutMapping("/items/{productId}")

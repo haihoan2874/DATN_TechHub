@@ -7,13 +7,14 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class DashboardStatsResponse {
+    private String range;
+    private String rangeLabel;
     private BigDecimal totalRevenue;
     private long totalOrders;
     private long totalCustomers;
@@ -21,6 +22,9 @@ public class DashboardStatsResponse {
     
     private List<RevenueByDay> weeklyRevenue;
     private List<CategorySale> topCategories;
+    private List<OrderStatusSummary> orderStatuses;
+    private List<ProductSale> topProducts;
+    private List<LowStockProduct> lowStockProducts;
     
     @Data
     @AllArgsConstructor
@@ -35,5 +39,29 @@ public class DashboardStatsResponse {
         private String name;
         private long value;
         private String color;
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class OrderStatusSummary {
+        private String status;
+        private long count;
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class ProductSale {
+        private String name;
+        private String imageUrl;
+        private long quantity;
+        private BigDecimal revenue;
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class LowStockProduct {
+        private String name;
+        private String imageUrl;
+        private int stockQuantity;
     }
 }

@@ -37,6 +37,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -232,6 +233,8 @@ public class OrderService {
 
         if (newStatus == OrderStatus.CANCELLED && currentStatus != OrderStatus.CANCELLED) {
             restoreCancelledOrderStock(order);
+        } else if (currentStatus == OrderStatus.PENDING && newStatus != OrderStatus.PENDING) {
+            confirmReservedOrderStock(order);
         }
 
         order.setStatus(newStatus);
@@ -246,18 +249,22 @@ public class OrderService {
         log.info("Starting checkout for user: {}", userId);
 
         CartResponse cart = validateCart(userId);
+        List<CartItemResponse> checkoutItems = resolveCheckoutItems(cart, request.getSelectedProductIds());
+        BigDecimal checkoutTotal = calculateCartItemsTotal(checkoutItems);
         CustomerAddress address = validateAddress(request.getShippingAddressId(), userId);
-        BigDecimal discountAmount = calculateDiscount(request.getVoucherCode(), cart.getTotalPrice());
-        BigDecimal finalTotal = cart.getTotalPrice().subtract(discountAmount);
+        BigDecimal discountAmount = calculateDiscount(request.getVoucherCode(), checkoutTotal);
+        BigDecimal finalTotal = checkoutTotal.subtract(discountAmount);
 
         Order savedOrder = createInitialOrder(userId, finalTotal, discountAmount, address, request);
-        List<OrderItem> orderItems = reserveInventoryAndCreateItems(savedOrder, cart.getItems());
+        List<OrderItem> orderItems = reserveInventoryAndCreateItems(savedOrder, checkoutItems);
         savedOrder.setItems(orderItems);
 
-        voucherService.consumeVoucher(request.getVoucherCode(), cart.getTotalPrice());
+        voucherService.consumeVoucher(request.getVoucherCode(), checkoutTotal);
         String paymentUrl = generatePaymentUrlIfVnPay(savedOrder, request.getPaymentMethod(), servletRequest);
 
-        cartService.clearCart(userId.toString());
+        cartService.removeItemsFromCart(userId.toString(), checkoutItems.stream()
+                .map(CartItemResponse::getProductId)
+                .toList());
         sendOrderEmail(authentication.getName(), savedOrder);
 
         log.info("Checkout successful for order: {}", savedOrder.getOrderNumber());
@@ -278,11 +285,15 @@ public class OrderService {
         order.setStatus(OrderStatus.CONFIRMED);
         orderRepository.save(order);
 
+        confirmReservedOrderStock(order);
+
+        log.info("Order {} confirmed and inventory updated", orderNumber);
+    }
+
+    private void confirmReservedOrderStock(Order order) {
         for (OrderItem item : order.getItems()) {
             inventoryService.confirmSale(item.getProductId(), item.getQuantity());
         }
-
-        log.info("Order {} confirmed and inventory updated", orderNumber);
     }
 
     private List<OrderItem> reserveInventoryAndCreateItems(Order order, List<CartItemResponse> cartItems) {
@@ -363,6 +374,29 @@ public class OrderService {
             throw new IllegalStateException("Cart is empty");
         }
         return cart;
+    }
+
+    private List<CartItemResponse> resolveCheckoutItems(CartResponse cart, List<UUID> selectedProductIds) {
+        if (selectedProductIds == null || selectedProductIds.isEmpty()) {
+            return cart.getItems();
+        }
+
+        Set<UUID> selectedIdSet = Set.copyOf(selectedProductIds);
+        List<CartItemResponse> checkoutItems = cart.getItems().stream()
+                .filter(item -> selectedIdSet.contains(item.getProductId()))
+                .toList();
+
+        if (checkoutItems.isEmpty()) {
+            throw new IllegalStateException("No cart items selected for checkout");
+        }
+
+        return checkoutItems;
+    }
+
+    private BigDecimal calculateCartItemsTotal(List<CartItemResponse> cartItems) {
+        return cartItems.stream()
+                .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     private CustomerAddress validateAddress(UUID addressId, UUID userId) {
