@@ -21,6 +21,15 @@ const cartService = {
     return axiosClient.delete(`/cart/remove/${productId}`);
   },
 
+  removeItems: (productIds) => {
+    return axiosClient.delete('/cart/items', {
+      params: { productIds },
+      paramsSerializer: {
+        indexes: null
+      }
+    });
+  },
+
   clearCart: () => {
     return axiosClient.delete('/cart/clear');
   }

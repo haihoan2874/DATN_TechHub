@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import toast from 'react-hot-toast';
 import { resolveApiAssetUrl } from '../../config/api';
+import { formatCurrency } from '../../utils/formatters';
 
 const ProductCard = ({ product }) => {
   const { name, price, imageUrl, slug, stockQuantity } = product;
@@ -36,6 +37,8 @@ const ProductCard = ({ product }) => {
         <img 
           src={resolveApiAssetUrl(imageUrl)}
           alt={name}
+          loading="lazy"
+          decoding="async"
           className="h-full w-full object-contain"
         />
         {stockQuantity <= 5 && stockQuantity > 0 && (
@@ -67,11 +70,8 @@ const ProductCard = ({ product }) => {
 
 	        <div className="mt-auto flex items-end justify-between gap-2 pt-2 sm:pt-3">
 	          <div className="min-w-0 flex flex-col">
-            <span className="text-[11px] font-medium text-slate-400 line-through sm:text-xs">
-              {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price * 1.2)}
-            </span>
 	            <span className="text-sm font-bold text-blue-700 sm:text-lg">
-              {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price)}
+              {formatCurrency(price)}
             </span>
           </div>
 

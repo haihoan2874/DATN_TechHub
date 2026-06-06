@@ -69,18 +69,20 @@ const adminService = {
   },
 
   // Dashboard & System
-  getDashboardStats: () => {
-    return axiosClient.get('/admin/dashboard/stats');
+  getDashboardStats: (params) => {
+    return axiosClient.get('/admin/dashboard/stats', { params });
+  },
+  exportOrderReport: (params) => {
+    return axiosClient.get('/admin/reports/orders/export', {
+      params,
+      responseType: 'blob'
+    });
   },
   uploadFile: (file, folder = 'products') => {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('folder', folder);
-    return axiosClient.post('/admin/files/upload', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
+    return axiosClient.post('/admin/files/upload', formData);
   },
 
   // Reviews

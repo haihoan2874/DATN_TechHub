@@ -58,11 +58,12 @@ const ImageUpload = ({ value, onChange, label, folder = 'products' }) => {
       <div className="relative group">
         {value ? (
           <div className="group relative aspect-video overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 lg:aspect-[21/9]">
-            <img src={getImageUrl(value)} alt="Preview" className="w-full h-full object-contain" />
+            <img src={getImageUrl(value)} alt="Ảnh đã chọn" loading="lazy" decoding="async" className="w-full h-full object-contain" />
             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
               <button 
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
+                aria-label="Thay ảnh"
                 className="p-3 bg-white rounded-xl text-black hover:bg-blue-600 hover:text-white transition-all shadow-xl"
               >
                 <Upload size={20} />
@@ -70,6 +71,7 @@ const ImageUpload = ({ value, onChange, label, folder = 'products' }) => {
               <button 
                 type="button"
                 onClick={removeImage}
+                aria-label="Xóa ảnh"
                 className="p-3 bg-white rounded-xl text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-xl"
               >
                 <X size={20} />
@@ -80,6 +82,7 @@ const ImageUpload = ({ value, onChange, label, folder = 'products' }) => {
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
+            aria-label="Tải ảnh lên"
             className="group flex aspect-video w-full flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 transition-all hover:border-blue-500 hover:bg-blue-50 lg:aspect-[21/9]"
           >
             <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-slate-400 group-hover:text-blue-500 shadow-sm transition-colors">
@@ -87,7 +90,7 @@ const ImageUpload = ({ value, onChange, label, folder = 'products' }) => {
             </div>
             <div className="text-center">
               <p className="text-xs font-black uppercase tracking-widest text-slate-900">Tải ảnh lên</p>
-              <p className="text-[10px] font-medium text-slate-400 mt-1">Hỗ trợ JPG, PNG, WEBP (Max 5MB)</p>
+              <p className="text-[10px] font-medium text-slate-400 mt-1">Hỗ trợ JPG, PNG, WEBP, tối đa 5MB</p>
             </div>
           </button>
         )}

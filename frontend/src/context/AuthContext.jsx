@@ -1,7 +1,28 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useCallback, useContext, useState, useEffect } from 'react';
 import authService from '../services/authService';
 
 const AuthContext = createContext();
+
+const normalizeAuthMessage = (message, fallback) => {
+  const normalized = String(message || '').trim();
+  if (!normalized) return fallback;
+
+  const dictionary = {
+    'Incorrect username or password': 'Tên đăng nhập hoặc mật khẩu không đúng.',
+    'User not found': 'Không tìm thấy tài khoản.',
+    'Bad credentials': 'Tên đăng nhập hoặc mật khẩu không đúng.',
+    'Username already exists': 'Tên đăng nhập đã được sử dụng.',
+    'Email already exists': 'Email đã được sử dụng.',
+    'Username is required': 'Vui lòng nhập tên đăng nhập.',
+    'Email is required': 'Vui lòng nhập email.',
+    'Email should be valid': 'Email không đúng định dạng.',
+    'Password is required': 'Vui lòng nhập mật khẩu.',
+    'Password must be at least 8 characters long': 'Mật khẩu phải có ít nhất 8 ký tự.',
+    'OAuth2 authentication failed': 'Đăng nhập Google thất bại.'
+  };
+
+  return dictionary[normalized] || fallback;
+};
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -36,7 +57,10 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       return { 
         success: false, 
-        message: error.response?.data?.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.' 
+        message: normalizeAuthMessage(
+          error.response?.data?.message,
+          'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.'
+        )
       };
     }
   };
@@ -48,7 +72,10 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       return { 
         success: false, 
-        message: error.response?.data?.message || 'Đăng ký thất bại. Vui lòng thử lại.' 
+        message: normalizeAuthMessage(
+          error.response?.data?.message,
+          'Đăng ký thất bại. Vui lòng thử lại.'
+        )
       };
     }
   };
@@ -64,11 +91,13 @@ export const AuthProvider = ({ children }) => {
     setUser(userData);
   };
 
-  const updateUser = (newUserData) => {
-    const updatedUser = { ...user, ...newUserData };
-    setUser(updatedUser);
-    localStorage.setItem('user', JSON.stringify(updatedUser));
-  };
+  const updateUser = useCallback((newUserData) => {
+    setUser((currentUser) => {
+      const updatedUser = { ...(currentUser || {}), ...newUserData };
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      return updatedUser;
+    });
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, setUser, loading, login, register, logout, loginWithToken, updateUser }}>

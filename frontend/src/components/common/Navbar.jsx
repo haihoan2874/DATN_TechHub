@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, User, Search, Menu, X, ChevronDown, LogOut, Settings, Loader2, Watch, Headphones, Tag, Activity } from 'lucide-react';
+import { ShoppingCart, User, Search, Menu, X, ChevronDown, LogOut, Settings, Loader2 } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
@@ -9,6 +9,13 @@ import Button from '../ui/Button';
 import Input from '../ui/Input';
 import ConfirmModal from '../ui/ConfirmModal';
 import { resolveApiAssetUrl } from '../../config/api';
+import { formatCurrency } from '../../utils/formatters';
+import { getCategoryIconComponent } from '../../utils/categoryIcons';
+
+const getRoleLabel = (role) => {
+  if (role === 'ROLE_ADMIN') return 'Quản trị viên';
+  return 'Khách hàng';
+};
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -22,11 +29,33 @@ const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchCategories = async () => {
+      try {
+        const response = await productService.getCategories();
+        if (isMounted) {
+          setCategories(response?.contents || response || []);
+        }
+      } catch (error) {
+        console.error('Failed to fetch navbar categories:', error);
+      }
+    };
+
+    fetchCategories();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // Clear UI states on logout
@@ -62,6 +91,17 @@ const Navbar = () => {
     navigate('/', { replace: true });
   };
 
+  const handleSearchSubmit = (event) => {
+    event.preventDefault();
+    const keyword = searchQuery.trim();
+    if (!keyword) return;
+
+    setSearchResults([]);
+    setIsMobileMenuOpen(false);
+    setIsUserMenuOpen(false);
+    navigate(`/shop?search=${encodeURIComponent(keyword)}`);
+  };
+
   // Real-time search logic with debounce
   useEffect(() => {
     const delayDebounceFn = setTimeout(async () => {
@@ -72,7 +112,7 @@ const Navbar = () => {
             name: searchQuery,
             pageSize: 6
           });
-          setSearchResults(response.data?.content || response.content || []);
+          setSearchResults(response.contents || response.data?.contents || response.content || []);
         } catch (error) {
           console.error('Search error:', error);
         } finally {
@@ -99,7 +139,7 @@ const Navbar = () => {
           {/* 1. Logo & Brand */}
           <Link to="/" className="flex items-center gap-2.5 group shrink-0">
             <div className="h-8 w-8 overflow-hidden transition-transform duration-300 group-hover:scale-105 sm:h-9 sm:w-9">
-              <img src="/logo_final.png" alt="S-Life Logo" className="w-full h-full object-contain" />
+              <img src="/logo_final.png" alt="S-Life Logo" className="w-full h-full object-contain" fetchPriority="high" />
             </div>
             <span className="text-xl font-black tracking-tight text-slate-900 transition-colors duration-300 group-hover:text-blue-600 sm:text-2xl">S-LIFE</span>
           </Link>
@@ -116,40 +156,18 @@ const Navbar = () => {
               </NavLink>
               
               {/* Mega Menu Content */}
-              <div className="invisible absolute left-1/2 top-full z-50 w-[720px] -translate-x-1/2 pt-4 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
+              <div className="invisible absolute left-1/2 top-full z-50 w-[680px] -translate-x-1/2 pt-4 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
                 <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-xl shadow-slate-900/10">
-                  <div className="grid grid-cols-2 gap-2">
-                  <MegaMenuColumn 
-                    icon={<Watch size={24} className="text-blue-600" />}
-                    title="Đồng hồ thể thao"
-                    slug="dong-ho-the-thao"
-                    description="GPS, luyện tập, theo dõi sức khỏe 24/7."
-                    image="/assets/categories/sports_watch.png"
-                  />
-
-                  <MegaMenuColumn 
-                    icon={<Headphones size={24} className="text-blue-600" />}
-                    title="Tai nghe Bluetooth"
-                    slug="tai-nghe-bluetooth"
-                    description="Âm thanh gọn nhẹ cho làm việc và vận động."
-                    image="/assets/categories/earbuds.png"
-                  />
-
-                  <MegaMenuColumn 
-                    icon={<Activity size={24} className="text-blue-600" />}
-                    title="Theo dõi sức khỏe"
-                    slug="vong-theo-doi-suc-khoe"
-                    description="Vòng đeo tay, nhịp tim, giấc ngủ, SpO2."
-                    image="/assets/categories/health_band.png"
-                  />
-
-                  <MegaMenuColumn 
-                    icon={<Tag size={24} className="text-blue-600" />}
-                    title="Phụ kiện cao cấp"
-                    slug="phu-kien-dong-ho"
-                    description="Dây đeo, bảo vệ màn hình và dock sạc."
-                    image="/assets/categories/straps.png"
-                  />
+                  <div className="grid max-h-[430px] grid-cols-2 gap-2 overflow-y-auto pr-1">
+                    {categories.map((category) => (
+                      <MegaMenuColumn
+                        key={category.id}
+                        icon={getCategoryIcon(category)}
+                        title={category.name}
+                        slug={category.slug || category.id}
+                        description={category.description || `Khám phá nhóm ${category.name} tại S-LIFE.`}
+                      />
+                    ))}
                   </div>
                   <div className="mt-2 border-t border-slate-100 px-2 pt-3">
                     <Link
@@ -167,13 +185,15 @@ const Navbar = () => {
           </div>
 
           {/* 3. Search Pill (Compact) */}
-          <div className="hidden lg:flex flex-grow max-w-md relative">
+          <form onSubmit={handleSearchSubmit} className="relative hidden max-w-md flex-grow lg:flex">
             <Input
               icon={Search}
               placeholder="Tìm sản phẩm…"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full"
+              name="navbarSearch"
+              autoComplete="off"
             />
             {isSearching && (
               <div className="absolute right-4 top-1/2 -translate-y-1/2">
@@ -197,12 +217,18 @@ const Navbar = () => {
                           className="flex items-center gap-4 p-2 rounded-2xl hover:bg-slate-50 transition-all group/item"
                         >
                           <div className="w-12 h-12 rounded-xl bg-white border border-slate-50 p-1 flex-shrink-0">
-                            <img src={product.imageUrl || '/logo_final.png'} alt={product.name} className="w-full h-full object-contain" />
+                            <img
+                              src={resolveApiAssetUrl(product.imageUrl)}
+                              alt={product.name}
+                              loading="lazy"
+                              decoding="async"
+                              className="w-full h-full object-contain"
+                            />
                           </div>
                           <div className="min-w-0">
                             <h4 className="text-xs font-bold text-slate-900 truncate group-hover/item:text-blue-600">{product.name}</h4>
                             <p className="text-xs font-black text-blue-600 mt-0.5">
-                              {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}
+                              {formatCurrency(product.price)}
                             </p>
                           </div>
                         </Link>
@@ -216,7 +242,7 @@ const Navbar = () => {
                 </motion.div>
               )}
             </AnimatePresence>
-          </div>
+          </form>
 
           {/* 4. Action Buttons */}
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
@@ -243,7 +269,7 @@ const Navbar = () => {
                 >
                   <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center text-white font-black text-xs overflow-hidden">
                     {user?.imageUrl ? (
-                      <img src={resolveApiAssetUrl(user.imageUrl)} alt="Avatar" className="w-full h-full object-cover" />
+                      <img src={resolveApiAssetUrl(user.imageUrl)} alt="Avatar" className="w-full h-full object-cover" loading="lazy" decoding="async" />
                     ) : (
                       user?.firstName?.charAt(0) || user?.username?.charAt(0) || 'U'
                     )}
@@ -262,7 +288,7 @@ const Navbar = () => {
                     >
                       <div className="px-5 py-4 border-b border-slate-50 mb-1">
                         <p className="text-sm font-black text-slate-900 truncate">{user?.firstName} {user?.lastName}</p>
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">{user?.role === 'ROLE_ADMIN' ? 'Administrator' : 'Customer'}</p>
+                        <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-slate-400">{getRoleLabel(user?.role)}</p>
                       </div>
                       <div className="space-y-1">
                         {user.role === 'ROLE_ADMIN' && (
@@ -327,7 +353,7 @@ const Navbar = () => {
 	            animate={{ y: 0, opacity: 1 }}
 	            exit={{ y: 24, opacity: 0 }}
 	            transition={{ duration: 0.2, ease: 'easeOut' }}
-	            className="fixed inset-x-3 top-3 bottom-3 z-[120] flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl xl:hidden"
+	            className="fixed left-3 right-3 top-3 z-[120] flex max-h-[calc(100dvh-24px)] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-950/20 sm:left-auto sm:right-4 sm:top-4 sm:w-[min(520px,calc(100vw-32px))] sm:max-h-[calc(100dvh-32px)] xl:hidden"
 	            role="dialog"
 	            aria-modal="true"
 	            aria-label="Menu điều hướng"
@@ -347,8 +373,8 @@ const Navbar = () => {
 	              </button>
 	            </div>
 
-	            <div className="flex-1 overflow-y-auto p-5">
-	              <div className="mb-5">
+	            <div className="overflow-y-auto p-5">
+	              <form onSubmit={handleSearchSubmit} className="mb-5">
 	                <Input
 	                  icon={Search}
 	                  value={searchQuery}
@@ -357,7 +383,7 @@ const Navbar = () => {
 	                  name="mobileSearch"
 	                  autoComplete="off"
 	                />
-	              </div>
+	              </form>
 
 	              <div className="space-y-2">
 	                <MobileNavLink to="/" active={location.pathname === '/'} onClick={() => setIsMobileMenuOpen(false)}>Trang chủ</MobileNavLink>
@@ -442,15 +468,15 @@ const MenuOption = ({ to, icon, label, onClick }) => (
   </Link>
 );
 
-const MegaMenuColumn = ({ icon, title, slug, description, image }) => (
+const MegaMenuColumn = ({ icon, title, slug, description }) => (
   <Link
     to={`/shop?category=${slug}`}
-    className="group/menu grid min-h-[130px] grid-cols-[1fr_92px] gap-3 rounded-xl border border-transparent bg-slate-50 p-4 transition-all hover:border-blue-200 hover:bg-white hover:shadow-sm"
+    className="group/menu flex min-h-[112px] gap-3 rounded-xl border border-transparent bg-slate-50 p-4 transition-all hover:border-blue-200 hover:bg-white hover:shadow-sm"
   >
-    <div className="min-w-0">
-      <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-sm transition-colors group-hover/menu:bg-blue-50">
-        {icon}
-      </div>
+    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-blue-700 shadow-sm transition-colors group-hover/menu:bg-blue-50">
+      {icon}
+    </div>
+    <div className="min-w-0 flex-1">
       <h4 className="text-sm font-black uppercase leading-snug tracking-tight text-slate-950 transition-colors group-hover/menu:text-blue-700">
         {title}
       </h4>
@@ -458,10 +484,12 @@ const MegaMenuColumn = ({ icon, title, slug, description, image }) => (
         {description}
       </p>
     </div>
-    <div className="flex items-center justify-center rounded-xl bg-white p-2">
-      <img src={image} alt={title} className="h-16 w-16 object-contain transition-transform group-hover/menu:scale-105" />
-    </div>
   </Link>
 );
+
+const getCategoryIcon = (category) => {
+  const IconComponent = getCategoryIconComponent(category);
+  return <IconComponent size={20} />;
+};
 
 export default Navbar;

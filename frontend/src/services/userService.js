@@ -13,11 +13,7 @@ const userService = {
   uploadAvatar: (file) => {
     const formData = new FormData();
     formData.append('file', file);
-    return axiosClient.post('/users/avatar', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
+    return axiosClient.post('/users/avatar', formData);
   }
 };
 
