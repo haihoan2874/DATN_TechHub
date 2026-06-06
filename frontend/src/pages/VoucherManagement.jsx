@@ -14,6 +14,7 @@ import MetricCard from '../components/data/MetricCard';
 import Pagination from '../components/data/Pagination';
 import EmptyState from '../components/feedback/EmptyState';
 import StatusBadge from '../components/status/StatusBadge';
+import { formatCurrency, formatDate } from '../utils/formatters';
 
 const PAGE_SIZE = 8;
 
@@ -37,6 +38,18 @@ const emptyForm = {
   isActive: true
 };
 
+const isExpired = (voucher) => voucher.expiresAt && new Date(voucher.expiresAt) < new Date();
+
+const getVoucherStatus = (voucher) => {
+  if (!voucher.isActive) {
+    return { label: 'Tạm tắt', tone: 'slate', icon: XCircle };
+  }
+  if (isExpired(voucher)) {
+    return { label: 'Hết hạn', tone: 'red', icon: Clock };
+  }
+  return { label: 'Hoạt động', tone: 'green', icon: CheckCircle2 };
+};
+
 const VoucherManagement = () => {
   const [vouchers, setVouchers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -47,6 +60,7 @@ const VoucherManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [currentPage, setCurrentPage] = useState(1);
+  const [formErrors, setFormErrors] = useState({});
 
   useEffect(() => {
     fetchVouchers();
@@ -64,31 +78,16 @@ const VoucherManagement = () => {
     }
   };
 
-  const formatPrice = (value) => {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(value || 0));
-  };
-
   const formatDateTimeLocal = (value) => {
     if (!value) return '';
     const date = new Date(value);
     return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
   };
 
-  const isExpired = (voucher) => voucher.expiresAt && new Date(voucher.expiresAt) < new Date();
-
-  const getVoucherStatus = (voucher) => {
-    if (!voucher.isActive) {
-      return { label: 'Tạm tắt', tone: 'slate', icon: XCircle };
-    }
-    if (isExpired(voucher)) {
-      return { label: 'Hết hạn', tone: 'red', icon: Clock };
-    }
-    return { label: 'Hoạt động', tone: 'green', icon: CheckCircle2 };
-  };
-
   const openCreateModal = () => {
     setSelectedVoucher(null);
     setForm(emptyForm);
+    setFormErrors({});
     setShowModal(true);
   };
 
@@ -103,11 +102,15 @@ const VoucherManagement = () => {
       expiresAt: formatDateTimeLocal(voucher.expiresAt),
       isActive: voucher.isActive
     });
+    setFormErrors({});
     setShowModal(true);
   };
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
+    if (formErrors[name]) {
+      setFormErrors((prev) => ({ ...prev, [name]: '' }));
+    }
     setForm((prev) => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
@@ -126,6 +129,12 @@ const VoucherManagement = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const validationErrors = validateVoucherForm(form);
+    setFormErrors(validationErrors);
+    if (Object.values(validationErrors).some(Boolean)) {
+      return;
+    }
+
     try {
       const payload = buildPayload();
       if (selectedVoucher) {
@@ -198,8 +207,8 @@ const VoucherManagement = () => {
       />
 
       <Modal isOpen={showModal} onClose={() => setShowModal(false)} title={selectedVoucher ? 'Cập nhật voucher' : 'Tạo voucher'}>
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <Input label="Mã voucher" name="code" value={form.code} onChange={handleChange} required />
+        <form onSubmit={handleSubmit} noValidate className="space-y-5">
+          <Input label="Mã voucher" name="code" value={form.code} onChange={handleChange} error={formErrors.code} />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <label className="block">
               <span className="form-label mb-2 block">Loại giảm</span>
@@ -213,11 +222,11 @@ const VoucherManagement = () => {
                 <option value="AMOUNT">Số tiền</option>
               </select>
             </label>
-            <Input label="Giá trị giảm" type="number" name="discountValue" min="1" value={form.discountValue} onChange={handleChange} required />
-            <Input label="Đơn tối thiểu" type="number" name="minOrderAmount" min="0" value={form.minOrderAmount} onChange={handleChange} required />
-            <Input label="Số lượt dùng" type="number" name="usageLimit" min="0" value={form.usageLimit} onChange={handleChange} />
+            <Input label="Giá trị giảm" type="number" name="discountValue" min="1" value={form.discountValue} onChange={handleChange} error={formErrors.discountValue} />
+            <Input label="Đơn tối thiểu" type="number" name="minOrderAmount" min="0" value={form.minOrderAmount} onChange={handleChange} error={formErrors.minOrderAmount} />
+            <Input label="Số lượt dùng" type="number" name="usageLimit" min="0" value={form.usageLimit} onChange={handleChange} error={formErrors.usageLimit} />
             <div className="md:col-span-2">
-              <Input label="Ngày hết hạn" type="datetime-local" name="expiresAt" value={form.expiresAt} onChange={handleChange} required />
+              <Input label="Ngày hết hạn" type="datetime-local" name="expiresAt" value={form.expiresAt} onChange={handleChange} error={formErrors.expiresAt} />
             </div>
           </div>
           <label className="flex items-center gap-3 text-sm font-bold text-slate-600">
@@ -274,7 +283,7 @@ const VoucherManagement = () => {
         <span className="whitespace-nowrap rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-600">
           {filteredVouchers.length} mã
         </span>
-        <button type="button" onClick={fetchVouchers} className="rounded-xl border border-slate-300 bg-white p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900">
+        <button type="button" onClick={fetchVouchers} aria-label="Tải lại danh sách mã giảm giá" className="rounded-xl border border-slate-300 bg-white p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900">
           <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
         </button>
       </Toolbar>
@@ -304,20 +313,20 @@ const VoucherManagement = () => {
                 <tr key={voucher.id} className="hover:bg-slate-50">
                   <td className="px-5 py-4 font-mono text-sm font-bold text-slate-950">{voucher.code}</td>
                   <td className="px-5 py-4 text-sm font-bold text-blue-700">
-                    {voucher.discountType === 'PERCENT' ? `${voucher.discountValue}%` : formatPrice(voucher.discountValue)}
+	                    {voucher.discountType === 'PERCENT' ? `${voucher.discountValue}%` : formatCurrency(voucher.discountValue)}
                   </td>
-                  <td className="px-5 py-4 text-sm font-medium text-slate-500">Từ {formatPrice(voucher.minOrderAmount)}</td>
+	                  <td className="px-5 py-4 text-sm font-medium text-slate-500">Từ {formatCurrency(voucher.minOrderAmount)}</td>
                   <td className="px-5 py-4 text-sm font-semibold text-slate-700">{voucher.usedCount}/{voucher.usageLimit || '∞'}</td>
-                  <td className="px-5 py-4 text-sm font-medium text-slate-500">{new Date(voucher.expiresAt).toLocaleDateString('vi-VN')}</td>
+	                  <td className="px-5 py-4 text-sm font-medium text-slate-500">{formatDate(voucher.expiresAt)}</td>
                   <td className="px-5 py-4">
                     <StatusBadge tone={status.tone} icon={status.icon}>{status.label}</StatusBadge>
                   </td>
                   <td className="px-5 py-4">
                     <div className="flex items-center justify-end gap-2">
-                      <button onClick={() => openEditModal(voucher)} className="rounded-lg p-2 text-slate-500 hover:bg-blue-50 hover:text-blue-700">
+	                      <button type="button" onClick={() => openEditModal(voucher)} aria-label={`Sửa mã giảm giá ${voucher.code}`} className="rounded-lg p-2 text-slate-500 hover:bg-blue-50 hover:text-blue-700">
                         <Pencil size={16} />
                       </button>
-                      <button onClick={() => setDeleteTarget(voucher)} className="rounded-lg p-2 text-slate-500 hover:bg-rose-50 hover:text-rose-700">
+	                      <button type="button" onClick={() => setDeleteTarget(voucher)} aria-label={`Xóa mã giảm giá ${voucher.code}`} className="rounded-lg p-2 text-slate-500 hover:bg-rose-50 hover:text-rose-700">
                         <Trash2 size={16} />
                       </button>
                     </div>
@@ -328,6 +337,42 @@ const VoucherManagement = () => {
       </DataTable>
     </PageShell>
   );
+};
+
+const validateVoucherForm = (data) => {
+  const errors = {};
+  const code = data.code?.trim();
+  const discountValue = Number(data.discountValue);
+  const minOrderAmount = Number(data.minOrderAmount || 0);
+  const usageLimit = data.usageLimit === '' ? null : Number(data.usageLimit);
+
+  if (!code) {
+    errors.code = 'Vui lòng nhập mã voucher.';
+  } else if (!/^[A-Z0-9_-]{3,30}$/i.test(code)) {
+    errors.code = 'Mã voucher chỉ gồm chữ, số, gạch ngang hoặc gạch dưới, từ 3 đến 30 ký tự.';
+  }
+
+  if (!data.discountValue) {
+    errors.discountValue = 'Vui lòng nhập giá trị giảm.';
+  } else if (!Number.isFinite(discountValue) || discountValue <= 0) {
+    errors.discountValue = 'Giá trị giảm phải lớn hơn 0.';
+  } else if (data.discountType === 'PERCENT' && discountValue > 100) {
+    errors.discountValue = 'Giảm theo phần trăm không được vượt quá 100%.';
+  }
+
+  if (!Number.isFinite(minOrderAmount) || minOrderAmount < 0) {
+    errors.minOrderAmount = 'Đơn tối thiểu không được âm.';
+  }
+
+  if (usageLimit !== null && (!Number.isInteger(usageLimit) || usageLimit < 0)) {
+    errors.usageLimit = 'Số lượt dùng phải là số nguyên không âm.';
+  }
+
+  if (!data.expiresAt) {
+    errors.expiresAt = 'Vui lòng chọn ngày hết hạn.';
+  }
+
+  return errors;
 };
 
 export default VoucherManagement;

@@ -36,6 +36,7 @@ const BrandManagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [brandToDelete, setBrandToDelete] = useState(null);
+  const [formErrors, setFormErrors] = useState({});
   
   const [formData, setFormData] = useState({
     name: '',
@@ -73,6 +74,7 @@ const BrandManagement = () => {
       setCurrentBrand(null);
       setFormData({ name: '', slug: '', description: '', logoUrl: '' });
     }
+    setFormErrors({});
     setIsModalOpen(true);
   };
 
@@ -90,6 +92,9 @@ const BrandManagement = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    if (formErrors[name]) {
+      setFormErrors((prev) => ({ ...prev, [name]: '' }));
+    }
     if (name === 'name' && !currentBrand) {
       setFormData(prev => ({ 
         ...prev, 
@@ -103,6 +108,12 @@ const BrandManagement = () => {
 
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
+    const validationErrors = validateBrandForm(formData);
+    setFormErrors(validationErrors);
+    if (Object.values(validationErrors).some(Boolean)) {
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       if (currentBrand) {
@@ -187,7 +198,7 @@ const BrandManagement = () => {
         <span className="whitespace-nowrap rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-600">
           {filteredBrands.length} thương hiệu
         </span>
-        <button onClick={fetchBrands} className="rounded-xl border border-slate-300 bg-white p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900">
+        <button type="button" onClick={fetchBrands} aria-label="Tải lại danh sách thương hiệu" className="rounded-xl border border-slate-300 bg-white p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900">
           <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
         </button>
       </Toolbar>
@@ -220,7 +231,7 @@ const BrandManagement = () => {
                       <div className="flex items-center gap-4">
                         <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-white p-2">
                           {brand.logoUrl ? (
-                            <img src={resolveApiAssetUrl(brand.logoUrl)} alt={brand.name} className="w-full h-full object-contain" />
+                            <img src={resolveApiAssetUrl(brand.logoUrl)} alt={brand.name} loading="lazy" decoding="async" className="w-full h-full object-contain" />
                           ) : (
                             <Building2 size={24} className="text-slate-200" />
                           )}
@@ -235,10 +246,10 @@ const BrandManagement = () => {
                     </td>
                     <td className="px-5 py-4">
                       <div className="flex justify-end gap-2">
-                        <button onClick={() => handleOpenModal(brand)} className="rounded-lg p-2 text-slate-500 hover:bg-blue-50 hover:text-blue-700">
+                        <button type="button" onClick={() => handleOpenModal(brand)} aria-label={`Sửa thương hiệu ${brand.name}`} className="rounded-lg p-2 text-slate-500 hover:bg-blue-50 hover:text-blue-700">
                           <Edit2 size={16} />
                         </button>
-                        <button onClick={() => { setBrandToDelete(brand.id); setIsDeleteConfirmOpen(true); }} className="rounded-lg p-2 text-slate-500 hover:bg-rose-50 hover:text-rose-700">
+                        <button type="button" onClick={() => { setBrandToDelete(brand.id); setIsDeleteConfirmOpen(true); }} aria-label={`Xóa thương hiệu ${brand.name}`} className="rounded-lg p-2 text-slate-500 hover:bg-rose-50 hover:text-rose-700">
                           <Trash2 size={16} />
                         </button>
                       </div>
@@ -260,27 +271,27 @@ const BrandManagement = () => {
           </>
         }
       >
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} noValidate className="space-y-6">
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <div className="space-y-6">
               <Input 
                 label="Tên thương hiệu"
                 name="name"
-                required
                 value={formData.name}
                 onChange={handleInputChange}
                 placeholder="VD: Samsung, Omron..."
                 icon={Building2}
+                error={formErrors.name}
               />
               <Input 
                 label="Đường dẫn tĩnh (Slug)"
                 name="slug"
-                required
                 value={formData.slug}
                 onChange={handleInputChange}
                 placeholder="vd: samsung-galaxy"
                 icon={Link}
                 className="font-mono text-[11px]"
+                error={formErrors.slug}
               />
               <div className="space-y-3">
                 <label className="form-label-strong">Mô tả đối tác</label>
@@ -308,6 +319,19 @@ const BrandManagement = () => {
       </Modal>
     </PageShell>
   );
+};
+
+const validateBrandForm = (data) => {
+  const errors = {};
+  if (!data.name?.trim()) {
+    errors.name = 'Vui lòng nhập tên thương hiệu.';
+  }
+  if (!data.slug?.trim()) {
+    errors.slug = 'Vui lòng nhập đường dẫn tĩnh.';
+  } else if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(data.slug.trim())) {
+    errors.slug = 'Slug chỉ gồm chữ thường, số và dấu gạch ngang.';
+  }
+  return errors;
 };
 
 export default BrandManagement;

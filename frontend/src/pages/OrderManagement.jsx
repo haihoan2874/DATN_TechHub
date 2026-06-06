@@ -216,7 +216,7 @@ const OrderManagement = () => {
         <span className="whitespace-nowrap rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-600">
           {filteredOrders.length} đơn hàng
         </span>
-        <button onClick={fetchOrders} className="rounded-xl border border-slate-300 bg-white p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900">
+        <button type="button" onClick={fetchOrders} aria-label="Tải lại danh sách đơn hàng" className="rounded-xl border border-slate-300 bg-white p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900">
           <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
         </button>
       </Toolbar>

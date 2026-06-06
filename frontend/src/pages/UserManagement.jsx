@@ -18,8 +18,15 @@ import MetricCard from '../components/data/MetricCard';
 import Pagination from '../components/data/Pagination';
 import EmptyState from '../components/feedback/EmptyState';
 import StatusBadge from '../components/status/StatusBadge';
+import { formatDate } from '../utils/formatters';
 
 const PAGE_SIZE = 8;
+
+const getRoleLabel = (role) => {
+  if (role === 'ROLE_ADMIN') return 'Quản trị viên';
+  if (role === 'ROLE_USER') return 'Khách hàng';
+  return 'Không xác định';
+};
 
 const tableColumns = [
   { key: 'user', label: 'Người dùng' },
@@ -166,14 +173,14 @@ const UserManagement = () => {
                       : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
                   }`}
                 >
-                  {role === 'ALL' ? 'Tất cả' : role === 'ROLE_ADMIN' ? 'Admin' : 'User'}
+                  {role === 'ALL' ? 'Tất cả' : getRoleLabel(role)}
                 </button>
               ))}
         </div>
         <span className="whitespace-nowrap rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-600">
           {filteredUsers.length} người dùng
         </span>
-        <button onClick={fetchUsers} className="rounded-xl border border-slate-300 bg-white p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900">
+        <button type="button" onClick={fetchUsers} aria-label="Tải lại danh sách người dùng" className="rounded-xl border border-slate-300 bg-white p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900">
           <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
         </button>
       </Toolbar>
@@ -206,7 +213,7 @@ const UserManagement = () => {
                       <div className="flex items-center gap-4">
                         <div className="h-11 w-11 flex-shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
                           {user.imageUrl ? (
-                            <img src={user.imageUrl} alt={user.username} className="h-full w-full object-cover" />
+                            <img src={user.imageUrl} alt={user.username} loading="lazy" decoding="async" className="h-full w-full object-cover" />
                           ) : (
                             <div className="flex h-full w-full items-center justify-center bg-slate-900 text-sm font-bold text-white">
                               {user.username?.charAt(0).toUpperCase()}
@@ -235,7 +242,7 @@ const UserManagement = () => {
                     </td>
                     <td className="px-5 py-4">
                       <StatusBadge tone={user.role === 'ROLE_ADMIN' ? 'blue' : 'slate'} icon={user.role === 'ROLE_ADMIN' ? Shield : Users}>
-                        {user.role === 'ROLE_ADMIN' ? 'Admin' : 'Customer'}
+                        {getRoleLabel(user.role)}
                       </StatusBadge>
                     </td>
                     <td className="px-5 py-4">
@@ -244,28 +251,34 @@ const UserManagement = () => {
                       </StatusBadge>
                     </td>
                     <td className="px-5 py-4 text-sm font-medium text-slate-500">
-                      {user.createdAt ? new Date(user.createdAt).toLocaleDateString('vi-VN') : '-'}
+                      {formatDate(user.createdAt)}
                     </td>
                     <td className="px-5 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        <button 
+                        <button
+                          type="button"
                           onClick={() => { setSelectedUser(user); setShowRoleModal(true); }}
                           className="rounded-lg p-2 text-slate-500 hover:bg-indigo-50 hover:text-indigo-700"
                           title="Đổi vai trò"
+                          aria-label={`Đổi vai trò ${user.username}`}
                         >
                           <UserCog size={16} />
                         </button>
-                        <button 
+                        <button
+                          type="button"
                           onClick={() => { setSelectedUser(user); setShowStatusModal(true); }}
                           className={`rounded-lg p-2 text-slate-500 ${user.isActive ? 'hover:bg-rose-50 hover:text-rose-700' : 'hover:bg-emerald-50 hover:text-emerald-700'}`}
                           title={user.isActive ? 'Khóa tài khoản' : 'Mở khóa tài khoản'}
+                          aria-label={`${user.isActive ? 'Khóa' : 'Mở khóa'} tài khoản ${user.username}`}
                         >
                           {user.isActive ? <ShieldOff size={16} /> : <Shield size={16} />}
                         </button>
-                        <button 
+                        <button
+                          type="button"
                           onClick={() => { setSelectedUser(user); setShowDeleteModal(true); }}
                           className="rounded-lg p-2 text-slate-500 hover:bg-rose-50 hover:text-rose-700"
                           title="Xóa người dùng"
+                          aria-label={`Xóa người dùng ${user.username}`}
                         >
                           <Trash2 size={16} />
                         </button>

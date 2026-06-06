@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import adminService from '../services/adminService';
 import { 
   Plus, Search, RefreshCw,
-  Info, List, Layout, Settings, Save, Package
+  Info, List, Layout, Settings, Save, Package, CheckCircle2, AlertCircle
 } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
@@ -17,7 +17,9 @@ import ImageUpload from '../components/admin/ImageUpload';
 import ProductTable from './ProductManagement/components/ProductTable';
 import SpecsEditor from './ProductManagement/components/SpecsEditor';
 import FeaturesEditor from './ProductManagement/components/FeaturesEditor';
+import ProductGalleryEditor from './ProductManagement/components/ProductGalleryEditor';
 import { resolveApiAssetUrl } from '../config/api';
+import { formatCurrency } from '../utils/formatters';
 
 const PAGE_SIZE = 8;
 
@@ -30,6 +32,8 @@ const ProductManagement = () => {
   const [currentProduct, setCurrentProduct] = useState(null);
   const [activeTab, setActiveTab] = useState('basic');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
+  const [stockError, setStockError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
@@ -56,11 +60,7 @@ const ProductManagement = () => {
     features: []
   });
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     try {
       const [productRes, catRes, brandRes] = await Promise.all([
@@ -68,22 +68,30 @@ const ProductManagement = () => {
         adminService.getCategories(),
         adminService.getBrands()
       ]);
+      const categoryList = catRes.contents || catRes.content || catRes || [];
       setProducts(productRes.contents || productRes.content || []);
-      setCategories(catRes.contents || catRes.content || catRes || []);
+      setCategories(categoryList);
       setBrands(brandRes.contents || brandRes.content || brandRes || []);
       
-      if (catRes.length > 0 && !formData.categoryId) {
-        setFormData(prev => ({ ...prev, categoryId: catRes[0].id }));
-      }
+      setFormData(prev => (
+        prev.categoryId || categoryList.length === 0
+          ? prev
+          : { ...prev, categoryId: categoryList[0].id }
+      ));
     } catch (err) {
       toast.error('Không thể tải danh sách sản phẩm');
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleOpenModal = (product = null) => {
     setActiveTab('basic');
+    setFormErrors({});
     if (product) {
       setCurrentProduct(product);
       
@@ -148,6 +156,9 @@ const ProductManagement = () => {
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     const val = type === 'checkbox' ? checked : value;
+    if (formErrors[name]) {
+      setFormErrors((prev) => ({ ...prev, [name]: '' }));
+    }
     
     if (name === 'name' && !currentProduct) {
       setFormData(prev => ({ 
@@ -162,10 +173,19 @@ const ProductManagement = () => {
 
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
+    const validationErrors = validateProductForm(formData);
+    setFormErrors(validationErrors);
+    if (Object.values(validationErrors).some(Boolean)) {
+      setActiveTab(getFirstErrorTab(validationErrors));
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const payload = {
         ...formData,
+        price: Number(formData.price),
+        stockQuantity: Number(formData.stockQuantity),
         specs: typeof formData.specs === 'object' ? JSON.stringify(formData.specs) : formData.specs,
         features: typeof formData.features === 'object' ? JSON.stringify(formData.features) : formData.features
       };
@@ -198,6 +218,7 @@ const ProductManagement = () => {
   };
 
   const handleUpdateStock = async (product) => {
+    setStockError('');
     setStockModal({
       isOpen: true,
       product,
@@ -208,7 +229,7 @@ const ProductManagement = () => {
   const submitStockUpdate = async () => {
     const stockNum = parseInt(stockModal.quantity, 10);
     if (isNaN(stockNum) || stockNum < 0) {
-      toast.error('Số lượng không hợp lệ (Phải là số >= 0)');
+      setStockError('Số lượng tồn kho phải là số lớn hơn hoặc bằng 0.');
       return;
     }
 
@@ -250,6 +271,17 @@ const ProductManagement = () => {
       setCurrentPage(totalPages);
     }
   }, [currentPage, totalPages]);
+
+  const readinessItems = useMemo(() => getProductReadiness(formData), [formData]);
+  const readyCount = readinessItems.filter((item) => item.done).length;
+  const galleryImages = useMemo(() => getGalleryImages(formData.features), [formData.features]);
+
+  const setGalleryImages = (images) => {
+    setFormData(prev => ({
+      ...prev,
+      features: setGalleryImagesInFeatures(prev.features, images)
+    }));
+  };
 
   return (
     <PageShell>
@@ -293,8 +325,11 @@ const ProductManagement = () => {
             type="number"
             min="0"
             value={stockModal.quantity}
-            onChange={(event) => setStockModal(prev => ({ ...prev, quantity: event.target.value }))}
-            required
+            onChange={(event) => {
+              setStockModal(prev => ({ ...prev, quantity: event.target.value }));
+              if (stockError) setStockError('');
+            }}
+            error={stockError}
           />
         </div>
       </Modal>
@@ -329,7 +364,7 @@ const ProductManagement = () => {
         <span className="whitespace-nowrap rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-600">
           {filteredProducts.length} sản phẩm
         </span>
-        <button type="button" onClick={fetchData} className="rounded-xl border border-slate-300 bg-white p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900">
+        <button type="button" onClick={fetchData} aria-label="Tải lại danh sách sản phẩm" className="rounded-xl border border-slate-300 bg-white p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900">
           <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
         </button>
       </Toolbar>
@@ -359,11 +394,12 @@ const ProductManagement = () => {
         footer={
           <div className="flex w-full flex-col gap-3 border-t border-slate-200 bg-white px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <div className="text-sm font-semibold text-slate-900">{currentProduct ? 'Lưu thay đổi sản phẩm' : 'Tạo sản phẩm và mở bán'}</div>
-              <div className="text-xs text-slate-500">Thông tin sản phẩm, phân loại và tồn kho sẽ được cập nhật sau khi lưu.</div>
+              <div className="text-sm font-semibold text-slate-900">{currentProduct ? 'Lưu thay đổi sản phẩm' : 'Tạo sản phẩm'}</div>
+              <div className="text-xs text-slate-500">Kiểm tra đủ ảnh, giá, tồn kho, phân loại và mô tả trước khi mở bán.</div>
             </div>
             <div className="flex justify-end gap-3">
               <button 
+                type="button"
                 onClick={() => setIsModalOpen(false)}
                 className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
               >
@@ -376,20 +412,21 @@ const ProductManagement = () => {
           </div>
         }
       >
-        <div className="flex h-[80vh] overflow-hidden bg-slate-50">
-          <div className="flex w-72 flex-col border-r border-slate-200 bg-white">
-            <div className="flex-1 space-y-6 p-6">
+        <div className="flex max-h-[80vh] flex-col overflow-hidden bg-slate-50 lg:h-[80vh] lg:flex-row">
+          <div className="flex w-full flex-col border-b border-slate-200 bg-white lg:w-72 lg:border-b-0 lg:border-r">
+            <div className="flex-1 space-y-5 p-4 sm:p-5 lg:space-y-6 lg:p-6">
                <div className="space-y-2">
                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Nhóm thông tin</p>
-                 <div className="space-y-1">
+                 <div className="grid grid-cols-2 gap-2 lg:block lg:space-y-1">
                     {[
-                      { id: 'basic', label: 'Thông tin cơ bản', icon: Info },
-                      { id: 'specs', label: 'Cấu hình kỹ thuật', icon: List },
-                      { id: 'landing', label: 'Tính năng nổi bật', icon: Layout },
-                      { id: 'settings', label: 'Hiển thị và mô tả', icon: Settings }
+                      { id: 'basic', label: 'Bán hàng', icon: Info },
+                      { id: 'specs', label: 'Thông số', icon: List },
+                      { id: 'landing', label: 'Mô tả chi tiết', icon: Layout },
+                      { id: 'settings', label: 'Hiển thị', icon: Settings }
                     ].map(tab => (
                       <button
                         key={tab.id}
+                        type="button"
                         onClick={() => setActiveTab(tab.id)}
                         className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-colors ${
                           activeTab === tab.id 
@@ -405,68 +442,99 @@ const ProductManagement = () => {
                </div>
 
                <div className="space-y-4 pt-4">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Xem trước nhanh</p>
-                  <div className="flex aspect-square items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Xem trước bán hàng</p>
+                  <div className="flex aspect-[4/3] items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 p-4 lg:aspect-square">
                      {formData.imageUrl ? (
-                       <img src={resolveApiAssetUrl(formData.imageUrl)} className="h-full w-full object-contain" alt="" />
+                       <img src={resolveApiAssetUrl(formData.imageUrl)} className="h-full w-full object-contain" alt="Xem trước sản phẩm" loading="lazy" decoding="async" />
                      ) : (
                        <Package size={48} className="text-slate-200" />
                      )}
                   </div>
                   <div className="space-y-1 px-2">
                      <div className="truncate text-sm font-semibold text-slate-950">{formData.name || 'Tên sản phẩm'}</div>
-                     <div className="text-sm font-bold text-blue-700">{(formData.price || 0).toLocaleString()} ₫</div>
+                     <div className="text-sm font-bold text-blue-700">{formatCurrency(formData.price)}</div>
+                  </div>
+                  <div className="rounded-2xl border border-slate-200 bg-white p-3">
+                    <div className="mb-2 flex items-center justify-between">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Độ sẵn sàng</span>
+                      <span className="text-xs font-bold text-slate-900">{readyCount}/{readinessItems.length}</span>
+                    </div>
+                    <div className="space-y-2">
+                      {readinessItems.map((item) => (
+                        <div key={item.label} className="flex items-center gap-2 text-xs font-semibold">
+                          {item.done ? (
+                            <CheckCircle2 size={14} className="text-emerald-500" />
+                          ) : (
+                            <AlertCircle size={14} className="text-amber-500" />
+                          )}
+                          <span className={item.done ? 'text-slate-700' : 'text-slate-400'}>{item.label}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                </div>
             </div>
           </div>
 
           <div className="flex-1 overflow-y-auto bg-slate-50 custom-scrollbar">
-            <div className="mx-auto max-w-4xl space-y-8 px-8 py-8">
+            <div className="mx-auto max-w-4xl space-y-8 px-4 py-5 sm:px-6 lg:px-8 lg:py-8">
                {activeTab === 'basic' && (
                  <div className="space-y-8">
                     <section className="space-y-6">
-                       <h2 className="text-lg font-bold text-slate-950">Thông tin định danh</h2>
+                       <h2 className="text-lg font-bold text-slate-950">Thông tin bán hàng</h2>
                        <div className="grid grid-cols-1 gap-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                          <Input label="Tên gọi thiết bị" name="name" required value={formData.name} onChange={handleInputChange} placeholder="VD: Garmin Forerunner 265..." />
-                          <Input label="Đường dẫn tĩnh (Slug)" name="slug" required value={formData.slug} onChange={handleInputChange} className="font-mono text-xs" />
+                          <Input label="Tên sản phẩm" name="name" value={formData.name} onChange={handleInputChange} placeholder="VD: Garmin Forerunner 265..." error={formErrors.name} />
+                          <Input label="Đường dẫn sản phẩm" name="slug" value={formData.slug} onChange={handleInputChange} className="font-mono text-xs" error={formErrors.slug} />
                        </div>
                     </section>
 
                     <section className="space-y-6">
-                       <h2 className="text-lg font-bold text-slate-950">Giá bán và tồn kho</h2>
+                       <h2 className="text-lg font-bold text-slate-950">Giá bán và kho</h2>
                        <div className="grid grid-cols-1 gap-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:grid-cols-2">
-                          <Input label="Giá niêm yết (₫)" type="number" name="price" required value={formData.price} onChange={handleInputChange} />
-                          <Input label="Số lượng tồn kho" type="number" name="stockQuantity" required value={formData.stockQuantity} onChange={handleInputChange} />
+                          <Input label="Giá bán (₫)" type="number" min="0" name="price" value={formData.price} onChange={handleInputChange} error={formErrors.price} />
+                          <Input label="Số lượng tồn kho" type="number" min="0" name="stockQuantity" value={formData.stockQuantity} onChange={handleInputChange} error={formErrors.stockQuantity} />
                        </div>
                     </section>
 
                     <section className="space-y-6">
-                       <h2 className="text-lg font-bold text-slate-950">Hình ảnh đại diện</h2>
-                       <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                       <h2 className="text-lg font-bold text-slate-950">Ảnh đại diện</h2>
+                       <div className="space-y-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                           <ImageUpload 
-                            label="Tải lên hình ảnh sản phẩm chất lượng cao" 
+                            label="Ảnh chính hiển thị trên cửa hàng"
                             value={formData.imageUrl} 
-                            onChange={(url) => setFormData(prev => ({ ...prev, imageUrl: url }))} 
+                            onChange={(url) => {
+                              setFormData(prev => ({ ...prev, imageUrl: url }));
+                              if (formErrors.imageUrl) setFormErrors((prev) => ({ ...prev, imageUrl: '' }));
+                            }}
                             folder="products"
                           />
+                          {formErrors.imageUrl && (
+                            <p className="text-xs font-semibold text-rose-600">{formErrors.imageUrl}</p>
+                          )}
+                          <ProductGalleryEditor images={galleryImages} onChange={setGalleryImages} />
                        </div>
                     </section>
 
                     <section className="space-y-6">
-                       <h2 className="text-lg font-bold text-slate-950">Phân loại và thương hiệu</h2>
+                       <h2 className="text-lg font-bold text-slate-950">Phân loại</h2>
                        <div className="grid grid-cols-1 gap-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:grid-cols-2">
                           <div className="space-y-3">
                              <label className="form-label-strong">Danh mục sản phẩm</label>
                              <select name="categoryId" value={formData.categoryId} onChange={handleInputChange} className="form-select">
                                 {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                              </select>
+                             {formErrors.categoryId && (
+                               <p className="text-xs font-semibold text-rose-600">{formErrors.categoryId}</p>
+                             )}
                           </div>
                           <div className="space-y-3">
-                             <label className="form-label-strong">Hãng sản xuất</label>
+                             <label className="form-label-strong">Thương hiệu</label>
                              <select name="brandId" value={formData.brandId} onChange={handleInputChange} className="form-select">
                                 {brands.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
                              </select>
+                             {formErrors.brandId && (
+                               <p className="text-xs font-semibold text-rose-600">{formErrors.brandId}</p>
+                             )}
                           </div>
                        </div>
                     </section>
@@ -505,17 +573,21 @@ const ProductManagement = () => {
                     </section>
 
                     <section className="space-y-6">
-                       <h2 className="text-lg font-bold text-slate-950">Mô tả sản phẩm</h2>
+                       <h2 className="text-lg font-bold text-slate-950">Mô tả ngắn</h2>
                        <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                          <label className="form-label-strong">Mô tả tóm tắt</label>
+                          <label className="form-label-strong">Nội dung hiển thị cạnh giá bán</label>
                           <textarea 
                             name="description" 
                             value={formData.description} 
                             onChange={handleInputChange} 
                             rows="8" 
-                            className="form-textarea"
-                            placeholder="Nhập nội dung tiếp thị ngắn gọn cho sản phẩm này..."
+                            className={`form-textarea ${formErrors.description ? 'border-rose-500 bg-rose-50/30' : ''}`}
+                            aria-invalid={Boolean(formErrors.description)}
+                            placeholder="Tóm tắt điểm mạnh, đối tượng phù hợp, bảo hành hoặc lợi ích nổi bật..."
                           />
+                          {formErrors.description && (
+                            <p className="text-xs font-semibold text-rose-600">{formErrors.description}</p>
+                          )}
                        </div>
                     </section>
                  </div>
@@ -526,6 +598,53 @@ const ProductManagement = () => {
       </Modal>
     </PageShell>
   );
+};
+
+const validateProductForm = (data) => {
+  const errors = {};
+  if (!data.name?.trim()) errors.name = 'Vui lòng nhập tên sản phẩm.';
+  if (!data.slug?.trim()) errors.slug = 'Vui lòng nhập đường dẫn sản phẩm.';
+  if (!data.categoryId) errors.categoryId = 'Vui lòng chọn danh mục sản phẩm.';
+  if (!data.brandId) errors.brandId = 'Vui lòng chọn thương hiệu.';
+  if (Number(data.price) <= 0) errors.price = 'Giá bán phải lớn hơn 0.';
+  if (Number(data.stockQuantity) < 0) errors.stockQuantity = 'Tồn kho không được âm.';
+  if (data.isActive && !data.imageUrl?.trim()) {
+    errors.imageUrl = 'Sản phẩm đang mở bán cần có ảnh chính.';
+  }
+  if (data.isActive && (!data.description?.trim() || data.description.trim().length < 20)) {
+    errors.description = 'Sản phẩm đang mở bán cần mô tả ngắn ít nhất 20 ký tự.';
+  }
+  return errors;
+};
+
+const getFirstErrorTab = (errors) => {
+  if (errors.description) return 'settings';
+  return 'basic';
+};
+
+const getProductReadiness = (data) => [
+  { label: 'Tên và đường dẫn', done: Boolean(data.name?.trim() && data.slug?.trim()) },
+  { label: 'Danh mục và thương hiệu', done: Boolean(data.categoryId && data.brandId) },
+  { label: 'Giá bán hợp lệ', done: Number(data.price) > 0 },
+  { label: 'Tồn kho hợp lệ', done: Number(data.stockQuantity) >= 0 },
+  { label: 'Ảnh chính', done: Boolean(data.imageUrl?.trim()) },
+  { label: 'Mô tả ngắn', done: Boolean(data.description?.trim() && data.description.trim().length >= 20) }
+];
+
+const getGalleryImages = (features) => {
+  const parsed = Array.isArray(features) ? features : [];
+  return parsed.find((block) => block?.type === 'gallery')?.images || [];
+};
+
+const setGalleryImagesInFeatures = (features, images) => {
+  const parsed = Array.isArray(features) ? features : [];
+  const contentBlocks = parsed.filter((block) => block?.type !== 'gallery');
+  if (images.length === 0) return contentBlocks;
+
+  return [
+    { type: 'gallery', images },
+    ...contentBlocks
+  ];
 };
 
 export default ProductManagement;

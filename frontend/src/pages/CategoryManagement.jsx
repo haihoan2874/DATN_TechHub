@@ -34,6 +34,7 @@ const CategoryManagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
+  const [formErrors, setFormErrors] = useState({});
   
   const [formData, setFormData] = useState({
     name: '',
@@ -81,11 +82,15 @@ const CategoryManagement = () => {
       setCurrentCategory(null);
       setFormData({ name: '', slug: '', description: '' });
     }
+    setFormErrors({});
     setIsModalOpen(true);
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    if (formErrors[name]) {
+      setFormErrors((prev) => ({ ...prev, [name]: '' }));
+    }
     if (name === 'name' && !currentCategory) {
       setFormData(prev => ({ 
         ...prev, 
@@ -99,6 +104,12 @@ const CategoryManagement = () => {
 
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
+    const validationErrors = validateCategoryForm(formData);
+    setFormErrors(validationErrors);
+    if (Object.values(validationErrors).some(Boolean)) {
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       if (currentCategory) {
@@ -183,7 +194,7 @@ const CategoryManagement = () => {
         <span className="whitespace-nowrap rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-600">
           {filteredCategories.length} danh mục
         </span>
-        <button onClick={fetchCategories} className="rounded-xl border border-slate-300 bg-white p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900">
+        <button type="button" onClick={fetchCategories} aria-label="Tải lại danh sách danh mục" className="rounded-xl border border-slate-300 bg-white p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900">
           <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
         </button>
       </Toolbar>
@@ -227,10 +238,10 @@ const CategoryManagement = () => {
                     </td>
                     <td className="px-5 py-4">
                       <div className="flex justify-end gap-2">
-                        <button onClick={() => handleOpenModal(category)} className="rounded-lg p-2 text-slate-500 hover:bg-blue-50 hover:text-blue-700">
+                        <button type="button" onClick={() => handleOpenModal(category)} aria-label={`Sửa danh mục ${category.name}`} className="rounded-lg p-2 text-slate-500 hover:bg-blue-50 hover:text-blue-700">
                           <Edit2 size={16} />
                         </button>
-                        <button onClick={() => { setCategoryToDelete(category.id); setIsDeleteConfirmOpen(true); }} className="rounded-lg p-2 text-slate-500 hover:bg-rose-50 hover:text-rose-700">
+                        <button type="button" onClick={() => { setCategoryToDelete(category.id); setIsDeleteConfirmOpen(true); }} aria-label={`Xóa danh mục ${category.name}`} className="rounded-lg p-2 text-slate-500 hover:bg-rose-50 hover:text-rose-700">
                           <Trash2 size={16} />
                         </button>
                       </div>
@@ -251,25 +262,25 @@ const CategoryManagement = () => {
           </>
         }
       >
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} noValidate className="space-y-6">
           <Input 
             label="Tên danh mục"
             name="name"
-            required
             value={formData.name}
             onChange={handleInputChange}
             placeholder="VD: Máy đo huyết áp..."
             icon={Tag}
+            error={formErrors.name}
           />
           <Input 
             label="Đường dẫn tĩnh (Slug)"
             name="slug"
-            required
             value={formData.slug}
             onChange={handleInputChange}
             placeholder="vd: may-do-huyet-ap"
             icon={Link}
             className="font-mono text-[11px]"
+            error={formErrors.slug}
           />
           <div className="space-y-3">
             <label className="form-label-strong">Mô tả chi tiết</label>
@@ -283,6 +294,19 @@ const CategoryManagement = () => {
       </Modal>
     </PageShell>
   );
+};
+
+const validateCategoryForm = (data) => {
+  const errors = {};
+  if (!data.name?.trim()) {
+    errors.name = 'Vui lòng nhập tên danh mục.';
+  }
+  if (!data.slug?.trim()) {
+    errors.slug = 'Vui lòng nhập đường dẫn tĩnh.';
+  } else if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(data.slug.trim())) {
+    errors.slug = 'Slug chỉ gồm chữ thường, số và dấu gạch ngang.';
+  }
+  return errors;
 };
 
 export default CategoryManagement;

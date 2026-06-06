@@ -3,6 +3,7 @@ import { Edit2, Trash2, Package, Plus } from 'lucide-react';
 import DataTable from '../../../components/data/DataTable';
 import EmptyState from '../../../components/feedback/EmptyState';
 import { resolveApiAssetUrl } from '../../../config/api';
+import { formatCurrency } from '../../../utils/formatters';
 
 const tableColumns = [
   { key: 'product', label: 'Sản phẩm' },
@@ -36,7 +37,13 @@ const ProductTable = ({ products, loading, footer, onEdit, onDelete, onUpdateSto
                   <div className="flex items-center gap-4">
                     <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 p-2">
                       {product.imageUrl ? (
-                        <img src={getImageUrl(product.imageUrl)} className="h-full w-full object-contain" alt="" />
+                        <img
+                          src={getImageUrl(product.imageUrl)}
+                          className="h-full w-full object-contain"
+                          alt={product.name}
+                          loading="lazy"
+                          decoding="async"
+                        />
                       ) : (
                         <Package size={22} className="text-slate-300" />
                       )}
@@ -54,14 +61,16 @@ const ProductTable = ({ products, loading, footer, onEdit, onDelete, onUpdateSto
                    </div>
                 </td>
                 <td className="px-5 py-4">
-                  <div className="text-sm font-bold text-blue-700">{product.price.toLocaleString()} ₫</div>
+                  <div className="text-sm font-bold text-blue-700">{formatCurrency(product.price)}</div>
                   <div className="mt-1 flex items-center gap-2">
                     <span className={`text-xs font-semibold ${product.stockQuantity < 10 ? 'text-rose-600' : 'text-slate-500'}`}>
                       Tồn kho: {product.stockQuantity}
                     </span>
                     <button 
+                      type="button"
                       onClick={() => onUpdateStock(product)}
                       className="rounded p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+                      aria-label={`Cập nhật tồn kho ${product.name}`}
                     >
                       <Plus size={10} />
                     </button>
@@ -70,14 +79,18 @@ const ProductTable = ({ products, loading, footer, onEdit, onDelete, onUpdateSto
                 <td className="px-5 py-4 text-right">
                   <div className="flex justify-end gap-2">
                      <button 
+                       type="button"
                        onClick={() => onEdit(product)} 
                        className="rounded-lg p-2 text-slate-500 hover:bg-blue-50 hover:text-blue-700"
+                       aria-label={`Sửa sản phẩm ${product.name}`}
                      >
                        <Edit2 size={16} />
                      </button>
                      <button 
+                       type="button"
                        onClick={() => onDelete(product.id)} 
                        className="rounded-lg p-2 text-slate-500 hover:bg-rose-50 hover:text-rose-700"
+                       aria-label={`Xóa sản phẩm ${product.name}`}
                      >
                        <Trash2 size={16} />
                      </button>

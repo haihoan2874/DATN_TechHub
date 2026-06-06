@@ -14,6 +14,7 @@ import DataTable from '../components/data/DataTable';
 import MetricCard from '../components/data/MetricCard';
 import Pagination from '../components/data/Pagination';
 import EmptyState from '../components/feedback/EmptyState';
+import { formatDate } from '../utils/formatters';
 
 const PAGE_SIZE = 8;
 
@@ -175,7 +176,7 @@ const ReviewManagement = () => {
         <span className="whitespace-nowrap rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-600">
           {filteredReviews.length} đánh giá
         </span>
-        <button onClick={fetchReviews} className="rounded-xl border border-slate-300 bg-white p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900">
+        <button type="button" onClick={fetchReviews} aria-label="Tải lại danh sách đánh giá" className="rounded-xl border border-slate-300 bg-white p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900">
           <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
         </button>
       </Toolbar>
@@ -239,14 +240,16 @@ const ReviewManagement = () => {
                       </div>
                     </td>
                     <td className="px-5 py-4 text-sm font-medium text-slate-500">
-                      {review.createdAt ? new Date(review.createdAt).toLocaleDateString('vi-VN') : '-'}
+                      {formatDate(review.createdAt)}
                     </td>
                     <td className="px-5 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        <button 
+                        <button
+                          type="button"
                           onClick={() => { setSelectedReview(review); setShowDeleteModal(true); }}
                           className="rounded-lg p-2 text-slate-500 hover:bg-rose-50 hover:text-rose-700"
                           title="Xóa đánh giá"
+                          aria-label={`Xóa đánh giá của ${review.userName || 'người dùng'}`}
                         >
                           <Trash2 size={16} />
                         </button>

@@ -1,18 +1,17 @@
 import React, { useState, useMemo } from 'react';
 import { 
-  Plus, Trash2, X, Settings2, 
-  Zap, Search, List
+  Plus, Trash2
 } from 'lucide-react';
-import Button from '../../../components/ui/Button';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const SpecsEditor = ({ specs, setSpecs }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Common attribute presets for Shopee-style specs
   const presets = [
-    "Thương hiệu", "Nguồn gốc", "Chất liệu", "Kích thước", 
-    "Trọng lượng", "Màu sắc", "Bảo hành", "Loại thiết bị"
+    'Thương hiệu', 'Loại thiết bị', 'Màn hình', 'Pin',
+    'Cảm biến', 'Chống nước', 'Kết nối', 'Tương thích',
+    'Chất liệu', 'Kích thước', 'Trọng lượng', 'Màu sắc',
+    'Bảo hành', 'Vận chuyển'
   ];
 
   // Flatten nested specs for editing if they exist, or keep as is
@@ -68,8 +67,8 @@ const SpecsEditor = ({ specs, setSpecs }) => {
   return (
     <div className="h-full flex flex-col space-y-6 bg-white">
       <div className="space-y-4">
-        <h3 className="text-lg font-bold text-slate-900 uppercase tracking-tight">CHI TIẾT SẢN PHẨM (Attribute Editor)</h3>
-        <p className="text-xs text-slate-400">Thêm các thuộc tính chi tiết giống như Shopee để khách hàng dễ dàng tra cứu.</p>
+        <h3 className="text-lg font-bold text-slate-900 uppercase tracking-tight">Thông số kỹ thuật</h3>
+        <p className="text-xs text-slate-400">Nhập các thông số khách hàng cần so sánh trước khi mua.</p>
         
         <div className="flex flex-wrap gap-2">
            {presets.map(p => (
@@ -78,6 +77,7 @@ const SpecsEditor = ({ specs, setSpecs }) => {
                key={p} 
                onClick={() => addSpec(p)}
                disabled={!!flatSpecs[p]}
+               aria-label={`Thêm thông số ${p}`}
                className={`px-4 py-2 rounded-lg border text-[10px] font-bold uppercase tracking-widest transition-all flex items-center gap-2 ${flatSpecs[p] ? 'bg-slate-50 border-slate-100 text-slate-300 cursor-not-allowed' : 'border-slate-100 text-slate-400 hover:border-black hover:text-black'}`}
              >
                <Plus size={10} /> {p}
@@ -116,6 +116,7 @@ const SpecsEditor = ({ specs, setSpecs }) => {
                <button 
                  type="button"
                  onClick={() => removeSpec(key)}
+                 aria-label={`Xóa thông số ${key}`}
                  className="p-3 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all"
                >
                  <Trash2 size={16} />

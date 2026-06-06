@@ -1,175 +1,203 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  FileText, Download, Calendar, 
-  ChevronRight, BarChart3, Users, 
-  Package, ShoppingCart, CheckCircle2 
+  FileText, Download, Calendar, BarChart3, CheckCircle2
 } from 'lucide-react';
 import Modal from '../ui/Modal';
 import Button from '../ui/Button';
 import toast from 'react-hot-toast';
+import adminService from '../../services/adminService';
+
+const PERIOD_OPTIONS = [
+  { id: 'TODAY', label: 'Hôm nay', desc: 'Từ 00:00 đến hiện tại' },
+  { id: 'WEEK', label: 'Tuần này', desc: 'Từ thứ Hai đến hiện tại' },
+  { id: 'MONTH', label: 'Tháng này', desc: 'Từ ngày 01 đến hiện tại' },
+  { id: 'QUARTER', label: 'Quý này', desc: 'Từ đầu quý đến hiện tại' },
+  { id: 'YEAR', label: 'Năm nay', desc: 'Từ 01/01 đến hiện tại' },
+  { id: 'CUSTOM', label: 'Tùy chọn', desc: 'Chọn khoảng ngày cụ thể' }
+];
+
+const buildFilename = (period) => {
+  const today = new Date().toISOString().slice(0, 10).replaceAll('-', '');
+  return `s-life-order-report-${period.toLowerCase()}-${today}.xlsx`;
+};
+
+const formatVietnameseDate = (isoDate) => {
+  if (!isoDate) {
+    return '';
+  }
+  const [year, month, day] = isoDate.split('-');
+  return `${day}/${month}/${year}`;
+};
+
+const downloadBlob = (blob, filename) => {
+  const url = window.URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  window.URL.revokeObjectURL(url);
+};
+
+const DatePickerField = ({ label, value, onChange }) => (
+  <label className="group relative block cursor-pointer">
+    <Calendar className="pointer-events-none absolute left-4 top-1/2 z-10 -translate-y-1/2 text-slate-300 group-hover:text-blue-500" size={14} />
+    <div className="form-input flex items-center pl-10 text-xs font-bold">
+      <span className={value ? 'text-slate-900' : 'text-slate-400'}>
+        {value ? formatVietnameseDate(value) : label}
+      </span>
+    </div>
+    <input
+      type="date"
+      value={value}
+      onChange={(event) => onChange(event.target.value)}
+      className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+      aria-label={label}
+    />
+  </label>
+);
 
 const ReportExportModal = ({ isOpen, onClose }) => {
-  const [reportType, setReportType] = useState('SALES');
   const [period, setPeriod] = useState('MONTH');
-  const [format, setFormat] = useState('EXCEL');
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
 
-  const reportTypes = [
-    { id: 'SALES', label: 'Báo cáo doanh thu', icon: <BarChart3 size={18} />, desc: 'Tổng hợp dòng tiền, lợi nhuận và tăng trưởng.' },
-    { id: 'ORDERS', label: 'Báo cáo đơn hàng', icon: <ShoppingCart size={18} />, desc: 'Chi tiết trạng thái vận hành và vận chuyển.' },
-    { id: 'PRODUCTS', label: 'Báo cáo kho hàng', icon: <Package size={18} />, desc: 'Thống kê tồn kho, sản phẩm bán chạy nhất.' },
-    { id: 'USERS', label: 'Báo cáo người dùng', icon: <Users size={18} />, desc: 'Phân tích hành vi và tăng trưởng khách hàng.' }
-  ];
+  const handleGenerate = async () => {
+    if (period === 'CUSTOM' && (!fromDate || !toDate)) {
+      toast.error('Vui lòng chọn đầy đủ ngày bắt đầu và ngày kết thúc.');
+      return;
+    }
 
-  const handleGenerate = () => {
-    setIsGenerating(true);
-    toast.promise(
-      new Promise((resolve) => setTimeout(resolve, 2500)),
-      {
-        loading: 'Đang chuẩn bị báo cáo...',
-        success: 'Đã tạo báo cáo thành công!',
-        error: 'Có lỗi trong quá trình tạo báo cáo.',
+    if (period === 'CUSTOM') {
+      if (fromDate > toDate) {
+        toast.error('Ngày bắt đầu không được lớn hơn ngày kết thúc.');
+        return;
       }
-    ).then(() => {
-      setIsGenerating(false);
+    }
+
+    setIsGenerating(true);
+
+    try {
+      const params = { period };
+      if (period === 'CUSTOM') {
+        params.fromDate = fromDate;
+        params.toDate = toDate;
+      }
+
+      const blob = await adminService.exportOrderReport(params);
+      downloadBlob(blob, buildFilename(period));
+      toast.success('Đã tải báo cáo Excel.');
+      if (period === 'CUSTOM') {
+        setFromDate('');
+        setToDate('');
+      }
       onClose();
-    });
+    } catch (error) {
+      toast.error(error?.response?.data?.message || 'Không thể xuất báo cáo.');
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="TRUNG TÂM KHỞI TẠO BÁO CÁO"
+      title="Xuất báo cáo thống kê"
       size="xl"
       footer={
         <div className="flex gap-4 w-full">
-          <Button variant="outline" onClick={onClose} className="flex-1">Hủy bỏ</Button>
+          <Button variant="outline" onClick={onClose} className="flex-1">Hủy</Button>
           <Button 
             onClick={handleGenerate} 
             isLoading={isGenerating} 
             icon={Download}
             className="flex-1 bg-slate-900 hover:bg-black"
           >
-            Bắt đầu trích xuất
+            Tải file Excel
           </Button>
         </div>
       }
     >
-      <div className="space-y-8 py-2">
-        {/* 1. Select Report Type */}
+      <div className="space-y-6 py-2">
         <div className="space-y-4">
-          <label className="form-label ml-2">1. Loại báo cáo cần xuất</label>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {reportTypes.map((type) => (
+          <label className="form-label ml-2">1. Nội dung báo cáo</label>
+          <div className="flex items-start gap-4 rounded-2xl border border-blue-100 bg-blue-50/60 p-5">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-600 text-white">
+              <BarChart3 size={20} />
+            </div>
+            <div>
+              <h4 className="text-sm font-black uppercase tracking-tight text-blue-700">
+                Báo cáo đơn hàng và doanh thu
+              </h4>
+              <p className="mt-1 text-sm font-medium leading-relaxed text-slate-600">
+                File Excel gồm mã đơn, khách hàng, thời gian đặt, trạng thái, phương thức thanh toán,
+                danh sách sản phẩm, số lượng, tổng tiền, giảm giá và tổng kết cuối báo cáo.
+              </p>
+            </div>
+            <CheckCircle2 size={18} className="ml-auto mt-1 text-blue-600" />
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <label className="form-label ml-2">2. Kỳ báo cáo</label>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {PERIOD_OPTIONS.map((option) => (
               <button
                 type="button"
-                key={type.id}
-                onClick={() => setReportType(type.id)}
-                className={`flex items-start gap-4 rounded-2xl border-2 p-5 text-left transition-all group ${
-                  reportType === type.id 
-                    ? 'border-blue-600 bg-blue-50/50 shadow-lg shadow-blue-600/5' 
-                    : 'border-slate-100 hover:border-slate-200 bg-white'
+                key={option.id}
+                onClick={() => setPeriod(option.id)}
+                className={`rounded-2xl border p-4 text-left transition-all ${
+                  period === option.id
+                    ? 'border-slate-900 bg-slate-900 text-white shadow-lg shadow-slate-900/10'
+                    : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50'
                 }`}
               >
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 transition-colors ${
-                  reportType === type.id ? 'bg-blue-600 text-white' : 'bg-slate-50 text-slate-400 group-hover:bg-slate-100'
+                <span className="block text-sm font-black">{option.label}</span>
+                <span className={`mt-1 block text-xs font-medium ${
+                  period === option.id ? 'text-slate-300' : 'text-slate-400'
                 }`}>
-                  {type.icon}
-                </div>
-                <div>
-                  <h4 className={`text-sm font-black uppercase tracking-tight mb-1 ${
-                    reportType === type.id ? 'text-blue-600' : 'text-slate-900'
-                  }`}>
-                    {type.label}
-                  </h4>
-                  <p className="text-[11px] text-slate-400 font-medium leading-relaxed">{type.desc}</p>
-                </div>
-                {reportType === type.id && (
-                  <CheckCircle2 size={16} className="text-blue-600 ml-auto mt-1" />
-                )}
+                  {option.desc}
+                </span>
               </button>
             ))}
           </div>
+
+          {period === 'CUSTOM' && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="grid grid-cols-1 gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2"
+            >
+              <DatePickerField label="Từ ngày (dd/mm/yyyy)" value={fromDate} onChange={setFromDate} />
+              <DatePickerField label="Đến ngày (dd/mm/yyyy)" value={toDate} onChange={setToDate} />
+            </motion.div>
+          )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          {/* 2. Select Period */}
-          <div className="space-y-4">
-            <label className="form-label ml-2">2. Khoảng thời gian</label>
-            <div className="grid grid-cols-2 gap-2 rounded-2xl border border-slate-100 bg-slate-50 p-2">
-              {[
-                { id: 'DAY', label: 'Hôm nay' },
-                { id: 'WEEK', label: 'Tuần này' },
-                { id: 'MONTH', label: 'Tháng này' },
-                { id: 'CUSTOM', label: 'Tùy chọn' }
-              ].map((p) => (
-                <button
-                  type="button"
-                  key={p.id}
-                  onClick={() => setPeriod(p.id)}
-                  className={`py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${
-                    period === p.id ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'
-                  }`}
-                >
-                  {p.label}
-                </button>
-              ))}
+        <div className="space-y-3">
+          <label className="form-label ml-2">3. Định dạng tệp tin</label>
+          <div className="flex items-center gap-4 rounded-2xl border border-emerald-100 bg-emerald-50 p-5">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white">
+              <FileText size={18} />
             </div>
-            {period === 'CUSTOM' && (
-              <motion.div 
-                initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
-                className="grid grid-cols-2 gap-3 pt-2"
-              >
-                <div className="relative">
-                  <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none" size={14} />
-                  <input type="date" className="form-input pl-10 text-xs font-bold" />
-                </div>
-                <div className="relative">
-                  <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none" size={14} />
-                  <input type="date" className="form-input pl-10 text-xs font-bold" />
-                </div>
-              </motion.div>
-            )}
-          </div>
-
-          {/* 3. Select Format */}
-          <div className="space-y-4">
-            <label className="form-label ml-2">3. Định dạng tệp tin</label>
-            <div className="flex gap-4">
-              <button
-                type="button"
-                onClick={() => setFormat('EXCEL')}
-                className={`flex flex-1 flex-col items-center justify-center gap-3 rounded-2xl border-2 p-6 transition-all ${
-                  format === 'EXCEL' ? 'border-emerald-500 bg-emerald-50/50 text-emerald-700' : 'border-slate-100 hover:border-slate-200 bg-white text-slate-400'
-                }`}
-              >
-                <FileText size={24} />
-                <span className="text-[10px] font-black uppercase tracking-widest">Microsoft Excel</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setFormat('PDF')}
-                className={`flex flex-1 flex-col items-center justify-center gap-3 rounded-2xl border-2 p-6 transition-all ${
-                  format === 'PDF' ? 'border-blue-500 bg-blue-50/50 text-blue-700' : 'border-slate-100 hover:border-slate-200 bg-white text-slate-400'
-                }`}
-              >
-                <FileText size={24} />
-                <span className="text-[10px] font-black uppercase tracking-widest">Adobe PDF</span>
-              </button>
+            <div>
+              <p className="text-sm font-black text-emerald-800">Excel (.xlsx)</p>
+              <p className="text-xs font-semibold text-emerald-700/70">Có header nổi bật, định dạng tiền, freeze dòng tiêu đề và tổng kết rõ ràng.</p>
             </div>
           </div>
         </div>
 
-        {/* Warning Note */}
-        <div className="flex items-center gap-4 rounded-2xl border border-amber-100 bg-amber-50 p-6">
-           <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0">
-              <Calendar size={20} />
-           </div>
-           <p className="text-[11px] text-amber-800 font-bold leading-relaxed italic">
-             Lưu ý: Báo cáo được tổng hợp theo số liệu vận hành hiện tại. Vui lòng kiểm tra kỹ tiêu chí trước khi xuất tệp.
-           </p>
+        <div className="flex items-start gap-4 rounded-2xl border border-amber-100 bg-amber-50 p-5">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-500 text-white">
+            <Calendar size={18} />
+          </div>
+          <p className="text-sm font-semibold leading-relaxed text-amber-800">
+            Báo cáo được tổng hợp theo số liệu đơn hàng trong kỳ đã chọn. Các đơn đã hủy vẫn xuất trong file để đối soát trạng thái.
+          </p>
         </div>
       </div>
     </Modal>
