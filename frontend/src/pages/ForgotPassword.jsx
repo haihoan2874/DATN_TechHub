@@ -12,22 +12,33 @@ import Input from '../components/ui/Input';
 const ForgotPassword = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
   const [status, setStatus] = useState({ type: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const normalizedEmail = email.trim();
+    if (!normalizedEmail) {
+      setEmailError('Vui lòng nhập email.');
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+      setEmailError('Email không đúng định dạng.');
+      return;
+    }
+
     setIsSubmitting(true);
     setStatus({ type: '', message: '' });
 
     try {
-      await authService.forgotPassword(email);
+      await authService.forgotPassword(normalizedEmail);
       setStatus({ 
         type: 'success', 
         message: 'Mã OTP đã được gửi đến email của bạn. Vui lòng kiểm tra hộp thư!' 
       });
       // Pass email to verify page to avoid re-typing
-      setTimeout(() => navigate('/verify-otp', { state: { email } }), 2000);
+      setTimeout(() => navigate('/verify-otp', { state: { email: normalizedEmail } }), 2000);
     } catch (error) {
       setStatus({ 
         type: 'error', 
@@ -56,7 +67,7 @@ const ForgotPassword = () => {
           </div>
 
           <div className="glass-card rounded-2xl border border-white p-6 shadow-2xl shadow-blue-500/5 sm:p-8">
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6" noValidate>
               {status.message && (
                 <div aria-live="polite" className={`flex items-center gap-3 rounded-xl p-4 text-sm font-medium ${
                   status.type === 'error' ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'
@@ -69,14 +80,17 @@ const ForgotPassword = () => {
               <Input 
                 label="Địa chỉ Email"
                 type="email"
-                required
                 icon={Mail}
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (emailError) setEmailError('');
+                }}
                 placeholder="Ví dụ: name@example.com…"
                 name="email"
                 autoComplete="email"
                 spellCheck={false}
+                error={emailError}
               />
 
               <Button

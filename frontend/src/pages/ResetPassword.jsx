@@ -16,14 +16,30 @@ const ResetPassword = () => {
     newPassword: '', 
     confirmPassword: '' 
   });
+  const [fieldErrors, setFieldErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [status, setStatus] = useState({ type: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.newPassword !== formData.confirmPassword) {
-      setStatus({ type: 'error', message: 'Mật khẩu xác nhận không khớp.' });
+    const newPassword = formData.newPassword.trim();
+    const confirmPassword = formData.confirmPassword.trim();
+    const nextErrors = {};
+
+    if (!newPassword) {
+      nextErrors.newPassword = 'Vui lòng nhập mật khẩu mới.';
+    } else if (newPassword.length < 8) {
+      nextErrors.newPassword = 'Mật khẩu phải có ít nhất 8 ký tự.';
+    }
+    if (!confirmPassword) {
+      nextErrors.confirmPassword = 'Vui lòng nhập lại mật khẩu.';
+    } else if (newPassword !== confirmPassword) {
+      nextErrors.confirmPassword = 'Mật khẩu xác nhận không khớp.';
+    }
+
+    setFieldErrors(nextErrors);
+    if (Object.values(nextErrors).some(Boolean)) {
       return;
     }
 
@@ -34,7 +50,7 @@ const ResetPassword = () => {
       await authService.resetPassword({ 
         email, 
         otp, 
-        newPassword: formData.newPassword 
+        newPassword
       });
       setStatus({ type: 'success', message: 'Đặt lại mật khẩu thành công. Đang chuyển hướng…' });
       setTimeout(() => navigate('/login'), 2000);
@@ -62,7 +78,7 @@ const ResetPassword = () => {
           </div>
 
           <div className="glass-card rounded-2xl border border-white p-6 shadow-2xl shadow-blue-500/5 sm:p-8">
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6" noValidate>
               {status.message && (
                 <div aria-live="polite" className={`flex items-center gap-3 rounded-xl p-4 text-sm font-medium ${
                   status.type === 'error' ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'
@@ -75,28 +91,33 @@ const ResetPassword = () => {
               <Input 
                 label="Mật khẩu mới"
                 type={showPassword ? 'text' : 'password'}
-                required
-                minLength="8"
                 icon={Lock}
                 value={formData.newPassword}
-                onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
+                onChange={(e) => {
+                  setFormData({ ...formData, newPassword: e.target.value });
+                  if (fieldErrors.newPassword) setFieldErrors((prev) => ({ ...prev, newPassword: '' }));
+                }}
                 placeholder="••••••••"
                 togglePassword={() => setShowPassword(!showPassword)}
                 showPassword={showPassword}
                 name="newPassword"
                 autoComplete="new-password"
+                error={fieldErrors.newPassword}
               />
 
               <Input 
                 label="Xác nhận mật khẩu"
                 type="password"
-                required
                 icon={Lock}
                 value={formData.confirmPassword}
-                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                onChange={(e) => {
+                  setFormData({ ...formData, confirmPassword: e.target.value });
+                  if (fieldErrors.confirmPassword) setFieldErrors((prev) => ({ ...prev, confirmPassword: '' }));
+                }}
                 placeholder="••••••••"
                 name="confirmPassword"
                 autoComplete="new-password"
+                error={fieldErrors.confirmPassword}
               />
 
               <Button

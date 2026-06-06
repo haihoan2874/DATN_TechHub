@@ -14,9 +14,9 @@ const Register = () => {
     username: '',
     email: '', 
     password: '',
-    confirmPassword: '',
-    fullName: ''
+    confirmPassword: ''
   });
+  const [fieldErrors, setFieldErrors] = useState({});
   const [status, setStatus] = useState({ type: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -25,21 +25,62 @@ const Register = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    if (fieldErrors[name]) {
+      setFieldErrors((prev) => ({ ...prev, [name]: '' }));
+    }
     if (status.message) setStatus({ type: '', message: '' });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (formData.password !== formData.confirmPassword) {
-      return setStatus({ type: 'error', message: 'Mật khẩu xác nhận không khớp.' });
+    const username = formData.username.trim();
+    const email = formData.email.trim();
+    const password = formData.password.trim();
+    const confirmPassword = formData.confirmPassword.trim();
+    const nextErrors = {};
+
+    if (!username) {
+      nextErrors.username = 'Vui lòng nhập tên đăng nhập.';
+    } else if (username.length < 3 || username.length > 30) {
+      nextErrors.username = 'Tên đăng nhập phải có từ 3 đến 30 ký tự.';
+    } else if (!/^[a-zA-Z0-9._-]+$/.test(username)) {
+      nextErrors.username = 'Tên đăng nhập chỉ gồm chữ, số, dấu chấm, gạch dưới hoặc gạch ngang.';
+    }
+
+    if (!email) {
+      nextErrors.email = 'Vui lòng nhập email.';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      nextErrors.email = 'Email không đúng định dạng.';
+    }
+
+    if (!password) {
+      nextErrors.password = 'Vui lòng nhập mật khẩu.';
+    } else if (password.length < 8) {
+      nextErrors.password = 'Mật khẩu phải có ít nhất 8 ký tự.';
+    } else if (password.length > 72) {
+      nextErrors.password = 'Mật khẩu không được vượt quá 72 ký tự.';
+    }
+
+    if (!confirmPassword) {
+      nextErrors.confirmPassword = 'Vui lòng nhập lại mật khẩu.';
+    } else if (password !== confirmPassword) {
+      nextErrors.confirmPassword = 'Mật khẩu xác nhận không khớp.';
+    }
+
+    setFieldErrors(nextErrors);
+    if (Object.values(nextErrors).some(Boolean)) {
+      return;
     }
 
     setIsSubmitting(true);
     setStatus({ type: '', message: '' });
 
     // Prepare data for backend
-    const { confirmPassword, ...submitData } = formData;
+    const submitData = {
+      username,
+      email,
+      password
+    };
     
     const result = await register(submitData);
     
@@ -66,10 +107,10 @@ const Register = () => {
                 S-LIFE
               </Link>
               <h1 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">Tạo tài khoản</h1>
-              <p className="mt-2 text-sm font-medium leading-6 text-slate-500">Điền thông tin bên dưới để trở thành khách hàng thân thiết của S-LIFE.</p>
+              <p className="mt-2 text-sm font-medium leading-6 text-slate-500">Tạo tài khoản bằng tên đăng nhập, email và mật khẩu để mua sắm tại S-LIFE.</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4" noValidate>
               {/* Status Message */}
               {status.message && (
                 <motion.div 
@@ -89,45 +130,33 @@ const Register = () => {
                 <Input 
                   label="Tên đăng nhập"
                   name="username"
-                  required
                   value={formData.username}
                   onChange={handleChange}
                   placeholder="Ví dụ: slife_user…"
                   icon={User}
                   autoComplete="username"
                   spellCheck={false}
+                  error={fieldErrors.username}
                 />
                 <Input 
                   label="Email"
                   type="email"
                   name="email"
-                  required
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Ví dụ: name@example.com…"
                   icon={Mail}
                   autoComplete="email"
                   spellCheck={false}
+                  error={fieldErrors.email}
                 />
               </div>
-
-              <Input 
-                label="Họ và tên"
-                name="fullName"
-                required
-                value={formData.fullName}
-                onChange={handleChange}
-                placeholder="Ví dụ: Nguyễn Văn An…"
-                icon={User}
-                autoComplete="name"
-              />
 
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <Input 
                   label="Mật khẩu"
                   type={showPassword ? 'text' : 'password'}
                   name="password"
-                  required
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="••••••••"
@@ -135,12 +164,12 @@ const Register = () => {
                   showPassword={showPassword}
                   togglePassword={() => setShowPassword(!showPassword)}
                   autoComplete="new-password"
+                  error={fieldErrors.password}
                 />
                 <Input 
                   label="Xác nhận mật khẩu"
                   type={showConfirmPassword ? 'text' : 'password'}
                   name="confirmPassword"
-                  required
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   placeholder="••••••••"
@@ -148,6 +177,7 @@ const Register = () => {
                   showPassword={showConfirmPassword}
                   togglePassword={() => setShowConfirmPassword(!showConfirmPassword)}
                   autoComplete="new-password"
+                  error={fieldErrors.confirmPassword}
                 />
               </div>
 
@@ -160,22 +190,21 @@ const Register = () => {
                 Đăng ký ngay
               </Button>
 
-              {/* Divider */}
               <div className="relative py-2">
                 <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200"></div></div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-white px-2 text-slate-400 font-medium">Hoặc đăng ký nhanh với</span>
+                  <span className="bg-white px-3 font-medium text-slate-400">Hoặc đăng ký với</span>
                 </div>
               </div>
 
-              <Button 
+              <Button
                 type="button"
                 variant="outline"
                 className="w-full"
                 onClick={() => window.location.href = getOAuthUrl('google')}
               >
                 <div className="flex items-center gap-3">
-                  <svg width="20" height="20" viewBox="0 0 24 24">
+                  <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
                     <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
                     <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>

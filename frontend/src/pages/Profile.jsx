@@ -1,9 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  AlertCircle,
   Briefcase,
   Camera,
-  CheckCircle2,
   Edit3,
   Home,
   Mail,
@@ -14,6 +12,7 @@ import {
   Trash2,
   User
 } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import addressService from '../services/addressService';
 import userService from '../services/userService';
@@ -22,6 +21,7 @@ import ConfirmModal from '../components/ui/ConfirmModal';
 import Input from '../components/ui/Input';
 import Modal from '../components/ui/Modal';
 import { resolveApiAssetUrl } from '../config/api';
+import { hasValidationErrors, onlyDigits, validateCustomerAddress, validatePhone } from '../utils/formValidation';
 
 const emptyAddressForm = {
   fullName: '',
@@ -34,6 +34,13 @@ const emptyAddressForm = {
 
 const getAvatarUrl = (imageUrl) => {
   return resolveApiAssetUrl(imageUrl, '');
+};
+
+const getDisplayName = (profile, fallback = 'Người dùng') => {
+  const lastName = profile?.lastName && profile.lastName !== 'null' ? profile.lastName.trim() : '';
+  const firstName = profile?.firstName && profile.firstName !== 'null' ? profile.firstName.trim() : '';
+  const fullName = `${lastName} ${firstName}`.trim();
+  return fullName || profile?.fullName || fallback;
 };
 
 const Profile = () => {
@@ -50,65 +57,82 @@ const Profile = () => {
     phoneNumber: '',
     imageUrl: ''
   });
-  const [status, setStatus] = useState({ type: '', message: '' });
+  const [savedFormData, setSavedFormData] = useState(null);
   const [addressModalOpen, setAddressModalOpen] = useState(false);
   const [editingAddress, setEditingAddress] = useState(null);
   const [addressForm, setAddressForm] = useState(emptyAddressForm);
+  const [addressErrors, setAddressErrors] = useState({});
+  const [profileErrors, setProfileErrors] = useState({});
   const [addressSubmitting, setAddressSubmitting] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
 
-  const displayName = useMemo(() => {
-    const fullName = `${formData.lastName || ''} ${formData.firstName || ''}`.trim();
-    return formData.fullName || fullName || user?.username || 'Người dùng';
-  }, [formData.firstName, formData.fullName, formData.lastName, user?.username]);
+  const displayName = useMemo(
+    () => getDisplayName(formData, user?.username || 'Người dùng'),
+    [formData, user?.username]
+  );
 
   const defaultAddress = useMemo(() => addresses.find((address) => address.isDefault), [addresses]);
 
-  useEffect(() => {
-    fetchProfileData();
-    fetchAddresses();
-  }, []);
-
-  const fetchProfileData = async () => {
+  const fetchProfileData = useCallback(async () => {
     try {
       const data = await userService.getMyInfo();
-      setFormData({
+      const nextFormData = {
         firstName: data.firstName || '',
         lastName: data.lastName || '',
         fullName: data.fullName || '',
         email: data.email || '',
         phoneNumber: data.phoneNumber || '',
         imageUrl: data.imageUrl || ''
-      });
+      };
+      setFormData(nextFormData);
+      setSavedFormData(nextFormData);
       if (updateUser) updateUser(data);
     } catch (err) {
       console.error('Failed to fetch profile', err);
-      setStatus({ type: 'error', message: 'Không thể tải hồ sơ cá nhân.' });
+      toast.error('Không thể tải hồ sơ cá nhân.');
     } finally {
       setLoading(false);
     }
-  };
+  }, [updateUser]);
 
-  const fetchAddresses = async () => {
+  const fetchAddresses = useCallback(async () => {
     try {
       const data = await addressService.getMyAddresses();
       setAddresses(data);
     } catch (err) {
       console.error('Failed to fetch addresses', err);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchProfileData();
+    fetchAddresses();
+  }, [fetchProfileData, fetchAddresses]);
 
   const handleUploadAvatar = async (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    if (!file.type.startsWith('image/')) {
+      toast.error('Vui lòng chọn tệp hình ảnh.');
+      event.target.value = '';
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Ảnh đại diện tối đa 5MB.');
+      event.target.value = '';
+      return;
+    }
+
     try {
       const updatedUser = await userService.uploadAvatar(file);
       setFormData((prev) => ({ ...prev, imageUrl: updatedUser.imageUrl }));
       if (updateUser) updateUser(updatedUser);
-      setStatus({ type: 'success', message: 'Ảnh đại diện đã được cập nhật.' });
+      toast.success('Ảnh đại diện đã được cập nhật.');
     } catch (err) {
-      setStatus({ type: 'error', message: 'Không thể tải ảnh lên.' });
+      const message = err.response?.data?.message || err.response?.data?.error || 'Không thể tải ảnh lên.';
+      toast.error(message);
     } finally {
       event.target.value = '';
     }
@@ -116,13 +140,59 @@ const Profile = () => {
 
   const handleUpdate = async (event) => {
     event.preventDefault();
+    const nextProfileErrors = {
+      phoneNumber: validatePhone(formData.phoneNumber, { required: false })
+    };
+    setProfileErrors(nextProfileErrors);
+
+    if (hasValidationErrors(nextProfileErrors)) {
+      return;
+    }
+
     try {
-      const updatedUser = await userService.updateProfile(formData);
+      const payload = {
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        email: formData.email.trim(),
+        phoneNumber: formData.phoneNumber.trim(),
+        imageUrl: formData.imageUrl
+      };
+      const updatedUser = await userService.updateProfile(payload);
+      const nextFormData = {
+        firstName: updatedUser.firstName || '',
+        lastName: updatedUser.lastName || '',
+        fullName: updatedUser.fullName || '',
+        email: updatedUser.email || '',
+        phoneNumber: updatedUser.phoneNumber || '',
+        imageUrl: updatedUser.imageUrl || ''
+      };
+      setFormData(nextFormData);
+      setSavedFormData(nextFormData);
       if (updateUser) updateUser(updatedUser);
-      setStatus({ type: 'success', message: 'Thông tin cá nhân đã được cập nhật.' });
+      toast.success('Thông tin cá nhân đã được cập nhật.');
       setIsEditing(false);
+      setProfileErrors({});
     } catch (err) {
-      setStatus({ type: 'error', message: err.response?.data?.message || 'Cập nhật thất bại.' });
+      toast.error(err.response?.data?.message || 'Cập nhật thất bại.');
+    }
+  };
+
+  const handleCancelEdit = () => {
+    if (savedFormData) {
+      setFormData(savedFormData);
+    }
+    setProfileErrors({});
+    setIsEditing(false);
+  };
+
+  const handleProfileChange = (field) => (event) => {
+    const nextValue = field === 'phoneNumber' ? onlyDigits(event.target.value, 11) : event.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      [field]: nextValue
+    }));
+    if (profileErrors[field]) {
+      setProfileErrors((prev) => ({ ...prev, [field]: '' }));
     }
   };
 
@@ -140,6 +210,7 @@ const Profile = () => {
       fullName: displayName === 'Người dùng' ? '' : displayName,
       phone: formData.phoneNumber || ''
     });
+    setAddressErrors({});
     setAddressModalOpen(true);
   };
 
@@ -148,31 +219,43 @@ const Profile = () => {
     setAddressModalOpen(false);
     setEditingAddress(null);
     setAddressForm(emptyAddressForm);
+    setAddressErrors({});
   };
 
   const handleAddressChange = (event) => {
     const { name, value, type, checked } = event.target;
+    const nextValue = ['phone', 'postalCode'].includes(name) ? onlyDigits(value, name === 'phone' ? 11 : 20) : value;
     setAddressForm((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === 'checkbox' ? checked : nextValue
     }));
+    if (addressErrors[name]) {
+      setAddressErrors((prev) => ({ ...prev, [name]: '' }));
+    }
   };
 
   const handleSaveAddress = async (event) => {
     event.preventDefault();
+    const validationErrors = validateCustomerAddress(addressForm);
+    setAddressErrors(validationErrors);
+
+    if (hasValidationErrors(validationErrors)) {
+      return;
+    }
+
     setAddressSubmitting(true);
     try {
       if (editingAddress) {
         await addressService.updateAddress(editingAddress.id, addressForm);
-        setStatus({ type: 'success', message: 'Địa chỉ nhận hàng đã được cập nhật.' });
+        toast.success('Địa chỉ nhận hàng đã được cập nhật.');
       } else {
         await addressService.createAddress(addressForm);
-        setStatus({ type: 'success', message: 'Địa chỉ nhận hàng đã được thêm.' });
+        toast.success('Địa chỉ nhận hàng đã được thêm.');
       }
       closeAddressModal();
       await fetchAddresses();
     } catch (err) {
-      setStatus({ type: 'error', message: err.response?.data?.message || 'Không thể lưu địa chỉ.' });
+      toast.error(err.response?.data?.message || 'Không thể lưu địa chỉ.');
     } finally {
       setAddressSubmitting(false);
     }
@@ -182,9 +265,9 @@ const Profile = () => {
     try {
       await addressService.setDefaultAddress(id);
       await fetchAddresses();
-      setStatus({ type: 'success', message: 'Đã đặt địa chỉ mặc định.' });
+      toast.success('Đã đặt địa chỉ mặc định.');
     } catch (err) {
-      setStatus({ type: 'error', message: 'Không thể đặt địa chỉ mặc định.' });
+      toast.error('Không thể đặt địa chỉ mặc định.');
     }
   };
 
@@ -194,9 +277,9 @@ const Profile = () => {
       await addressService.deleteAddress(deleteTarget.id);
       setDeleteTarget(null);
       await fetchAddresses();
-      setStatus({ type: 'success', message: 'Địa chỉ đã được xóa.' });
+      toast.success('Địa chỉ đã được xóa.');
     } catch (err) {
-      setStatus({ type: 'error', message: err.response?.data?.message || 'Không thể xóa địa chỉ.' });
+      toast.error(err.response?.data?.message || 'Không thể xóa địa chỉ.');
     }
   };
 
@@ -219,50 +302,61 @@ const Profile = () => {
         size="lg"
         closeOnOverlay={!addressSubmitting}
       >
-        <form onSubmit={handleSaveAddress} className="space-y-5">
+        <form onSubmit={handleSaveAddress} className="space-y-5" noValidate>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="md:col-span-2">
               <Input
                 label="Họ tên người nhận"
                 name="fullName"
-                required
                 value={addressForm.fullName}
                 onChange={handleAddressChange}
+                error={addressErrors.fullName}
               />
             </div>
             <Input
               label="Số điện thoại"
               name="phone"
               type="tel"
-              required
+              inputMode="numeric"
+              maxLength={11}
               value={addressForm.phone}
               onChange={handleAddressChange}
+              error={addressErrors.phone}
             />
             <Input
               label="Mã bưu điện"
               name="postalCode"
+              inputMode="numeric"
+              maxLength={20}
               value={addressForm.postalCode}
               onChange={handleAddressChange}
+              error={addressErrors.postalCode}
             />
             <Input
               label="Tỉnh / Thành phố"
               name="city"
-              required
               value={addressForm.city}
               onChange={handleAddressChange}
               className="md:col-span-2"
+              error={addressErrors.city}
             />
             <div className="md:col-span-2">
               <label className="form-label mb-2 block">Địa chỉ chi tiết</label>
               <textarea
                 name="address"
-                required
                 rows={3}
                 value={addressForm.address}
                 onChange={handleAddressChange}
-                className="form-textarea"
+                aria-invalid={Boolean(addressErrors.address)}
+                aria-describedby={addressErrors.address ? 'profile-address-error' : undefined}
+                className={`form-textarea ${addressErrors.address ? 'border-rose-500 bg-rose-50/30' : ''}`}
                 placeholder="Số nhà, tên đường, phường/xã..."
               />
+              {addressErrors.address && (
+                <span id="profile-address-error" className="mt-2 block text-xs font-semibold text-rose-600">
+                  {addressErrors.address}
+                </span>
+              )}
             </div>
             <label className="md:col-span-2 flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-600">
               <input
@@ -334,15 +428,6 @@ const Profile = () => {
             </div>
           </section>
 
-          {status.message && (
-            <div className={`mb-6 flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold ${
-              status.type === 'error' ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-700'
-            }`}>
-              {status.type === 'error' ? <AlertCircle size={18} /> : <CheckCircle2 size={18} />}
-              {status.message}
-            </div>
-          )}
-
           <div className="grid grid-cols-1 gap-5 lg:grid-cols-[240px_minmax(0,1fr)]">
             <aside className="h-fit rounded-2xl border border-slate-200 bg-white p-2 shadow-sm">
               <TabButton
@@ -387,29 +472,21 @@ const Profile = () => {
                           label="Họ"
                           value={formData.lastName}
                           isEditing={isEditing}
-                          onChange={(event) => setFormData({ ...formData, lastName: event.target.value })}
+                          onChange={handleProfileChange('lastName')}
                           icon={User}
                         />
                         <ProfileField
                           label="Tên"
                           value={formData.firstName}
                           isEditing={isEditing}
-                          onChange={(event) => setFormData({ ...formData, firstName: event.target.value })}
+                          onChange={handleProfileChange('firstName')}
                           icon={User}
-                        />
-                        <ProfileField
-                          label="Họ và tên đầy đủ"
-                          value={formData.fullName}
-                          isEditing={isEditing}
-                          onChange={(event) => setFormData({ ...formData, fullName: event.target.value })}
-                          icon={User}
-                          className="md:col-span-2"
                         />
                         <ProfileField
                           label="Email"
                           value={formData.email}
                           isEditing={isEditing}
-                          onChange={(event) => setFormData({ ...formData, email: event.target.value })}
+                          onChange={handleProfileChange('email')}
                           icon={Mail}
                           type="email"
                         />
@@ -417,14 +494,18 @@ const Profile = () => {
                           label="Số điện thoại"
                           value={formData.phoneNumber}
                           isEditing={isEditing}
-                          onChange={(event) => setFormData({ ...formData, phoneNumber: event.target.value })}
+                          onChange={handleProfileChange('phoneNumber')}
                           icon={Phone}
+                          type="tel"
+                          inputMode="numeric"
+                          maxLength={11}
+                          error={profileErrors.phoneNumber}
                         />
                       </div>
 
                       {isEditing && (
                         <div className="flex flex-col-reverse gap-3 border-t border-slate-100 pt-5 sm:flex-row sm:justify-end">
-                          <Button type="button" variant="outline" onClick={() => setIsEditing(false)}>
+                          <Button type="button" variant="outline" onClick={handleCancelEdit}>
                             Hủy
                           </Button>
                           <Button type="submit" icon={Save}>
@@ -506,10 +587,10 @@ const ProfileMiniStat = ({ label, value, icon: Icon }) => (
   </div>
 );
 
-const ProfileField = ({ label, value, isEditing, onChange, icon: Icon, type = 'text', className = '' }) => (
+const ProfileField = ({ label, value, isEditing, onChange, icon: Icon, type = 'text', className = '', error, ...inputProps }) => (
   <div className={className}>
     {isEditing ? (
-      <Input label={label} value={value} onChange={onChange} type={type} icon={Icon} />
+      <Input label={label} value={value} onChange={onChange} type={type} icon={Icon} error={error} {...inputProps} />
     ) : (
       <div>
         <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">{label}</p>

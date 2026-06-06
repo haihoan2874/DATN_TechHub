@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Grid, ChevronDown, SlidersHorizontal, Search, X, Check, Tag, Smartphone, Watch, Headphones, Activity } from 'lucide-react';
 import ProductCard from '../components/ui/ProductCard';
 import productService from '../services/productService';
@@ -8,12 +8,16 @@ import Input from '../components/ui/Input';
 import ConfirmModal from '../components/ui/ConfirmModal';
 
 const PRICE_RANGES = [
-  { label: 'Dưới 1 triệu', min: 0, max: 1000000 },
-  { label: '1 - 3 triệu', min: 1000000, max: 3000000 },
-  { label: '3 - 5 triệu', min: 3000000, max: 5000000 },
-  { label: '5 - 10 triệu', min: 5000000, max: 10000000 },
-  { label: 'Trên 10 triệu', min: 10000000, max: 100000000 },
+  { key: 'under-1m', label: 'Dưới 1 triệu', min: 0, max: 1000000 },
+  { key: '1m-3m', label: '1 - 3 triệu', min: 1000000, max: 3000000 },
+  { key: '3m-5m', label: '3 - 5 triệu', min: 3000000, max: 5000000 },
+  { key: '5m-10m', label: '5 - 10 triệu', min: 5000000, max: 10000000 },
+  { key: 'over-10m', label: 'Trên 10 triệu', min: 10000000, max: 100000000 },
 ];
+
+const PAGE_SIZE = 12;
+const DEFAULT_SORT = 'updatedAt';
+const DEFAULT_DIRECTION = 'desc';
 
 const Shop = () => {
   const [products, setProducts] = useState([]);
@@ -22,79 +26,106 @@ const Shop = () => {
   const [loading, setLoading] = useState(true);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isConfirmClearOpen, setIsConfirmClearOpen] = useState(false);
+  const [isUrlHydrated, setIsUrlHydrated] = useState(false);
+  const lastSyncedSearchRef = useRef('');
+  const isHydratingFromUrlRef = useRef(false);
 
   // States for filters
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedBrand, setSelectedBrand] = useState(null);
   const [selectedPriceRange, setSelectedPriceRange] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [searchInput, setSearchInput] = useState('');
   const [sortOrder, setSortOrder] = useState('updatedAt');
   const [sortDirection, setSortDirection] = useState('desc');
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const pageSize = 12;
-
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Handle category and search from URL if present
+    if (!categories.length && !brands.length) return;
+
+    isHydratingFromUrlRef.current = true;
     const params = new URLSearchParams(location.search);
     const categoryParam = params.get('category');
+    const brandParam = params.get('brand');
+    const priceParam = params.get('price');
     const searchParam = params.get('search');
+    const sortParam = params.get('sort');
+    const dirParam = params.get('dir');
+    const pageParam = Number(params.get('page'));
+    const nextCategory = categoryParam
+      ? categories.find(c => c.slug === categoryParam || c.id === categoryParam)?.id || null
+      : null;
+    const nextBrand = brandParam
+      ? brands.find(b => b.slug === brandParam || b.id === brandParam || b.name === brandParam)?.id || null
+      : null;
+    const nextPriceRange = priceParam
+      ? PRICE_RANGES.find((range) => range.key === priceParam) || null
+      : null;
 
-    if (categoryParam && categories.length > 0) {
-      const foundCategory = categories.find(c => c.slug === categoryParam || c.id === categoryParam);
-      if (foundCategory) {
-        setSelectedCategory(foundCategory.id);
-      }
-    }
+    setSelectedCategory(nextCategory);
+    setSelectedBrand(nextBrand);
+    setSelectedPriceRange(nextPriceRange);
+    setSearchKeyword((searchParam || '').trim());
+    setSearchInput((searchParam || '').trim());
+    setSortOrder(sortParam === 'price' ? 'price' : DEFAULT_SORT);
+    setSortDirection(dirParam === 'asc' ? 'asc' : DEFAULT_DIRECTION);
+    setCurrentPage(Number.isInteger(pageParam) && pageParam > 1 ? pageParam - 1 : 0);
+    setIsUrlHydrated(true);
+  }, [brands, categories, location.search]);
 
-    if (searchParam) {
-      setSearchQuery(searchParam);
-      setDebouncedSearchQuery(searchParam.trim());
-    }
-  }, [location.search, categories]);
+  const buildShopSearch = useCallback(() => {
+    const params = new URLSearchParams();
+    const category = categories.find((item) => item.id === selectedCategory);
+    const brand = brands.find((item) => item.id === selectedBrand);
+
+    if (searchKeyword) params.set('search', searchKeyword);
+    if (category) params.set('category', category.slug || category.id);
+    if (brand) params.set('brand', brand.slug || brand.name || brand.id);
+    if (selectedPriceRange) params.set('price', selectedPriceRange.key);
+    if (sortOrder !== DEFAULT_SORT) params.set('sort', sortOrder);
+    if (sortDirection !== DEFAULT_DIRECTION) params.set('dir', sortDirection);
+    if (currentPage > 0) params.set('page', String(currentPage + 1));
+
+    return params.toString();
+  }, [
+    brands,
+    categories,
+    currentPage,
+    searchKeyword,
+    selectedBrand,
+    selectedCategory,
+    selectedPriceRange,
+    sortDirection,
+    sortOrder
+  ]);
 
   useEffect(() => {
-    fetchFilterData();
-  }, []);
+    if (!isUrlHydrated) return;
 
-  useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
-      setDebouncedSearchQuery(searchQuery.trim());
-      setCurrentPage(0);
-    }, 350);
-
-    return () => window.clearTimeout(timeoutId);
-  }, [searchQuery]);
-
-  useEffect(() => {
-    fetchProducts();
-  }, [selectedCategory, selectedBrand, selectedPriceRange, sortOrder, sortDirection, currentPage, debouncedSearchQuery]);
-
-  const activeFilters = useMemo(() => {
-    const filters = [];
-    if (selectedCategory) {
-      const category = categories.find((item) => item.id === selectedCategory);
-      filters.push({ key: 'category', label: category?.name || 'Danh mục' });
+    if (isHydratingFromUrlRef.current) {
+      isHydratingFromUrlRef.current = false;
+      lastSyncedSearchRef.current = location.search.replace(/^\?/, '');
+      return;
     }
-    if (selectedBrand) {
-      const brand = brands.find((item) => item.id === selectedBrand);
-      filters.push({ key: 'brand', label: brand?.name || 'Thương hiệu' });
-    }
-    if (selectedPriceRange) {
-      filters.push({ key: 'price', label: selectedPriceRange.label });
-    }
-    if (debouncedSearchQuery) {
-      filters.push({ key: 'search', label: debouncedSearchQuery });
-    }
-    return filters;
-  }, [brands, categories, debouncedSearchQuery, selectedBrand, selectedCategory, selectedPriceRange]);
 
-  const fetchFilterData = async () => {
+    const nextSearch = buildShopSearch();
+    const currentSearch = location.search.replace(/^\?/, '');
+
+    if (nextSearch !== currentSearch && nextSearch !== lastSyncedSearchRef.current) {
+      lastSyncedSearchRef.current = nextSearch;
+      navigate(
+        { pathname: location.pathname, search: nextSearch ? `?${nextSearch}` : '' },
+        { replace: true }
+      );
+    }
+  }, [buildShopSearch, isUrlHydrated, location.pathname, location.search, navigate]);
+
+  const fetchFilterData = useCallback(async () => {
     try {
       const [cats, brs] = await Promise.all([
         productService.getCategories(),
@@ -105,9 +136,9 @@ const Shop = () => {
     } catch (error) {
       console.error('Failed to fetch shop filters:', error);
     }
-  };
+  }, []);
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     setLoading(true);
     try {
       const params = {
@@ -115,11 +146,11 @@ const Shop = () => {
         brandId: selectedBrand,
         minPrice: selectedPriceRange ? selectedPriceRange.min : null,
         maxPrice: selectedPriceRange ? selectedPriceRange.max : null,
-        name: debouncedSearchQuery || null,
+        name: searchKeyword || null,
         sortBy: sortOrder,
         sortOrder: sortDirection,
         pageNo: currentPage,
-        pageSize: pageSize
+        pageSize: PAGE_SIZE
       };
 
       const response = await productService.getAllProducts(params);
@@ -137,20 +168,58 @@ const Shop = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [
+    currentPage,
+    searchKeyword,
+    selectedBrand,
+    selectedCategory,
+    selectedPriceRange,
+    sortDirection,
+    sortOrder
+  ]);
 
-  const handleSearch = (e) => {
-    setSearchQuery(e.target.value);
-  };
+  useEffect(() => {
+    fetchFilterData();
+  }, [fetchFilterData]);
+
+  useEffect(() => {
+    if (!isUrlHydrated) return;
+    fetchProducts();
+  }, [fetchProducts, isUrlHydrated]);
+
+  const activeFilters = useMemo(() => {
+    const filters = [];
+    if (selectedCategory) {
+      const category = categories.find((item) => item.id === selectedCategory);
+      filters.push({ key: 'category', label: category?.name || 'Danh mục' });
+    }
+    if (selectedBrand) {
+      const brand = brands.find((item) => item.id === selectedBrand);
+      filters.push({ key: 'brand', label: brand?.name || 'Thương hiệu' });
+    }
+    if (selectedPriceRange) {
+      filters.push({ key: 'price', label: selectedPriceRange.label });
+    }
+    if (searchKeyword) {
+      filters.push({ key: 'search', label: searchKeyword });
+    }
+    return filters;
+  }, [brands, categories, searchKeyword, selectedBrand, selectedCategory, selectedPriceRange]);
 
   const removeFilter = (key) => {
     if (key === 'category') setSelectedCategory(null);
     if (key === 'brand') setSelectedBrand(null);
     if (key === 'price') setSelectedPriceRange(null);
     if (key === 'search') {
-      setSearchQuery('');
-      setDebouncedSearchQuery('');
+      setSearchKeyword('');
+      setSearchInput('');
     }
+    setCurrentPage(0);
+  };
+
+  const handleProductSearchSubmit = (event) => {
+    event.preventDefault();
+    setSearchKeyword(searchInput.trim());
     setCurrentPage(0);
   };
 
@@ -163,8 +232,8 @@ const Shop = () => {
     setSelectedCategory(null);
     setSelectedBrand(null);
     setSelectedPriceRange(null);
-    setSearchQuery('');
-    setDebouncedSearchQuery('');
+    setSearchKeyword('');
+    setSearchInput('');
     setCurrentPage(0);
     setIsConfirmClearOpen(false);
     setIsFilterOpen(false);
@@ -176,9 +245,9 @@ const Shop = () => {
          <div className="flex flex-col gap-1">
             <FilterItem
               label="Tất cả sản phẩm"
-              active={!selectedCategory && !selectedBrand && !selectedPriceRange && !debouncedSearchQuery}
+              active={!selectedCategory && !selectedBrand && !selectedPriceRange && !searchKeyword}
               onClick={() => {
-                if (selectedCategory || selectedBrand || selectedPriceRange || debouncedSearchQuery) {
+                if (selectedCategory || selectedBrand || selectedPriceRange || searchKeyword) {
                   setIsConfirmClearOpen(true);
                 }
               }}
@@ -326,19 +395,25 @@ const Shop = () => {
 
           <main className="min-w-0 flex-grow">
             <div className="mb-5 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
-              <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
-                <div className="min-w-0 flex-1">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <form onSubmit={handleProductSearchSubmit} className="flex min-w-0 flex-1 gap-2">
                   <Input
                     icon={Search}
-                    value={searchQuery}
-                    onChange={handleSearch}
-                    placeholder="Tìm sản phẩm theo tên…"
-                    className="w-full"
                     name="shopSearch"
+                    value={searchInput}
+                    onChange={(event) => setSearchInput(event.target.value)}
+                    placeholder="Tìm sản phẩm theo tên..."
+                    className="min-w-0 flex-1"
                     autoComplete="off"
                   />
-                </div>
-
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    className="hidden px-4 sm:inline-flex"
+                  >
+                    Tìm
+                  </Button>
+                </form>
                 <div className="grid grid-cols-4 gap-2 sm:flex sm:items-center sm:overflow-x-auto">
                   <SortButton
                     active={sortOrder === 'updatedAt'}
@@ -396,7 +471,7 @@ const Shop = () => {
 
               {loading ? (
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-3">
-                  {[...Array(pageSize)].map((_, i) => <SkeletonCard key={i} />)}
+                  {[...Array(PAGE_SIZE)].map((_, i) => <SkeletonCard key={i} />)}
                 </div>
               ) : (
                 <div className="flex flex-col gap-7">

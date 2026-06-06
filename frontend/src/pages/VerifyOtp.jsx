@@ -15,13 +15,14 @@ const VerifyOtp = () => {
   const email = location.state?.email || '';
   
   const [otp, setOtp] = useState('');
+  const [otpError, setOtpError] = useState('');
   const [status, setStatus] = useState({ type: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (otp.length !== 6) {
-      setStatus({ type: 'error', message: 'Vui lòng nhập đầy đủ 6 chữ số mã OTP.' });
+      setOtpError('Vui lòng nhập đầy đủ 6 chữ số mã OTP.');
       return;
     }
 
@@ -72,7 +73,7 @@ const VerifyOtp = () => {
           </div>
 
           <div className="glass-card rounded-2xl border border-white p-6 shadow-2xl shadow-blue-500/5 sm:p-8">
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6" noValidate>
               {status.message && (
                 <div aria-live="polite" className={`flex items-center gap-3 rounded-xl p-4 text-sm font-medium ${
                   status.type === 'error' ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'
@@ -85,16 +86,19 @@ const VerifyOtp = () => {
               <Input 
                 label="Mã OTP"
                 type="text"
-                required
                 maxLength="6"
                 value={otp}
-                onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+                onChange={(e) => {
+                  setOtp(e.target.value.replace(/\D/g, ''));
+                  if (otpError) setOtpError('');
+                }}
                 inputClassName="text-center text-2xl font-black tracking-[0.35em] sm:text-3xl"
                 placeholder="000000"
                 name="otp"
                 inputMode="numeric"
                 autoComplete="one-time-code"
                 spellCheck={false}
+                error={otpError}
               />
 
               <Button

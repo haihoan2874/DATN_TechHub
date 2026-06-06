@@ -9,9 +9,10 @@ import {
   Truck, CreditCard 
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { formatCurrency } from '../utils/formatters';
 
 const Cart = () => {
-  const { cartItems, updateQuantity, removeFromCart, clearCart } = useCart();
+  const { cartItems, updateQuantity, removeFromCart, removeItemsFromCart, clearCart } = useCart();
   const navigate = useNavigate();
   const [isConfirmClearOpen, setIsConfirmClearOpen] = useState(false);
   const [isConfirmRemoveSelectedOpen, setIsConfirmRemoveSelectedOpen] = useState(false);
@@ -26,10 +27,6 @@ const Cart = () => {
     [selectedItems]
   );
   const isAllSelected = cartItems.length > 0 && selectedIds.size === cartItems.length;
-
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
-  };
 
   const handleUpdateQuantity = async (productId, quantity) => {
     try {
@@ -83,7 +80,7 @@ const Cart = () => {
 
   const handleRemoveSelected = async () => {
     try {
-      await Promise.all(selectedItems.map((item) => removeFromCart(item.id)));
+      await removeItemsFromCart(selectedItems.map((item) => item.id));
       setSelectedIds(new Set());
       setIsConfirmRemoveSelectedOpen(false);
       toast.success('Đã xóa các sản phẩm đã chọn');
@@ -199,6 +196,8 @@ const Cart = () => {
                     <img 
                       src={item.imageUrl || '/logo_final.png'} 
                       alt={item.name} 
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-contain p-2"
                     />
                   </div>
@@ -208,7 +207,7 @@ const Cart = () => {
                       {item.name}
                     </Link>
                     <div className="text-sm font-semibold text-blue-600 sm:text-base">
-                      {formatPrice(item.price)}
+                      {formatCurrency(item.price)}
                     </div>
                   </div>
 
@@ -237,7 +236,7 @@ const Cart = () => {
                     <div className="text-right min-w-[100px]">
                       <div className="mb-0.5 text-[11px] font-semibold uppercase text-slate-400 sm:hidden">Thành tiền</div>
                       <div className="text-sm font-bold text-slate-900 sm:text-base">
-                        {formatPrice(item.price * item.quantity)}
+                        {formatCurrency(item.price * item.quantity)}
                       </div>
                     </div>
 
@@ -262,7 +261,7 @@ const Cart = () => {
               <div className="space-y-4 mb-6">
                 <div className="flex justify-between text-sm text-slate-500">
                   <span>Tạm tính</span>
-                  <span className="font-semibold text-slate-900">{formatPrice(selectedItems.length > 0 ? selectedTotal : 0)}</span>
+                  <span className="font-semibold text-slate-900">{formatCurrency(selectedItems.length > 0 ? selectedTotal : 0)}</span>
                 </div>
                 <div className="flex justify-between text-sm text-slate-500">
                   <span>Phí vận chuyển</span>
@@ -272,7 +271,7 @@ const Cart = () => {
                 <div className="flex justify-between items-end">
                   <span className="font-semibold text-slate-900">Tổng cộng</span>
                   <span className="text-xl font-bold text-blue-600 sm:text-2xl">
-                    {formatPrice(selectedItems.length > 0 ? selectedTotal : 0)}
+                    {formatCurrency(selectedItems.length > 0 ? selectedTotal : 0)}
                   </span>
                 </div>
               </div>

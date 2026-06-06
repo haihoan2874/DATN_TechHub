@@ -2,22 +2,9 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import productService from '../services/productService';
 import {
-  ArrowRight, Watch, Cable, Activity, Tag, Package, Search
+  ArrowRight, Package, Search
 } from 'lucide-react';
-
-const ICON_MAP = {
-  Watch: Watch,
-  Cable: Cable,
-  Activity: Activity,
-  Tag: Tag,
-};
-
-const CATEGORY_IMAGES = {
-  'Đồng hồ thể thao': '/assets/categories/sports_watch.png',
-  'Phụ kiện đồng hồ': '/assets/categories/straps.png',
-  'Tai nghe Bluetooth': '/assets/categories/earbuds.png',
-  'Vòng theo dõi sức khỏe': '/assets/categories/health_band.png',
-};
+import { getCategoryIconComponent } from '../utils/categoryIcons';
 
 const CategoryList = () => {
   const [categories, setCategories] = useState([]);
@@ -110,49 +97,31 @@ const CategoryList = () => {
 };
 
 const CategoryCard = ({ cat, productCount }) => {
-  const IconComponent = ICON_MAP[cat.icon] || Tag;
-  const bgImage = CATEGORY_IMAGES[cat.name] || null;
+  const IconComponent = getCategoryIconComponent(cat);
 
   return (
     <Link
       to={`/shop?category=${cat.slug || cat.id}`}
-      className="group grid min-h-[220px] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all hover:border-blue-200 hover:shadow-md"
+      className="group flex min-h-[210px] flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:border-blue-200 hover:shadow-md"
     >
-      <div className="grid h-full grid-cols-[1fr_120px] sm:grid-cols-[1fr_140px]">
-        <div className="flex flex-col p-4 sm:p-5">
-          <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-50 text-blue-700">
-            <IconComponent size={22} />
-          </div>
+      <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-50 text-blue-700">
+        <IconComponent size={22} />
+      </div>
 
-          <h3 className="mb-2 text-lg font-bold leading-tight text-slate-950 transition-colors group-hover:text-blue-700">
-            {cat.name}
-          </h3>
-          <p className="line-clamp-3 text-sm leading-relaxed text-slate-500">
-            {cat.description || `Khám phá bộ sưu tập ${cat.name} tại S-LIFE.`}
-          </p>
+      <h3 className="mb-2 text-lg font-bold leading-tight text-slate-950 transition-colors group-hover:text-blue-700">
+        {cat.name}
+      </h3>
+      <p className="line-clamp-3 text-sm leading-relaxed text-slate-500">
+        {cat.description || `Khám phá bộ sưu tập ${cat.name} tại S-LIFE.`}
+      </p>
 
-          <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-4">
-            <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-500">
-              <Package size={14} className="text-blue-600" />
-              {productCount} sản phẩm
-            </span>
-            <div className="flex items-center gap-2 text-sm font-bold text-blue-700">
-              Xem <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
-            </div>
-          </div>
-        </div>
-
-        <div className="flex items-center justify-center bg-slate-50 p-4">
-          {bgImage ? (
-            <img
-              src={bgImage}
-              alt={cat.name}
-              className="h-24 w-24 object-contain transition-transform duration-300 group-hover:scale-105 sm:h-28 sm:w-28"
-              loading="lazy"
-            />
-          ) : (
-            <IconComponent size={72} className="text-slate-200" />
-          )}
+      <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-4">
+        <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-500">
+          <Package size={14} className="text-blue-600" />
+          {productCount} sản phẩm
+        </span>
+        <div className="flex items-center gap-2 text-sm font-bold text-blue-700">
+          Xem <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
         </div>
       </div>
     </Link>

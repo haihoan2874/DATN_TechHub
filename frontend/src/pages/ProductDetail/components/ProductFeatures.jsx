@@ -1,9 +1,11 @@
 import React, { useMemo } from 'react';
+import { resolveApiAssetUrl } from '../../../config/api';
 
 const ProductFeatures = ({ features, description }) => {
   const parsedFeatures = useMemo(() => {
     try {
-      return typeof features === 'string' ? JSON.parse(features) : (features || []);
+      const parsed = typeof features === 'string' ? JSON.parse(features) : (features || []);
+      return Array.isArray(parsed) ? parsed.filter((block) => block?.type !== 'gallery') : [];
     } catch (e) {
       return [];
     }
@@ -12,36 +14,41 @@ const ProductFeatures = ({ features, description }) => {
   if ((!parsedFeatures || parsedFeatures.length === 0) && !description) return null;
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <div className="border-b border-slate-100 bg-slate-50 px-6 py-4">
-        <h3 className="text-lg font-bold text-slate-900">Mô tả sản phẩm</h3>
+    <section id="product-description" className="scroll-mt-28 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div className="border-b border-slate-100 bg-white px-5 py-4 sm:px-6">
+        <div className="flex items-center gap-3">
+          <span className="h-5 w-1 rounded-full bg-blue-600" />
+          <h2 className="text-lg font-bold text-slate-900">Mô tả sản phẩm</h2>
+        </div>
       </div>
 
-      <div className="space-y-8 p-6 sm:p-8">
+      <div className="space-y-8 p-5 sm:p-7">
         {parsedFeatures.length === 0 && description ? (
-          <p className="whitespace-pre-wrap text-sm leading-7 text-slate-700">
+          <p className="whitespace-pre-wrap text-sm leading-7 text-slate-700 sm:text-base">
             {description}
           </p>
         ) : parsedFeatures.map((block, index) => (
           <div key={index} className="space-y-4">
             {block.title && (
-              <h4 className="text-base font-bold leading-tight text-slate-900">
+              <h3 className="text-lg font-bold leading-tight text-slate-950">
                 {block.title}
-              </h4>
+              </h3>
             )}
             
             {block.description && (
-              <p className="whitespace-pre-wrap text-sm leading-6 text-slate-700">
+              <p className="whitespace-pre-wrap text-sm leading-7 text-slate-700 sm:text-base">
                 {block.description}
               </p>
             )}
 
             {block.image && (
-              <div className="overflow-hidden rounded-xl border border-slate-100">
+              <div className="overflow-hidden rounded-xl border border-slate-100 bg-slate-50">
                 <img 
-                  src={block.image} 
+                  src={resolveApiAssetUrl(block.image)}
                   alt={block.title || 'Product detail'} 
-                  className="w-full h-auto object-cover"
+                  loading="lazy"
+                  decoding="async"
+                  className="h-auto w-full object-cover"
                 />
               </div>
             )}

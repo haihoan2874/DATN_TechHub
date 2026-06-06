@@ -286,7 +286,7 @@ const About = () => {
                   <Button
                     size="lg"
                     variant="outline"
-                    className="border-white/20 bg-transparent text-white hover:bg-white/10"
+                    className="border-white/20 bg-transparent hover:bg-white/10 hover:text-white"
                     onClick={() => navigate('/categories')}
                   >
                     Xem danh mục

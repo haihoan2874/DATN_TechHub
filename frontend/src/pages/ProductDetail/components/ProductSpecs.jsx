@@ -31,15 +31,18 @@ const ProductSpecs = ({ specs }) => {
   if (!Object.keys(flatSpecs).length) return null;
 
   return (
-    <section className="h-fit overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm xl:sticky xl:top-28">
-      <div className="border-b border-slate-100 bg-slate-50 px-6 py-4">
-        <h3 className="text-lg font-bold text-slate-900">Thông số kỹ thuật</h3>
+    <section id="product-specs" className="h-fit scroll-mt-28 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm xl:sticky xl:top-28">
+      <div className="border-b border-slate-100 bg-white px-5 py-4">
+        <div className="flex items-center gap-3">
+          <span className="h-5 w-1 rounded-full bg-blue-600" />
+          <h2 className="text-lg font-bold text-slate-900">Thông số kỹ thuật</h2>
+        </div>
       </div>
 
-      <div className="p-6">
+      <div className="p-5">
         <div className="divide-y divide-slate-100">
           {Object.entries(flatSpecs).map(([key, value], i) => (
-            <div key={i} className="grid gap-1 py-3 text-sm leading-relaxed first:pt-0 last:pb-0">
+            <div key={i} className="grid gap-1 py-3 text-sm leading-relaxed first:pt-0 last:pb-0 sm:grid-cols-[120px_1fr] sm:gap-3">
               <span className="font-medium text-slate-500">{key}</span>
               <span className="font-semibold text-slate-950">
                 {typeof value === 'string' && value.startsWith('http') ? (

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams, Link } from 'react-router-dom';
-import { ArrowRight, ChevronRight } from 'lucide-react';
+import { ArrowRight, ChevronRight, FileText, MessageSquare, SlidersHorizontal } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 import productService from '../../services/productService';
 import { useCart } from '../../context/CartContext';
 import Button from '../../components/ui/Button';
+import { resolveApiAssetUrl } from '../../config/api';
 
 import ProductGallery from './components/ProductGallery';
 import ProductInfo from './components/ProductInfo';
@@ -13,6 +14,7 @@ import ProductSpecs from './components/ProductSpecs';
 import RelatedProducts from './components/RelatedProducts';
 import ProductFeatures from './components/ProductFeatures';
 import ProductReviews from './components/ProductReviews';
+import { formatCurrency } from '../../utils/formatters';
 
 const ProductDetail = () => {
   const { slug } = useParams();
@@ -64,7 +66,7 @@ const ProductDetail = () => {
     const handleScroll = () => {
       setShowStickyBar(window.scrollY > 720);
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -124,11 +126,17 @@ const ProductDetail = () => {
         <div className="container mx-auto flex items-center justify-between gap-3 px-4 sm:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <div className="h-11 w-11 flex-shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-50 p-1.5">
-              <img src={product.imageUrl || '/logo_final.png'} alt={product.name} className="h-full w-full object-contain" />
+              <img
+                src={resolveApiAssetUrl(product.imageUrl) || '/logo_final.png'}
+                alt={product.name}
+                loading="lazy"
+                decoding="async"
+                className="h-full w-full object-contain"
+              />
             </div>
             <div className="hidden min-w-0 sm:block">
               <h4 className="truncate text-sm font-semibold text-slate-900">{product.name}</h4>
-              <p className="text-sm font-bold text-blue-600">{formatPrice(product.price)}</p>
+              <p className="text-sm font-bold text-blue-600">{formatCurrency(product.price)}</p>
             </div>
           </div>
           <Button type="button" onClick={handleStickyAddToCart} isLoading={cartAction === 'add'} disabled={Boolean(cartAction)}>
@@ -146,27 +154,39 @@ const ProductDetail = () => {
           <span className="truncate font-medium text-slate-900">{product.name}</span>
         </nav>
 
-        <section className="mb-5 rounded-2xl border border-slate-200 bg-white p-2.5 shadow-sm sm:p-5">
-          <div className="grid gap-4 lg:grid-cols-[minmax(0,480px)_minmax(0,1fr)] lg:gap-5 xl:grid-cols-[minmax(0,520px)_minmax(360px,1fr)]">
-            <ProductGallery
-              images={images}
-              activeImage={activeImage}
-              setActiveImage={setActiveImage}
-              productName={product.name}
-            />
+        <section className="mb-5 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div className="grid gap-0 lg:grid-cols-[minmax(0,520px)_minmax(0,1fr)] xl:grid-cols-[minmax(0,560px)_minmax(420px,1fr)]">
+            <div className="border-b border-slate-100 p-3 sm:p-5 lg:border-b-0 lg:border-r">
+              <ProductGallery
+                images={images}
+                activeImage={activeImage}
+                setActiveImage={setActiveImage}
+                productName={product.name}
+              />
+            </div>
 
-            <ProductInfo
-              product={product}
-              quantity={quantity}
-              setQuantity={setQuantity}
-              onAddToCart={handleAddToCart}
-              onBuyNow={handleBuyNow}
-              cartAction={cartAction}
-            />
+            <div className="p-4 sm:p-6">
+              <ProductInfo
+                product={product}
+                quantity={quantity}
+                setQuantity={setQuantity}
+                onAddToCart={handleAddToCart}
+                onBuyNow={handleBuyNow}
+                cartAction={cartAction}
+              />
+            </div>
           </div>
         </section>
 
-        <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-6">
+        <div className="mb-5 overflow-x-auto rounded-2xl border border-slate-200 bg-white p-2 shadow-sm">
+          <div className="flex min-w-max items-center gap-2">
+            <DetailAnchor href="#product-description" icon={FileText} label="Mô tả" />
+            <DetailAnchor href="#product-specs" icon={SlidersHorizontal} label="Thông số kỹ thuật" />
+            <DetailAnchor href="#product-reviews" icon={MessageSquare} label="Đánh giá" />
+          </div>
+        </div>
+
+        <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px] xl:gap-6">
           <div className="space-y-5">
             <ProductFeatures features={product.features} description={product.description} />
             <ProductReviews
@@ -184,9 +204,15 @@ const ProductDetail = () => {
   );
 };
 
-const formatPrice = (price) => {
-  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(price || 0));
-};
+const DetailAnchor = ({ href, icon: Icon, label }) => (
+  <a
+    href={href}
+    className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50 hover:text-blue-700"
+  >
+    <Icon size={16} />
+    {label}
+  </a>
+);
 
 const getProductImages = (product) => {
   const imageSet = new Set();

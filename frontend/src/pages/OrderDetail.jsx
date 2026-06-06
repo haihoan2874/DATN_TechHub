@@ -15,6 +15,7 @@ import EmptyState from '../components/feedback/EmptyState';
 import StatusBadge from '../components/status/StatusBadge';
 import orderService from '../services/orderService';
 import { getOrderStatusLabel } from '../constants/orderStatus';
+import { formatCurrency, formatDateTime } from '../utils/formatters';
 
 const statusTone = {
   PENDING: 'amber',
@@ -23,18 +24,6 @@ const statusTone = {
   SHIPPED: 'slate',
   DELIVERED: 'green',
   CANCELLED: 'red'
-};
-
-const formatPrice = (price) => {
-  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(price || 0));
-};
-
-const formatDateTime = (value) => {
-  if (!value) return '---';
-  return new Intl.DateTimeFormat('vi-VN', {
-    dateStyle: 'medium',
-    timeStyle: 'short'
-  }).format(new Date(value));
 };
 
 const splitShippingAddress = (shippingAddress) => {
@@ -141,7 +130,7 @@ const OrderDetail = () => {
 
             <div className="rounded-2xl bg-blue-50 px-4 py-3 text-left lg:text-right">
               <p className="text-sm font-medium text-blue-700">Tổng thanh toán</p>
-              <p className="mt-1 text-xl font-bold text-blue-700">{formatPrice(order.total)}</p>
+              <p className="mt-1 text-xl font-bold text-blue-700">{formatCurrency(order.total)}</p>
             </div>
           </div>
         </div>
@@ -155,17 +144,23 @@ const OrderDetail = () => {
               {order.items?.map((item) => (
                 <div key={item.id || item.productId} className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:p-5">
                   <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
-                    <img src="/logo_final.png" alt={item.productName} className="h-full w-full object-contain p-3" />
+                    <img
+                      src={item.productImageUrl || '/logo_final.png'}
+                      alt={item.productName}
+                      loading="lazy"
+                      decoding="async"
+                      className="h-full w-full object-contain p-3"
+                    />
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="font-bold text-slate-900">{item.productName}</p>
                     <p className="mt-1 text-sm text-slate-500">
-                      Số lượng: {item.quantity} x {formatPrice(item.price)}
+                      Số lượng: {item.quantity} x {formatCurrency(item.price)}
                     </p>
                   </div>
                   <div className="text-left sm:text-right">
                     <p className="text-sm text-slate-500">Thành tiền</p>
-                    <p className="font-bold text-slate-900">{formatPrice(item.subtotal)}</p>
+                    <p className="font-bold text-slate-900">{formatCurrency(item.subtotal)}</p>
                   </div>
                 </div>
               ))}
@@ -203,7 +198,7 @@ const OrderDetail = () => {
                 </div>
                 <div className="flex items-center justify-between gap-4 border-t border-slate-100 pt-3">
                   <span className="font-semibold text-slate-900">Tổng thanh toán</span>
-                  <span className="text-lg font-bold text-blue-600">{formatPrice(order.total)}</span>
+                  <span className="text-lg font-bold text-blue-600">{formatCurrency(order.total)}</span>
                 </div>
               </div>
               {order.notes && (

@@ -15,6 +15,8 @@ import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import Modal from '../components/ui/Modal';
 import toast from 'react-hot-toast';
+import { formatCurrency } from '../utils/formatters';
+import { hasValidationErrors, onlyDigits, validateCustomerAddress } from '../utils/formValidation';
 
 const Checkout = () => {
   const { cartItems, fetchCart, cartLoading } = useCart();
@@ -46,6 +48,7 @@ const Checkout = () => {
     postalCode: '',
     isDefault: false
   });
+  const [newAddressErrors, setNewAddressErrors] = useState({});
 
   const [formData, setFormData] = useState({
     note: '',
@@ -80,10 +83,6 @@ const Checkout = () => {
     } finally {
       setLoadingAddresses(false);
     }
-  };
-
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
   };
 
   const selectedIdSet = useMemo(() => new Set(selectedProductIds), [selectedProductIds]);
@@ -134,19 +133,31 @@ const Checkout = () => {
 
   const handleNewAddressChange = (e) => {
     const { name, value, type, checked } = e.target;
+    const nextValue = ['phone', 'postalCode'].includes(name) ? onlyDigits(value, name === 'phone' ? 11 : 20) : value;
     setNewAddress({
       ...newAddress,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === 'checkbox' ? checked : nextValue
     });
+    if (newAddressErrors[name]) {
+      setNewAddressErrors((prev) => ({ ...prev, [name]: '' }));
+    }
   };
 
   const handleAddAddress = async (e) => {
     e.preventDefault();
+    const validationErrors = validateCustomerAddress(newAddress);
+    setNewAddressErrors(validationErrors);
+
+    if (hasValidationErrors(validationErrors)) {
+      return;
+    }
+
     try {
       const created = await addressService.createAddress(newAddress);
       setAddresses([...addresses, created]);
       setSelectedAddressId(created.id);
       setShowAddressModal(false);
+      setNewAddressErrors({});
       setNewAddress({
         fullName: user ? `${user.lastName} ${user.firstName}` : '',
         phone: '',
@@ -349,7 +360,7 @@ const Checkout = () => {
 
               {appliedVoucher && (
                 <div className="mt-4 rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">
-                  Đã giảm {formatPrice(appliedVoucher.discountAmount)} cho đơn hàng này.
+                  Đã giảm {formatCurrency(appliedVoucher.discountAmount)} cho đơn hàng này.
                 </div>
               )}
             </section>
@@ -408,14 +419,20 @@ const Checkout = () => {
                 {checkoutItems.map(item => (
                   <div key={item.id} className="flex gap-4">
                     <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl border border-slate-100 bg-slate-50">
-                      <img src={item.imageUrl || '/logo_final.png'} alt={item.name} className="w-full h-full object-contain p-1" />
+                      <img
+                        src={item.imageUrl || '/logo_final.png'}
+                        alt={item.name}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-contain p-1"
+                      />
                     </div>
                     <div className="flex-grow min-w-0">
                       <div className="font-bold text-slate-900 text-sm line-clamp-1">{item.name}</div>
-                      <div className="text-xs text-slate-500">SL: {item.quantity} × {formatPrice(item.price)}</div>
+                      <div className="text-xs text-slate-500">SL: {item.quantity} × {formatCurrency(item.price)}</div>
                     </div>
                     <div className="font-bold text-slate-900 text-sm whitespace-nowrap">
-                      {formatPrice(item.price * item.quantity)}
+                      {formatCurrency(item.price * item.quantity)}
                     </div>
                   </div>
                 ))}
@@ -424,7 +441,7 @@ const Checkout = () => {
               <div className="space-y-3 border-t border-slate-100 py-5">
                 <div className="flex justify-between text-sm text-slate-500">
                   <span>Tạm tính</span>
-                  <span className="font-semibold text-slate-900">{formatPrice(checkoutTotal)}</span>
+                  <span className="font-semibold text-slate-900">{formatCurrency(checkoutTotal)}</span>
                 </div>
                 <div className="flex justify-between text-sm text-slate-500">
                   <span>Phí vận chuyển</span>
@@ -433,14 +450,14 @@ const Checkout = () => {
                 {appliedVoucher && (
                   <div className="flex justify-between text-emerald-600 text-sm">
                     <span>Giảm giá ({appliedVoucher.code})</span>
-                    <span className="font-bold">-{formatPrice(appliedVoucher.discountAmount)}</span>
+                    <span className="font-bold">-{formatCurrency(appliedVoucher.discountAmount)}</span>
                   </div>
                 )}
                 <div className="h-px bg-slate-100 my-2" />
                 <div className="flex justify-between items-end">
                   <span className="font-semibold text-slate-900">Tổng thanh toán</span>
                   <span className="text-xl font-bold text-blue-600 sm:text-2xl">
-                    {formatPrice(finalTotal)}
+                    {formatCurrency(finalTotal)}
                   </span>
                 </div>
               </div>
@@ -472,55 +489,68 @@ const Checkout = () => {
 
       <Modal 
         isOpen={showAddressModal}
-        onClose={() => setShowAddressModal(false)}
+        onClose={() => {
+          setShowAddressModal(false);
+          setNewAddressErrors({});
+        }}
         title="Thêm địa chỉ mới"
       >
-        <form onSubmit={handleAddAddress} className="space-y-5">
+        <form onSubmit={handleAddAddress} className="space-y-5" noValidate>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="col-span-1 md:col-span-2">
               <Input
                 label="Họ tên người nhận"
                 name="fullName"
-                required
                 value={newAddress.fullName}
                 onChange={handleNewAddressChange}
+                error={newAddressErrors.fullName}
               />
             </div>
             <Input
               label="Số điện thoại"
               type="tel"
               name="phone"
-              required
+              inputMode="numeric"
+              maxLength={11}
               value={newAddress.phone}
               onChange={handleNewAddressChange}
+              error={newAddressErrors.phone}
             />
             <Input
               label="Mã bưu điện"
               name="postalCode"
-              required
+              inputMode="numeric"
+              maxLength={20}
               value={newAddress.postalCode}
               onChange={handleNewAddressChange}
+              error={newAddressErrors.postalCode}
             />
             <div className="col-span-1 md:col-span-2">
               <Input
                 label="Thành phố / Tỉnh"
                 name="city"
-                required
                 value={newAddress.city}
                 onChange={handleNewAddressChange}
+                error={newAddressErrors.city}
               />
             </div>
             <div className="col-span-1 md:col-span-2">
               <label className="form-label mb-2 block">Địa chỉ chi tiết</label>
               <textarea
                 name="address"
-                required
                 rows="3"
                 value={newAddress.address}
                 onChange={handleNewAddressChange}
-                className="form-textarea"
+                aria-invalid={Boolean(newAddressErrors.address)}
+                aria-describedby={newAddressErrors.address ? 'checkout-address-error' : undefined}
+                className={`form-textarea ${newAddressErrors.address ? 'border-rose-500 bg-rose-50/30' : ''}`}
                 placeholder="Số nhà, tên đường, phường/xã..."
               />
+              {newAddressErrors.address && (
+                <span id="checkout-address-error" className="mt-2 block text-xs font-semibold text-rose-600">
+                  {newAddressErrors.address}
+                </span>
+              )}
             </div>
             <div className="col-span-1 md:col-span-2">
               <label className="group flex cursor-pointer items-center gap-3">
@@ -541,7 +571,10 @@ const Checkout = () => {
               type="button"
               variant="outline" 
               className="flex-grow"
-              onClick={() => setShowAddressModal(false)}
+              onClick={() => {
+                setShowAddressModal(false);
+                setNewAddressErrors({});
+              }}
             >
               Hủy
             </Button>

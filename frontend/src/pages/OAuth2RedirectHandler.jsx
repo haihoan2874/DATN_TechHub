@@ -8,16 +8,11 @@ const OAuth2RedirectHandler = () => {
     const { loginWithToken } = useAuth();
 
     useEffect(() => {
-        const getUrlParameter = (name) => {
-            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-            const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-            const results = regex.exec(location.search);
-            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-        };
+        const searchParams = new URLSearchParams(location.search);
 
-        const token = getUrlParameter('token');
-        const role = getUrlParameter('role');
-        const username = getUrlParameter('username');
+        const token = searchParams.get('token') || '';
+        const role = searchParams.get('role') || '';
+        const username = searchParams.get('username') || '';
 
         if (token) {
             // Save to context and localStorage
@@ -30,7 +25,7 @@ const OAuth2RedirectHandler = () => {
                 navigate('/');
             }
         } else {
-            navigate('/login?error=OAuth2 authentication failed');
+            navigate('/login?error=oauth2');
         }
     }, [location, navigate, loginWithToken]);
 

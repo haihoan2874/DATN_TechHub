@@ -20,6 +20,7 @@ import MetricCard from '../components/data/MetricCard';
 import EmptyState from '../components/feedback/EmptyState';
 import StatusBadge from '../components/status/StatusBadge';
 import { getOrderStatusLabel, ORDER_STATUS_VALUES } from '../constants/orderStatus';
+import { formatCurrency, formatDate } from '../utils/formatters';
 
 const statusTone = {
   PENDING: 'amber',
@@ -28,10 +29,6 @@ const statusTone = {
   SHIPPED: 'slate',
   DELIVERED: 'green',
   CANCELLED: 'red'
-};
-
-const formatPrice = (price) => {
-  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(price || 0));
 };
 
 const getOrderTotal = (order) => order.totalAmount ?? order.total ?? 0;
@@ -271,7 +268,7 @@ const Orders = () => {
                       <div className="mt-2 flex flex-wrap gap-4 text-sm text-slate-500">
                         <span className="inline-flex items-center gap-1.5">
                           <Calendar size={14} />
-                          {new Date(order.createdAt).toLocaleDateString('vi-VN')}
+                          {formatDate(order.createdAt)}
                         </span>
                         <span className="inline-flex items-center gap-1.5">
                           <CreditCard size={14} />
@@ -282,7 +279,7 @@ const Orders = () => {
                     </div>
                     <div className="text-left sm:text-right">
                       <p className="text-sm text-slate-500">Tổng thanh toán</p>
-                      <p className="text-xl font-bold text-blue-600">{formatPrice(getOrderTotal(order))}</p>
+                      <p className="text-xl font-bold text-blue-600">{formatCurrency(getOrderTotal(order))}</p>
                     </div>
                   </div>
 
@@ -291,12 +288,18 @@ const Orders = () => {
                       {order.orderItems?.map((item, index) => (
                         <div key={`${order.id}-${item.productId || index}`} className="flex items-center gap-3">
                           <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-100 bg-slate-50">
-                            <img src={item.productImageUrl || '/logo_final.png'} alt={item.productName} className="h-full w-full object-contain p-1.5" />
+                            <img
+                              src={item.productImageUrl || '/logo_final.png'}
+                              alt={item.productName}
+                              loading="lazy"
+                              decoding="async"
+                              className="h-full w-full object-contain p-1.5"
+                            />
                           </div>
                           <div className="min-w-0 flex-1">
                             <p className="truncate text-sm font-semibold text-slate-900">{item.productName}</p>
                             <p className="text-xs text-slate-500">
-                              SL: {item.quantity} x {formatPrice(item.price)}
+                              SL: {item.quantity} x {formatCurrency(item.price)}
                             </p>
                           </div>
                           {order.status === 'DELIVERED' && (

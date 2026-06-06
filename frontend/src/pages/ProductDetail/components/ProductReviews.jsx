@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { CheckCircle2, Star } from 'lucide-react';
 import productService from '../../../services/productService';
 import EmptyState from '../../../components/feedback/EmptyState';
+import { formatDate } from '../../../utils/formatters';
 
 const ProductReviews = ({ productId, averageRating, reviewCount }) => {
   const [reviews, setReviews] = useState([]);
@@ -71,7 +72,7 @@ const ProductReviews = ({ productId, averageRating, reviewCount }) => {
                         </span>
                       </div>
                       <p className="mt-1 text-xs text-slate-500">
-                        {new Date(review.createdAt).toLocaleDateString('vi-VN')}
+                        {formatDate(review.createdAt)}
                       </p>
                     </div>
                   </div>

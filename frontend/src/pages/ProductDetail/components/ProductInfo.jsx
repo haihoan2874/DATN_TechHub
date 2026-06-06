@@ -1,19 +1,33 @@
 import React from 'react';
-import { CheckCircle2, Minus, PackageCheck, Plus, ShieldCheck, ShoppingCart, Star, Truck, Zap } from 'lucide-react';
+import {
+  CheckCircle2,
+  CreditCard,
+  Gift,
+  Minus,
+  PackageCheck,
+  Plus,
+  ShieldCheck,
+  ShoppingCart,
+  Star,
+  Truck,
+  Zap
+} from 'lucide-react';
 import Button from '../../../components/ui/Button';
 import StatusBadge from '../../../components/status/StatusBadge';
+import { formatCurrency } from '../../../utils/formatters';
 
 const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow, cartAction }) => {
   const { name, price, description, brandName, categoryName, stockQuantity = 0 } = product;
   const stock = Number(stockQuantity || 0);
   const inStock = stock > 0;
   const specs = parseSpecs(product.specs);
-  const warranty = specs['Bảo hành'] || specs['Warranty'] || 'Theo từng sản phẩm';
-  const shipping = specs['Vận chuyển'] || 'Theo đơn hàng';
+  const warranty = specs['Bảo hành'] || specs['Warranty'] || 'Theo chính sách';
+  const shipping = specs['Vận chuyển'] || 'Giao hàng toàn quốc';
+  const deviceType = specs['Loại thiết bị'] || specs['Sản phẩm'] || categoryName || 'Thiết bị sức khỏe thông minh';
 
   return (
     <div className="flex h-full flex-col">
-      <div className="space-y-3">
+      <div className="space-y-3 border-b border-slate-100 pb-4">
         <div className="flex flex-wrap items-center gap-2">
           {brandName && <StatusBadge tone="blue">{brandName}</StatusBadge>}
           <StatusBadge tone={inStock ? 'green' : 'red'}>
@@ -21,7 +35,7 @@ const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow, ca
           </StatusBadge>
         </div>
 
-        <h1 className="text-xl font-bold leading-tight text-slate-950 sm:text-2xl lg:text-3xl">{name}</h1>
+        <h1 className="text-2xl font-bold leading-tight text-slate-950 sm:text-3xl lg:text-[34px]">{name}</h1>
 
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-1.5 text-amber-400">
@@ -37,15 +51,15 @@ const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow, ca
         </div>
       </div>
 
-      <div className="mt-3 border-y border-slate-100 py-3">
+      <div className="border-b border-slate-100 py-4">
         <p className="text-xs font-medium text-slate-500 sm:text-sm">Giá bán</p>
-        <p className="mt-1 text-xl font-bold text-blue-700 sm:text-2xl">{formatCurrency(price)}</p>
+        <p className="mt-1 text-3xl font-bold tracking-tight text-blue-700 sm:text-4xl">{formatCurrency(price)}</p>
       </div>
 
-      <div className="mt-3 grid grid-cols-2 gap-2 text-sm text-slate-600">
+      <div className="mt-4 grid grid-cols-2 gap-2 text-sm text-slate-600">
+        <MetaRow label="Dòng sản phẩm" value={deviceType} />
         <MetaRow label="Danh mục" value={categoryName || 'Chưa phân loại'} />
         <MetaRow label="Bảo hành" value={warranty} />
-        <MetaRow label="Tình trạng" value={inStock ? 'Còn hàng' : 'Hết hàng'} />
         <MetaRow label="Vận chuyển" value={shipping} />
       </div>
 
@@ -53,11 +67,17 @@ const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow, ca
         {description || 'Thông tin mô tả đang được cập nhật.'}
       </p>
 
-      <div className="mt-4 grid gap-2 rounded-2xl bg-slate-50 p-3 text-xs text-slate-700 sm:grid-cols-2 sm:text-sm">
-        <TrustItem icon={PackageCheck} title="Kiểm tra khi nhận" />
-        <TrustItem icon={Truck} title={shipping} />
-        <TrustItem icon={ShieldCheck} title={warranty} />
-        <TrustItem icon={CheckCircle2} title="Thông số rõ ràng" />
+      <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50/60 p-4">
+        <div className="flex items-center gap-2 text-sm font-bold text-slate-900">
+          <Gift size={18} className="text-blue-600" />
+          Quyền lợi khi mua tại S-LIFE
+        </div>
+        <div className="mt-3 grid gap-2 text-xs text-slate-700 sm:grid-cols-2 sm:text-sm">
+          <TrustItem icon={PackageCheck} title="Kiểm tra hàng khi nhận" />
+          <TrustItem icon={Truck} title={shipping} />
+          <TrustItem icon={ShieldCheck} title={warranty} />
+          <TrustItem icon={CreditCard} title="COD hoặc thanh toán online" />
+        </div>
       </div>
 
       <div className="mt-auto space-y-3 pt-4">
@@ -87,6 +107,7 @@ const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow, ca
           <Button
             type="button"
             variant="secondary"
+            size="lg"
             className="w-full"
             onClick={onBuyNow}
             icon={Zap}
@@ -101,6 +122,7 @@ const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow, ca
           <Button
             type="button"
             variant="outline"
+            size="lg"
             className="w-full border-slate-300"
             onClick={onAddToCart}
             icon={ShoppingCart}
@@ -111,6 +133,7 @@ const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow, ca
           </Button>
           <Button
             variant="ghost"
+            size="lg"
             className="w-full"
             type="button"
             onClick={() => document.getElementById('product-reviews')?.scrollIntoView({ behavior: 'smooth' })}
@@ -136,10 +159,6 @@ const TrustItem = ({ icon: Icon, title }) => (
     <span className="font-medium">{title}</span>
   </div>
 );
-
-const formatCurrency = (amount) => {
-  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(amount || 0));
-};
 
 const parseSpecs = (value) => {
   if (!value) return {};
