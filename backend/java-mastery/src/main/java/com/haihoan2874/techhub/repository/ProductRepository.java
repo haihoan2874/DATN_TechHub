@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -116,4 +117,53 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
             LIMIT :limit
             """, nativeQuery = true)
     List<Object[]> findLowStockProducts(@Param("limit") int limit);
+
+    @Query(value = """
+            SELECT p.*
+            FROM products p
+            WHERE p.is_active = true
+              AND p.stock_quantity > 0
+              AND (
+                    LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                 OR LOWER(COALESCE(p.description, '')) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                 OR LOWER(COALESCE(CAST(p.specs AS text), '')) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                 OR LOWER(COALESCE(CAST(p.features AS text), '')) LIKE LOWER(CONCAT('%', :keyword, '%'))
+              )
+            ORDER BY p.updated_at DESC
+            LIMIT :limit
+            """, nativeQuery = true)
+    List<Product> findActiveProductsForAiByKeyword(@Param("keyword") String keyword, @Param("limit") int limit);
+
+    @Query(value = """
+            SELECT p.*
+            FROM products p
+            WHERE p.is_active = true
+              AND p.stock_quantity > 0
+              AND (:minPrice IS NULL OR p.price >= :minPrice)
+              AND (:maxPrice IS NULL OR p.price <= :maxPrice)
+              AND (
+                    :keyword IS NULL
+                 OR LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                 OR LOWER(COALESCE(p.description, '')) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                 OR LOWER(COALESCE(CAST(p.specs AS text), '')) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                 OR LOWER(COALESCE(CAST(p.features AS text), '')) LIKE LOWER(CONCAT('%', :keyword, '%'))
+              )
+            ORDER BY p.price DESC, p.updated_at DESC
+            LIMIT :limit
+            """, nativeQuery = true)
+    List<Product> findActiveProductsForAiByBudget(
+            @Param("keyword") String keyword,
+            @Param("minPrice") BigDecimal minPrice,
+            @Param("maxPrice") BigDecimal maxPrice,
+            @Param("limit") int limit);
+
+    @Query(value = """
+            SELECT p.*
+            FROM products p
+            WHERE p.is_active = true
+              AND p.stock_quantity > 0
+            ORDER BY p.updated_at DESC
+            LIMIT :limit
+            """, nativeQuery = true)
+    List<Product> findActiveProductsForAi(@Param("limit") int limit);
 }
