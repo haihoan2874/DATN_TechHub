@@ -18,16 +18,23 @@ const ProductFeatures = ({ features, description }) => {
       <div className="border-b border-slate-100 bg-white px-5 py-4 sm:px-6">
         <div className="flex items-center gap-3">
           <span className="h-5 w-1 rounded-full bg-blue-600" />
-          <h2 className="text-lg font-bold text-slate-900">Mô tả sản phẩm</h2>
+          <div>
+            <h2 className="text-lg font-bold text-slate-900">Chi tiết sản phẩm</h2>
+            <p className="mt-1 text-xs font-medium text-slate-500">Mô tả, điểm nổi bật và thông tin sử dụng thực tế</p>
+          </div>
         </div>
       </div>
 
       <div className="space-y-8 p-5 sm:p-7">
-        {parsedFeatures.length === 0 && description ? (
-          <p className="whitespace-pre-wrap text-sm leading-7 text-slate-700 sm:text-base">
-            {description}
-          </p>
-        ) : parsedFeatures.map((block, index) => (
+        {description && (
+          <div className="rounded-2xl border border-blue-100 bg-blue-50/50 p-4">
+            <p className="whitespace-pre-wrap text-sm leading-7 text-slate-700 sm:text-base">
+              {description}
+            </p>
+          </div>
+        )}
+
+        {parsedFeatures.length === 0 && description ? null : parsedFeatures.map((block, index) => (
           <div key={index} className="space-y-4">
             {block.title && (
               <h3 className="text-lg font-bold leading-tight text-slate-950">
@@ -45,7 +52,7 @@ const ProductFeatures = ({ features, description }) => {
               <div className="overflow-hidden rounded-xl border border-slate-100 bg-slate-50">
                 <img 
                   src={resolveApiAssetUrl(block.image)}
-                  alt={block.title || 'Product detail'} 
+                  alt={block.title || 'Chi tiết sản phẩm'}
                   loading="lazy"
                   decoding="async"
                   className="h-auto w-full object-cover"

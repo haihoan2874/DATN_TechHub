@@ -49,7 +49,7 @@ const promises = [
 
 const timeline = [
   ['01', 'Chọn đúng nhu cầu', 'Tìm thiết bị theo môn tập, mục tiêu sức khỏe, thương hiệu, ngân sách và hệ sinh thái đang dùng.'],
-  ['02', 'So sánh rõ ràng', 'Xem mô tả, giá bán, tồn kho, bảo hành, đánh giá và thông số kỹ thuật trước khi quyết định.'],
+  ['02', 'So sánh rõ ràng', 'Xem mô tả, giá bán, số lượng kho, bảo hành, đánh giá và thông số kỹ thuật trước khi quyết định.'],
   ['03', 'Đặt hàng nhanh', 'Chọn địa chỉ, áp mã ưu đãi, thanh toán COD hoặc trực tuyến và nhận xác nhận đơn hàng.'],
   ['04', 'Hậu mãi sau mua', 'Theo dõi trạng thái giao hàng, nhận hỗ trợ sử dụng và đánh giá sản phẩm sau khi trải nghiệm.'],
 ];

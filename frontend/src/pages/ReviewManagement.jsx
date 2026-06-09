@@ -154,25 +154,19 @@ const ReviewManagement = () => {
           />
         </div>
 
-        <div className="flex w-full items-center gap-2 overflow-x-auto lg:w-auto">
-              {['ALL', '5', '4', '3', '2', '1'].map(r => (
-                <button
-                  key={r}
-                  onClick={() => setFilterRating(r)}
-                  className={`flex items-center gap-1.5 whitespace-nowrap rounded-xl border px-3 py-2 text-xs font-semibold transition-colors ${
-                    filterRating === r
-                      ? 'border-slate-900 bg-slate-900 text-white'
-                      : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
-                  }`}
-                >
-                  {r === 'ALL' ? 'Tất cả' : (
-                    <>
-                      {r} <Star size={10} className="fill-current" />
-                    </>
-                  )}
-                </button>
-              ))}
-        </div>
+        <select
+          value={filterRating}
+          onChange={(event) => setFilterRating(event.target.value)}
+          className="form-select w-full lg:w-40"
+          aria-label="Lọc đánh giá theo số sao"
+        >
+          <option value="ALL">Tất cả số sao</option>
+          {[5, 4, 3, 2, 1].map((rating) => (
+            <option key={rating} value={String(rating)}>
+              {rating} sao
+            </option>
+          ))}
+        </select>
         <span className="whitespace-nowrap rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-600">
           {filteredReviews.length} đánh giá
         </span>

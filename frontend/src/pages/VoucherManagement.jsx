@@ -265,21 +265,17 @@ const VoucherManagement = () => {
             className="w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-10 pr-4 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
           />
         </div>
-        <div className="flex w-full items-center gap-2 overflow-x-auto lg:w-auto">
-          {['ALL', 'Hoạt động', 'Tạm tắt', 'Hết hạn'].map((status) => (
-            <button
-              key={status}
-              onClick={() => setStatusFilter(status)}
-              className={`whitespace-nowrap rounded-xl border px-3 py-2 text-xs font-semibold transition-colors ${
-                statusFilter === status
-                  ? 'border-slate-900 bg-slate-900 text-white'
-                  : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              {status === 'ALL' ? 'Tất cả' : status}
-            </button>
-          ))}
-        </div>
+        <select
+          value={statusFilter}
+          onChange={(event) => setStatusFilter(event.target.value)}
+          className="form-select w-full lg:w-44"
+          aria-label="Lọc mã giảm giá theo trạng thái"
+        >
+          <option value="ALL">Tất cả trạng thái</option>
+          <option value="Hoạt động">Hoạt động</option>
+          <option value="Tạm tắt">Tạm tắt</option>
+          <option value="Hết hạn">Hết hạn</option>
+        </select>
         <span className="whitespace-nowrap rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-600">
           {filteredVouchers.length} mã
         </span>

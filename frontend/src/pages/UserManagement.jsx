@@ -162,21 +162,16 @@ const UserManagement = () => {
           />
         </div>
 
-        <div className="flex w-full items-center gap-2 overflow-x-auto lg:w-auto">
-              {['ALL', 'ROLE_ADMIN', 'ROLE_USER'].map(role => (
-                <button
-                  key={role}
-                  onClick={() => setFilterRole(role)}
-                  className={`whitespace-nowrap rounded-xl border px-3 py-2 text-xs font-semibold transition-colors ${
-                    filterRole === role
-                      ? 'border-slate-900 bg-slate-900 text-white'
-                      : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
-                  }`}
-                >
-                  {role === 'ALL' ? 'Tất cả' : getRoleLabel(role)}
-                </button>
-              ))}
-        </div>
+        <select
+          value={filterRole}
+          onChange={(event) => setFilterRole(event.target.value)}
+          className="form-select w-full lg:w-44"
+          aria-label="Lọc người dùng theo vai trò"
+        >
+          <option value="ALL">Tất cả vai trò</option>
+          <option value="ROLE_ADMIN">{getRoleLabel('ROLE_ADMIN')}</option>
+          <option value="ROLE_USER">{getRoleLabel('ROLE_USER')}</option>
+        </select>
         <span className="whitespace-nowrap rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-600">
           {filteredUsers.length} người dùng
         </span>

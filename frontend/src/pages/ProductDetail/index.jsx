@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams, Link } from 'react-router-dom';
-import { ArrowRight, ChevronRight, FileText, MessageSquare, SlidersHorizontal } from 'lucide-react';
+import {
+  ArrowRight,
+  BadgeCheck,
+  ChevronRight,
+  FileText,
+  Headphones,
+  MessageSquare,
+  RotateCcw,
+  SlidersHorizontal,
+  Truck
+} from 'lucide-react';
 import toast from 'react-hot-toast';
 
 import productService from '../../services/productService';
@@ -45,9 +55,11 @@ const ProductDetail = () => {
           if (productData.categoryId) {
             const related = await productService.getAllProducts({
               categoryId: productData.categoryId,
+              pageNo: 0,
               pageSize: 4
             });
-            setRelatedProducts(related.content?.filter((item) => item.id !== productData.id) || []);
+            const relatedItems = related.contents || related.data?.contents || related.content || related.data?.content || [];
+            setRelatedProducts(relatedItems.filter((item) => item.id !== productData.id));
           }
         }
       } catch (error) {
@@ -178,6 +190,13 @@ const ProductDetail = () => {
           </div>
         </section>
 
+        <section className="mb-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <ServiceCard icon={BadgeCheck} title="Hàng chính hãng" description="Thông tin sản phẩm được chuẩn hóa theo từng thương hiệu." />
+          <ServiceCard icon={Truck} title="Giao hàng toàn quốc" description="Hỗ trợ COD và thanh toán online khi đặt hàng." />
+          <ServiceCard icon={RotateCcw} title="Đổi trả rõ ràng" description="Kiểm tra khi nhận, hỗ trợ theo chính sách sau bán." />
+          <ServiceCard icon={Headphones} title="Tư vấn chọn mua" description="Hỗ trợ chọn thiết bị theo nhu cầu sử dụng thực tế." />
+        </section>
+
         <div className="mb-5 overflow-x-auto rounded-2xl border border-slate-200 bg-white p-2 shadow-sm">
           <div className="flex min-w-max items-center gap-2">
             <DetailAnchor href="#product-description" icon={FileText} label="Mô tả" />
@@ -212,6 +231,18 @@ const DetailAnchor = ({ href, icon: Icon, label }) => (
     <Icon size={16} />
     {label}
   </a>
+);
+
+const ServiceCard = ({ icon: Icon, title, description }) => (
+  <div className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+    <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+      <Icon size={18} />
+    </span>
+    <div>
+      <h3 className="text-sm font-bold text-slate-950">{title}</h3>
+      <p className="mt-1 text-xs leading-5 text-slate-500">{description}</p>
+    </div>
+  </div>
 );
 
 const getProductImages = (product) => {

@@ -182,7 +182,7 @@ const AIChatbot = () => {
                                         <div className="min-w-0 flex-1">
                                           <p className="line-clamp-2 text-xs font-black leading-snug text-slate-900">{product.name}</p>
                                           <p className="mt-1 text-xs font-black text-blue-700">{formatCurrency(product.price)}</p>
-                                          <p className="text-[10px] font-bold text-slate-400">Tồn kho: {product.stockQuantity ?? 0}</p>
+                                          <p className="text-[10px] font-bold text-slate-400">Kho: {product.stockQuantity ?? 0}</p>
                                         </div>
                                       </Link>
                                       ))}

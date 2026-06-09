@@ -22,6 +22,7 @@ import { resolveApiAssetUrl } from '../config/api';
 import { formatCurrency } from '../utils/formatters';
 
 const PAGE_SIZE = 8;
+const ADMIN_PRODUCT_FETCH_SIZE = 1000;
 
 const ProductManagement = () => {
   const [products, setProducts] = useState([]);
@@ -36,6 +37,7 @@ const ProductManagement = () => {
   const [stockError, setStockError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
+  const [brandFilter, setBrandFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
@@ -64,7 +66,7 @@ const ProductManagement = () => {
     setLoading(true);
     try {
       const [productRes, catRes, brandRes] = await Promise.all([
-        adminService.getProducts({ page: 0, size: 100 }),
+        adminService.getProducts({ pageNo: 0, pageSize: ADMIN_PRODUCT_FETCH_SIZE }),
         adminService.getCategories(),
         adminService.getBrands()
       ]);
@@ -229,18 +231,18 @@ const ProductManagement = () => {
   const submitStockUpdate = async () => {
     const stockNum = parseInt(stockModal.quantity, 10);
     if (isNaN(stockNum) || stockNum < 0) {
-      setStockError('Số lượng tồn kho phải là số lớn hơn hoặc bằng 0.');
+      setStockError('Số lượng kho phải là số lớn hơn hoặc bằng 0.');
       return;
     }
 
     setIsUpdatingStock(true);
     try {
       await adminService.updateStock(stockModal.product.id, stockNum);
-      toast.success('Cập nhật tồn kho thành công');
+      toast.success('Cập nhật kho thành công');
       setStockModal({ isOpen: false, product: null, quantity: '' });
       fetchData();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Không thể cập nhật tồn kho');
+      toast.error(err.response?.data?.message || 'Không thể cập nhật kho');
     } finally {
       setIsUpdatingStock(false);
     }
@@ -248,13 +250,22 @@ const ProductManagement = () => {
 
   const filteredProducts = useMemo(() => {
     const keyword = searchTerm.trim().toLowerCase();
-    return products.filter((product) => {
+    const categoryById = new Map(categories.map((category) => [category.id, category]));
+    const brandById = new Map(brands.map((brand) => [brand.id, brand]));
+
+    return products.map((product) => ({
+      ...product,
+      categoryName: product.categoryName || categoryById.get(product.categoryId)?.name,
+      brandName: product.brandName || brandById.get(product.brandId)?.name
+    })).filter((product) => {
       const matchesKeyword = !keyword || product.name.toLowerCase().includes(keyword) || product.slug?.toLowerCase().includes(keyword);
       const productCategoryId = product.category?.id || product.categoryId;
+      const productBrandId = product.brand?.id || product.brandId;
       const matchesCategory = categoryFilter === 'all' || productCategoryId === categoryFilter;
-      return matchesKeyword && matchesCategory;
+      const matchesBrand = brandFilter === 'all' || productBrandId === brandFilter;
+      return matchesKeyword && matchesCategory && matchesBrand;
     });
-  }, [products, searchTerm, categoryFilter]);
+  }, [brands, categories, products, searchTerm, categoryFilter, brandFilter]);
 
   const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE));
   const paginatedProducts = useMemo(() => {
@@ -264,7 +275,7 @@ const ProductManagement = () => {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, categoryFilter]);
+  }, [searchTerm, categoryFilter, brandFilter]);
 
   useEffect(() => {
     if (currentPage > totalPages) {
@@ -297,7 +308,7 @@ const ProductManagement = () => {
       <Modal
         isOpen={stockModal.isOpen}
         onClose={() => setStockModal({ isOpen: false, product: null, quantity: '' })}
-        title="Cập nhật tồn kho"
+        title="Cập nhật kho"
         size="sm"
         closeOnOverlay={!isUpdatingStock}
         footer={
@@ -310,7 +321,7 @@ const ProductManagement = () => {
               Hủy
             </Button>
             <Button onClick={submitStockUpdate} isLoading={isUpdatingStock}>
-              Lưu tồn kho
+              Lưu kho
             </Button>
           </>
         }
@@ -321,7 +332,7 @@ const ProductManagement = () => {
             <h4 className="text-base font-black text-slate-900">{stockModal.product?.name}</h4>
           </div>
           <Input
-            label="Số lượng tồn kho mới"
+            label="Số lượng kho mới"
             type="number"
             min="0"
             value={stockModal.quantity}
@@ -335,9 +346,9 @@ const ProductManagement = () => {
       </Modal>
 
       <PageHeader
-        eyebrow="Quản lý kho hàng"
-        title="Sản phẩm và tồn kho"
-        description="Theo dõi danh sách thiết bị, giá bán, phân loại và số lượng tồn kho."
+        eyebrow="Quản lý kho"
+        title="Sản phẩm và kho"
+        description="Theo dõi danh sách thiết bị, giá bán, phân loại và số lượng trong kho."
         icon={Package}
         action={<Button onClick={() => handleOpenModal()} icon={Plus}>Tạo sản phẩm</Button>}
       />
@@ -360,6 +371,14 @@ const ProductManagement = () => {
         >
           <option value="all">Tất cả danh mục</option>
           {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+        </select>
+        <select
+          value={brandFilter}
+          onChange={(e) => setBrandFilter(e.target.value)}
+          className="form-select lg:w-44"
+        >
+          <option value="all">Tất cả thương hiệu</option>
+          {brands.map(brand => <option key={brand.id} value={brand.id}>{brand.name}</option>)}
         </select>
         <span className="whitespace-nowrap rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-600">
           {filteredProducts.length} sản phẩm
@@ -395,7 +414,7 @@ const ProductManagement = () => {
           <div className="flex w-full flex-col gap-3 border-t border-slate-200 bg-white px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <div className="text-sm font-semibold text-slate-900">{currentProduct ? 'Lưu thay đổi sản phẩm' : 'Tạo sản phẩm'}</div>
-              <div className="text-xs text-slate-500">Kiểm tra đủ ảnh, giá, tồn kho, phân loại và mô tả trước khi mở bán.</div>
+              <div className="text-xs text-slate-500">Kiểm tra đủ ảnh, giá, số lượng kho, phân loại và mô tả trước khi mở bán.</div>
             </div>
             <div className="flex justify-end gap-3">
               <button 
@@ -492,7 +511,7 @@ const ProductManagement = () => {
                        <h2 className="text-lg font-bold text-slate-950">Giá bán và kho</h2>
                        <div className="grid grid-cols-1 gap-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:grid-cols-2">
                           <Input label="Giá bán (₫)" type="number" min="0" name="price" value={formData.price} onChange={handleInputChange} error={formErrors.price} />
-                          <Input label="Số lượng tồn kho" type="number" min="0" name="stockQuantity" value={formData.stockQuantity} onChange={handleInputChange} error={formErrors.stockQuantity} />
+                          <Input label="Số lượng kho" type="number" min="0" name="stockQuantity" value={formData.stockQuantity} onChange={handleInputChange} error={formErrors.stockQuantity} />
                        </div>
                     </section>
 
@@ -607,7 +626,7 @@ const validateProductForm = (data) => {
   if (!data.categoryId) errors.categoryId = 'Vui lòng chọn danh mục sản phẩm.';
   if (!data.brandId) errors.brandId = 'Vui lòng chọn thương hiệu.';
   if (Number(data.price) <= 0) errors.price = 'Giá bán phải lớn hơn 0.';
-  if (Number(data.stockQuantity) < 0) errors.stockQuantity = 'Tồn kho không được âm.';
+  if (Number(data.stockQuantity) < 0) errors.stockQuantity = 'Số lượng kho không được âm.';
   if (data.isActive && !data.imageUrl?.trim()) {
     errors.imageUrl = 'Sản phẩm đang mở bán cần có ảnh chính.';
   }
@@ -626,7 +645,7 @@ const getProductReadiness = (data) => [
   { label: 'Tên và đường dẫn', done: Boolean(data.name?.trim() && data.slug?.trim()) },
   { label: 'Danh mục và thương hiệu', done: Boolean(data.categoryId && data.brandId) },
   { label: 'Giá bán hợp lệ', done: Number(data.price) > 0 },
-  { label: 'Tồn kho hợp lệ', done: Number(data.stockQuantity) >= 0 },
+  { label: 'Kho hợp lệ', done: Number(data.stockQuantity) >= 0 },
   { label: 'Ảnh chính', done: Boolean(data.imageUrl?.trim()) },
   { label: 'Mô tả ngắn', done: Boolean(data.description?.trim() && data.description.trim().length >= 20) }
 ];

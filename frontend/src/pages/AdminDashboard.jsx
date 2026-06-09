@@ -241,7 +241,7 @@ const AdminDashboard = () => {
               <AlertTriangle size={20} />
             </div>
             <div>
-              <h3 className="text-base font-bold text-slate-950">Tồn kho thấp</h3>
+              <h3 className="text-base font-bold text-slate-950">Kho thấp</h3>
               <p className="text-sm text-slate-500">Ưu tiên nhập thêm.</p>
             </div>
           </div>

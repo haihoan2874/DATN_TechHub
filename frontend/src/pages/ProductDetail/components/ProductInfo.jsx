@@ -24,6 +24,9 @@ const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow, ca
   const warranty = specs['Bảo hành'] || specs['Warranty'] || 'Theo chính sách';
   const shipping = specs['Vận chuyển'] || 'Giao hàng toàn quốc';
   const deviceType = specs['Loại thiết bị'] || specs['Sản phẩm'] || categoryName || 'Thiết bị sức khỏe thông minh';
+  const colors = getOptionValues(specs, ['Màu sắc', 'Màu', 'Color', 'Colors']);
+  const sizes = getOptionValues(specs, ['Kích thước', 'Size', 'Kích cỡ', 'Dây đeo']);
+  const shortDescription = normalizeShortText(description);
 
   return (
     <div className="flex h-full flex-col">
@@ -47,13 +50,19 @@ const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow, ca
               ({product.reviewCount || 0} đánh giá)
             </span>
           </div>
-          <span className="text-sm text-slate-500">Tồn kho: {stock}</span>
+          <span className="inline-flex items-center gap-1.5 text-sm text-slate-500">
+            <CheckCircle2 size={15} className={inStock ? 'text-emerald-500' : 'text-rose-500'} />
+            Kho: {stock}
+          </span>
         </div>
       </div>
 
       <div className="border-b border-slate-100 py-4">
         <p className="text-xs font-medium text-slate-500 sm:text-sm">Giá bán</p>
-        <p className="mt-1 text-3xl font-bold tracking-tight text-blue-700 sm:text-4xl">{formatCurrency(price)}</p>
+        <div className="mt-2 rounded-2xl border border-blue-100 bg-blue-50/70 px-4 py-3">
+          <p className="text-3xl font-bold tracking-tight text-blue-700 sm:text-4xl">{formatCurrency(price)}</p>
+          <p className="mt-1 text-xs font-medium text-slate-500">Giá đã bao gồm VAT theo chính sách bán hàng.</p>
+        </div>
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-2 text-sm text-slate-600">
@@ -63,11 +72,20 @@ const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow, ca
         <MetaRow label="Vận chuyển" value={shipping} />
       </div>
 
-      <p className="mt-3 text-sm leading-6 text-slate-600">
-        {description || 'Thông tin mô tả đang được cập nhật.'}
-      </p>
+      {(colors.length > 0 || sizes.length > 0) && (
+        <div className="mt-4 space-y-3 rounded-2xl border border-slate-200 bg-white p-4">
+          <OptionGroup label="Màu sắc" values={colors} />
+          <OptionGroup label="Phiên bản" values={sizes} />
+        </div>
+      )}
 
-      <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50/60 p-4">
+      {shortDescription && (
+        <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-600">
+          {shortDescription}
+        </p>
+      )}
+
+      <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
         <div className="flex items-center gap-2 text-sm font-bold text-slate-900">
           <Gift size={18} className="text-blue-600" />
           Quyền lợi khi mua tại S-LIFE
@@ -81,6 +99,11 @@ const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow, ca
       </div>
 
       <div className="mt-auto space-y-3 pt-4">
+        <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-amber-100 bg-amber-50 px-4 py-3 text-xs font-semibold text-amber-800 sm:text-sm">
+          <PackageCheck size={16} />
+          Kiểm tra sản phẩm trước khi nhận hàng. Hỗ trợ đổi trả theo chính sách.
+        </div>
+
         <div className="grid gap-3 sm:grid-cols-[150px_1fr]">
           <div className="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-1">
             <button
@@ -147,11 +170,31 @@ const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow, ca
 };
 
 const MetaRow = ({ label, value }) => (
-  <div className="rounded-xl border border-slate-100 bg-white p-2.5 sm:p-3">
+  <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-2.5 sm:p-3">
     <span className="block text-[11px] font-medium text-slate-400 sm:text-xs">{label}</span>
     <span className="mt-1 block text-sm font-semibold text-slate-900">{value}</span>
   </div>
 );
+
+const OptionGroup = ({ label, values }) => {
+  if (!values.length) return null;
+
+  return (
+    <div>
+      <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">{label}</p>
+      <div className="mt-2 flex flex-wrap gap-2">
+        {values.map((value, index) => (
+          <span
+            key={`${label}-${value}-${index}`}
+            className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700"
+          >
+            {value}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 const TrustItem = ({ icon: Icon, title }) => (
   <div className="flex items-center gap-2">
@@ -168,6 +211,25 @@ const parseSpecs = (value) => {
   } catch {
     return {};
   }
+};
+
+const getOptionValues = (specs, keys) => {
+  const raw = keys.map((key) => specs[key]).find(Boolean);
+  if (!raw) return [];
+  if (Array.isArray(raw)) return raw.map(String).filter(Boolean).slice(0, 6);
+
+  return String(raw)
+    .split(/[,/|;]/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .slice(0, 6);
+};
+
+const normalizeShortText = (value) => {
+  if (!value) return '';
+  return String(value)
+    .replace(/\s+/g, ' ')
+    .trim();
 };
 
 export default ProductInfo;
