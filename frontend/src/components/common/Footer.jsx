@@ -15,7 +15,7 @@ const Footer = () => {
                 alt="S-Life Logo" 
                 className="h-8 w-8 object-contain"
               />
-              <span className="text-xl font-black tracking-tighter text-slate-900">
+              <span className="text-xl font-extrabold text-slate-900">
                 S-LIFE
               </span>
             </Link>
@@ -26,7 +26,7 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="mb-4 text-xs font-bold uppercase tracking-[0.16em] text-slate-900">Khám phá</h4>
+            <h4 className="mb-4 text-xs font-bold uppercase tracking-wider text-slate-900">Khám phá</h4>
             <ul className="flex flex-col gap-2.5">
               <FooterLink to="/shop">Tất cả sản phẩm</FooterLink>
               <FooterLink to="/categories">Danh mục</FooterLink>
@@ -36,7 +36,7 @@ const Footer = () => {
 
           {/* Support */}
           <div>
-            <h4 className="mb-4 text-xs font-bold uppercase tracking-[0.16em] text-slate-900">Hỗ trợ khách hàng</h4>
+            <h4 className="mb-4 text-xs font-bold uppercase tracking-wider text-slate-900">Hỗ trợ khách hàng</h4>
             <ul className="flex flex-col gap-2.5">
               <FooterText>Giao hàng toàn quốc</FooterText>
               <FooterText>Thanh toán COD hoặc trực tuyến</FooterText>
@@ -47,7 +47,7 @@ const Footer = () => {
 
           {/* Contact */}
           <div>
-            <h4 className="mb-4 text-xs font-bold uppercase tracking-[0.16em] text-slate-900">Liên hệ</h4>
+            <h4 className="mb-4 text-xs font-bold uppercase tracking-wider text-slate-900">Liên hệ</h4>
             <ul className="flex flex-col gap-3">
               <ContactItem icon={<Phone size={20} />} text="1900 123 456" />
               <ContactItem icon={<Mail size={20} />} text="contact@s-life.com" />

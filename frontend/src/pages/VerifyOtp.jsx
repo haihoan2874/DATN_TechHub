@@ -48,7 +48,7 @@ const VerifyOtp = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center bg-slate-50 px-4 py-8 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen items-center bg-transparent px-4 py-8 sm:px-6 lg:px-8">
       
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}

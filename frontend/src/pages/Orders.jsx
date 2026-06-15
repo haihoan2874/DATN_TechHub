@@ -134,7 +134,7 @@ const Orders = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 py-6 sm:py-8 lg:py-10">
+    <div className="min-h-screen py-6 sm:py-8 lg:py-10">
       <Modal
         isOpen={Boolean(reviewTarget)}
         onClose={closeReviewModal}
@@ -227,7 +227,7 @@ const Orders = () => {
             ))}
           </div>
 
-          <div className="mb-5 rounded-2xl border border-slate-200 bg-white p-2 shadow-sm">
+          <div className="mb-5 glass-card p-2">
             <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
               {['ALL', ...ORDER_STATUS_VALUES].map((status) => (
                 <button
@@ -254,7 +254,7 @@ const Orders = () => {
           ) : filteredOrders.length > 0 ? (
             <div className="space-y-4">
               {filteredOrders.map((order) => (
-                <article key={order.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+                <article key={order.id} className="glass-card p-4 sm:p-6">
                   <div className="flex flex-col gap-4 border-b border-slate-100 pb-4 sm:flex-row sm:items-start sm:justify-between">
                     <div>
                       <div className="flex flex-wrap items-center gap-3">

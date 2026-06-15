@@ -27,7 +27,7 @@ const AdminLayout = () => {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-50 text-slate-950">
+    <div className="flex h-screen overflow-hidden bg-transparent text-slate-950">
       <motion.aside 
         initial={false}
         animate={{ width: isSidebarOpen ? 256 : 76 }}
@@ -131,7 +131,7 @@ const AdminLayout = () => {
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto bg-slate-50 p-6 custom-scrollbar">
+        <main className="flex-1 overflow-y-auto bg-transparent p-6 custom-scrollbar">
           <Outlet />
         </main>
       </div>

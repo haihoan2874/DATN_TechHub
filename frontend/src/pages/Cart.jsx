@@ -118,7 +118,7 @@ const Cart = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 py-6 sm:py-8 lg:py-10">
+    <div className="min-h-screen bg-transparent py-6 sm:py-8 lg:py-10">
       <ConfirmModal 
         isOpen={isConfirmClearOpen}
         onClose={() => setIsConfirmClearOpen(false)}

@@ -141,7 +141,7 @@ const Navbar = () => {
             <div className="h-8 w-8 overflow-hidden transition-transform duration-300 group-hover:scale-105 sm:h-9 sm:w-9">
               <img src="/logo_final.png" alt="S-Life Logo" className="w-full h-full object-contain" fetchPriority="high" />
             </div>
-            <span className="text-xl font-black tracking-tight text-slate-900 transition-colors duration-300 group-hover:text-blue-600 sm:text-2xl">S-LIFE</span>
+            <span className="text-xl font-extrabold text-slate-900 transition-colors duration-300 group-hover:text-blue-600 sm:text-2xl">S-LIFE</span>
           </Link>
 
           {/* 2. Navigation Links (Desktop) */}
@@ -438,7 +438,7 @@ const Navbar = () => {
 };
 
 const NavLink = ({ to, children, active }) => (
-  <Link to={to} className={`relative py-1 text-sm font-black tracking-tight transition-all duration-300 group ${
+  <Link to={to} className={`relative py-1 text-sm font-bold transition-all duration-300 group ${
     active ? 'text-blue-600' : 'text-slate-500 hover:text-slate-900'
   }`}>
     {children}
@@ -477,7 +477,7 @@ const MegaMenuColumn = ({ icon, title, slug, description }) => (
       {icon}
     </div>
     <div className="min-w-0 flex-1">
-      <h4 className="text-sm font-black uppercase leading-snug tracking-tight text-slate-950 transition-colors group-hover/menu:text-blue-700">
+      <h4 className="text-sm font-bold uppercase leading-snug text-slate-950 transition-colors group-hover/menu:text-blue-700">
         {title}
       </h4>
       <p className="mt-1.5 line-clamp-2 text-xs font-medium leading-relaxed text-slate-500">

@@ -19,7 +19,9 @@ const Button = ({
     secondary: "bg-blue-600 text-white hover:bg-blue-700 shadow-sm",
     outline: "bg-white border border-slate-300 text-slate-700 hover:bg-slate-50",
     ghost: "bg-transparent text-slate-600 hover:bg-slate-100 hover:text-slate-900",
-    danger: "bg-rose-600 text-white hover:bg-rose-700 shadow-sm"
+    danger: "bg-rose-600 text-white hover:bg-rose-700 shadow-sm",
+    light: "bg-white text-slate-950 hover:bg-slate-50 shadow-sm",
+    glass: "bg-white/10 text-white hover:bg-white/20 backdrop-blur-md shadow-sm border border-white/20"
   };
 
   const sizes = {

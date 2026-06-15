@@ -50,7 +50,7 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center bg-slate-50 px-4 py-8 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen items-center bg-transparent px-4 py-8 sm:px-6 lg:px-8">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -62,7 +62,7 @@ const ForgotPassword = () => {
           </Link>
 
           <div className="mb-8 text-center">
-            <h1 className="text-3xl font-black tracking-tight text-slate-900">Quên mật khẩu?</h1>
+            <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Quên mật khẩu?</h1>
             <p className="text-slate-500 mt-2 font-medium">Đừng lo lắng, hãy nhập email của bạn để lấy lại mật khẩu</p>
           </div>
 

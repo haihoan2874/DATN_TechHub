@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import productService from "../services/productService";
 import Hero from "../components/home/Hero";
+import PromoBanner from "../components/home/PromoBanner";
 import CategorySection from "../components/home/CategorySection";
 import FeaturedSection from "../components/home/FeaturedSection";
 import BenefitsSection from "../components/home/BenefitsSection";
@@ -33,8 +34,9 @@ function Home() {
   }, []);
 
   return (
-    <div className="flex flex-col bg-slate-50">
+    <div className="flex flex-col bg-transparent">
       <Hero />
+      <PromoBanner />
       <CategorySection categories={categories} />
       <StorySection />
       <FeaturedSection products={featuredProducts} loading={loading} />

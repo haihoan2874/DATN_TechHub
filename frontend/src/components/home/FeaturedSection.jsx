@@ -32,18 +32,18 @@ function FeaturedSection({ products, loading }) {
   return (
     <section ref={sectionRef} className="bg-slate-50 py-10 lg:py-12">
       <div className="container mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="mb-6 flex flex-col items-start justify-between gap-3 md:flex-row md:items-end">
+        <div className="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
           <div>
-            <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-blue-600">Sản phẩm nổi bật</p>
-            <h2 className="mb-2 text-2xl font-bold tracking-tight text-slate-950 lg:text-3xl">Được quan tâm nhiều</h2>
-            <p className="text-sm leading-relaxed text-slate-500 sm:text-base">Những thiết bị được khách hàng tin dùng nhất tuần qua.</p>
+            <p className="mb-2.5 text-[13px] font-bold uppercase tracking-widest text-blue-600">Sản phẩm nổi bật</p>
+            <h2 className="mb-3 text-3xl font-bold tracking-tight text-slate-900 lg:text-[34px]">Được quan tâm nhiều</h2>
+            <p className="text-base leading-relaxed text-slate-500">Những thiết bị được khách hàng tin dùng nhất tuần qua.</p>
           </div>
-          <Link to="/shop" className="group flex items-center gap-2 text-blue-600 font-bold">
-            <span className="relative">
+          <Link to="/shop" className="group flex items-center gap-2 text-blue-600 font-bold transition-colors hover:text-blue-700">
+            <span className="relative pb-1">
               Xem tất cả
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 transition-all group-hover:w-full"></span>
+              <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
             </span>
-            <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
 

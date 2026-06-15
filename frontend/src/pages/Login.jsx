@@ -77,7 +77,7 @@ const Login = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center bg-slate-50 px-4 py-8 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen items-center bg-transparent px-4 py-8 sm:px-6 lg:px-8">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -86,12 +86,12 @@ const Login = () => {
         <div className="grid overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm lg:grid-cols-[0.9fr_1fr]">
           <aside className="hidden bg-slate-950 p-8 text-white lg:flex lg:flex-col lg:justify-between">
             <div>
-              <Link to="/" className="inline-flex items-center gap-3 text-2xl font-black" translate="no">
+              <Link to="/" className="inline-flex items-center gap-3 text-2xl font-extrabold" translate="no">
                 S-LIFE
               </Link>
               <div className="mt-12">
-                <p className="mb-4 text-xs font-bold uppercase tracking-[0.24em] text-blue-300">Thiết bị sức khỏe thông minh</p>
-                <h2 className="text-3xl font-black leading-tight text-balance">Quản lý mua sắm dễ dàng trên một nền tảng.</h2>
+                <p className="mb-4 text-xs font-bold uppercase tracking-wider text-blue-300">Thiết bị sức khỏe thông minh</p>
+                <h2 className="text-3xl font-extrabold leading-tight text-balance">Quản lý mua sắm dễ dàng trên một nền tảng.</h2>
                 <p className="mt-5 text-sm leading-7 text-slate-300">
                   Đăng nhập để nhận các đặc quyền thành viên, theo dõi tiến trình giao hàng và sử dụng trợ lý AI hỗ trợ mua sắm 24/7.
                 </p>
@@ -106,10 +106,10 @@ const Login = () => {
 
           <main className="p-5 sm:p-7 lg:p-8">
             <div className="mb-6">
-              <Link to="/" className="mb-6 inline-block text-2xl font-black text-slate-900 lg:hidden" translate="no">
+              <Link to="/" className="mb-6 inline-block text-2xl font-extrabold text-slate-900 lg:hidden" translate="no">
                 S-LIFE
               </Link>
-              <h1 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">Đăng nhập</h1>
+              <h1 className="text-2xl font-extrabold tracking-tight text-slate-950 sm:text-3xl">Đăng nhập</h1>
               <p className="mt-2 text-sm font-medium leading-6 text-slate-500">Chào mừng bạn quay trở lại. Vui lòng đăng nhập để tiếp tục.</p>
             </div>
 

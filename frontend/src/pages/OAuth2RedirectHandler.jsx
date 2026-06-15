@@ -30,7 +30,7 @@ const OAuth2RedirectHandler = () => {
     }, [location, navigate, loginWithToken]);
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="min-h-screen flex items-center justify-center bg-transparent">
             <div className="text-center">
                 <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                 <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">Đang xác thực...</h2>

@@ -70,10 +70,10 @@ const ConfirmModal = ({
             </div>
           </div>
 
-          <p className="mb-2 text-[11px] font-black uppercase tracking-[0.18em] text-slate-400">
+          <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">
             {style.eyebrow}
           </p>
-          <h3 className="mx-auto max-w-sm text-2xl font-black leading-tight tracking-tight text-slate-950">
+          <h3 className="mx-auto max-w-sm text-2xl font-extrabold leading-tight tracking-tight text-slate-950">
             {title}
           </h3>
         </div>

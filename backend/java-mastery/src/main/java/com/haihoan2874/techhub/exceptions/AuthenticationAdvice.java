@@ -62,7 +62,7 @@ public class AuthenticationAdvice {
         ApiExceptionResponse response = ApiExceptionResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .message("An error occurred: " + ex.getMessage())
+                .message("Đã xảy ra lỗi: " + ex.getMessage())
                 .path(request.getServletPath())
                 .build();
 
@@ -78,7 +78,7 @@ public class AuthenticationAdvice {
         ApiExceptionResponse response = ApiExceptionResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.FORBIDDEN.value())
-                .message("You don't have permission to access this resource" + ex.getMessage())
+                .message("Bạn không có quyền truy cập tài nguyên này: " + ex.getMessage())
                 .path(request.getServletPath())
                 .build();
         return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);

@@ -11,7 +11,7 @@ const MetricCard = ({ label, value, icon: Icon, tone = 'blue' }) => {
   }[tone] || 'bg-slate-100 text-slate-700';
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="glass-card p-5">
       <div className="flex items-center gap-4">
         {Icon && (
           <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${toneClass}`}>

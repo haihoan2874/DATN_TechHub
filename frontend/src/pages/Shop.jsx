@@ -298,7 +298,7 @@ const Shop = () => {
                 <div className={`p-1.5 rounded-lg ${selectedCategory === cat.id ? 'bg-primary text-white' : 'bg-slate-100 text-slate-400'}`}>
                   {getCategoryIcon(cat.name)}
                 </div>
-                <span className="text-xs font-black uppercase tracking-tight">{cat.name}</span>
+                <span className="text-xs font-bold uppercase tracking-wider">{cat.name}</span>
               </div>
               <ChevronDown size={14} className={selectedCategory === cat.id ? 'text-primary' : 'text-slate-300'} />
             </button>
@@ -336,7 +336,7 @@ const Shop = () => {
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 py-6 sm:py-8 lg:py-10">
+    <div className="min-h-screen bg-transparent py-6 sm:py-8 lg:py-10">
       <ConfirmModal
         isOpen={isConfirmClearOpen}
         onClose={() => setIsConfirmClearOpen(false)}
@@ -542,7 +542,7 @@ const FilterSection = ({ title, children, isOpen = true }) => {
         onClick={() => setOpen(!open)}
         className="w-full flex justify-between items-center mb-4 group"
       >
-        <h4 className="text-slate-900 font-black text-sm uppercase tracking-[0.2em]">
+        <h4 className="text-slate-900 font-bold text-sm uppercase tracking-wider">
           {title}
         </h4>
         <ChevronDown size={18} className={`text-slate-300 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
