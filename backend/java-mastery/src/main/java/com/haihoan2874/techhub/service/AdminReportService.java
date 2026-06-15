@@ -518,9 +518,8 @@ public class AdminReportService {
             return "";
         }
         return switch (status) {
-            case PENDING -> "Chờ xử lý";
-            case CONFIRMED -> "Đã xác nhận";
-            case PROCESSING -> "Đang xử lý";
+            case PENDING -> "Chờ xác nhận";
+            case PROCESSING -> "Đang chuẩn bị hàng";
             case SHIPPED -> "Đang giao";
             case DELIVERED -> "Đã giao";
             case CANCELLED -> "Đã hủy";

@@ -34,5 +34,6 @@ public class OrderHistoryResponse {
         private Integer quantity;
         private BigDecimal price;
         private BigDecimal subtotal;
+        private boolean isReviewed;
     }
 }

@@ -19,9 +19,8 @@ import { formatCurrency, formatDateTime } from '../utils/formatters';
 
 const statusTone = {
   PENDING: 'amber',
-  CONFIRMED: 'blue',
   PROCESSING: 'blue',
-  SHIPPED: 'slate',
+  SHIPPED: 'purple',
   DELIVERED: 'green',
   CANCELLED: 'red'
 };

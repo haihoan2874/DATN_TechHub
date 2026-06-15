@@ -21,6 +21,7 @@ import com.haihoan2874.techhub.repository.CustomerAddressRepository;
 import com.haihoan2874.techhub.repository.OrderItemRepository;
 import com.haihoan2874.techhub.repository.OrderRepository;
 import com.haihoan2874.techhub.repository.ProductRepository;
+import com.haihoan2874.techhub.repository.ReviewRepository;
 import com.haihoan2874.techhub.repository.UserRepository;
 import com.haihoan2874.techhub.security.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -56,6 +57,7 @@ public class OrderService {
     private final PaymentService paymentService;
     private final EmailService emailService;
     private final VoucherService voucherService;
+    private final ReviewRepository reviewRepository;
 
     @Transactional
     public CreateOrderResponse createOrder(CreateOrderRequest request, Authentication authentication) {
@@ -181,6 +183,7 @@ public class OrderService {
                                         .quantity(item.getQuantity())
                                         .price(item.getPrice())
                                         .subtotal(item.getSubtotal())
+                                        .isReviewed(reviewRepository.existsByProductIdAndUserId(item.getProductId(), userId))
                                         .build())
                                 .toList())
                         .build())
@@ -282,12 +285,12 @@ public class OrderService {
             return;
         }
 
-        order.setStatus(OrderStatus.CONFIRMED);
+        order.setStatus(OrderStatus.PROCESSING);
         orderRepository.save(order);
 
         confirmReservedOrderStock(order);
 
-        log.info("Order {} confirmed and inventory updated", orderNumber);
+        log.info("Order {} confirmed (now PROCESSING) and inventory updated", orderNumber);
     }
 
     private void confirmReservedOrderStock(Order order) {
@@ -298,18 +301,29 @@ public class OrderService {
 
     private List<OrderItem> reserveInventoryAndCreateItems(Order order, List<CartItemResponse> cartItems) {
         List<OrderItem> orderItems = new ArrayList<>();
+        List<UUID> productIds = cartItems.stream()
+                .map(CartItemResponse::getProductId)
+                .toList();
+        Map<UUID, Product> productMap = productRepository.findProductsByIds(productIds).stream()
+                .collect(Collectors.toMap(Product::getId, product -> product));
 
         for (CartItemResponse cartItem : cartItems) {
+            Product product = productMap.get(cartItem.getProductId());
+            if (product == null) {
+                throw new EntityNotFoundException("Product not found");
+            }
+
             if (!inventoryService.reserveStock(cartItem.getProductId(), cartItem.getQuantity())) {
                 throw new RuntimeException("Product " + cartItem.getProductName() + " is out of stock");
             }
 
             orderItems.add(OrderItem.builder()
                     .order(order)
-                    .productId(cartItem.getProductId())
-                    .productName(cartItem.getProductName())
+                    .productId(product.getId())
+                    .productName(product.getName())
                     .quantity(cartItem.getQuantity())
                     .price(cartItem.getPrice())
+                    .costPrice(product.getCostPrice())
                     .subtotal(cartItem.getSubTotal())
                     .build());
         }
@@ -329,11 +343,11 @@ public class OrderService {
                 throw new EntityNotFoundException("Product not found");
             }
 
-            if (product.getStockQuantity() < itemReq.getQuantity()) {
+            // Kiểm tra tồn kho qua bảng inventory (nguồn dữ liệu chính xác)
+            int availableStock = inventoryService.getAvailableStock(product.getId());
+            if (availableStock < itemReq.getQuantity()) {
                 throw new RuntimeException("Product " + product.getName() + " is out of stock");
             }
-
-            product.setStockQuantity(product.getStockQuantity() - itemReq.getQuantity());
 
             BigDecimal subtotal = product.getPrice().multiply(BigDecimal.valueOf(itemReq.getQuantity()));
 
@@ -343,6 +357,7 @@ public class OrderService {
                     .productName(product.getName())
                     .quantity(itemReq.getQuantity())
                     .price(product.getPrice())
+                    .costPrice(product.getCostPrice())   // Snapshot giá vốn tại thời điểm mua
                     .subtotal(subtotal)
                     .build());
         }
@@ -448,11 +463,7 @@ public class OrderService {
         }
 
         boolean validTransition = switch (currentStatus) {
-            case PENDING -> newStatus == OrderStatus.CONFIRMED
-                    || newStatus == OrderStatus.PROCESSING
-                    || newStatus == OrderStatus.CANCELLED;
-            case CONFIRMED -> newStatus == OrderStatus.PROCESSING
-                    || newStatus == OrderStatus.SHIPPED
+            case PENDING -> newStatus == OrderStatus.PROCESSING
                     || newStatus == OrderStatus.CANCELLED;
             case PROCESSING -> newStatus == OrderStatus.SHIPPED
                     || newStatus == OrderStatus.CANCELLED;
@@ -486,14 +497,46 @@ public class OrderService {
     private AdminOrderResponse mapToAdminOrderResponse(Order order) {
         String customerName = "N/A";
         String customerEmail = "N/A";
+        String customerPhone = "N/A";
+        String shippingAddress = "N/A";
+
+        if (order.getShippingAddress() != null) {
+            customerName = order.getShippingAddress().getFullName();
+            customerPhone = order.getShippingAddress().getPhone();
+            shippingAddress = order.getShippingAddress().getAddress() != null ? order.getShippingAddress().getAddress() : formatAddress(order.getShippingAddress());
+        }
 
         User user = userRepository.findById(order.getUserId()).orElse(null);
         if (user != null) {
-            customerName = String.format("%s %s", nullToEmpty(user.getFirstName()), nullToEmpty(user.getLastName())).trim();
-            if (customerName.isBlank()) {
-                customerName = user.getUsername();
+            if ("N/A".equals(customerName) || customerName.isBlank()) {
+                customerName = String.format("%s %s", nullToEmpty(user.getFirstName()), nullToEmpty(user.getLastName())).trim();
+                if (customerName.isBlank()) customerName = user.getUsername();
             }
             customerEmail = user.getEmail();
+            if ("N/A".equals(customerPhone) || customerPhone.isBlank()) {
+                customerPhone = user.getPhoneNumber() != null ? user.getPhoneNumber() : "N/A";
+            }
+        }
+
+        BigDecimal grossProfit = BigDecimal.ZERO;
+        java.util.List<AdminOrderResponse.AdminOrderItemResponse> items = new java.util.ArrayList<>();
+
+        if (order.getItems() != null) {
+            for (com.haihoan2874.techhub.model.OrderItem item : order.getItems()) {
+                BigDecimal costPrice = item.getCostPrice() != null ? item.getCostPrice() : BigDecimal.ZERO;
+                BigDecimal profit = item.getPrice().subtract(costPrice).multiply(BigDecimal.valueOf(item.getQuantity()));
+                grossProfit = grossProfit.add(profit);
+
+                items.add(AdminOrderResponse.AdminOrderItemResponse.builder()
+                        .productId(item.getProductId())
+                        .productName(item.getProductName())
+                        .quantity(item.getQuantity())
+                        .price(item.getPrice())
+                        .costPrice(costPrice)
+                        .subtotal(item.getSubtotal())
+                        .grossProfit(profit)
+                        .build());
+            }
         }
 
         return AdminOrderResponse.builder()
@@ -503,9 +546,13 @@ public class OrderService {
                 .total(order.getTotal())
                 .customerName(customerName)
                 .customerEmail(customerEmail)
+                .customerPhone(customerPhone)
+                .shippingAddress(shippingAddress)
                 .itemCount(order.getItems() == null ? 0 : order.getItems().size())
                 .paymentMethod(order.getPaymentMethod())
+                .grossProfit(grossProfit)
                 .createdAt(order.getCreatedAt())
+                .items(items)
                 .build();
     }
 

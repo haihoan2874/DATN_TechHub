@@ -24,9 +24,8 @@ import { formatCurrency, formatDate } from '../utils/formatters';
 
 const statusTone = {
   PENDING: 'amber',
-  CONFIRMED: 'blue',
   PROCESSING: 'blue',
-  SHIPPED: 'slate',
+  SHIPPED: 'purple',
   DELIVERED: 'green',
   CANCELLED: 'red'
 };
@@ -73,7 +72,7 @@ const Orders = () => {
     { label: 'Tổng đơn hàng', value: orders.length, icon: Package, tone: 'blue' },
     {
       label: 'Đang xử lý',
-      value: orders.filter((order) => ['PENDING', 'CONFIRMED', 'PROCESSING'].includes(order.status)).length,
+      value: orders.filter((order) => ['PENDING', 'PROCESSING'].includes(order.status)).length,
       icon: Zap,
       tone: 'amber'
     },
@@ -126,6 +125,7 @@ const Orders = () => {
       setReviewTarget(null);
       setReviewRating(0);
       setReviewComment('');
+      await fetchOrders();
     } catch (error) {
       toast.error(error.response?.data?.message || 'Không thể gửi đánh giá vào lúc này');
     } finally {
@@ -283,7 +283,7 @@ const Orders = () => {
                     </div>
                   </div>
 
-                  <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
+                  <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
                     <div className="space-y-3">
                       {order.orderItems?.map((item, index) => (
                         <div key={`${order.id}-${item.productId || index}`} className="flex items-center gap-3">
@@ -302,20 +302,28 @@ const Orders = () => {
                               SL: {item.quantity} x {formatCurrency(item.price)}
                             </p>
                           </div>
-                          {order.status === 'DELIVERED' && (
-                            <button
-                              type="button"
-                              onClick={() => openReviewModal(order, item)}
-                              className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-700 transition-colors hover:bg-amber-100"
-                            >
-                              Đánh giá
-                            </button>
-                          )}
+                          {order.status === 'DELIVERED' && (() => {
+                            const hasReviewed = item.isReviewed || item.reviewed;
+                            return (
+                              <button
+                                type="button"
+                                disabled={hasReviewed}
+                                onClick={() => openReviewModal(order, item)}
+                                className={`rounded-xl border px-3 py-2.5 text-xs font-semibold transition-colors ${
+                                  hasReviewed
+                                    ? 'border-slate-200 bg-slate-100 text-slate-400 cursor-not-allowed'
+                                    : 'border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100'
+                                }`}
+                              >
+                                {hasReviewed ? 'Đã đánh giá' : 'Đánh giá'}
+                              </button>
+                            );
+                          })()}
                         </div>
                       ))}
                     </div>
 
-                    <div className="flex flex-col gap-2 sm:flex-row lg:flex-col">
+                    <div className="flex flex-col gap-2 sm:flex-row lg:flex-col lg:justify-center">
                       {order.status === 'PENDING' && (
                         <Button variant="outline" onClick={() => setCancelTarget(order)} className="border-rose-200 text-rose-600 hover:bg-rose-50">
                           Hủy đơn

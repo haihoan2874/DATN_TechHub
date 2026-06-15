@@ -187,6 +187,7 @@ public class CartService {
         if (Boolean.FALSE.equals(product.getIsActive())) {
             throw new IllegalStateException("Sản phẩm hiện không còn kinh doanh");
         }
+        // Dùng stockQuantity từ ProductResponse (đã được map từ inventory.quantity_available)
         if (product.getStockQuantity() == null || product.getStockQuantity() <= 0) {
             throw new IllegalStateException("Sản phẩm đã hết hàng");
         }

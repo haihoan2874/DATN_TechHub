@@ -1,6 +1,5 @@
 export const ORDER_STATUS_VALUES = [
   'PENDING',
-  'CONFIRMED',
   'PROCESSING',
   'SHIPPED',
   'DELIVERED',
@@ -8,17 +7,15 @@ export const ORDER_STATUS_VALUES = [
 ];
 
 export const ORDER_STATUS_LABELS = {
-  PENDING: 'Chờ xử lý',
-  CONFIRMED: 'Đã xác nhận',
-  PROCESSING: 'Đang xử lý',
+  PENDING: 'Chờ xác nhận',
+  PROCESSING: 'Đang chuẩn bị hàng',
   SHIPPED: 'Đang giao',
   DELIVERED: 'Đã giao',
   CANCELLED: 'Đã hủy'
 };
 
 export const ORDER_STATUS_TRANSITIONS = {
-  PENDING: ['PENDING', 'CONFIRMED', 'PROCESSING', 'CANCELLED'],
-  CONFIRMED: ['CONFIRMED', 'PROCESSING', 'SHIPPED', 'CANCELLED'],
+  PENDING: ['PENDING', 'PROCESSING', 'CANCELLED'],
   PROCESSING: ['PROCESSING', 'SHIPPED', 'CANCELLED'],
   SHIPPED: ['SHIPPED', 'DELIVERED'],
   DELIVERED: ['DELIVERED'],
