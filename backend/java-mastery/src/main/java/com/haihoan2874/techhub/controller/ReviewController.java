@@ -1,6 +1,7 @@
 package com.haihoan2874.techhub.controller;
 
 import com.haihoan2874.techhub.dto.request.CreateReviewRequest;
+import com.haihoan2874.techhub.dto.request.ReplyReviewRequest;
 import com.haihoan2874.techhub.dto.response.CreateReviewResponse;
 import com.haihoan2874.techhub.dto.response.ReviewResponse;
 import com.haihoan2874.techhub.service.ReviewService;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PutMapping;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.UUID;
@@ -82,5 +84,23 @@ public class ReviewController {
     public ResponseEntity<Void> deleteReview(@PathVariable UUID id) {
         reviewService.deleteReview(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/reply")
+    @PreAuthorize("hasRole('ADMIN')")
+    @SecurityRequirement(name = "bearer")
+    @Operation(summary = "Reply to review", description = "Admin: add or update official response for a review")
+    public ResponseEntity<ReviewResponse> replyReview(@PathVariable UUID id,
+                                                      @Valid @RequestBody ReplyReviewRequest request,
+                                                      Authentication authentication) {
+        return ResponseEntity.ok(reviewService.replyReview(id, request, authentication));
+    }
+
+    @DeleteMapping("/{id}/reply")
+    @PreAuthorize("hasRole('ADMIN')")
+    @SecurityRequirement(name = "bearer")
+    @Operation(summary = "Delete review reply", description = "Admin: remove official response from a review")
+    public ResponseEntity<ReviewResponse> deleteReviewReply(@PathVariable UUID id) {
+        return ResponseEntity.ok(reviewService.deleteReviewReply(id));
     }
 }

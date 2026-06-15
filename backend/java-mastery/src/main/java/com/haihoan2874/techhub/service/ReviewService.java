@@ -1,6 +1,7 @@
 package com.haihoan2874.techhub.service;
 
 import com.haihoan2874.techhub.dto.request.CreateReviewRequest;
+import com.haihoan2874.techhub.dto.request.ReplyReviewRequest;
 import com.haihoan2874.techhub.dto.response.CreateReviewResponse;
 import com.haihoan2874.techhub.dto.response.ReviewResponse;
 import com.haihoan2874.techhub.model.Product;
@@ -85,6 +86,33 @@ public class ReviewService {
     }
 
     @Transactional
+    public ReviewResponse replyReview(UUID id, ReplyReviewRequest request, Authentication authentication) {
+        User admin = userRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new EntityNotFoundException("Admin not found"));
+
+        Review review = reviewRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Review not found"));
+
+        review.setAdminReply(request.getContent().trim());
+        review.setAdminRepliedAt(LocalDateTime.now());
+        review.setAdminRepliedBy(admin);
+
+        return mapToReviewResponse(reviewRepository.save(review));
+    }
+
+    @Transactional
+    public ReviewResponse deleteReviewReply(UUID id) {
+        Review review = reviewRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Review not found"));
+
+        review.setAdminReply(null);
+        review.setAdminRepliedAt(null);
+        review.setAdminRepliedBy(null);
+
+        return mapToReviewResponse(reviewRepository.save(review));
+    }
+
+    @Transactional
     public void deleteReview(UUID id) {
         if (!reviewRepository.existsById(id)) {
             throw new EntityNotFoundException("Review not found");
@@ -100,6 +128,13 @@ public class ReviewService {
             displayName = review.getUser().getUsername();
         }
 
+        String repliedByName = null;
+        UUID repliedById = null;
+        if (review.getAdminRepliedBy() != null) {
+            repliedById = review.getAdminRepliedBy().getId();
+            repliedByName = review.getAdminRepliedBy().getUsername();
+        }
+
         return ReviewResponse.builder()
                 .id(review.getId())
                 .productId(review.getProduct().getId())
@@ -108,6 +143,10 @@ public class ReviewService {
                 .userName(displayName)
                 .rating(review.getRating())
                 .comment(review.getComment())
+                .adminReply(review.getAdminReply())
+                .adminRepliedAt(review.getAdminRepliedAt())
+                .adminRepliedBy(repliedById)
+                .adminRepliedByName(repliedByName)
                 .createdAt(review.getCreatedAt())
                 .build();
     }

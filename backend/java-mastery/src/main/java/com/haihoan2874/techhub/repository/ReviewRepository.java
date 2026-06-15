@@ -22,6 +22,7 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
             SELECT r FROM Review r
             JOIN FETCH r.product
             JOIN FETCH r.user
+            LEFT JOIN FETCH r.adminRepliedBy
             ORDER BY r.createdAt DESC
             """)
     java.util.List<Review> findAllWithProductAndUser();
@@ -30,6 +31,7 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
             SELECT r FROM Review r
             JOIN FETCH r.product
             JOIN FETCH r.user
+            LEFT JOIN FETCH r.adminRepliedBy
             WHERE r.product.id = :productId
             ORDER BY r.createdAt DESC
             """)

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { CheckCircle2, Star } from 'lucide-react';
+import { CheckCircle2, MessageSquareReply, Star } from 'lucide-react';
 import productService from '../../../services/productService';
 import EmptyState from '../../../components/feedback/EmptyState';
 import { formatDate } from '../../../utils/formatters';
@@ -90,6 +90,23 @@ const ProductReviews = ({ productId, averageRating, reviewCount }) => {
 
                 {review.comment && (
                   <p className="mt-4 text-sm leading-6 text-slate-600">{review.comment}</p>
+                )}
+
+                {review.adminReply && (
+                  <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50/70 p-4">
+                    <div className="flex items-center gap-2 text-sm font-bold text-blue-800">
+                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-600 text-white">
+                        <MessageSquareReply size={14} />
+                      </span>
+                      Phản hồi từ S-LIFE
+                    </div>
+                    <p className="mt-3 text-sm leading-6 text-slate-700">{review.adminReply}</p>
+                    {review.adminRepliedAt && (
+                      <p className="mt-2 text-xs font-semibold text-blue-700/70">
+                        {formatDate(review.adminRepliedAt)}
+                      </p>
+                    )}
+                  </div>
                 )}
               </article>
             ))}

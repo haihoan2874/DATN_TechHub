@@ -20,5 +20,9 @@ public class ReviewResponse {
     private String userName;
     private Integer rating;
     private String comment;
+    private String adminReply;
+    private LocalDateTime adminRepliedAt;
+    private UUID adminRepliedBy;
+    private String adminRepliedByName;
     private LocalDateTime createdAt;
 }

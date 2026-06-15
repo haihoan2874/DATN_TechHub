@@ -2,11 +2,13 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { 
   Star, MessageSquare, Trash2,
   Search, RefreshCw,
-  Package, CheckCircle2, XCircle
+  Package, CheckCircle2, XCircle, Reply, Send, Eraser
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import adminService from '../services/adminService';
 import ConfirmModal from '../components/ui/ConfirmModal';
+import Modal from '../components/ui/Modal';
+import Button from '../components/ui/Button';
 import PageShell from '../components/layout/PageShell';
 import PageHeader from '../components/layout/PageHeader';
 import Toolbar from '../components/layout/Toolbar';
@@ -37,6 +39,11 @@ const ReviewManagement = () => {
   // Selection & Actions
   const [selectedReview, setSelectedReview] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showReplyModal, setShowReplyModal] = useState(false);
+  const [replyDraft, setReplyDraft] = useState('');
+  const [replyError, setReplyError] = useState('');
+  const [savingReply, setSavingReply] = useState(false);
+  const [deletingReply, setDeletingReply] = useState(false);
 
   useEffect(() => {
     fetchReviews();
@@ -62,6 +69,57 @@ const ReviewManagement = () => {
       fetchReviews();
     } catch (error) {
       toast.error('Lỗi khi xóa đánh giá');
+    }
+  };
+
+  const openReplyModal = (review) => {
+    setSelectedReview(review);
+    setReplyDraft(review.adminReply || '');
+    setReplyError('');
+    setShowReplyModal(true);
+  };
+
+  const handleSaveReply = async () => {
+    const content = replyDraft.trim();
+    if (!content) {
+      setReplyError('Vui lòng nhập nội dung phản hồi.');
+      return;
+    }
+    if (content.length > 5000) {
+      setReplyError('Nội dung phản hồi không được vượt quá 5000 ký tự.');
+      return;
+    }
+
+    setSavingReply(true);
+    try {
+      const response = await adminService.replyReview(selectedReview.id, content);
+      const updatedReview = response.data || response;
+      setReviews((currentReviews) => currentReviews.map((review) => (
+        review.id === updatedReview.id ? updatedReview : review
+      )));
+      toast.success('Đã lưu phản hồi đánh giá');
+      setShowReplyModal(false);
+    } catch (error) {
+      toast.error('Không thể lưu phản hồi đánh giá');
+    } finally {
+      setSavingReply(false);
+    }
+  };
+
+  const handleDeleteReply = async () => {
+    setDeletingReply(true);
+    try {
+      const response = await adminService.deleteReviewReply(selectedReview.id);
+      const updatedReview = response.data || response;
+      setReviews((currentReviews) => currentReviews.map((review) => (
+        review.id === updatedReview.id ? updatedReview : review
+      )));
+      toast.success('Đã xóa phản hồi đánh giá');
+      setShowReplyModal(false);
+    } catch (error) {
+      toast.error('Không thể xóa phản hồi đánh giá');
+    } finally {
+      setDeletingReply(false);
     }
   };
 
@@ -128,6 +186,90 @@ const ReviewManagement = () => {
         message="Đánh giá này sẽ bị xóa vĩnh viễn khỏi trang sản phẩm. Bạn có chắc chắn muốn tiếp tục?"
         variant="danger"
       />
+      <Modal
+        isOpen={showReplyModal}
+        onClose={() => setShowReplyModal(false)}
+        title={selectedReview?.adminReply ? 'Cập nhật phản hồi đánh giá' : 'Phản hồi đánh giá'}
+        size="md"
+        closeOnOverlay={!savingReply && !deletingReply}
+        footer={(
+          <>
+            {selectedReview?.adminReply ? (
+              <Button
+                type="button"
+                variant="outline"
+                icon={Eraser}
+                onClick={handleDeleteReply}
+                isLoading={deletingReply}
+                disabled={savingReply}
+                className="mr-auto border-rose-200 text-rose-700 hover:bg-rose-50"
+              >
+                Xóa phản hồi
+              </Button>
+            ) : null}
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setShowReplyModal(false)}
+              disabled={savingReply || deletingReply}
+            >
+              Hủy bỏ
+            </Button>
+            <Button
+              type="button"
+              variant="primary"
+              icon={Send}
+              onClick={handleSaveReply}
+              isLoading={savingReply}
+              disabled={deletingReply}
+            >
+              Lưu phản hồi
+            </Button>
+          </>
+        )}
+      >
+        <div className="space-y-4">
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-400">Đánh giá của khách hàng</p>
+            <div className="mt-2 flex items-center gap-2">
+              {renderStars(selectedReview?.rating || 0)}
+              <span className="text-xs font-semibold text-amber-600">{selectedReview?.rating || 0} / 5</span>
+            </div>
+            <p className="mt-3 text-sm font-semibold text-slate-900">{selectedReview?.productName}</p>
+            <p className="mt-2 text-sm leading-6 text-slate-600">
+              {selectedReview?.comment || 'Khách hàng không để lại nội dung đánh giá.'}
+            </p>
+          </div>
+
+          <div>
+            <label htmlFor="admin-review-reply" className="text-sm font-bold text-slate-700">
+              Nội dung phản hồi từ S-LIFE
+            </label>
+            <textarea
+              id="admin-review-reply"
+              value={replyDraft}
+              onChange={(event) => {
+                setReplyDraft(event.target.value);
+                if (replyError) setReplyError('');
+              }}
+              rows={5}
+              maxLength={5000}
+              placeholder="Nhập phản hồi ngắn gọn, rõ ràng và phù hợp với nội dung đánh giá..."
+              className={`mt-2 w-full resize-none rounded-2xl border bg-white px-4 py-3 text-sm font-medium leading-6 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 ${
+                replyError
+                  ? 'border-rose-300 focus:border-rose-500 focus:ring-rose-500/10'
+                  : 'border-slate-300 focus:border-blue-500 focus:ring-blue-500/10'
+              }`}
+            />
+            <div className="mt-2 flex items-center justify-between gap-3">
+              <p className={`text-xs font-semibold ${replyError ? 'text-rose-600' : 'text-slate-400'}`}>
+                {replyError || 'Phản hồi sẽ hiển thị công khai dưới đánh giá sản phẩm.'}
+              </p>
+              <span className="text-xs font-semibold text-slate-400">{replyDraft.length}/5000</span>
+            </div>
+          </div>
+        </div>
+      </Modal>
 
       <PageHeader
         eyebrow="Trải nghiệm khách hàng"
@@ -231,6 +373,15 @@ const ReviewManagement = () => {
                         <p className="line-clamp-2 text-sm font-medium leading-relaxed text-slate-600">
                           {review.comment || 'Không có nội dung'}
                         </p>
+                        {review.adminReply ? (
+                          <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-2 py-1 text-xs font-bold text-blue-700">
+                            <Reply size={12} /> Đã phản hồi
+                          </div>
+                        ) : (
+                          <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2 py-1 text-xs font-bold text-slate-500">
+                            Chưa phản hồi
+                          </div>
+                        )}
                       </div>
                     </td>
                     <td className="px-5 py-4 text-sm font-medium text-slate-500">
@@ -238,6 +389,15 @@ const ReviewManagement = () => {
                     </td>
                     <td className="px-5 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => openReplyModal(review)}
+                          className="rounded-lg p-2 text-slate-500 hover:bg-blue-50 hover:text-blue-700"
+                          title={review.adminReply ? 'Sửa phản hồi' : 'Phản hồi đánh giá'}
+                          aria-label={`${review.adminReply ? 'Sửa phản hồi' : 'Phản hồi'} đánh giá của ${review.userName || 'người dùng'}`}
+                        >
+                          <Reply size={16} />
+                        </button>
                         <button
                           type="button"
                           onClick={() => { setSelectedReview(review); setShowDeleteModal(true); }}
