@@ -53,8 +53,11 @@ public final class VnPayUtil {
         String ipAddress;
         try {
             ipAddress = request.getHeader("X-FORWARDED-FOR");
-            if (ipAddress == null) {
+            if (ipAddress == null || ipAddress.isBlank()) {
                 ipAddress = request.getRemoteAddr();
+            }
+            if (ipAddress != null && ipAddress.contains(",")) {
+                ipAddress = ipAddress.split(",")[0].trim();
             }
         } catch (Exception e) {
             ipAddress = "Invalid IP:" + e.getMessage();
@@ -69,23 +72,7 @@ public final class VnPayUtil {
      * @return query string
      */
     public static String getPaymentQueryString(Map<String, String> data) {
-        List<String> fieldNames = new ArrayList<>(data.keySet());
-        Collections.sort(fieldNames);
-        StringBuilder sb = new StringBuilder();
-        Iterator<String> itr = fieldNames.iterator();
-        while (itr.hasNext()) {
-            String fieldName = itr.next();
-            String fieldValue = data.get(fieldName);
-            if ((fieldValue != null) && (fieldValue.length() > 0)) {
-                sb.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII))
-                  .append('=')
-                  .append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
-                if (itr.hasNext()) {
-                    sb.append('&');
-                }
-            }
-        }
-        return sb.toString();
+        return buildSortedQueryString(data, true);
     }
 
     /**
@@ -95,22 +82,33 @@ public final class VnPayUtil {
      * @return hash data string
      */
     public static String getHashData(Map<String, String> data) {
+        return buildSortedQueryString(data, false);
+    }
+
+    private static String buildSortedQueryString(Map<String, String> data, boolean encodeFieldName) {
         List<String> fieldNames = new ArrayList<>(data.keySet());
         Collections.sort(fieldNames);
         StringBuilder sb = new StringBuilder();
-        Iterator<String> itr = fieldNames.iterator();
-        while (itr.hasNext()) {
-            String fieldName = itr.next();
+        for (String fieldName : fieldNames) {
             String fieldValue = data.get(fieldName);
             if ((fieldValue != null) && (fieldValue.length() > 0)) {
-                sb.append(fieldName)
-                  .append('=')
-                  .append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
-                if (itr.hasNext()) {
-                    sb.append('&');
+                if (sb.length() > 0) {
+                    sb.append("&");
                 }
+                if (encodeFieldName) {
+                    sb.append(encode(fieldName));
+                } else {
+                    sb.append(fieldName);
+                }
+                sb
+                  .append("=")
+                  .append(encode(fieldValue));
             }
         }
         return sb.toString();
+    }
+
+    private static String encode(String value) {
+        return URLEncoder.encode(value, StandardCharsets.UTF_8);
     }
 }

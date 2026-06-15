@@ -31,33 +31,42 @@ public class PaymentService {
      */
     public String createPaymentUrl(HttpServletRequest request, long amount, String orderInfo, String txnRef) {
         log.info("Creating VNPay payment URL for Ref: {}, Amount: {}", txnRef, amount);
+        if (amount <= 0) {
+            throw new IllegalArgumentException("VNPay amount must be greater than zero");
+        }
         
         String vnpIpAddr = VnPayUtil.getIpAddress(request);
-        String vnpCreateDate = new SimpleDateFormat("yyyyMMddHHmmss", Locale.ROOT).format(new Date());
+        Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss", Locale.ROOT);
+        formatter.setTimeZone(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
+        String vnpCreateDate = formatter.format(cld.getTime());
+        cld.add(Calendar.MINUTE, 15);
+        String vnpExpireDate = formatter.format(cld.getTime());
 
         Map<String, String> vnpParams = new HashMap<>();
-        vnpParams.put("vnp_Version", vnPayConfig.getVersion());
-        vnpParams.put("vnp_Command", vnPayConfig.getCommand());
-        vnpParams.put("vnp_TmnCode", vnPayConfig.getTmnCode());
+        vnpParams.put("vnp_Version", requireConfig(vnPayConfig.getVersion(), "vnp.version"));
+        vnpParams.put("vnp_Command", requireConfig(vnPayConfig.getCommand(), "vnp.command"));
+        vnpParams.put("vnp_TmnCode", requireConfig(vnPayConfig.getTmnCode(), "vnp.tmn-code"));
         vnpParams.put("vnp_Amount", String.valueOf(amount * 100)); // VNPay amount is in cents
         vnpParams.put("vnp_CurrCode", "VND");
         vnpParams.put("vnp_TxnRef", txnRef);
         vnpParams.put("vnp_OrderInfo", orderInfo);
         vnpParams.put("vnp_OrderType", "other");
         vnpParams.put("vnp_Locale", "vn");
-        vnpParams.put("vnp_ReturnUrl", vnPayConfig.getReturnUrl());
+        vnpParams.put("vnp_ReturnUrl", requireConfig(vnPayConfig.getReturnUrl(), "vnp.return-url"));
         vnpParams.put("vnp_IpAddr", vnpIpAddr);
         vnpParams.put("vnp_CreateDate", vnpCreateDate);
+        vnpParams.put("vnp_ExpireDate", vnpExpireDate);
 
         // Build Hash Data
         String hashData = VnPayUtil.getHashData(vnpParams);
-        String vnpSecureHash = VnPayUtil.hmacSHA512(vnPayConfig.getHashSecret(), hashData);
+        String vnpSecureHash = VnPayUtil.hmacSHA512(requireConfig(vnPayConfig.getHashSecret(), "vnp.hash-secret"), hashData);
         
         // Build Query String
         String queryUrl = VnPayUtil.getPaymentQueryString(vnpParams) + "&vnp_SecureHash=" + vnpSecureHash;
-        String paymentUrl = vnPayConfig.getPayUrl() + "?" + queryUrl;
+        String paymentUrl = requireConfig(vnPayConfig.getPayUrl(), "vnp.pay-url") + "?" + queryUrl;
         
-        log.info("Generated VNPay payment URL: {}", paymentUrl);
+        log.debug("Generated VNPay payment URL for Ref: {}", txnRef);
         return paymentUrl;
     }
 
@@ -68,6 +77,17 @@ public class PaymentService {
      * @return true if payment is successful and signature is valid
      */
     public boolean verifyPayment(Map<String, String> requestParams) {
+        boolean isValid = verifySignature(requestParams);
+        String responseCode = requestParams.get("vnp_ResponseCode");
+        String transactionStatus = requestParams.get("vnp_TransactionStatus");
+
+        log.info("VNPay payment verification: ID={}, Valid={}, ResponseCode={}, TransactionStatus={}",
+                requestParams.get("vnp_TxnRef"), isValid, responseCode, transactionStatus);
+
+        return isValid && "00".equals(responseCode) && "00".equals(transactionStatus);
+    }
+
+    public boolean verifySignature(Map<String, String> requestParams) {
         String vnpSecureHash = requestParams.get("vnp_SecureHash");
         if (vnpSecureHash == null) {
             return false;
@@ -79,14 +99,15 @@ public class PaymentService {
         verifyParams.remove("vnp_SecureHashType");
 
         String hashData = VnPayUtil.getHashData(verifyParams);
-        String expectedHash = VnPayUtil.hmacSHA512(vnPayConfig.getHashSecret(), hashData);
+        String expectedHash = VnPayUtil.hmacSHA512(requireConfig(vnPayConfig.getHashSecret(), "vnp.hash-secret"), hashData);
 
-        boolean isValid = vnpSecureHash.equalsIgnoreCase(expectedHash);
-        String responseCode = requestParams.get("vnp_ResponseCode");
-        
-        log.info("VNPay payment verification: ID={}, Valid={}, ResponseCode={}", 
-                requestParams.get("vnp_TxnRef"), isValid, responseCode);
-        
-        return isValid && "00".equals(responseCode);
+        return vnpSecureHash.equalsIgnoreCase(expectedHash);
+    }
+
+    private String requireConfig(String value, String propertyName) {
+        if (value == null || value.isBlank()) {
+            throw new IllegalStateException("Missing VNPay configuration: " + propertyName);
+        }
+        return value.trim();
     }
 }
