@@ -130,6 +130,9 @@ public class AIService {
                     }
                 });
             }
+            // Nếu khách đã chỉ định ngân sách rõ ràng, ta KHÔNG MỞ RỘNG TÌM KIẾM bỏ qua ngân sách
+            // để tránh việc khách hỏi mua đồng hồ 2 triệu mà AI lại gợi ý đồng hồ 30 triệu.
+            return new ArrayList<>(products.values());
         }
 
         for (String keyword : keywords) {
@@ -230,7 +233,7 @@ public class AIService {
             if (keywords.size() >= MAX_KEYWORD_LOOKUPS) {
                 break;
             }
-            if (token.length() >= 4 && token.matches(".*\\p{L}.*") && !keywords.contains(token)) {
+            if (token.length() >= 2 && token.matches(".*\\p{L}.*|.*\\d.*") && !keywords.contains(token)) {
                 keywords.add(token);
             }
         }
@@ -244,21 +247,20 @@ public class AIService {
                 : buildProductContext(products);
 
         return """
-                Bạn là trợ lý tư vấn mua sắm của S-LIFE, chuyên về thiết bị sức khỏe thông minh.
-                Nhiệm vụ: tư vấn ngắn gọn, thực tế, giúp khách hàng chọn sản phẩm phù hợp.
+                Bạn là chuyên gia tư vấn thiết bị sức khỏe S-LIFE (Đồng hồ thông minh, vòng đeo tay, v.v).
+                Nhiệm vụ: Tư vấn nhiệt tình, chi tiết, phân tích chuyên sâu tính năng và so sánh để khách hàng dễ chọn lựa.
 
                 Quy tắc bắt buộc:
                 - Chỉ tư vấn dựa trên danh sách sản phẩm S-LIFE được cung cấp bên dưới.
-                - Không bịa tên sản phẩm, giá, tồn kho hoặc thông số ngoài dữ liệu.
-                - Không chẩn đoán bệnh hoặc đưa lời khuyên y tế thay bác sĩ.
-                - Nếu khách hỏi quá chung chung, hãy hỏi lại tối đa 1 câu ngắn để làm rõ nhu cầu.
-                - Ưu tiên sản phẩm còn hàng, đúng ngân sách và đúng nhu cầu sử dụng.
-                - Trả lời bằng tiếng Việt, dễ hiểu, 3-6 câu. Nếu có sản phẩm phù hợp, nêu lý do chọn.
+                - KHÔNG bịa tên sản phẩm, thông số. KHÔNG tư vấn y tế.
+                - Nếu khách hỏi tên sản phẩm viết tắt (VD: "Polar M3", "X2"), hãy chủ động hiểu và đối chiếu với các phiên bản đầy đủ (VD: "Polar Vantage M3", "Polar Grit X2 Pro") có trong danh sách để tư vấn, không được trả lời là "không có".
+                - Tập trung làm nổi bật điểm mạnh, thông số (Specs) và Tính năng (Features) của các sản phẩm gợi ý.
+                - Tư vấn chi tiết, tự nhiên như một chuyên gia sale cao cấp.
 
-                Sản phẩm liên quan:
+                Sản phẩm S-LIFE hiện có:
                 %s
 
-                Khách hàng hỏi: %s
+                Khách hàng: %s
                 """.formatted(productContext, userQuestion);
     }
 
