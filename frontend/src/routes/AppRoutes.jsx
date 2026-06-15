@@ -32,6 +32,7 @@ const CategoryManagement = lazy(() => import('../pages/CategoryManagement'));
 const BrandManagement = lazy(() => import('../pages/BrandManagement'));
 const ReviewManagement = lazy(() => import('../pages/ReviewManagement'));
 const VoucherManagement = lazy(() => import('../pages/VoucherManagement'));
+const StockImportManagement = lazy(() => import('../pages/StockImportManagement'));
 
 const withGuestRoute = (element) => <GuestRoute>{element}</GuestRoute>;
 const withProtectedRoute = (element) => <ProtectedRoute>{element}</ProtectedRoute>;
@@ -70,6 +71,7 @@ const AppRoutes = () => (
         <Route path="brands" element={<BrandManagement />} />
         <Route path="reviews" element={<ReviewManagement />} />
         <Route path="vouchers" element={<VoucherManagement />} />
+        <Route path="stock-imports" element={<StockImportManagement />} />
       </Route>
     </Routes>
   </Suspense>

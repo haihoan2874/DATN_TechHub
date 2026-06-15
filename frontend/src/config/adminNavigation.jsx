@@ -6,7 +6,8 @@ import {
   Star,
   Tag,
   TicketPercent,
-  Users
+  Users,
+  PackagePlus
 } from 'lucide-react';
 
 export const adminNavigation = [
@@ -17,5 +18,6 @@ export const adminNavigation = [
   { path: '/admin/categories', icon: Tag, label: 'Danh mục' },
   { path: '/admin/brands', icon: ImageIcon, label: 'Thương hiệu' },
   { path: '/admin/reviews', icon: Star, label: 'Đánh giá' },
-  { path: '/admin/vouchers', icon: TicketPercent, label: 'Voucher' }
+  { path: '/admin/vouchers', icon: TicketPercent, label: 'Voucher' },
+  { path: '/admin/stock-imports', icon: PackagePlus, label: 'Nhập kho' }
 ];

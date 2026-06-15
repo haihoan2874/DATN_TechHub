@@ -22,12 +22,18 @@ public class InventoryService {
 
     @Transactional
     public void initializeInventory(UUID productId, Integer initialStock) {
+        initializeInventory(productId, initialStock, null);
+    }
+
+    @Transactional
+    public void initializeInventory(UUID productId, Integer initialStock, LocalDateTime lastRestockDate) {
         log.info("Initializing inventory for product {}: stock {}", productId, initialStock);
         Inventory inventory = Inventory.builder()
                 .productId(productId)
                 .quantityAvailable(initialStock)
                 .quantityReserved(0)
                 .minStockLevel(10)
+                .lastRestockDate(lastRestockDate)
                 .build();
         inventoryRepository.save(inventory);
     }
@@ -41,7 +47,6 @@ public class InventoryService {
         inventory.setQuantityAvailable(newStock);
         inventory.setLastRestockDate(LocalDateTime.now());
         inventoryRepository.save(inventory);
-        syncProductStock(productId, inventory.getQuantityAvailable());
     }
 
     @Transactional
@@ -58,7 +63,6 @@ public class InventoryService {
         inventory.setQuantityAvailable(inventory.getQuantityAvailable() - quantity);
         inventory.setQuantityReserved(inventory.getQuantityReserved() + quantity);
         inventoryRepository.save(inventory);
-        syncProductStock(productId, inventory.getQuantityAvailable());
         return true;
     }
 
@@ -71,7 +75,6 @@ public class InventoryService {
         inventory.setQuantityReserved(Math.max(0, inventory.getQuantityReserved() - quantity));
         inventory.setQuantityAvailable(inventory.getQuantityAvailable() + quantity);
         inventoryRepository.save(inventory);
-        syncProductStock(productId, inventory.getQuantityAvailable());
     }
 
     @Transactional
@@ -93,13 +96,10 @@ public class InventoryService {
     private Inventory getOrCreateInventory(UUID productId) {
         return inventoryRepository.findByProductId(productId)
                 .orElseGet(() -> {
-                    Product product = productRepository.findById(productId)
-                            .orElseThrow(() -> new EntityNotFoundException("Product not found: " + productId));
-                    int stock = Math.max(0, product.getStockQuantity() == null ? 0 : product.getStockQuantity());
-                    log.warn("Inventory not found for product {}. Creating inventory from product stock: {}", productId, stock);
+                    log.warn("Inventory not found for product {}. Creating new inventory with 0 stock.", productId);
                     return inventoryRepository.save(Inventory.builder()
                             .productId(productId)
-                            .quantityAvailable(stock)
+                            .quantityAvailable(0)
                             .quantityReserved(0)
                             .minStockLevel(10)
                             .lastRestockDate(LocalDateTime.now())
@@ -107,10 +107,4 @@ public class InventoryService {
                 });
     }
 
-    private void syncProductStock(UUID productId, Integer availableStock) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new EntityNotFoundException("Product not found: " + productId));
-        product.setStockQuantity(availableStock);
-        productRepository.save(product);
-    }
 }
