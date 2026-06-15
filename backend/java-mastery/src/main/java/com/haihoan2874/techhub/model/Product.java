@@ -38,15 +38,14 @@ public class Product {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(precision = 10, scale = 2)
+    @Column(precision = 15, scale = 2)
     private BigDecimal price;
 
     @Column(name = "image_url", length = 500)
     private String imageUrl;
 
-    @Column(name = "stock_quantity")
-    @Builder.Default
-    private Integer stockQuantity = 0;
+    @Column(name = "cost_price", precision = 15, scale = 2)
+    private BigDecimal costPrice;
 
     @Column(name = "is_active")
     @Builder.Default

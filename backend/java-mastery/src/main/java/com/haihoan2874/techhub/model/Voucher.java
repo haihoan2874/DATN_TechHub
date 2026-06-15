@@ -38,11 +38,11 @@ public class Voucher {
     @Column(name = "discount_type", nullable = false, length = 20)
     private DiscountType discountType;
 
-    @Column(name = "discount_value", nullable = false, precision = 10, scale = 2)
+    @Column(name = "discount_value", nullable = false, precision = 15, scale = 2)
     private BigDecimal discountValue;
 
     @Builder.Default
-    @Column(name = "min_order_amount", nullable = false, precision = 10, scale = 2)
+    @Column(name = "min_order_amount", nullable = false, precision = 15, scale = 2)
     private BigDecimal minOrderAmount = BigDecimal.ZERO;
 
     @Column(name = "usage_limit")

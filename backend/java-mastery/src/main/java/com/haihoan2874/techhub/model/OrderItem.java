@@ -35,11 +35,16 @@ public class OrderItem {
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
-    @Column(name = "price", nullable = false, precision = 10, scale = 2)
+    @Column(name = "price", nullable = false, precision = 15, scale = 2)
     private BigDecimal price;
 
-    @Column(name = "subtotal", nullable = false, precision = 10, scale = 2)
+    @Column(name = "subtotal", nullable = false, precision = 15, scale = 2)
     private BigDecimal subtotal;
+
+    // Giá vốn tại thời điểm khách mua (snapshot, không thay đổi theo thời gian)
+    // Lãi gộp = (price - costPrice) * quantity
+    @Column(name = "cost_price", precision = 15, scale = 2)
+    private BigDecimal costPrice;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp

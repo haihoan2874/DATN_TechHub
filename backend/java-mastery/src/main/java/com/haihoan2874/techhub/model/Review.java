@@ -41,6 +41,15 @@ public class Review {
     @Column(columnDefinition = "TEXT")
     private String comment;
 
+    @Column(name = "admin_reply", columnDefinition = "TEXT")
+    private String adminReply;
+
+    @Column(name = "admin_replied_at")
+    private LocalDateTime adminRepliedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "admin_replied_by")
+    private User adminRepliedBy;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
