@@ -39,6 +39,15 @@ public class AdminService {
             totalRevenue = BigDecimal.ZERO;
         }
 
+        BigDecimal totalCost = orderRepository.sumDeliveredCostBetween(
+                dashboardRange.startDate(),
+                dashboardRange.endDate()
+        );
+        if (totalCost == null) {
+            totalCost = BigDecimal.ZERO;
+        }
+        BigDecimal totalProfit = totalRevenue.subtract(totalCost);
+
         long totalOrders = orderRepository.countOrdersBetween(
                 dashboardRange.startDate(),
                 dashboardRange.endDate()
@@ -85,9 +94,11 @@ public class AdminService {
                 .stream()
                 .map(row -> new DashboardStatsResponse.ProductSale(
                         row[0].toString(),
-                        row[1] != null ? row[1].toString() : null,
-                        Long.parseLong(row[2].toString()),
-                        new BigDecimal(row[3].toString())
+                        row[1].toString(),
+                        row[2] != null ? row[2].toString() : null,
+                        Long.parseLong(row[3].toString()),
+                        new BigDecimal(row[4].toString()),
+                        new BigDecimal(row[5].toString())
                 ))
                 .collect(Collectors.toList());
 
@@ -105,6 +116,7 @@ public class AdminService {
                 .range(dashboardRange.key())
                 .rangeLabel(dashboardRange.label())
                 .totalRevenue(totalRevenue)
+                .totalProfit(totalProfit)
                 .totalOrders(totalOrders)
                 .totalCustomers(totalCustomers)
                 .totalProducts(totalProducts)

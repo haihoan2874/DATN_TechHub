@@ -29,7 +29,6 @@ const RANGE_OPTIONS = [
 
 const STATUS_TONES = {
   PENDING: 'bg-amber-500',
-  CONFIRMED: 'bg-blue-500',
   PROCESSING: 'bg-violet-500',
   SHIPPED: 'bg-sky-500',
   DELIVERED: 'bg-emerald-500',
@@ -80,6 +79,7 @@ const AdminDashboard = () => {
 
   const metricItems = [
     { label: `Doanh thu ${stats.rangeLabel?.toLowerCase() || ''}`, value: formatCurrency(stats.totalRevenue), icon: TrendingUp, tone: 'blue' },
+    { label: `Lợi nhuận ${stats.rangeLabel?.toLowerCase() || ''}`, value: formatCurrency(stats.totalProfit), icon: TrendingUp, tone: 'emerald' },
     { label: `Đơn hàng ${stats.rangeLabel?.toLowerCase() || ''}`, value: stats.totalOrders, icon: ShoppingCart, tone: 'green' },
     { label: 'Khách hàng', value: stats.totalCustomers.toLocaleString(), icon: Users, tone: 'amber' },
     { label: 'Sản phẩm', value: stats.totalProducts, icon: Package, tone: 'indigo' }
@@ -130,7 +130,7 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-5">
         {metricItems.map((metric) => (
           <MetricCard key={metric.label} {...metric} />
         ))}
@@ -226,7 +226,10 @@ const AdminDashboard = () => {
                   <p className="truncate text-sm font-bold text-slate-950">{product.name}</p>
                   <p className="text-xs font-semibold text-slate-500">Đã bán {product.quantity} sản phẩm</p>
                 </div>
-                <p className="shrink-0 text-sm font-black text-blue-700">{formatCurrency(product.revenue)}</p>
+                <div className="text-right shrink-0">
+                  <p className="text-sm font-black text-blue-700" title="Doanh thu">{formatCurrency(product.revenue)}</p>
+                  <p className="text-xs font-bold text-emerald-600 mt-0.5" title="Lợi nhuận">Lãi: {formatCurrency(product.profit)}</p>
+                </div>
               </div>
             ))}
             {stats.topProducts?.length === 0 && (

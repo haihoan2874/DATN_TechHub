@@ -16,6 +16,7 @@ public class DashboardStatsResponse {
     private String range;
     private String rangeLabel;
     private BigDecimal totalRevenue;
+    private BigDecimal totalProfit;
     private long totalOrders;
     private long totalCustomers;
     private long totalProducts;
@@ -51,10 +52,12 @@ public class DashboardStatsResponse {
     @Data
     @AllArgsConstructor
     public static class ProductSale {
+        private String id;
         private String name;
         private String imageUrl;
         private long quantity;
         private BigDecimal revenue;
+        private BigDecimal profit;
     }
 
     @Data

@@ -29,6 +29,19 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
     );
 
     @Query("""
+            SELECT COALESCE(SUM(COALESCE(i.costPrice, 0) * i.quantity), 0)
+            FROM Order o
+            JOIN o.items i
+            WHERE o.status = com.haihoan2874.techhub.model.OrderStatus.DELIVERED
+            AND o.createdAt BETWEEN :startDate AND :endDate
+            """)
+    java.math.BigDecimal sumDeliveredCostBetween(
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate
+    );
+
+
+    @Query("""
             SELECT COUNT(o)
             FROM Order o
             WHERE o.createdAt BETWEEN :startDate AND :endDate
@@ -81,14 +94,14 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
     );
 
     @Query(value = """
-            SELECT p.name, p.image_url, SUM(oi.quantity) as quantity, SUM(oi.subtotal) as revenue
+            SELECT CAST(p.id AS varchar) as id, p.name, p.image_url, SUM(oi.quantity) as quantity, SUM(oi.subtotal) as revenue, SUM(oi.subtotal - (COALESCE(oi.cost_price, p.cost_price, 0) * oi.quantity)) as profit
             FROM order_items oi
             JOIN orders o ON o.id = oi.order_id
             JOIN products p ON p.id = oi.product_id
-            WHERE o.status <> 'CANCELLED'
+            WHERE o.status = 'DELIVERED'
             AND o.created_at BETWEEN :startDate AND :endDate
             GROUP BY p.id, p.name, p.image_url
-            ORDER BY quantity DESC, revenue DESC
+            ORDER BY profit DESC, revenue DESC
             LIMIT 5
             """, nativeQuery = true)
     List<Object[]> getTopSellingProducts(
