@@ -83,3 +83,126 @@
     transition: none !important;
   }
 }
+
+/* ─────────────────────────────────────────
+   SHIPPING LABEL - Print Styles
+   Mỗi nhãn in ra khổ A6 (105mm × 148mm)
+   Dùng với @media print để in từ browser
+───────────────────────────────────────── */
+@media print {
+  /* Ẩn root của React */
+  #root { display: none !important; }
+
+  /* Hiện print-area (đã được portal ra ngoài body) */
+  #print-area {
+    display: block !important;
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    width: 100% !important;
+  }
+
+  .shipping-label-wrapper {
+    page-break-after: always;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 4mm;
+  }
+
+  .shipping-label {
+    width: 97mm;
+    min-height: 140mm;
+    border: 2px solid #000;
+    border-radius: 4mm;
+    font-family: 'Arial', sans-serif;
+    font-size: 10pt;
+    color: #000;
+    background: #fff;
+    overflow: hidden;
+  }
+
+  .label-header {
+    background: #111;
+    color: #fff;
+    padding: 3mm 4mm;
+    border-bottom: 2px solid #000;
+  }
+
+  .shop-name {
+    font-size: 12pt;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+  }
+
+  .shop-info {
+    font-size: 8pt;
+    opacity: 0.8;
+    margin-top: 1mm;
+  }
+
+  .label-section {
+    padding: 3mm 4mm;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .label-section:last-child { border-bottom: none; }
+
+  .label-section-title {
+    font-size: 7pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #666;
+    margin-bottom: 2mm;
+  }
+
+  .receiver-name {
+    font-size: 13pt;
+    font-weight: 900;
+    margin-bottom: 1.5mm;
+  }
+
+  .receiver-info {
+    font-size: 9pt;
+    margin-bottom: 1mm;
+    color: #222;
+  }
+
+  .label-order-info {
+    background: #f8f8f8;
+    font-size: 9pt;
+    line-height: 1.8;
+  }
+
+  .label-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 3mm;
+    font-size: 9pt;
+    padding: 1mm 0;
+    border-bottom: 1px dotted #eee;
+  }
+
+  .label-item span:first-child {
+    max-width: 62mm;
+    overflow-wrap: anywhere;
+  }
+
+  .label-item span:last-child {
+    white-space: nowrap;
+    font-weight: 700;
+  }
+
+  .label-total {
+    font-size: 11pt;
+    font-weight: 900;
+    text-align: right;
+    margin-top: 2mm;
+    padding-top: 2mm;
+    border-top: 2px solid #000;
+  }
+}
+
+/* Ẩn print area khi không print */
+#print-area { display: none; }

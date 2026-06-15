@@ -45,6 +45,7 @@ public class AIService {
 
     private final GeminiConfig geminiConfig;
     private final ProductRepository productRepository;
+    private final InventoryService inventoryService;
     private final WebClient geminiWebClient;
 
     public Mono<AIConsultResponse> getProductAdvice(AIConsultRequest request) {
@@ -289,7 +290,7 @@ public class AIService {
                         .slug(product.getSlug())
                         .price(product.getPrice())
                         .imageUrl(product.getImageUrl())
-                        .stockQuantity(product.getStockQuantity())
+                        .stockQuantity(inventoryService.getAvailableStock(product.getId()))
                         .build())
                 .toList();
     }
@@ -300,11 +301,12 @@ public class AIService {
         return products.stream()
                 .map(product -> {
                     String price = product.getPrice() == null ? "Chưa cập nhật" : currencyFormat.format(product.getPrice()) + " VND";
+                    int stock = inventoryService.getAvailableStock(product.getId());
                     return "- %s | Giá: %s | Tồn kho: %s | Mô tả: %s | Thông số: %s | Điểm nổi bật: %s"
                             .formatted(
                                     product.getName(),
                                     price,
-                                    product.getStockQuantity(),
+                                    stock,
                                     compact(product.getDescription()),
                                     compact(product.getSpecs()),
                                     compact(product.getFeatures())

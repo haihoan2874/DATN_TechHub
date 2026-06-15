@@ -89,8 +89,30 @@ const adminService = {
   getAllReviews: () => {
     return axiosClient.get('/reviews');
   },
+  replyReview: (id, content) => {
+    return axiosClient.put(`/reviews/${id}/reply`, { content });
+  },
+  deleteReviewReply: (id) => {
+    return axiosClient.delete(`/reviews/${id}/reply`);
+  },
   deleteReview: (id) => {
     return axiosClient.delete(`/reviews/${id}`);
+  },
+
+  // Stock Imports (Nhập kho)
+  getAllStockImports: () => {
+    return axiosClient.get('/admin/stock-imports');
+  },
+  getStockImportsByProduct: (productId) => {
+    return axiosClient.get(`/admin/stock-imports/products/${productId}`);
+  },
+  createStockImport: (data) => {
+    return axiosClient.post('/admin/stock-imports', data);
+  },
+
+  // Orders - get detail
+  getOrderDetail: (id) => {
+    return axiosClient.get(`/orders/${id}`);
   },
 
   // Vouchers

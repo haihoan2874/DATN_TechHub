@@ -10,7 +10,8 @@ const Modal = ({
   size = 'md',
   footer,
   showClose = true,
-  closeOnOverlay = true
+  closeOnOverlay = true,
+  contentClassName = 'p-4 sm:p-5'
 }) => {
   // Prevent scrolling when modal is open
   useEffect(() => {
@@ -71,7 +72,7 @@ const Modal = ({
             )}
 
             {/* Content */}
-            <div className="no-scrollbar flex-grow overflow-y-auto p-4 sm:p-5">
+            <div className={`no-scrollbar flex-grow overflow-y-auto ${contentClassName}`}>
               {children}
             </div>
 
