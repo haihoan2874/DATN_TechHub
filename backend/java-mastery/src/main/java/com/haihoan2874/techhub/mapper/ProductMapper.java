@@ -17,7 +17,6 @@ public final class ProductMapper {
         product.setDescription(request.getDescription());
         product.setPrice(request.getPrice());
         product.setImageUrl(request.getImageUrl());
-        product.setStockQuantity(request.getStockQuantity());
         product.setIsActive(!Boolean.FALSE.equals(request.getIsActive()));
         product.setCategoryId(request.getCategoryId());
         product.setBrandId(request.getBrandId());

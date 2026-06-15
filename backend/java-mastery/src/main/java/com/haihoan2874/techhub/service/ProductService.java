@@ -12,9 +12,11 @@ import com.haihoan2874.techhub.dto.response.UpdateProductStockResponse;
 import com.haihoan2874.techhub.dto.request.base.BaseProductRequest;
 import com.haihoan2874.techhub.dto.core.PagingList;
 import com.haihoan2874.techhub.model.Product;
+import com.haihoan2874.techhub.model.StockImport;
 import com.haihoan2874.techhub.repository.BrandRepository;
 import com.haihoan2874.techhub.repository.CategoryRepository;
 import com.haihoan2874.techhub.repository.ProductRepository;
+import com.haihoan2874.techhub.repository.StockImportRepository;
 import com.haihoan2874.techhub.security.service.UserService;
 import com.haihoan2874.techhub.mapper.ProductMapper;
 import com.haihoan2874.techhub.util.SlugUtil;
@@ -27,7 +29,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.List;
 import java.util.Set;
@@ -40,20 +45,26 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final BrandRepository brandRepository;
+    private final StockImportRepository stockImportRepository;
     private final InventoryService inventoryService;
     private final UserService userService;
 
     // Allowed sort fields
-    private static final Set<String> ALLOWED_SORT_FIELDS = Set.of("name", "price", "updatedAt");
+    private static final Set<String> ALLOWED_SORT_FIELDS = Set.of("name", "price", "updatedat");
     private static final String DEFAULT_SORT_FIELD = "updatedAt";
 
+    @Transactional
     public CreateProductResponse createProduct(CreateProductRequest request, Authentication authentication) {
         log.info("Create product request: {}", request.getName());
 
         validateProductRequest(request, null);
+        validateInitialStock(request);
 
         Product product = new Product();
         ProductMapper.mapRequestToEntity(product, request);
+        if (request.getInitialImportPrice() != null) {
+            product.setCostPrice(request.getInitialImportPrice());
+        }
 
         // Standardize slug
         String slug = (request.getSlug() == null || request.getSlug().isEmpty())
@@ -70,8 +81,22 @@ public class ProductService {
         Product saveProduct = productRepository.save(product);
         log.info("Saved product with id: {}", saveProduct.getId());
 
-        // Initialize inventory
-        inventoryService.initializeInventory(saveProduct.getId(), saveProduct.getStockQuantity());
+        int initialStock = request.getStockQuantity() != null ? request.getStockQuantity() : 0;
+        LocalDateTime initialImportedAt = initialStock > 0
+                ? (request.getInitialImportedAt() != null ? request.getInitialImportedAt() : LocalDateTime.now())
+                : null;
+        inventoryService.initializeInventory(saveProduct.getId(), initialStock, initialImportedAt);
+
+        if (initialStock > 0) {
+            stockImportRepository.save(StockImport.builder()
+                    .productId(saveProduct.getId())
+                    .quantity(initialStock)
+                    .importPrice(request.getInitialImportPrice())
+                    .note(request.getInitialImportNote())
+                    .importedAt(initialImportedAt)
+                    .createdBy(saveProduct.getCreatedBy())
+                    .build());
+        }
 
         return CreateProductResponse.builder()
                 .id(saveProduct.getId())
@@ -140,6 +165,10 @@ public class ProductService {
             return DEFAULT_SORT_FIELD;
         }
 
+        if ("updatedat".equals(lowerSortBy)) {
+            return DEFAULT_SORT_FIELD;
+        }
+
         return lowerSortBy;
     }
 
@@ -205,6 +234,20 @@ public class ProductService {
         }
     }
 
+    private void validateInitialStock(CreateProductRequest request) {
+        int initialStock = request.getStockQuantity() != null ? request.getStockQuantity() : 0;
+        if (initialStock < 0) {
+            throw new IllegalArgumentException("Initial stock cannot be negative");
+        }
+        if (initialStock > 0 && (request.getInitialImportPrice() == null
+                || request.getInitialImportPrice().compareTo(BigDecimal.ZERO) <= 0)) {
+            throw new IllegalArgumentException("Initial import price is required when initial stock is greater than 0");
+        }
+        if (request.getInitialImportPrice() != null && request.getInitialImportPrice().compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Initial import price cannot be negative");
+        }
+    }
+
     public void deleteProduct(UUID id, Authentication authentication) {
         log.info("Delete product with id: {}", id);
 
@@ -226,23 +269,13 @@ public class ProductService {
     public UpdateProductStockResponse updateProductStock(UpdateProductStockRequest request, UUID id, Authentication authentication) {
         log.info("Request stock request for product id: {}", id);
 
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + id));
-
-        product.setUpdatedBy(userService.getCurrentUserId(authentication));
-
-        product.setStockQuantity(request.getStockQuantity());
-
-        Product savedProduct = productRepository.save(product);
-
-        // Update inventory source of truth
-        inventoryService.updateStock(savedProduct.getId(), savedProduct.getStockQuantity());
+        // Cập nhật trực tiếp vào inventory - nguồn sự thật duy nhất của tồn kho
+        inventoryService.updateStock(id, request.getStockQuantity());
 
         return UpdateProductStockResponse.builder()
-                .id(savedProduct.getId())
-                .stockQuantity(savedProduct.getStockQuantity())
-                .updatedAt(savedProduct.getUpdatedAt())
+                .id(id)
+                .stockQuantity(request.getStockQuantity())
+                .updatedAt(java.time.LocalDateTime.now())
                 .build();
     }
 }
-

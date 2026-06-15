@@ -29,12 +29,13 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
                 p.categoryId,
                 p.brandId,
                 c.name,
+                b.name,
                 p.name,
                 p.slug,
                 p.description,
                 p.price,
                 p.imageUrl,
-                p.stockQuantity,
+                COALESCE((SELECT i.quantityAvailable FROM Inventory i WHERE i.productId = p.id), 0),
                 p.isActive,
                 p.specs,
                 p.features,
@@ -48,6 +49,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
             )
             FROM Product p
             JOIN Category c ON p.categoryId = c.id
+            LEFT JOIN Brand b ON p.brandId = b.id
             WHERE (:#{#filter.categoryId} IS NULL OR p.categoryId = :#{#filter.categoryId})
             AND (:#{#filter.brandId} IS NULL OR p.brandId = :#{#filter.brandId})
             AND (:#{#filter.name} IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :#{#filter.name},'%')))
@@ -78,12 +80,13 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
                         p.categoryId,
                         p.brandId,
                         c.name,
+                        b.name,
                         p.name,
                         p.slug,
                         p.description,
                         p.price,
                         p.imageUrl,
-                        p.stockQuantity,
+                        COALESCE((SELECT i.quantityAvailable FROM Inventory i WHERE i.productId = p.id), 0),
                         p.isActive,
                         p.specs,
                         p.features,
@@ -97,6 +100,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
                         )
                         FROM Product p
                         JOIN Category c ON p.categoryId=c.id
+                        LEFT JOIN Brand b ON p.brandId=b.id
                         WHERE (:columnName = 'id' AND CAST(p.id AS string ) = :value )
                         OR (:columnName = 'slug' AND p.slug = :value)
             """)
@@ -110,10 +114,12 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     List<Product> findProductsByIds(@Param("ids") List<UUID> id);
 
     @Query(value = """
-            SELECT p.name, p.image_url, p.stock_quantity
+            SELECT p.name, p.image_url,
+                   COALESCE(i.quantity_available, 0) AS stock_quantity
             FROM products p
+            LEFT JOIN inventory i ON i.product_id = p.id
             WHERE p.is_active = true
-            ORDER BY p.stock_quantity ASC, p.updated_at DESC
+            ORDER BY COALESCE(i.quantity_available, 0) ASC, p.updated_at DESC
             LIMIT :limit
             """, nativeQuery = true)
     List<Object[]> findLowStockProducts(@Param("limit") int limit);
@@ -121,8 +127,9 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     @Query(value = """
             SELECT p.*
             FROM products p
+            LEFT JOIN inventory i ON i.product_id = p.id
             WHERE p.is_active = true
-              AND p.stock_quantity > 0
+              AND COALESCE(i.quantity_available, 0) > 0
               AND (
                     LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
                  OR LOWER(COALESCE(p.description, '')) LIKE LOWER(CONCAT('%', :keyword, '%'))
@@ -137,8 +144,9 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     @Query(value = """
             SELECT p.*
             FROM products p
+            LEFT JOIN inventory i ON i.product_id = p.id
             WHERE p.is_active = true
-              AND p.stock_quantity > 0
+              AND COALESCE(i.quantity_available, 0) > 0
               AND (:minPrice IS NULL OR p.price >= :minPrice)
               AND (:maxPrice IS NULL OR p.price <= :maxPrice)
               AND (
@@ -160,8 +168,9 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     @Query(value = """
             SELECT p.*
             FROM products p
+            LEFT JOIN inventory i ON i.product_id = p.id
             WHERE p.is_active = true
-              AND p.stock_quantity > 0
+              AND COALESCE(i.quantity_available, 0) > 0
             ORDER BY p.updated_at DESC
             LIMIT :limit
             """, nativeQuery = true)

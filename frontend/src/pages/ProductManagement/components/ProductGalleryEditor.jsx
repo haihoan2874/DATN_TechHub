@@ -12,9 +12,9 @@ const ProductGalleryEditor = ({ images = [], onChange }) => {
     const files = Array.from(event.target.files || []);
     if (files.length === 0) return;
 
-    const invalidFile = files.find((file) => !file.type.startsWith('image/') || file.size > 5 * 1024 * 1024);
+    const invalidFile = files.find((file) => !file.type.startsWith('image/') || file.size > 50 * 1024 * 1024);
     if (invalidFile) {
-      toast.error('Mỗi ảnh phải là JPG, PNG hoặc WEBP và không quá 5MB');
+      toast.error('Mỗi ảnh phải là JPG, PNG hoặc WEBP và không quá 50MB');
       event.target.value = '';
       return;
     }
@@ -23,7 +23,7 @@ const ProductGalleryEditor = ({ images = [], onChange }) => {
     try {
       const uploaded = [];
       for (const file of files) {
-        const response = await adminService.uploadFile(file, 'products/gallery');
+        const response = await adminService.uploadFile(file, 'gallery');
         if (response?.url) uploaded.push(response.url);
       }
 

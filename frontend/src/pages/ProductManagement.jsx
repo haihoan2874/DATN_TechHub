@@ -22,10 +22,14 @@ import { resolveApiAssetUrl } from '../config/api';
 import { formatCurrency } from '../utils/formatters';
 
 const PAGE_SIZE = 8;
-const ADMIN_PRODUCT_FETCH_SIZE = 1000;
+const getLocalDateTimeInputValue = (date = new Date()) => {
+  const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return localDate.toISOString().slice(0, 16);
+};
 
 const ProductManagement = () => {
   const [products, setProducts] = useState([]);
+  const [totalProducts, setTotalProducts] = useState(0);
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,25 +38,21 @@ const ProductManagement = () => {
   const [activeTab, setActiveTab] = useState('basic');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formErrors, setFormErrors] = useState({});
-  const [stockError, setStockError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [brandFilter, setBrandFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
-  const [stockModal, setStockModal] = useState({
-    isOpen: false,
-    product: null,
-    quantity: ''
-  });
-  const [isUpdatingStock, setIsUpdatingStock] = useState(false);
   
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
     price: 0,
-    stockQuantity: 100,
+    stockQuantity: 0,
+    initialImportPrice: '',
+    initialImportedAt: getLocalDateTimeInputValue(),
+    initialImportNote: '',
     imageUrl: '',
     categoryId: '',
     brandId: '',
@@ -62,34 +62,62 @@ const ProductManagement = () => {
     features: []
   });
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
+  const fetchFilters = useCallback(async () => {
     try {
-      const [productRes, catRes, brandRes] = await Promise.all([
-        adminService.getProducts({ pageNo: 0, pageSize: ADMIN_PRODUCT_FETCH_SIZE }),
+      const [catRes, brandRes] = await Promise.all([
         adminService.getCategories(),
         adminService.getBrands()
       ]);
       const categoryList = catRes.contents || catRes.content || catRes || [];
-      setProducts(productRes.contents || productRes.content || []);
       setCategories(categoryList);
       setBrands(brandRes.contents || brandRes.content || brandRes || []);
-      
+
       setFormData(prev => (
         prev.categoryId || categoryList.length === 0
           ? prev
           : { ...prev, categoryId: categoryList[0].id }
       ));
     } catch (err) {
-      toast.error('Không thể tải danh sách sản phẩm');
-    } finally {
-      setLoading(false);
+      toast.error('Không thể tải bộ lọc sản phẩm');
     }
   }, []);
 
+  const fetchProducts = useCallback(async () => {
+    setLoading(true);
+    try {
+      const productRes = await adminService.getProducts({
+        pageNo: currentPage - 1,
+        pageSize: PAGE_SIZE,
+        name: searchTerm.trim() || null,
+        categoryId: categoryFilter === 'all' ? null : categoryFilter,
+        brandId: brandFilter === 'all' ? null : brandFilter,
+        sortBy: 'updatedAt',
+        sortOrder: 'desc'
+      });
+
+      setProducts(productRes.contents || productRes.content || []);
+      setTotalProducts(productRes.total || 0);
+    } catch (err) {
+      toast.error('Không thể tải danh sách sản phẩm');
+      setProducts([]);
+      setTotalProducts(0);
+    } finally {
+      setLoading(false);
+    }
+  }, [brandFilter, categoryFilter, currentPage, searchTerm]);
+
+  const refreshData = useCallback(() => {
+    fetchFilters();
+    fetchProducts();
+  }, [fetchFilters, fetchProducts]);
+
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    fetchFilters();
+  }, [fetchFilters]);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
   const handleOpenModal = (product = null) => {
     setActiveTab('basic');
@@ -115,7 +143,10 @@ const ProductManagement = () => {
         name: product.name,
         slug: product.slug,
         price: product.price,
-        stockQuantity: product.stockQuantity,
+        stockQuantity: product.stockQuantity ?? 0,
+        initialImportPrice: '',
+        initialImportedAt: getLocalDateTimeInputValue(),
+        initialImportNote: '',
         imageUrl: product.imageUrl,
         categoryId: product.category?.id || product.categoryId || '',
         brandId: product.brand?.id || product.brandId || '',
@@ -130,7 +161,10 @@ const ProductManagement = () => {
         name: '',
         slug: '',
         price: 0,
-        stockQuantity: 100,
+        stockQuantity: 0,
+        initialImportPrice: '',
+        initialImportedAt: getLocalDateTimeInputValue(),
+        initialImportNote: '',
         imageUrl: '',
         categoryId: categories[0]?.id || '',
         brandId: brands[0]?.id || '',
@@ -188,19 +222,23 @@ const ProductManagement = () => {
         ...formData,
         price: Number(formData.price),
         stockQuantity: Number(formData.stockQuantity),
+        initialImportPrice: formData.initialImportPrice ? Number(formData.initialImportPrice) : null,
+        initialImportedAt: new Date().toISOString(),
+        initialImportNote: formData.initialImportNote?.trim() || null,
         specs: typeof formData.specs === 'object' ? JSON.stringify(formData.specs) : formData.specs,
         features: typeof formData.features === 'object' ? JSON.stringify(formData.features) : formData.features
       };
 
       if (currentProduct) {
-        await adminService.updateProduct(currentProduct.id, payload);
+        const { initialImportPrice, initialImportedAt, initialImportNote, ...updatePayload } = payload;
+        await adminService.updateProduct(currentProduct.id, updatePayload);
         toast.success('Cập nhật sản phẩm thành công');
       } else {
         await adminService.createProduct(payload);
         toast.success('Thêm sản phẩm mới thành công');
       }
       setIsModalOpen(false);
-      fetchData();
+      fetchProducts();
     } catch (err) {
       toast.error(err.response?.data?.message || 'Có lỗi xảy ra');
     } finally {
@@ -212,44 +250,14 @@ const ProductManagement = () => {
     try {
       await adminService.deleteProduct(productToDelete);
       toast.success('Đã xóa sản phẩm');
-      fetchData();
+      fetchProducts();
       setIsDeleteConfirmOpen(false);
     } catch (err) {
       toast.error('Không thể xóa sản phẩm');
     }
   };
 
-  const handleUpdateStock = async (product) => {
-    setStockError('');
-    setStockModal({
-      isOpen: true,
-      product,
-      quantity: String(product.stockQuantity ?? 0)
-    });
-  };
-
-  const submitStockUpdate = async () => {
-    const stockNum = parseInt(stockModal.quantity, 10);
-    if (isNaN(stockNum) || stockNum < 0) {
-      setStockError('Số lượng kho phải là số lớn hơn hoặc bằng 0.');
-      return;
-    }
-
-    setIsUpdatingStock(true);
-    try {
-      await adminService.updateStock(stockModal.product.id, stockNum);
-      toast.success('Cập nhật kho thành công');
-      setStockModal({ isOpen: false, product: null, quantity: '' });
-      fetchData();
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Không thể cập nhật kho');
-    } finally {
-      setIsUpdatingStock(false);
-    }
-  };
-
-  const filteredProducts = useMemo(() => {
-    const keyword = searchTerm.trim().toLowerCase();
+  const displayProducts = useMemo(() => {
     const categoryById = new Map(categories.map((category) => [category.id, category]));
     const brandById = new Map(brands.map((brand) => [brand.id, brand]));
 
@@ -257,25 +265,10 @@ const ProductManagement = () => {
       ...product,
       categoryName: product.categoryName || categoryById.get(product.categoryId)?.name,
       brandName: product.brandName || brandById.get(product.brandId)?.name
-    })).filter((product) => {
-      const matchesKeyword = !keyword || product.name.toLowerCase().includes(keyword) || product.slug?.toLowerCase().includes(keyword);
-      const productCategoryId = product.category?.id || product.categoryId;
-      const productBrandId = product.brand?.id || product.brandId;
-      const matchesCategory = categoryFilter === 'all' || productCategoryId === categoryFilter;
-      const matchesBrand = brandFilter === 'all' || productBrandId === brandFilter;
-      return matchesKeyword && matchesCategory && matchesBrand;
-    });
-  }, [brands, categories, products, searchTerm, categoryFilter, brandFilter]);
+    }));
+  }, [brands, categories, products]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE));
-  const paginatedProducts = useMemo(() => {
-    const startIndex = (currentPage - 1) * PAGE_SIZE;
-    return filteredProducts.slice(startIndex, startIndex + PAGE_SIZE);
-  }, [filteredProducts, currentPage]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchTerm, categoryFilter, brandFilter]);
+  const totalPages = Math.max(1, Math.ceil(totalProducts / PAGE_SIZE));
 
   useEffect(() => {
     if (currentPage > totalPages) {
@@ -305,46 +298,6 @@ const ProductManagement = () => {
         variant="danger"
       />
 
-      <Modal
-        isOpen={stockModal.isOpen}
-        onClose={() => setStockModal({ isOpen: false, product: null, quantity: '' })}
-        title="Cập nhật kho"
-        size="sm"
-        closeOnOverlay={!isUpdatingStock}
-        footer={
-          <>
-            <Button
-              variant="ghost"
-              onClick={() => setStockModal({ isOpen: false, product: null, quantity: '' })}
-              disabled={isUpdatingStock}
-            >
-              Hủy
-            </Button>
-            <Button onClick={submitStockUpdate} isLoading={isUpdatingStock}>
-              Lưu kho
-            </Button>
-          </>
-        }
-      >
-        <div className="space-y-5">
-          <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4">
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Sản phẩm</p>
-            <h4 className="text-base font-black text-slate-900">{stockModal.product?.name}</h4>
-          </div>
-          <Input
-            label="Số lượng kho mới"
-            type="number"
-            min="0"
-            value={stockModal.quantity}
-            onChange={(event) => {
-              setStockModal(prev => ({ ...prev, quantity: event.target.value }));
-              if (stockError) setStockError('');
-            }}
-            error={stockError}
-          />
-        </div>
-      </Modal>
-
       <PageHeader
         eyebrow="Quản lý kho"
         title="Sản phẩm và kho"
@@ -360,13 +313,19 @@ const ProductManagement = () => {
             type="text"
             placeholder="Tìm theo tên hoặc slug sản phẩm..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
             className="w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-10 pr-4 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
           />
         </div>
         <select
           value={categoryFilter}
-          onChange={(e) => setCategoryFilter(e.target.value)}
+          onChange={(e) => {
+            setCategoryFilter(e.target.value);
+            setCurrentPage(1);
+          }}
           className="form-select lg:w-56"
         >
           <option value="all">Tất cả danh mục</option>
@@ -374,88 +333,88 @@ const ProductManagement = () => {
         </select>
         <select
           value={brandFilter}
-          onChange={(e) => setBrandFilter(e.target.value)}
+          onChange={(e) => {
+            setBrandFilter(e.target.value);
+            setCurrentPage(1);
+          }}
           className="form-select lg:w-44"
         >
           <option value="all">Tất cả thương hiệu</option>
           {brands.map(brand => <option key={brand.id} value={brand.id}>{brand.name}</option>)}
         </select>
         <span className="whitespace-nowrap rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-600">
-          {filteredProducts.length} sản phẩm
+          {totalProducts} sản phẩm
         </span>
-        <button type="button" onClick={fetchData} aria-label="Tải lại danh sách sản phẩm" className="rounded-xl border border-slate-300 bg-white p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900">
+        <button type="button" onClick={refreshData} aria-label="Tải lại danh sách sản phẩm" className="rounded-xl border border-slate-300 bg-white p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900">
           <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
         </button>
       </Toolbar>
 
       <ProductTable 
-        products={paginatedProducts}
+        products={displayProducts}
         loading={loading}
-        footer={!loading && filteredProducts.length > 0 ? (
+        footer={!loading && totalProducts > 0 ? (
           <Pagination
-            page={currentPage}
+        page={currentPage}
             pageSize={PAGE_SIZE}
-            totalItems={filteredProducts.length}
+            totalItems={totalProducts}
             onPageChange={setCurrentPage}
           />
         ) : null}
         onEdit={handleOpenModal}
         onDelete={(id) => { setProductToDelete(id); setIsDeleteConfirmOpen(true); }}
-        onUpdateStock={handleUpdateStock}
       />
 
-      {/* Product form modal */}
-      <Modal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)}
-        title={currentProduct ? 'Cập nhật sản phẩm' : 'Tạo sản phẩm mới'}
-        size="full"
-        footer={
-          <div className="flex w-full flex-col gap-3 border-t border-slate-200 bg-white px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <div className="text-sm font-semibold text-slate-900">{currentProduct ? 'Lưu thay đổi sản phẩm' : 'Tạo sản phẩm'}</div>
-              <div className="text-xs text-slate-500">Kiểm tra đủ ảnh, giá, số lượng kho, phân loại và mô tả trước khi mở bán.</div>
-            </div>
-            <div className="flex justify-end gap-3">
-              <button 
-                type="button"
-                onClick={() => setIsModalOpen(false)}
-                className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
-              >
-                Hủy
-              </button>
-              <Button type="button" onClick={handleSubmit} isLoading={isSubmitting} icon={Save}>
-                {currentProduct ? 'Lưu thay đổi' : 'Tạo sản phẩm'}
-              </Button>
-            </div>
+    <Modal
+      isOpen={isModalOpen}
+      onClose={() => setIsModalOpen(false)}
+      title={currentProduct ? 'Sửa sản phẩm' : 'Tạo sản phẩm mới'}
+      size="6xl"
+      contentClassName="p-0"
+      footer={
+        <div className="flex w-full items-center justify-between">
+          <div className="hidden sm:block">
+            <h4 className="text-sm font-bold text-slate-900">
+              {currentProduct ? 'Lưu thay đổi' : 'Tạo sản phẩm'}
+            </h4>
+            <p className="mt-0.5 text-xs text-slate-500">
+              Kiểm tra đủ ảnh, giá bán, phân loại và mô tả trước khi mở bán.
+            </p>
           </div>
-        }
-      >
-        <div className="flex max-h-[80vh] flex-col overflow-hidden bg-slate-50 lg:h-[80vh] lg:flex-row">
-          <div className="flex w-full flex-col border-b border-slate-200 bg-white lg:w-72 lg:border-b-0 lg:border-r">
-            <div className="flex-1 space-y-5 p-4 sm:p-5 lg:space-y-6 lg:p-6">
+          <div className="flex justify-end gap-3">
+            <button 
+              type="button"
+              onClick={() => setIsModalOpen(false)}
+              className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+            >
+              Hủy
+            </button>
+            <Button type="button" onClick={handleSubmit} isLoading={isSubmitting} icon={Save}>
+              {currentProduct ? 'Lưu thay đổi' : 'Tạo sản phẩm'}
+            </Button>
+          </div>
+        </div>
+      }
+    >
+      <div className="flex flex-col bg-slate-50 lg:flex-row">
+        <div className="w-full shrink-0 border-b border-slate-200 bg-white lg:w-72 lg:border-b-0 lg:border-r">
+          <div className="sticky top-0 h-max space-y-5 p-4 sm:p-5 lg:space-y-6 lg:p-6">
                <div className="space-y-2">
                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Nhóm thông tin</p>
                  <div className="grid grid-cols-2 gap-2 lg:block lg:space-y-1">
                     {[
                       { id: 'basic', label: 'Bán hàng', icon: Info },
-                      { id: 'specs', label: 'Thông số', icon: List },
-                      { id: 'landing', label: 'Mô tả chi tiết', icon: Layout },
+                      { id: 'details', label: 'Chi tiết sản phẩm', icon: Layout },
                       { id: 'settings', label: 'Hiển thị', icon: Settings }
                     ].map(tab => (
-                      <button
+                      <a
                         key={tab.id}
-                        type="button"
-                        onClick={() => setActiveTab(tab.id)}
-                        className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-colors ${
-                          activeTab === tab.id 
-                            ? 'bg-slate-900 text-white'
-                            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950'
-                        }`}
+                        href={`#section-${tab.id}`}
+                        className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-colors text-slate-600 hover:bg-slate-100 hover:text-slate-950"
                       >
                         <tab.icon size={17} />
                         {tab.label}
-                      </button>
+                      </a>
                     ))}
                  </div>
                </div>
@@ -495,25 +454,77 @@ const ProductManagement = () => {
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto bg-slate-50 custom-scrollbar">
-            <div className="mx-auto max-w-4xl space-y-8 px-4 py-5 sm:px-6 lg:px-8 lg:py-8">
-               {activeTab === 'basic' && (
-                 <div className="space-y-8">
+          <div className="flex-1 bg-slate-50">
+            <div className="mx-auto max-w-4xl space-y-12 px-4 py-5 sm:px-6 lg:px-8 lg:py-8">
+                 <div id="section-basic" className="space-y-8 scroll-mt-24">
                     <section className="space-y-6">
-                       <h2 className="text-lg font-bold text-slate-950">Thông tin bán hàng</h2>
+                       <h2 className="text-xl font-black text-slate-950 flex items-center gap-2"><Info className="text-slate-400" /> Bán hàng</h2>
                        <div className="grid grid-cols-1 gap-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                           <Input label="Tên sản phẩm" name="name" value={formData.name} onChange={handleInputChange} placeholder="VD: Garmin Forerunner 265..." error={formErrors.name} />
                           <Input label="Đường dẫn sản phẩm" name="slug" value={formData.slug} onChange={handleInputChange} className="font-mono text-xs" error={formErrors.slug} />
                        </div>
                     </section>
 
-                    <section className="space-y-6">
-                       <h2 className="text-lg font-bold text-slate-950">Giá bán và kho</h2>
-                       <div className="grid grid-cols-1 gap-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:grid-cols-2">
+                    {currentProduct ? (
+                      <section className="space-y-6">
+                        <h2 className="text-lg font-bold text-slate-950">Giá bán</h2>
+                        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                           <Input label="Giá bán (₫)" type="number" min="0" name="price" value={formData.price} onChange={handleInputChange} error={formErrors.price} />
-                          <Input label="Số lượng kho" type="number" min="0" name="stockQuantity" value={formData.stockQuantity} onChange={handleInputChange} error={formErrors.stockQuantity} />
-                       </div>
-                    </section>
+                        </div>
+                      </section>
+                    ) : (
+                      <section className="space-y-6">
+                        <div>
+                          <h2 className="text-lg font-bold text-slate-950">Giá bán & Lô nhập đầu tiên</h2>
+                          <p className="mt-1 text-sm text-slate-500">
+                            Hệ thống sẽ tự động tạo phiếu nhập kho nếu bạn điền giá nhập và số lượng.
+                          </p>
+                        </div>
+                        <div className="space-y-5 rounded-2xl border border-emerald-100 bg-emerald-50/40 p-5 shadow-sm">
+                          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                            <Input
+                              label="Giá nhập / SP (₫)"
+                              type="number"
+                              min="0"
+                              name="initialImportPrice"
+                              value={formData.initialImportPrice}
+                              onChange={handleInputChange}
+                              placeholder="15,000,000"
+                              error={formErrors.initialImportPrice}
+                            />
+                            <Input
+                              label="Giá bán (₫)"
+                              type="number"
+                              min="0"
+                              name="price"
+                              value={formData.price}
+                              onChange={handleInputChange}
+                              placeholder="20,000,000"
+                              error={formErrors.price}
+                            />
+                            <Input
+                              label="Số lượng nhập"
+                              type="number"
+                              min="0"
+                              name="stockQuantity"
+                              value={formData.stockQuantity}
+                              onChange={handleInputChange}
+                              placeholder="VD: 20"
+                              error={formErrors.stockQuantity}
+                            />
+                          </div>
+
+                          <div className="rounded-xl bg-white px-4 py-3 border border-emerald-200 shadow-sm flex items-center justify-between">
+                            <p className="text-xs font-black uppercase tracking-widest text-emerald-700">Lãi gộp dự kiến (trên mỗi SP)</p>
+                            <p className="text-lg font-black text-slate-950">
+                              {formData.initialImportPrice && Number(formData.price) > 0
+                                ? formatCurrency(Number(formData.price) - Number(formData.initialImportPrice))
+                                : '—'}
+                            </p>
+                          </div>
+                        </div>
+                      </section>
+                    )}
 
                     <section className="space-y-6">
                        <h2 className="text-lg font-bold text-slate-950">Ảnh đại diện</h2>
@@ -558,34 +569,31 @@ const ProductManagement = () => {
                        </div>
                     </section>
                  </div>
-               )}
 
-               {activeTab === 'specs' && (
-                 <div>
-                    <SpecsEditor specs={formData.specs} setSpecs={(s) => setFormData(prev => ({ ...prev, specs: s }))} />
-                 </div>
-               )}
-
-               {activeTab === 'landing' && (
-                 <div>
-                    <FeaturesEditor features={formData.features} setFeatures={(f) => setFormData(prev => ({ ...prev, features: f }))} />
-                 </div>
-               )}
-
-               {activeTab === 'settings' && (
-                 <div className="space-y-8">
+                 <div id="section-details" className="space-y-8 scroll-mt-24 pt-4 border-t border-slate-200">
                     <section className="space-y-6">
-                       <h2 className="text-lg font-bold text-slate-950">Cấu hình hiển thị</h2>
+                       <h2 className="text-xl font-black text-slate-950 flex items-center gap-2"><List className="text-slate-400" /> Thông số kỹ thuật</h2>
+                       <SpecsEditor specs={formData.specs} setSpecs={(s) => setFormData(prev => ({ ...prev, specs: s }))} />
+                    </section>
+
+                    <section className="space-y-6">
+                       <h2 className="text-xl font-black text-slate-950 flex items-center gap-2"><Layout className="text-slate-400" /> Mô tả chi tiết</h2>
+                       <FeaturesEditor features={formData.features} setFeatures={(f) => setFormData(prev => ({ ...prev, features: f }))} />
+                    </section>
+                 </div>
+
+                 <div id="section-settings" className="space-y-8 scroll-mt-24 pt-4 border-t border-slate-200 pb-10">
+                    <section className="space-y-6">
+                       <h2 className="text-xl font-black text-slate-950 flex items-center gap-2"><Settings className="text-slate-400" /> Cấu hình hiển thị</h2>
                        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                           <label className="flex items-center justify-between cursor-pointer group">
                              <div className="space-y-2">
                                 <p className="text-sm font-semibold text-slate-950">Kích hoạt sản phẩm</p>
-                                <p className="text-xs text-slate-500">Sản phẩm sẽ hiển thị cho khách hàng nếu đang hoạt động.</p>
+                                <p className="text-xs text-slate-500 max-w-[85%]">Sản phẩm sẽ được hiển thị trên cửa hàng và cho phép khách hàng đặt mua.</p>
                              </div>
-                             <div className="relative">
-                                <input type="checkbox" name="isActive" checked={formData.isActive} onChange={handleInputChange} className="sr-only" />
-                                <div className={`w-14 h-8 rounded-full transition-colors ${formData.isActive ? 'bg-blue-600' : 'bg-slate-300'}`} />
-                                <div className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full transition-transform ${formData.isActive ? 'translate-x-6' : ''}`} />
+                             <div className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${formData.isActive ? 'bg-emerald-500' : 'bg-slate-200'}`}>
+                               <input type="checkbox" className="sr-only peer" name="isActive" checked={formData.isActive} onChange={handleInputChange} />
+                               <span className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${formData.isActive ? 'translate-x-5' : 'translate-x-1'}`} />
                              </div>
                           </label>
                        </div>
@@ -608,13 +616,12 @@ const ProductManagement = () => {
                             <p className="text-xs font-semibold text-rose-600">{formErrors.description}</p>
                           )}
                        </div>
-                    </section>
-                 </div>
-               )}
+                     </section>
+                  </div>
+               </div>
             </div>
           </div>
-        </div>
-      </Modal>
+        </Modal>
     </PageShell>
   );
 };
@@ -627,6 +634,12 @@ const validateProductForm = (data) => {
   if (!data.brandId) errors.brandId = 'Vui lòng chọn thương hiệu.';
   if (Number(data.price) <= 0) errors.price = 'Giá bán phải lớn hơn 0.';
   if (Number(data.stockQuantity) < 0) errors.stockQuantity = 'Số lượng kho không được âm.';
+  if (Number(data.stockQuantity) > 0 && Number(data.initialImportPrice) <= 0) {
+    errors.initialImportPrice = 'Vui lòng nhập giá nhập khi có số lượng nhập ban đầu.';
+  }
+  if (data.initialImportPrice && Number(data.initialImportPrice) < 0) {
+    errors.initialImportPrice = 'Giá nhập không được âm.';
+  }
   if (data.isActive && !data.imageUrl?.trim()) {
     errors.imageUrl = 'Sản phẩm đang mở bán cần có ảnh chính.';
   }
@@ -645,7 +658,7 @@ const getProductReadiness = (data) => [
   { label: 'Tên và đường dẫn', done: Boolean(data.name?.trim() && data.slug?.trim()) },
   { label: 'Danh mục và thương hiệu', done: Boolean(data.categoryId && data.brandId) },
   { label: 'Giá bán hợp lệ', done: Number(data.price) > 0 },
-  { label: 'Kho hợp lệ', done: Number(data.stockQuantity) >= 0 },
+  { label: 'Lô nhập ban đầu', done: Number(data.stockQuantity || 0) === 0 || Number(data.initialImportPrice) > 0 },
   { label: 'Ảnh chính', done: Boolean(data.imageUrl?.trim()) },
   { label: 'Mô tả ngắn', done: Boolean(data.description?.trim() && data.description.trim().length >= 20) }
 ];

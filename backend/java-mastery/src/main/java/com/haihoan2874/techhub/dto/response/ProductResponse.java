@@ -18,6 +18,7 @@ public class ProductResponse {
     private UUID categoryId;
     private UUID brandId;
     private String categoryName;
+    private String brandName;
     private String name;
     private String slug;
     private String description;

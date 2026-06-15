@@ -1,5 +1,5 @@
 import React from 'react';
-import { Edit2, Trash2, Package, Plus } from 'lucide-react';
+import { Edit2, Trash2, Package } from 'lucide-react';
 import DataTable from '../../../components/data/DataTable';
 import EmptyState from '../../../components/feedback/EmptyState';
 import { resolveApiAssetUrl } from '../../../config/api';
@@ -8,11 +8,11 @@ import { formatCurrency } from '../../../utils/formatters';
 const tableColumns = [
   { key: 'product', label: 'Sản phẩm' },
   { key: 'classification', label: 'Phân loại' },
-  { key: 'priceStock', label: 'Giá / Kho' },
+  { key: 'priceStock', label: 'Giá / Kho hiện tại' },
   { key: 'actions', label: 'Thao tác', className: 'text-right' }
 ];
 
-const ProductTable = ({ products, loading, footer, onEdit, onDelete, onUpdateStock }) => {
+const ProductTable = ({ products, loading, footer, onEdit, onDelete }) => {
   const getImageUrl = (url) => {
     return resolveApiAssetUrl(url, '');
   };
@@ -62,18 +62,8 @@ const ProductTable = ({ products, loading, footer, onEdit, onDelete, onUpdateSto
                 </td>
                 <td className="px-5 py-4">
                   <div className="text-sm font-bold text-blue-700">{formatCurrency(product.price)}</div>
-                  <div className="mt-1 flex items-center gap-2">
-                    <span className={`text-xs font-semibold ${product.stockQuantity < 10 ? 'text-rose-600' : 'text-slate-500'}`}>
-                      Kho: {product.stockQuantity}
-                    </span>
-                    <button 
-                      type="button"
-                      onClick={() => onUpdateStock(product)}
-                      className="rounded p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
-                      aria-label={`Cập nhật kho ${product.name}`}
-                    >
-                      <Plus size={10} />
-                    </button>
+                  <div className={`mt-1 text-xs font-semibold ${product.stockQuantity < 10 ? 'text-rose-600' : 'text-slate-500'}`}>
+                    Kho: {product.stockQuantity}
                   </div>
                 </td>
                 <td className="px-5 py-4 text-right">
