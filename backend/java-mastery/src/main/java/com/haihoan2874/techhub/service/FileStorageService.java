@@ -1,15 +1,15 @@
 package com.haihoan2874.techhub.service;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -17,36 +17,33 @@ import java.util.UUID;
 @Service
 public class FileStorageService {
 
-    private final Path baseStorageLocation;
+    private final Cloudinary cloudinary;
 
-    public FileStorageService() {
-        // Base storage in project root /uploads
-        this.baseStorageLocation = Paths.get("uploads")
-                .toAbsolutePath().normalize();
-
-        try {
-            Files.createDirectories(this.baseStorageLocation);
-        } catch (Exception ex) {
-            log.error("Could not create the base directory for uploads.", ex);
+    public FileStorageService(@Value("${cloudinary.url:}") String cloudinaryUrl) {
+        if (StringUtils.hasText(cloudinaryUrl)) {
+            this.cloudinary = new Cloudinary(cloudinaryUrl);
+            log.info("Cloudinary configured via properties.");
+        } else {
+            // Fallback to the exact keys provided by user if environment variable is somehow missing
+            this.cloudinary = new Cloudinary(ObjectUtils.asMap(
+                    "cloud_name", "dehjudquq",
+                    "api_key", "646328442268764",
+                    "api_secret", "bgLwkJcnmcT4tgbDw7W5bZBeMR8"));
+            log.warn("Cloudinary fallback configuration used.");
         }
     }
 
     /**
-     * Store file in a specific sub-folder
+     * Store file in Cloudinary within a specific sub-folder
      * @param file The file to store
      * @param subFolder Sub-folder name (e.g., "products", "brands", "avatars")
-     * @return The relative URL to access the file
+     * @return The absolute URL to access the file from Cloudinary
      */
     public String storeFile(MultipartFile file, String subFolder) {
         // Clean subFolder name
         String cleanSubFolder = StringUtils.cleanPath(subFolder).replaceAll("[^a-zA-Z0-9/]", "");
-        Path targetDir = this.baseStorageLocation.resolve(cleanSubFolder);
 
         try {
-            // Ensure target sub-folder exists
-            Files.createDirectories(targetDir);
-
-            // Normalize file name
             String originalFileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
             String fileExtension = "";
             
@@ -60,18 +57,21 @@ public class FileStorageService {
             }
 
             // Generate unique file name
-            String fileName = UUID.randomUUID().toString() + fileExtension;
+            String fileName = UUID.randomUUID().toString();
 
-            // Copy file to the target location
-            Path targetLocation = targetDir.resolve(fileName);
-            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+            // Upload to Cloudinary
+            @SuppressWarnings("unchecked")
+            Map<String, Object> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap(
+                    "folder", "slife/" + cleanSubFolder,
+                    "public_id", fileName
+            ));
 
-            log.info("File stored successfully: {}/{}", cleanSubFolder, fileName);
+            String secureUrl = (String) uploadResult.get("secure_url");
+            log.info("File stored successfully on Cloudinary: {}", secureUrl);
 
-            // Return relative path for URL
-            return "/api/v1/files/" + cleanSubFolder + "/" + fileName;
+            return secureUrl;
         } catch (IOException ex) {
-            log.error("Could not store file in {}. Please try again!", cleanSubFolder, ex);
+            log.error("Could not store file to Cloudinary in folder {}. Please try again!", cleanSubFolder, ex);
             throw new RuntimeException("Could not store file. Please try again!", ex);
         }
     }
