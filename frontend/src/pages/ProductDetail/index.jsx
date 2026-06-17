@@ -167,7 +167,7 @@ const ProductDetail = () => {
         </nav>
 
         <section className="mb-5 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-          <div className="grid gap-0 lg:grid-cols-[minmax(0,520px)_minmax(0,1fr)] xl:grid-cols-[minmax(0,560px)_minmax(420px,1fr)]">
+          <div className="grid gap-0 lg:grid-cols-[minmax(420px,0.9fr)_minmax(0,1.1fr)]">
             <div className="border-b border-slate-100 p-3 sm:p-5 lg:border-b-0 lg:border-r">
               <ProductGallery
                 images={images}
@@ -205,16 +205,14 @@ const ProductDetail = () => {
           </div>
         </div>
 
-        <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px] xl:gap-6">
-          <div className="space-y-5">
-            <ProductFeatures features={product.features} description={product.description} />
-            <ProductReviews
-              productId={product.id}
-              averageRating={product.averageRating}
-              reviewCount={product.reviewCount}
-            />
-          </div>
+        <div className="space-y-5">
+          <ProductFeatures features={product.features} description={product.description} />
           <ProductSpecs specs={product.specs} />
+          <ProductReviews
+            productId={product.id}
+            averageRating={product.averageRating}
+            reviewCount={product.reviewCount}
+          />
         </div>
 
         <RelatedProducts products={relatedProducts} />

@@ -227,9 +227,8 @@ const getOptionValues = (specs, keys) => {
 
 const normalizeShortText = (value) => {
   if (!value) return '';
-  return String(value)
-    .replace(/\s+/g, ' ')
-    .trim();
+  const noHtml = String(value).replace(/<[^>]+>/g, ' ');
+  return noHtml.replace(/\s+/g, ' ').trim();
 };
 
 export default ProductInfo;

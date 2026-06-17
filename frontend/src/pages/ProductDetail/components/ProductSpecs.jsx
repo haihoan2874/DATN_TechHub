@@ -1,37 +1,44 @@
 import React, { useMemo } from 'react';
 
 const ProductSpecs = ({ specs }) => {
-  const flatSpecs = useMemo(() => {
+  const specGroups = useMemo(() => {
     let parsed = {};
     try {
       parsed = typeof specs === 'string' ? JSON.parse(specs) : specs || {};
     } catch (e) {
       parsed = {};
     }
-    
-    const isCategorized = Object.values(parsed).some(val => typeof val === 'object' && val !== null && !Array.isArray(val));
-    
-    if (isCategorized) {
-      const flattened = {};
-      Object.entries(parsed).forEach(([group, items]) => {
-        if (typeof items === 'object' && items !== null && !Array.isArray(items)) {
-          Object.entries(items).forEach(([k, v]) => {
-            flattened[`${group} - ${k}`] = v;
-          });
-        } else {
-          flattened[group] = items;
-        }
-      });
-      return filterDisplaySpecs(flattened);
+
+    const isGrouped = Object.values(parsed).some(isPlainObject);
+
+    if (!isGrouped) {
+      return [{
+        title: 'Thông số kỹ thuật',
+        items: filterDisplaySpecs(parsed)
+      }].filter((group) => Object.keys(group.items).length);
     }
-    
-    return filterDisplaySpecs(parsed);
+
+    return Object.entries(parsed)
+      .map(([groupName, groupValue]) => {
+        if (isPlainObject(groupValue)) {
+          return {
+            title: groupName,
+            items: filterDisplaySpecs(groupValue)
+          };
+        }
+
+        return {
+          title: 'Thông số kỹ thuật',
+          items: filterDisplaySpecs({ [groupName]: groupValue })
+        };
+      })
+      .filter((group) => Object.keys(group.items).length);
   }, [specs]);
 
-  if (!Object.keys(flatSpecs).length) return null;
+  if (!specGroups.length) return null;
 
   return (
-    <section id="product-specs" className="h-fit scroll-mt-28 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm xl:sticky xl:top-28">
+    <section id="product-specs" className="scroll-mt-28 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
       <div className="border-b border-slate-100 bg-slate-950 px-5 py-4 text-white">
         <div className="flex items-center gap-3">
           <span className="h-5 w-1 rounded-full bg-blue-500" />
@@ -42,18 +49,24 @@ const ProductSpecs = ({ specs }) => {
         </div>
       </div>
 
-      <div className="p-5">
-        <div className="overflow-hidden rounded-xl border border-slate-200">
-          {Object.entries(flatSpecs).map(([key, value], i) => (
-            <div key={i} className="grid gap-1 border-b border-slate-100 text-sm leading-relaxed last:border-b-0 sm:grid-cols-[130px_1fr]">
-              <span className="bg-slate-50 px-3 py-3 font-medium text-slate-500">{key}</span>
-              <span className="px-3 py-3 font-semibold text-slate-950">
-                {typeof value === 'string' && value.startsWith('http') ? (
-                   <img src={value} alt={key} className="max-w-[100px] rounded-lg border" />
-                ) : (
-                  String(value)
-                )}
-              </span>
+      <div className="p-4 sm:p-6">
+        <div className="space-y-4">
+          {specGroups.map((group) => (
+            <div key={group.title} className="overflow-hidden rounded-xl border border-slate-200">
+              <div className="border-b border-slate-200 bg-slate-50 px-4 py-3">
+                <h3 className="text-xs font-black uppercase tracking-[0.12em] text-blue-700">
+                  {group.title}
+                </h3>
+              </div>
+
+              {Object.entries(group.items).map(([key, value], i) => (
+                <div key={`${group.title}-${key}`} className="grid border-b border-slate-100 text-sm leading-relaxed last:border-b-0 md:grid-cols-[220px_1fr]">
+                  <span className="bg-slate-50/80 px-4 py-3 font-bold text-slate-600">{key}</span>
+                  <span className="min-w-0 px-4 py-3 font-semibold text-slate-950">
+                    <SpecValue value={value} label={key} />
+                  </span>
+                </div>
+              ))}
             </div>
           ))}
         </div>
@@ -61,6 +74,53 @@ const ProductSpecs = ({ specs }) => {
     </section>
   );
 };
+
+const SpecValue = ({ value, label }) => {
+  if (Array.isArray(value)) {
+    return (
+      <ul className="list-disc space-y-1 pl-5 font-medium text-slate-700">
+        {value.filter(Boolean).map((item, index) => (
+          <li key={`${label}-${index}`}>{String(item)}</li>
+        ))}
+      </ul>
+    );
+  }
+
+  if (isPlainObject(value)) {
+    return (
+      <div className="space-y-1">
+        {Object.entries(value).map(([key, nestedValue]) => (
+          <p key={key} className="font-medium text-slate-700">
+            <span className="font-bold text-slate-900">{key}: </span>
+            {String(nestedValue)}
+          </p>
+        ))}
+      </div>
+    );
+  }
+
+  if (typeof value === 'string' && value.startsWith('http')) {
+    return <img src={value} alt={label} className="max-w-[100px] rounded-lg border" />;
+  }
+
+  const text = String(value);
+  const lines = text.split(/\n+/).map((line) => line.trim()).filter(Boolean);
+  if (lines.length > 1) {
+    return (
+      <div className="space-y-1 font-medium text-slate-700">
+        {lines.map((line, index) => (
+          <p key={`${label}-${index}`}>{line}</p>
+        ))}
+      </div>
+    );
+  }
+
+  return <span>{text}</span>;
+};
+
+const isPlainObject = (value) => (
+  typeof value === 'object' && value !== null && !Array.isArray(value)
+);
 
 const HIDDEN_SPEC_KEYWORDS = [
   'nguồn',

@@ -1,17 +1,29 @@
 import React, { useMemo } from 'react';
+import { CheckCircle2 } from 'lucide-react';
 import { resolveApiAssetUrl } from '../../../config/api';
 
 const ProductFeatures = ({ features, description }) => {
-  const parsedFeatures = useMemo(() => {
+  const { textFeatures, contentBlocks } = useMemo(() => {
     try {
       const parsed = typeof features === 'string' ? JSON.parse(features) : (features || []);
-      return Array.isArray(parsed) ? parsed.filter((block) => block?.type !== 'gallery') : [];
+      if (!Array.isArray(parsed)) return { textFeatures: [], contentBlocks: [] };
+
+      return parsed.reduce((acc, block) => {
+        if (!block) return acc;
+        if (typeof block === 'string') {
+          acc.textFeatures.push(block);
+          return acc;
+        }
+        if (block.type === 'gallery') return acc;
+        acc.contentBlocks.push(block);
+        return acc;
+      }, { textFeatures: [], contentBlocks: [] });
     } catch (e) {
-      return [];
+      return { textFeatures: [], contentBlocks: [] };
     }
   }, [features]);
 
-  if ((!parsedFeatures || parsedFeatures.length === 0) && !description) return null;
+  if (!textFeatures.length && !contentBlocks.length && !description) return null;
 
   return (
     <section id="product-description" className="scroll-mt-28 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
@@ -27,14 +39,29 @@ const ProductFeatures = ({ features, description }) => {
 
       <div className="space-y-8 p-5 sm:p-7">
         {description && (
-          <div className="rounded-2xl border border-blue-100 bg-blue-50/50 p-4">
-            <p className="whitespace-pre-wrap text-sm leading-7 text-slate-700 sm:text-base">
-              {description}
-            </p>
+          <div className="rounded-2xl border border-slate-100 bg-white p-4 sm:p-5">
+            <div
+              className="max-w-none text-sm leading-7 text-slate-700 sm:text-base [&>p]:mb-4 [&>h2]:mb-3 [&>h2]:text-xl [&>h2]:font-bold [&>h2]:text-slate-950 [&>h3]:mb-3 [&>h3]:text-lg [&>h3]:font-bold [&>h3]:text-slate-950 [&>img]:my-4 [&>img]:rounded-xl"
+              dangerouslySetInnerHTML={{ __html: description }}
+            />
           </div>
         )}
 
-        {parsedFeatures.length === 0 && description ? null : parsedFeatures.map((block, index) => (
+        {textFeatures.length > 0 && (
+          <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4 sm:p-5">
+            <h3 className="text-base font-bold text-slate-950 sm:text-lg">Điểm nổi bật</h3>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              {textFeatures.map((feature, index) => (
+                <div key={`${feature}-${index}`} className="flex items-start gap-3 rounded-xl border border-slate-100 bg-white p-3">
+                  <CheckCircle2 size={18} className="mt-0.5 flex-shrink-0 text-blue-600" />
+                  <p className="text-sm font-semibold leading-6 text-slate-800">{feature}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {contentBlocks.length === 0 && description ? null : contentBlocks.map((block, index) => (
           <div key={index} className="space-y-4">
             {block.title && (
               <h3 className="text-lg font-bold leading-tight text-slate-950">

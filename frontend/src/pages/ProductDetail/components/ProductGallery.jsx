@@ -32,13 +32,13 @@ const ProductGallery = ({ images, activeImage, setActiveImage, productName }) =>
       )}
 
       <div className="order-1 sm:order-2">
-        <div className="relative flex aspect-square max-h-[430px] min-h-[260px] items-center justify-center overflow-hidden rounded-2xl border border-slate-100 bg-slate-50 p-4 sm:p-6">
+        <div className="relative flex aspect-square min-h-[300px] items-center justify-center overflow-hidden rounded-2xl border border-slate-100 bg-white p-2 sm:min-h-[420px] sm:p-3">
           <img
             src={resolveApiAssetUrl(displayImages[activeImage] || displayImages[0])}
             alt={productName}
             fetchPriority="high"
             decoding="async"
-            className="max-h-full max-w-full object-contain"
+            className="max-h-full max-w-full object-contain drop-shadow-sm"
           />
 
           {hasGallery && (
