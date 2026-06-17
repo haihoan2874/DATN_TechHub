@@ -6,12 +6,12 @@ import {
   CheckCircle2, XCircle,
   RefreshCw,
   CreditCard, Package, ChevronDown, ShoppingCart, TrendingUp,
-  Eye, Printer, X, MapPin, Phone, User, Calendar
+  Eye, Printer, X, MapPin, Phone, User, Calendar, Filter
 } from 'lucide-react';
 import ConfirmModal from '../components/ui/ConfirmModal';
 import PageShell from '../components/layout/PageShell';
 import PageHeader from '../components/layout/PageHeader';
-import Toolbar from '../components/layout/Toolbar';
+
 import DataTable from '../components/data/DataTable';
 import MetricCard from '../components/data/MetricCard';
 import Pagination from '../components/data/Pagination';
@@ -31,12 +31,12 @@ const fmtVND = (n) => n != null ? Number(n).toLocaleString('vi-VN') + ' ₫' : '
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('vi-VN') : '—';
 
 const tableColumns = [
-  { key: 'select', label: '', className: 'w-10' },
-  { key: 'order', label: 'Đơn hàng' },
-  { key: 'customer', label: 'Khách hàng' },
-  { key: 'payment', label: 'Thanh toán' },
-  { key: 'status', label: 'Trạng thái' },
-  { key: 'actions', label: 'Thao tác', className: 'text-right' }
+  { key: 'select', label: '', className: 'w-10', sortable: false },
+  { key: 'order', label: 'Đơn hàng', sortable: true },
+  { key: 'customer', label: 'Khách hàng', sortable: false },
+  { key: 'payment', label: 'Thanh toán', sortable: true },
+  { key: 'status', label: 'Trạng thái', sortable: false },
+  { key: 'actions', label: 'Thao tác', className: 'text-right', sortable: false }
 ];
 
 const statusToneMap = {
@@ -218,6 +218,8 @@ const OrderManagement = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
+  const [dateFilter, setDateFilter] = useState('all');
+  const [sortConfig, setSortConfig] = useState({ key: 'order', direction: 'desc' });
   const [currentPage, setCurrentPage] = useState(1);
   const [isUpdating, setIsUpdating] = useState(null);
   const [selectedIds, setSelectedIds] = useState(new Set());
@@ -250,16 +252,70 @@ const OrderManagement = () => {
     }
   };
 
+  const filteredOrders = useMemo(() => {
+    let result = [...orders];
+
+    // Filter by Date
+    if (dateFilter !== 'all') {
+      const now = new Date();
+      result = result.filter(item => {
+        if (!item.createdAt) return false;
+        const itemDate = new Date(item.createdAt);
+        if (dateFilter === 'thisMonth') {
+          return itemDate.getMonth() === now.getMonth() && itemDate.getFullYear() === now.getFullYear();
+        }
+        if (dateFilter === 'lastMonth') {
+          const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+          return itemDate.getMonth() === lastMonth.getMonth() && itemDate.getFullYear() === lastMonth.getFullYear();
+        }
+        if (dateFilter === 'thisYear') {
+          return itemDate.getFullYear() === now.getFullYear();
+        }
+        return true;
+      });
+    }
+
+    // Filter by Search & Status
+    const keyword = searchTerm.trim().toLowerCase();
+    result = result.filter(order => {
+      const matchesSearch =
+        !keyword ||
+        order.orderNumber?.toLowerCase().includes(keyword) ||
+        order.customerName?.toLowerCase().includes(keyword) ||
+        order.customerEmail?.toLowerCase().includes(keyword) ||
+        order.customerPhone?.includes(keyword);
+      const matchesStatus = statusFilter === 'ALL' || order.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    });
+
+    // Sort
+    result.sort((a, b) => {
+      let valA, valB;
+      if (sortConfig.key === 'payment') {
+        valA = a.total || 0;
+        valB = b.total || 0;
+      } else { // default to createdAt
+        valA = new Date(a.createdAt || 0).getTime();
+        valB = new Date(b.createdAt || 0).getTime();
+      }
+      if (valA < valB) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (valA > valB) return sortConfig.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    return result;
+  }, [orders, searchTerm, statusFilter, dateFilter, sortConfig]);
+
   const metrics = useMemo(() => {
-    const deliveredOrders = orders.filter(o => o.status === 'DELIVERED');
+    const deliveredOrders = filteredOrders.filter(o => o.status === 'DELIVERED');
     const revenue = deliveredOrders.reduce((acc, o) => acc + (Number(o.total) || 0), 0);
     return [
-      { label: 'Tổng đơn hàng', value: orders.length, icon: ShoppingCart, tone: 'blue' },
-      { label: 'Chờ xử lý', value: orders.filter(o => o.status === 'PENDING').length, icon: Clock, tone: 'amber' },
-      { label: 'Đang giao', value: orders.filter(o => o.status === 'SHIPPED').length, icon: Truck, tone: 'blue' },
+      { label: 'Tổng đơn hàng', value: filteredOrders.length, icon: ShoppingCart, tone: 'blue' },
+      { label: 'Chờ xử lý', value: filteredOrders.filter(o => o.status === 'PENDING').length, icon: Clock, tone: 'amber' },
+      { label: 'Đang giao', value: filteredOrders.filter(o => o.status === 'SHIPPED').length, icon: Truck, tone: 'blue' },
       { label: 'Doanh thu', value: `${revenue.toLocaleString()} ₫`, icon: TrendingUp, tone: 'green' }
     ];
-  }, [orders]);
+  }, [filteredOrders]);
 
   const handleUpdateStatus = async (orderId, newStatus) => {
     if (newStatus === 'CANCELLED' || newStatus === 'DELIVERED') {
@@ -288,18 +344,20 @@ const OrderManagement = () => {
     }
   };
 
-  const filteredOrders = useMemo(() => {
-    const keyword = searchTerm.trim().toLowerCase();
-    return orders.filter(order => {
-      const matchesSearch =
-        !keyword ||
-        order.orderNumber?.toLowerCase().includes(keyword) ||
-        order.customerName?.toLowerCase().includes(keyword) ||
-        order.customerEmail?.toLowerCase().includes(keyword);
-      const matchesStatus = statusFilter === 'ALL' || order.status === statusFilter;
-      return matchesSearch && matchesStatus;
-    });
-  }, [orders, searchTerm, statusFilter]);
+  const handleSort = (key) => {
+    setSortConfig(prev => ({
+      key,
+      direction: prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc'
+    }));
+  };
+
+  const columnsWithSort = useMemo(() => {
+    return tableColumns.map(col => ({
+      ...col,
+      sortConfig,
+      onSort: handleSort
+    }));
+  }, [sortConfig]);
 
   const totalPages = Math.max(1, Math.ceil(filteredOrders.length / PAGE_SIZE));
   const paginatedOrders = useMemo(() => {
@@ -307,7 +365,7 @@ const OrderManagement = () => {
     return filteredOrders.slice(startIndex, startIndex + PAGE_SIZE);
   }, [filteredOrders, currentPage]);
 
-  useEffect(() => { setCurrentPage(1); }, [searchTerm, statusFilter]);
+  useEffect(() => { setCurrentPage(1); }, [searchTerm, statusFilter, dateFilter, sortConfig]);
   useEffect(() => {
     if (currentPage > totalPages) setCurrentPage(totalPages);
   }, [currentPage, totalPages]);
@@ -379,34 +437,57 @@ const OrderManagement = () => {
         {metrics.map(metric => <MetricCard key={metric.label} {...metric} />)}
       </div>
 
-      <Toolbar>
-        <div className="relative w-full flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-          <input
-            type="text"
-            placeholder="Tìm theo mã đơn, tên hoặc email khách hàng..."
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            className="w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-10 pr-4 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
-          />
+      <div className="mb-4 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="relative flex-1 lg:max-w-md">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+            <input
+              type="text"
+              placeholder="Tìm theo mã đơn, khách hàng..."
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              className="h-12 w-full rounded-xl border border-slate-300 bg-white pl-11 pr-10 text-sm font-semibold text-slate-800 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
+            />
+            {searchTerm && (
+              <button
+                type="button"
+                onClick={() => setSearchTerm('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+              >
+                <X size={16} />
+              </button>
+            )}
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="relative flex items-center">
+              <Filter size={16} className="absolute left-3 text-slate-400" />
+              <select
+                value={dateFilter}
+                onChange={e => setDateFilter(e.target.value)}
+                className="h-12 w-36 rounded-xl border border-slate-300 bg-white pl-9 pr-3 text-sm font-bold text-slate-700 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
+              >
+                <option value="all">Tất cả thời gian</option>
+                <option value="thisMonth">Tháng này</option>
+                <option value="lastMonth">Tháng trước</option>
+                <option value="thisYear">Năm nay</option>
+              </select>
+            </div>
+            <select
+              value={statusFilter}
+              onChange={e => setStatusFilter(e.target.value)}
+              className="h-12 w-48 rounded-xl border border-slate-300 bg-white px-3 text-sm font-bold text-slate-700 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
+            >
+              <option value="ALL">Tất cả trạng thái</option>
+              {ORDER_STATUS_VALUES.map(status => (
+                <option key={status} value={status}>{statuses.find(s => s.value === status)?.label}</option>
+              ))}
+            </select>
+            <button onClick={fetchOrders} className="flex h-12 w-12 items-center justify-center rounded-xl border border-slate-300 bg-white text-slate-500 hover:bg-slate-50">
+              <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
+            </button>
+          </div>
         </div>
-        <select
-          value={statusFilter}
-          onChange={e => setStatusFilter(e.target.value)}
-          className="form-select w-full lg:w-48"
-        >
-          <option value="ALL">Tất cả trạng thái</option>
-          {ORDER_STATUS_VALUES.map(status => (
-            <option key={status} value={status}>{statuses.find(s => s.value === status)?.label}</option>
-          ))}
-        </select>
-        <span className="whitespace-nowrap rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-600">
-          {filteredOrders.length} đơn hàng
-        </span>
-        <button onClick={fetchOrders} className="rounded-xl border border-slate-300 bg-white p-2.5 text-slate-500 hover:bg-slate-50">
-          <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
-        </button>
-      </Toolbar>
+      </div>
 
       {/* Bulk print toolbar */}
       {selectedIds.size > 0 && (
@@ -433,7 +514,7 @@ const OrderManagement = () => {
       )}
 
       <DataTable
-        columns={tableColumns}
+        columns={columnsWithSort}
         footer={!loading && filteredOrders.length > 0 ? (
           <Pagination
             page={currentPage}

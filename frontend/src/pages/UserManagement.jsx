@@ -3,7 +3,7 @@ import {
   Users, Search,
   Trash2, Shield, ShieldOff, UserCog,
   Mail, Phone, CheckCircle2,
-  XCircle, RefreshCw
+  XCircle, RefreshCw, X, Filter
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import adminService from '../services/adminService';
@@ -12,7 +12,7 @@ import Button from '../components/ui/Button';
 import Modal from '../components/ui/Modal';
 import PageShell from '../components/layout/PageShell';
 import PageHeader from '../components/layout/PageHeader';
-import Toolbar from '../components/layout/Toolbar';
+
 import DataTable from '../components/data/DataTable';
 import MetricCard from '../components/data/MetricCard';
 import Pagination from '../components/data/Pagination';
@@ -29,12 +29,12 @@ const getRoleLabel = (role) => {
 };
 
 const tableColumns = [
-  { key: 'user', label: 'Người dùng' },
-  { key: 'contact', label: 'Liên hệ' },
-  { key: 'role', label: 'Vai trò' },
-  { key: 'status', label: 'Trạng thái' },
-  { key: 'createdAt', label: 'Ngày tạo' },
-  { key: 'actions', label: 'Thao tác', className: 'text-right' }
+  { key: 'user', label: 'Người dùng', sortable: true },
+  { key: 'contact', label: 'Liên hệ', sortable: false },
+  { key: 'role', label: 'Vai trò', sortable: false },
+  { key: 'status', label: 'Trạng thái', sortable: false },
+  { key: 'createdAt', label: 'Ngày tạo', sortable: true },
+  { key: 'actions', label: 'Thao tác', className: 'text-right', sortable: false }
 ];
 
 const UserManagement = () => {
@@ -43,6 +43,7 @@ const UserManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState('ALL');
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortConfig, setSortConfig] = useState({ key: 'createdAt', direction: 'desc' });
   
   // Selection & Actions
   const [selectedUser, setSelectedUser] = useState(null);
@@ -107,8 +108,11 @@ const UserManagement = () => {
   ], [users]);
 
   const filteredUsers = useMemo(() => {
+    let result = [...users];
+
+    // Filter by Search & Role
     const keyword = searchTerm.trim().toLowerCase();
-    return users.filter(user => {
+    result = result.filter(user => {
       const matchesSearch =
         !keyword ||
         user.username?.toLowerCase().includes(keyword) ||
@@ -117,7 +121,24 @@ const UserManagement = () => {
       const matchesRole = filterRole === 'ALL' || user.role === filterRole;
       return matchesSearch && matchesRole;
     });
-  }, [users, searchTerm, filterRole]);
+
+    // Sort
+    result.sort((a, b) => {
+      let valA, valB;
+      if (sortConfig.key === 'user') {
+        valA = a.fullName || a.username || '';
+        valB = b.fullName || b.username || '';
+      } else { // createdAt
+        valA = new Date(a.createdAt || 0).getTime();
+        valB = new Date(b.createdAt || 0).getTime();
+      }
+      if (valA < valB) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (valA > valB) return sortConfig.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    return result;
+  }, [users, searchTerm, filterRole, sortConfig]);
 
   const totalPages = Math.max(1, Math.ceil(filteredUsers.length / PAGE_SIZE));
   const paginatedUsers = useMemo(() => {
@@ -127,7 +148,7 @@ const UserManagement = () => {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, filterRole]);
+  }, [searchTerm, filterRole, sortConfig]);
 
   useEffect(() => {
     if (currentPage > totalPages) {
@@ -150,38 +171,56 @@ const UserManagement = () => {
         ))}
       </div>
 
-      <Toolbar>
-        <div className="relative w-full flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-          <input 
-            type="text"
-            placeholder="Tìm kiếm theo tên, email, username..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-10 pr-4 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
-          />
+      <div className="mb-4 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="relative flex-1 lg:max-w-md">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+            <input
+              type="text"
+              placeholder="Tìm theo tên, email, username..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="h-12 w-full rounded-xl border border-slate-300 bg-white pl-11 pr-10 text-sm font-semibold text-slate-800 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
+            />
+            {searchTerm && (
+              <button
+                type="button"
+                onClick={() => setSearchTerm('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+              >
+                <X size={16} />
+              </button>
+            )}
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="relative flex items-center">
+              <Filter size={16} className="absolute left-3 text-slate-400" />
+              <select
+                value={filterRole}
+                onChange={(event) => setFilterRole(event.target.value)}
+                className="h-12 w-44 rounded-xl border border-slate-300 bg-white pl-9 pr-3 text-sm font-bold text-slate-700 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
+                aria-label="Lọc người dùng theo vai trò"
+              >
+                <option value="ALL">Tất cả vai trò</option>
+                <option value="ROLE_ADMIN">{getRoleLabel('ROLE_ADMIN')}</option>
+                <option value="ROLE_USER">{getRoleLabel('ROLE_USER')}</option>
+              </select>
+            </div>
+            <button type="button" onClick={fetchUsers} aria-label="Tải lại danh sách người dùng" className="flex h-12 w-12 items-center justify-center rounded-xl border border-slate-300 bg-white text-slate-500 hover:bg-slate-50">
+              <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
+            </button>
+          </div>
         </div>
-
-        <select
-          value={filterRole}
-          onChange={(event) => setFilterRole(event.target.value)}
-          className="form-select w-full lg:w-44"
-          aria-label="Lọc người dùng theo vai trò"
-        >
-          <option value="ALL">Tất cả vai trò</option>
-          <option value="ROLE_ADMIN">{getRoleLabel('ROLE_ADMIN')}</option>
-          <option value="ROLE_USER">{getRoleLabel('ROLE_USER')}</option>
-        </select>
-        <span className="whitespace-nowrap rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-600">
-          {filteredUsers.length} người dùng
-        </span>
-        <button type="button" onClick={fetchUsers} aria-label="Tải lại danh sách người dùng" className="rounded-xl border border-slate-300 bg-white p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900">
-          <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
-        </button>
-      </Toolbar>
+      </div>
 
       <DataTable
-        columns={tableColumns}
+        columns={tableColumns.map(col => ({
+          ...col,
+          sortConfig,
+          onSort: (key) => setSortConfig(prev => ({
+            key, direction: prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc'
+          }))
+        }))}
         footer={!loading && filteredUsers.length > 0 ? (
           <Pagination
             page={currentPage}

@@ -6,13 +6,22 @@ import { resolveApiAssetUrl } from '../../../config/api';
 import { formatCurrency } from '../../../utils/formatters';
 
 const tableColumns = [
-  { key: 'product', label: 'Sản phẩm' },
-  { key: 'classification', label: 'Phân loại' },
-  { key: 'priceStock', label: 'Giá / Kho hiện tại' },
-  { key: 'actions', label: 'Thao tác', className: 'text-right' }
+  { key: 'product', label: 'Sản phẩm', sortable: true, sortKey: 'name' },
+  { key: 'classification', label: 'Phân loại', sortable: false },
+  { key: 'priceStock', label: 'Giá / Kho hiện tại', sortable: true, sortKey: 'price' },
+  { key: 'actions', label: 'Thao tác', className: 'text-right', sortable: false }
 ];
 
-const ProductTable = ({ products, loading, footer, onEdit, onDelete }) => {
+const ProductTable = ({ products, loading, footer, onEdit, onDelete, sortConfig, onSort }) => {
+  const columnsWithSort = React.useMemo(() => {
+    return tableColumns.map(col => ({
+      ...col,
+      sortConfig,
+      onSort: col.sortable ? () => onSort(col.sortKey) : undefined,
+      // override key if we use sortKey to match DataTable expected structure
+      key: col.sortKey || col.key
+    }));
+  }, [sortConfig, onSort]);
   const getImageUrl = (url) => {
     return resolveApiAssetUrl(url, '');
   };
@@ -30,7 +39,7 @@ const ProductTable = ({ products, loading, footer, onEdit, onDelete }) => {
   }
 
   return (
-    <DataTable columns={tableColumns} footer={footer}>
+    <DataTable columns={columnsWithSort} footer={footer}>
             {products.map((product) => (
               <tr key={product.id} className="hover:bg-slate-50">
                 <td className="px-5 py-4">

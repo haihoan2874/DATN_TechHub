@@ -10,9 +10,17 @@ const DataTable = ({ columns, children, footer, className = '' }) => {
               {columns.map((column) => (
                 <th
                   key={column.key}
-                  className={`px-5 py-4 text-xs font-bold uppercase tracking-wide text-slate-500 ${column.className || ''}`}
+                  onClick={() => column.sortable && column.onSort && column.onSort(column.key)}
+                  className={`px-5 py-4 text-xs font-bold uppercase tracking-wide text-slate-500 ${column.className || ''} ${column.sortable ? 'cursor-pointer hover:bg-slate-100 transition-colors select-none' : ''}`}
                 >
-                  {column.label}
+                  <div className={`flex items-center gap-1.5 ${column.className?.includes('text-right') ? 'justify-end' : ''}`}>
+                    {column.label}
+                    {column.sortable && column.sortConfig?.key === column.key && (
+                      <span className="text-blue-600">
+                        {column.sortConfig.direction === 'asc' ? '↑' : '↓'}
+                      </span>
+                    )}
+                  </div>
                 </th>
               ))}
             </tr>

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import adminService from '../services/adminService';
 import { 
   Plus, Search, RefreshCw,
-  Info, List, Layout, Settings, Save, Package, CheckCircle2, AlertCircle
+  Info, List, Layout, Settings, Save, Package, CheckCircle2, AlertCircle, X, Filter
 } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
@@ -10,7 +10,7 @@ import Modal from '../components/ui/Modal';
 import ConfirmModal from '../components/ui/ConfirmModal';
 import PageShell from '../components/layout/PageShell';
 import PageHeader from '../components/layout/PageHeader';
-import Toolbar from '../components/layout/Toolbar';
+import MetricCard from '../components/data/MetricCard';
 import Pagination from '../components/data/Pagination';
 import toast from 'react-hot-toast';
 import ImageUpload from '../components/admin/ImageUpload';
@@ -42,6 +42,7 @@ const ProductManagement = () => {
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [brandFilter, setBrandFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortConfig, setSortConfig] = useState({ key: 'updatedAt', direction: 'desc' });
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
   
@@ -91,8 +92,8 @@ const ProductManagement = () => {
         name: searchTerm.trim() || null,
         categoryId: categoryFilter === 'all' ? null : categoryFilter,
         brandId: brandFilter === 'all' ? null : brandFilter,
-        sortBy: 'updatedAt',
-        sortOrder: 'desc'
+        sortBy: sortConfig.key,
+        sortOrder: sortConfig.direction
       });
 
       setProducts(productRes.contents || productRes.content || []);
@@ -104,7 +105,7 @@ const ProductManagement = () => {
     } finally {
       setLoading(false);
     }
-  }, [brandFilter, categoryFilter, currentPage, searchTerm]);
+  }, [brandFilter, categoryFilter, currentPage, searchTerm, sortConfig]);
 
   const refreshData = useCallback(() => {
     fetchFilters();
@@ -276,9 +277,22 @@ const ProductManagement = () => {
     }
   }, [currentPage, totalPages]);
 
+  const handleSort = (key) => {
+    setSortConfig(prev => ({
+      key,
+      direction: prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc'
+    }));
+  };
+
   const readinessItems = useMemo(() => getProductReadiness(formData), [formData]);
   const readyCount = readinessItems.filter((item) => item.done).length;
   const galleryImages = useMemo(() => getGalleryImages(formData.features), [formData.features]);
+
+  const metrics = useMemo(() => [
+    { label: 'Tổng số thiết bị', value: totalProducts, icon: Package, tone: 'blue' },
+    { label: 'Sản phẩm hết hàng (Trang này)', value: products.filter(p => p.stockQuantity === 0).length, icon: AlertCircle, tone: 'red' },
+    { label: 'Đang hiển thị (Trang này)', value: products.filter(p => p.isActive).length, icon: CheckCircle2, tone: 'green' }
+  ], [totalProducts, products]);
 
   const setGalleryImages = (images) => {
     setFormData(prev => ({
@@ -306,49 +320,65 @@ const ProductManagement = () => {
         action={<Button onClick={() => handleOpenModal()} icon={Plus}>Tạo sản phẩm</Button>}
       />
 
-      <Toolbar>
-        <div className="relative w-full flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-          <input
-            type="text"
-            placeholder="Tìm theo tên hoặc slug sản phẩm..."
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-10 pr-4 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
-          />
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3 mb-4">
+        {metrics.map((metric) => (
+          <MetricCard key={metric.label} {...metric} />
+        ))}
+      </div>
+
+      <div className="mb-4 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="relative flex-1 lg:max-w-md">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+            <input
+              type="text"
+              placeholder="Tìm theo tên hoặc slug sản phẩm..."
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="h-12 w-full rounded-xl border border-slate-300 bg-white pl-11 pr-10 text-sm font-semibold text-slate-800 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
+            />
+            {searchTerm && (
+              <button
+                type="button"
+                onClick={() => { setSearchTerm(''); setCurrentPage(1); }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+              >
+                <X size={16} />
+              </button>
+            )}
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <select
+              value={categoryFilter}
+              onChange={(e) => {
+                setCategoryFilter(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="h-12 w-48 rounded-xl border border-slate-300 bg-white px-3 text-sm font-bold text-slate-700 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
+            >
+              <option value="all">Tất cả danh mục</option>
+              {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </select>
+            <select
+              value={brandFilter}
+              onChange={(e) => {
+                setBrandFilter(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="h-12 w-40 rounded-xl border border-slate-300 bg-white px-3 text-sm font-bold text-slate-700 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
+            >
+              <option value="all">Tất cả thương hiệu</option>
+              {brands.map(brand => <option key={brand.id} value={brand.id}>{brand.name}</option>)}
+            </select>
+            <button type="button" onClick={refreshData} aria-label="Tải lại danh sách sản phẩm" className="flex h-12 w-12 items-center justify-center rounded-xl border border-slate-300 bg-white text-slate-500 hover:bg-slate-50 hover:text-slate-900">
+              <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
+            </button>
+          </div>
         </div>
-        <select
-          value={categoryFilter}
-          onChange={(e) => {
-            setCategoryFilter(e.target.value);
-            setCurrentPage(1);
-          }}
-          className="form-select lg:w-56"
-        >
-          <option value="all">Tất cả danh mục</option>
-          {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-        </select>
-        <select
-          value={brandFilter}
-          onChange={(e) => {
-            setBrandFilter(e.target.value);
-            setCurrentPage(1);
-          }}
-          className="form-select lg:w-44"
-        >
-          <option value="all">Tất cả thương hiệu</option>
-          {brands.map(brand => <option key={brand.id} value={brand.id}>{brand.name}</option>)}
-        </select>
-        <span className="whitespace-nowrap rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-600">
-          {totalProducts} sản phẩm
-        </span>
-        <button type="button" onClick={refreshData} aria-label="Tải lại danh sách sản phẩm" className="rounded-xl border border-slate-300 bg-white p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900">
-          <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
-        </button>
-      </Toolbar>
+      </div>
 
       <ProductTable 
         products={displayProducts}
@@ -361,6 +391,8 @@ const ProductManagement = () => {
             onPageChange={setCurrentPage}
           />
         ) : null}
+        sortConfig={sortConfig}
+        onSort={handleSort}
         onEdit={handleOpenModal}
         onDelete={(id) => { setProductToDelete(id); setIsDeleteConfirmOpen(true); }}
       />
