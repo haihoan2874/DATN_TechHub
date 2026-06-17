@@ -54,3 +54,10 @@ backend/java-mastery/local-data/
 # Uploads
 uploads/
 backend/java-mastery/uploads/
+
+# Unwanted Documents
+docs/
+.claude/
+*.dump
+*.cjs
+*.sql
