@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   ArrowRight,
   Calendar,
@@ -47,6 +47,22 @@ const Orders = () => {
   const [cancelTarget, setCancelTarget] = useState(null);
   const [cancelSubmitting, setCancelSubmitting] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Xử lý kết quả thanh toán VNPay redirect về
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const paymentStatus = params.get('payment');
+    if (paymentStatus === 'success') {
+      toast.success('Thanh toán VNPay thành công! Đơn hàng đang được xử lý.', { duration: 5000 });
+    } else if (paymentStatus === 'failed') {
+      toast.error('Thanh toán VNPay thất bại hoặc bị hủy. Vui lòng thử lại.', { duration: 5000 });
+    }
+    // Dọn query param khỏi URL để không hiển thị lại khi refresh
+    if (paymentStatus) {
+      navigate('/orders', { replace: true });
+    }
+  }, [location.search, navigate]);
 
   const fetchOrders = async () => {
     try {

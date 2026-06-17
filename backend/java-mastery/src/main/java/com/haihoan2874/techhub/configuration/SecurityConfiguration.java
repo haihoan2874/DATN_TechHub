@@ -80,7 +80,9 @@ public class SecurityConfiguration {
                                         "/swagger-ui.html",
                                         "/actuator/**",
                                         "/api/v1/system/**",
-                                        "/api/v1/files/**"
+                                        "/api/v1/files/**",
+                                        "/api/v1/payments/vnpay-callback",
+                                        "/api/v1/payments/vnpay-ipn"
                                 ).permitAll()
                                 .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/api/v1/categories/**").permitAll()

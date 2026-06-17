@@ -151,7 +151,7 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
             """)
     boolean existsDeliveredOrderContainingProduct(@Param("userId") UUID userId, @Param("productId") UUID productId);
 
-    @Query("SELECT DISTINCT o FROM Order o LEFT JOIN FETCH o.items ORDER BY o.createdAt DESC")
+    @Query("SELECT DISTINCT o FROM Order o LEFT JOIN FETCH o.items LEFT JOIN FETCH o.shippingAddress ORDER BY o.createdAt DESC")
     List<Order> findAllWithItems();
 
     @Query("""

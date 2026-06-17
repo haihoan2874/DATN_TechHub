@@ -293,6 +293,65 @@ public class OrderService {
         log.info("Order {} confirmed (now PROCESSING) and inventory updated", orderNumber);
     }
 
+    @Transactional
+    public Map<String, String> processVnPayIpn(Map<String, String> queryParams) {
+        try {
+            if (!paymentService.verifySignature(queryParams)) {
+                return vnPayIpnResponse("97", "Invalid signature");
+            }
+
+            String orderNumber = queryParams.get("vnp_TxnRef");
+            Order order = orderRepository.findByOrderNumber(orderNumber).orElse(null);
+            if (order == null) {
+                return vnPayIpnResponse("01", "Order not found");
+            }
+
+            if (!isVnPayAmountMatched(order, queryParams.get("vnp_Amount"))) {
+                return vnPayIpnResponse("04", "Invalid amount");
+            }
+
+            if (order.getStatus() != OrderStatus.PENDING) {
+                return vnPayIpnResponse("02", "Order already confirmed");
+            }
+
+            boolean paymentSuccess = "00".equals(queryParams.get("vnp_ResponseCode"))
+                    && "00".equals(queryParams.get("vnp_TransactionStatus"));
+            if (paymentSuccess) {
+                order.setStatus(OrderStatus.PROCESSING);
+                orderRepository.save(order);
+                confirmReservedOrderStock(order);
+                log.info("VNPay IPN confirmed payment for order {}", orderNumber);
+            } else {
+                order.setStatus(OrderStatus.CANCELLED);
+                orderRepository.save(order);
+                restoreCancelledOrderStock(order);
+                log.info("VNPay IPN marked failed payment as CANCELLED for order {}", orderNumber);
+            }
+
+            return vnPayIpnResponse("00", "Confirm Success");
+        } catch (Exception ex) {
+            log.error("Failed to process VNPay IPN", ex);
+            return vnPayIpnResponse("99", "Unknown error");
+        }
+    }
+
+    private boolean isVnPayAmountMatched(Order order, String rawVnPayAmount) {
+        if (rawVnPayAmount == null || rawVnPayAmount.isBlank()) {
+            return false;
+        }
+        try {
+            BigDecimal expectedAmount = order.getTotal().multiply(BigDecimal.valueOf(100));
+            BigDecimal actualAmount = new BigDecimal(rawVnPayAmount);
+            return expectedAmount.compareTo(actualAmount) == 0;
+        } catch (NumberFormatException ex) {
+            return false;
+        }
+    }
+
+    private Map<String, String> vnPayIpnResponse(String rspCode, String message) {
+        return Map.of("RspCode", rspCode, "Message", message);
+    }
+
     private void confirmReservedOrderStock(Order order) {
         for (OrderItem item : order.getItems()) {
             inventoryService.confirmSale(item.getProductId(), item.getQuantity());

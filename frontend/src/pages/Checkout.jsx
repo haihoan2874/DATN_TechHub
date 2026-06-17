@@ -66,10 +66,10 @@ const Checkout = () => {
   }, []);
 
   useEffect(() => {
-    if (!cartLoading && cartItems.length === 0) {
+    if (!cartLoading && cartItems.length === 0 && !isSubmitting) {
       navigate('/cart', { replace: true });
     }
-  }, [cartItems.length, cartLoading, navigate]);
+  }, [cartItems.length, cartLoading, navigate, isSubmitting]);
 
   const fetchAddresses = async () => {
     try {
@@ -97,10 +97,10 @@ const Checkout = () => {
   const finalTotal = Math.max(checkoutTotal - Number(appliedVoucher?.discountAmount || 0), 0);
 
   useEffect(() => {
-    if (!cartLoading && cartItems.length > 0 && checkoutItems.length === 0) {
+    if (!cartLoading && cartItems.length > 0 && checkoutItems.length === 0 && !isSubmitting) {
       navigate('/cart', { replace: true });
     }
-  }, [cartItems.length, cartLoading, checkoutItems.length, navigate]);
+  }, [cartItems.length, cartLoading, checkoutItems.length, navigate, isSubmitting]);
 
   const handleApplyVoucher = async () => {
     if (!voucherCode.trim()) {
