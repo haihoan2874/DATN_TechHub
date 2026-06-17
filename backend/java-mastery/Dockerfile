@@ -19,7 +19,7 @@ FROM eclipse-temurin:21-jre-jammy
 WORKDIR /app
 
 # Copy the built JAR from builder stage
-COPY --from=builder /app/build/libs/springboot-boilerplate-1.0.0.jar app.jar
+COPY --from=builder /app/build/libs/slife-backend-1.0.0.jar app.jar
 
 # Create non-root user for security
 RUN groupadd -r appuser && useradd -r -g appuser appuser
