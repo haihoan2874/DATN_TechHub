@@ -79,7 +79,7 @@ Lưu trữ thông tin hoá đơn bán ra.
 - `user_id` (UUID, FK)
 - `code` (VARCHAR) - Mã đơn thân thiện để người dùng tra cứu `ORD-2026xxxx`.
 - `total_amount` (DECIMAL)
-- `status` (VARCHAR) - Enum: PENDING, CONFIRMED, IN_TRANSIT, DELIVERED, CANCELLED.
+- `status` (VARCHAR) - Enum: PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED.
 - `payment_method` (VARCHAR) - VNPAY, COD.
 - `payment_status` (VARCHAR) - PENDING, PAID, FAILED, REFUNDED.
 
