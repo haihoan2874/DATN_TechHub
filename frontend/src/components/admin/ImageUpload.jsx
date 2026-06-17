@@ -18,11 +18,6 @@ const ImageUpload = ({ value, onChange, label, folder = 'products' }) => {
       return;
     }
 
-    // Validate size (e.g., 50MB)
-    if (file.size > 50 * 1024 * 1024) {
-      toast.error('Kích thước ảnh tối đa là 50MB');
-      return;
-    }
 
     setUploading(true);
     try {
@@ -90,7 +85,7 @@ const ImageUpload = ({ value, onChange, label, folder = 'products' }) => {
             </div>
             <div className="text-center">
               <p className="text-xs font-black uppercase tracking-widest text-slate-900">Tải ảnh lên</p>
-              <p className="text-[10px] font-medium text-slate-400 mt-1">Hỗ trợ JPG, PNG, WEBP, tối đa 50MB</p>
+              <p className="text-[10px] font-medium text-slate-400 mt-1">Hỗ trợ JPG, PNG, WEBP</p>
             </div>
           </button>
         )}

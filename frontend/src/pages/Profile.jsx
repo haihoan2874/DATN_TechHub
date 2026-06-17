@@ -119,11 +119,6 @@ const Profile = () => {
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error('Ảnh đại diện tối đa 5MB.');
-      event.target.value = '';
-      return;
-    }
 
     try {
       const updatedUser = await userService.uploadAvatar(file);
