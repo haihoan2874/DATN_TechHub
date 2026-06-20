@@ -63,50 +63,53 @@ const AIChatbot = () => {
   const handleSend = () => sendMessage(input);
 
   return (
-    <div className="fixed inset-x-3 bottom-3 z-[80] flex justify-end sm:inset-x-auto sm:bottom-8 sm:right-8">
+    <div className="fixed inset-x-3 bottom-3 z-[9999] flex justify-end sm:inset-x-auto sm:bottom-8 sm:right-8">
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className={`flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_24px_70px_-22px_rgba(15,23,42,0.45)] transition-all duration-500 ${
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2 }}
+            className={`flex flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_30px_100px_-15px_rgba(15,23,42,0.5)] ${
               isMinimized
-                ? 'h-14 w-full sm:h-16 sm:w-80'
-                : 'h-[min(560px,calc(100vh-112px))] w-full sm:h-[600px] sm:w-[400px]'
+                ? 'h-16 w-full sm:w-80'
+                : 'h-[min(580px,calc(100vh-100px))] w-full sm:h-[620px] sm:w-[420px]'
             }`}
           >
             {/* Header */}
-            <div className="shrink-0 border-b border-slate-800 bg-slate-950 px-4 py-3.5 text-white">
+            <div className="shrink-0 border-b border-slate-900 bg-slate-950 px-5 py-4 text-white">
               <div className="flex items-center justify-between">
-                <div className="flex min-w-0 items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-blue-600 shadow-lg shadow-blue-950/30">
-                    <Sparkles size={19} className="fill-white" />
+                <div className="flex min-w-0 items-center gap-3.5">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] bg-slate-900 border border-slate-800 shadow-inner overflow-visible">
+                    <img src="/logo_transparent.png" alt="S-LIFE AI" className="h-full w-full object-contain scale-[1.35] drop-shadow-[0_0_8px_rgba(255,255,255,0.15)]" />
                   </div>
                   <div className="min-w-0">
-                    <h3 className="truncate text-sm font-black uppercase tracking-[0.18em]">S-Life AI</h3>
-                    <div className="mt-0.5 flex items-center gap-1.5">
-                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                      <span className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">Đang hỗ trợ</span>
+                    <h3 className="truncate text-base font-extrabold uppercase tracking-widest text-white">S-Life AI</h3>
+                    <div className="mt-1 flex items-center gap-2">
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                      </span>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Đang hỗ trợ</span>
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5">
                   <button
                     type="button"
                     onClick={() => setIsMinimized(!isMinimized)}
-                    className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
+                    className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-400 transition-colors hover:bg-slate-800 hover:text-white"
                     aria-label={isMinimized ? 'Mở rộng chat' : 'Thu nhỏ chat'}
                   >
-                    {isMinimized ? <Maximize2 size={17} /> : <Minimize2 size={17} />}
+                    {isMinimized ? <Maximize2 size={18} /> : <Minimize2 size={18} />}
                   </button>
                   <button
                     type="button"
                     onClick={() => setIsOpen(false)}
-                    className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
+                    className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-400 transition-colors hover:bg-slate-800 hover:text-white"
                     aria-label="Đóng chat"
                   >
-                    <X size={18} />
+                    <X size={20} />
                   </button>
                 </div>
               </div>
@@ -115,18 +118,18 @@ const AIChatbot = () => {
             {!isMinimized && (
               <>
                 {!user ? (
-                  <div className="flex flex-grow flex-col items-center justify-center bg-slate-50 px-5 py-8 text-center sm:p-8">
-                    <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 ring-1 ring-blue-100">
-                      <Lock size={28} />
+                  <div className="flex flex-grow flex-col items-center justify-center bg-slate-50 px-6 py-10 text-center">
+                    <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-[20px] bg-white text-slate-800 shadow-sm border border-slate-200">
+                      <Lock size={32} />
                     </div>
-                    <h4 className="mb-3 text-sm font-black uppercase tracking-tight text-slate-900">Yêu cầu đăng nhập</h4>
-                    <p className="mb-8 max-w-xs text-xs font-medium leading-relaxed text-slate-500">
+                    <h4 className="mb-3 text-base font-extrabold uppercase tracking-widest text-slate-900">Yêu cầu đăng nhập</h4>
+                    <p className="mb-8 max-w-[260px] text-xs font-medium leading-relaxed text-slate-500">
                       Vui lòng đăng nhập tài khoản S-LIFE để bắt đầu sử dụng trợ lý tư vấn AI thông minh.
                     </p>
                     <Link 
                       to="/login" 
                       onClick={() => setIsOpen(false)}
-                      className="rounded-xl bg-slate-900 px-6 py-3 text-[10px] font-black uppercase tracking-widest text-white transition-colors hover:bg-blue-600"
+                      className="rounded-xl bg-slate-950 px-8 py-3.5 text-xs font-bold uppercase tracking-widest text-white transition-all hover:bg-blue-600 hover:scale-105"
                     >
                       Đăng nhập ngay
                     </Link>
@@ -259,13 +262,16 @@ const AIChatbot = () => {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsOpen(true)}
-          className="group relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl bg-slate-900 text-white shadow-[0_15px_30px_-5px_rgba(0,0,0,0.3)] sm:h-14 sm:w-14"
+          className="group relative flex h-14 w-14 items-center justify-center rounded-[18px] bg-slate-950 text-white shadow-[0_8px_30px_rgb(0,0,0,0.24)] border border-slate-800 transition-shadow hover:shadow-[0_8px_30px_rgba(37,99,235,0.4)]"
         >
-          <div className="absolute inset-0 bg-blue-600 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-          <MessageSquare size={24} className="relative z-10" />
-          <div className="absolute top-0 right-0 p-2">
-             <span className="w-3 h-3 bg-blue-500 rounded-full border-2 border-slate-900 block" />
-          </div>
+          <div className="absolute inset-0 rounded-[18px] bg-gradient-to-tr from-blue-600 to-indigo-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+          
+          <MessageSquare size={24} className="relative z-10 transition-transform duration-300 group-hover:scale-110 group-hover:text-white text-slate-300" />
+          
+          <span className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex h-3 w-3 rounded-full border-2 border-slate-950 bg-emerald-500"></span>
+          </span>
         </motion.button>
       )}
     </div>

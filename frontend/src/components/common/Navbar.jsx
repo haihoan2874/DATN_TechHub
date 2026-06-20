@@ -137,11 +137,11 @@ const Navbar = () => {
         <div className="flex h-16 items-center justify-between gap-3 lg:gap-6">
           
           {/* 1. Logo & Brand */}
-          <Link to="/" className="flex items-center gap-2.5 group shrink-0">
-            <div className="h-8 w-8 overflow-hidden transition-transform duration-300 group-hover:scale-105 sm:h-9 sm:w-9">
-              <img src="/logo_final.png" alt="S-Life Logo" className="w-full h-full object-contain" fetchPriority="high" />
+          <Link to="/" className="flex items-center gap-3 group shrink-0">
+            <div className="flex h-12 w-12 items-center justify-center overflow-visible transition-transform duration-300 group-hover:scale-105 sm:h-14 sm:w-14">
+              <img src="/logo_transparent.png" alt="S-Life Logo" className="w-full h-full object-contain scale-[1.35]" fetchPriority="high" />
             </div>
-            <span className="text-xl font-extrabold text-slate-900 transition-colors duration-300 group-hover:text-blue-600 sm:text-2xl">S-LIFE</span>
+            <span className="text-2xl font-extrabold tracking-tight text-slate-900 transition-colors duration-300 group-hover:text-blue-600 sm:text-3xl ml-2">S-LIFE</span>
           </Link>
 
           {/* 2. Navigation Links (Desktop) */}
@@ -349,32 +349,34 @@ const Navbar = () => {
 	            className="fixed inset-0 z-[110] bg-slate-950/70 backdrop-blur-sm xl:hidden"
 	          />
 	          <motion.div
-	            initial={{ y: 24, opacity: 0 }}
-	            animate={{ y: 0, opacity: 1 }}
-	            exit={{ y: 24, opacity: 0 }}
-	            transition={{ duration: 0.2, ease: 'easeOut' }}
-	            className="fixed left-3 right-3 top-3 z-[120] flex max-h-[calc(100dvh-24px)] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-950/20 sm:left-auto sm:right-4 sm:top-4 sm:w-[min(520px,calc(100vw-32px))] sm:max-h-[calc(100dvh-32px)] xl:hidden"
+	            initial={{ x: '100%' }}
+	            animate={{ x: 0 }}
+	            exit={{ x: '100%' }}
+	            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+	            className="fixed bottom-0 right-0 top-0 z-[120] flex h-[100dvh] w-[85%] max-w-[380px] flex-col bg-white shadow-2xl shadow-slate-950/20 xl:hidden"
 	            role="dialog"
 	            aria-modal="true"
 	            aria-label="Menu điều hướng"
 	          >
 	            <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
-	              <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="flex min-w-0 items-center gap-3">
-	                <img src="/logo_final.png" alt="S-LIFE" className="h-9 w-9 shrink-0 object-contain" />
-	                <span className="truncate text-xl font-black tracking-tight text-slate-950" translate="no">S-LIFE</span>
+	              <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="flex min-w-0 items-center gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center overflow-visible">
+	                  <img src="/logo_transparent.png" alt="S-LIFE" className="h-full w-full shrink-0 object-contain scale-[1.35]" />
+                  </div>
+	                <span className="truncate text-2xl font-extrabold tracking-tight text-slate-900" translate="no">S-LIFE</span>
 	              </Link>
 	              <button
 	                type="button"
 	                onClick={() => setIsMobileMenuOpen(false)}
-	                className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 text-slate-600 hover:bg-slate-100 hover:text-slate-950"
+	                className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-950"
 	                aria-label="Đóng menu"
 	              >
 	                <X size={20} />
 	              </button>
 	            </div>
 
-	            <div className="overflow-y-auto p-5">
-	              <form onSubmit={handleSearchSubmit} className="mb-5">
+	            <div className="flex-1 overflow-y-auto px-5 py-6">
+	              <form onSubmit={handleSearchSubmit} className="mb-6">
 	                <Input
 	                  icon={Search}
 	                  value={searchQuery}
@@ -382,10 +384,11 @@ const Navbar = () => {
 	                  placeholder="Tìm sản phẩm…"
 	                  name="mobileSearch"
 	                  autoComplete="off"
+	                  className="w-full text-base"
 	                />
 	              </form>
 
-	              <div className="space-y-2">
+	              <div className="space-y-1.5">
 	                <MobileNavLink to="/" active={location.pathname === '/'} onClick={() => setIsMobileMenuOpen(false)}>Trang chủ</MobileNavLink>
 	                <MobileNavLink to="/shop" active={location.pathname === '/shop'} onClick={() => setIsMobileMenuOpen(false)}>Cửa hàng</MobileNavLink>
 	                <MobileNavLink to="/categories" active={location.pathname === '/categories'} onClick={() => setIsMobileMenuOpen(false)}>Danh mục</MobileNavLink>
@@ -398,12 +401,12 @@ const Navbar = () => {
 	              </div>
 	            </div>
 
-	            <div className="border-t border-slate-100 p-5">
+	            <div className="mt-auto border-t border-slate-100 p-5">
 	              {!user ? (
 	                <Link
 	                  to="/login"
 	                  onClick={() => setIsMobileMenuOpen(false)}
-	                  className="flex items-center justify-center rounded-xl bg-slate-900 p-4 text-[11px] font-black uppercase tracking-widest text-white hover:bg-slate-800"
+	                  className="flex items-center justify-center rounded-xl bg-blue-600 p-4 text-[13px] font-black uppercase tracking-widest text-white shadow-lg shadow-blue-600/20 transition-all hover:bg-blue-700 active:scale-[0.98]"
 	                >
 	                  Đăng nhập
 	                </Link>
@@ -414,7 +417,7 @@ const Navbar = () => {
 	                    setIsMobileMenuOpen(false);
 	                    setIsLogoutConfirmOpen(true);
 	                  }}
-	                  className="w-full rounded-xl bg-rose-50 p-4 text-[11px] font-black uppercase tracking-widest text-rose-600 hover:bg-rose-100"
+	                  className="w-full rounded-xl bg-rose-50 p-4 text-[13px] font-black uppercase tracking-widest text-rose-600 transition-all hover:bg-rose-100 active:scale-[0.98]"
 	                >
 	                  Đăng xuất
 	                </button>
@@ -452,12 +455,14 @@ const MobileNavLink = ({ to, onClick, children, active = false }) => (
   <Link
     to={to}
     onClick={onClick}
-    className={`group flex items-center justify-between rounded-xl p-4 font-bold transition-colors ${
-      active ? 'bg-slate-900 text-white' : 'bg-slate-50 text-slate-900 hover:bg-blue-50 hover:text-blue-700'
+    className={`group flex items-center justify-between rounded-xl px-4 py-3.5 font-bold transition-all ${
+      active 
+        ? 'bg-blue-50 text-blue-700 ring-1 ring-blue-500/20' 
+        : 'bg-transparent text-slate-700 hover:bg-slate-50 hover:text-slate-900'
     }`}
   >
-    <span className="text-xs uppercase tracking-widest">{children}</span>
-    <ChevronDown size={18} className="-rotate-90 opacity-40" />
+    <span className="text-sm uppercase tracking-wider">{children}</span>
+    <ChevronDown size={18} className={`-rotate-90 transition-transform ${active ? 'text-blue-500 opacity-100' : 'opacity-40 group-hover:opacity-100'}`} />
   </Link>
 );
 
