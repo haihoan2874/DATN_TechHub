@@ -388,7 +388,7 @@ const Shop = () => {
           )}
 
           <aside className="hidden shrink-0 lg:block lg:w-[300px]">
-            <div className="sticky top-28 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
               <SidebarContent />
             </div>
           </aside>
@@ -470,12 +470,12 @@ const Shop = () => {
             </div>
 
               {loading ? (
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 md:grid-cols-3">
                   {[...Array(PAGE_SIZE)].map((_, i) => <SkeletonCard key={i} />)}
                 </div>
               ) : (
                 <div className="flex flex-col gap-7">
-                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-3">
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 md:grid-cols-3">
                     {products.map((product) => (
                       <div key={product.id}>
                         <ProductCard product={product} />
