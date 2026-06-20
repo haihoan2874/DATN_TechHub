@@ -75,7 +75,7 @@ function Hero() {
               </Button>
             </div>
 
-            <div className="grid grid-cols-3 gap-4 rounded-2xl border border-slate-200/60 bg-white p-4 shadow-sm sm:max-w-xl lg:max-w-lg">
+            <div className="mx-auto grid w-full max-w-[520px] grid-cols-3 gap-2 rounded-2xl border border-slate-200/60 bg-white p-2.5 shadow-sm sm:gap-3 sm:p-3 lg:mx-0 lg:max-w-lg">
               <TrustItem value="100%" label="Chính hãng" />
               <TrustItem value="24/7" label="Hỗ trợ" />
               <TrustItem value="2 Năm" label="Bảo hành" />
@@ -134,12 +134,12 @@ function HeroMetric({ icon: Icon, label, value }) {
 
 function TrustItem({ value, label }) {
   return (
-    <div className="rounded-xl bg-slate-50/80 px-3 py-3 text-left transition-colors hover:bg-slate-100">
-      <div className="mb-1 flex items-center gap-1.5 text-blue-600">
+    <div className="flex min-h-[62px] flex-col justify-center rounded-xl bg-slate-50/80 px-2.5 py-2.5 text-left transition-colors hover:bg-slate-100 sm:min-h-[72px] sm:px-3">
+      <div className="mb-1 flex items-center gap-1.5 whitespace-nowrap text-blue-600">
         <Star size={14} className="fill-current" />
-        <span className="text-base font-bold text-slate-900">{value}</span>
+        <span className="text-sm font-bold text-slate-900 sm:text-base">{value}</span>
       </div>
-      <p className="text-[13px] font-medium text-slate-500">{label}</p>
+      <p className="text-[12px] font-medium leading-snug text-slate-500 sm:text-[13px]">{label}</p>
     </div>
   );
 }

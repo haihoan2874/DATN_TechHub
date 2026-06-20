@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
@@ -17,8 +17,31 @@ const AdminLayout = () => {
   const { logout, user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isDesktopLayout, setIsDesktopLayout] = useState(() => (
+    typeof window === 'undefined' ? true : window.innerWidth >= 1024
+  ));
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => (
+    typeof window === 'undefined' ? true : window.innerWidth >= 1024
+  ));
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const nextIsDesktop = window.innerWidth >= 1024;
+      setIsDesktopLayout(nextIsDesktop);
+      setIsSidebarOpen(nextIsDesktop);
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize, { passive: true });
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (!isDesktopLayout) {
+      setIsSidebarOpen(false);
+    }
+  }, [isDesktopLayout, location.pathname]);
 
   const handleLogout = () => {
     logout();
@@ -26,12 +49,30 @@ const AdminLayout = () => {
     setShowLogoutConfirm(false);
   };
 
+  const closeSidebarOnSmallScreen = () => {
+    if (!isDesktopLayout) {
+      setIsSidebarOpen(false);
+    }
+  };
+
   return (
-    <div className="flex h-screen overflow-hidden bg-transparent text-slate-950">
+    <div className="relative flex h-screen overflow-hidden bg-transparent text-slate-950">
+      {!isDesktopLayout && isSidebarOpen && (
+        <button
+          type="button"
+          aria-label="Đóng menu quản trị"
+          onClick={() => setIsSidebarOpen(false)}
+          className="fixed inset-0 z-40 bg-slate-950/40 backdrop-blur-sm lg:hidden"
+        />
+      )}
+
       <motion.aside 
         initial={false}
-        animate={{ width: isSidebarOpen ? 256 : 76 }}
-        className="z-50 flex h-full flex-shrink-0 flex-col border-r border-slate-200 bg-white text-slate-600"
+        animate={{
+          width: isDesktopLayout ? (isSidebarOpen ? 256 : 76) : 256,
+          x: isDesktopLayout || isSidebarOpen ? 0 : -280,
+        }}
+        className="fixed inset-y-0 left-0 z-50 flex h-full flex-shrink-0 flex-col border-r border-slate-200 bg-white text-slate-600 lg:relative"
       >
         <div className="flex h-16 items-center border-b border-slate-200 px-4">
           <Link to="/admin" className="flex items-center gap-3 overflow-hidden">
@@ -55,13 +96,14 @@ const AdminLayout = () => {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold ${
+                onClick={closeSidebarOnSmallScreen}
+                className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all ${
                   isActive 
-                    ? 'bg-slate-900 text-white'
-                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950'
+                    ? 'bg-blue-50 text-blue-700 ring-1 ring-blue-500/20'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                 }`}
               >
-                <span className={`${isActive ? 'text-white' : 'text-slate-400 group-hover:text-slate-700'}`}>
+                <span className={`${isActive ? 'text-blue-600' : 'text-slate-400 group-hover:text-slate-700'} transition-colors`}>
                   <Icon size={20} />
                 </span>
                 {isSidebarOpen && (
@@ -93,7 +135,7 @@ const AdminLayout = () => {
               </div>
               <button 
                 onClick={() => setShowLogoutConfirm(true)}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-white px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-950"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-rose-50 px-3 py-2 text-xs font-bold text-rose-600 transition-all hover:bg-rose-100 active:scale-[0.98]"
               >
                 <LogOut size={14} /> Đăng xuất
               </button>
@@ -110,7 +152,7 @@ const AdminLayout = () => {
       </motion.aside>
 
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-        <header className="z-40 flex h-16 items-center justify-between border-b border-slate-200 bg-white px-6">
+        <header className="z-30 flex h-16 items-center justify-between border-b border-slate-200 bg-white px-4 sm:px-6">
           <button 
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             className="rounded-xl p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-950"
@@ -131,7 +173,7 @@ const AdminLayout = () => {
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto bg-transparent p-6 custom-scrollbar">
+        <main className="flex-1 overflow-y-auto bg-transparent p-4 custom-scrollbar sm:p-6">
           <Outlet />
         </main>
       </div>
