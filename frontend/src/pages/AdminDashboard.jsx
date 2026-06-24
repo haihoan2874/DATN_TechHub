@@ -21,10 +21,11 @@ import { resolveApiAssetUrl } from '../config/api';
 
 const RANGE_OPTIONS = [
   { value: 'today', label: 'Hôm nay' },
-  { value: 'week', label: 'Tuần này' },
-  { value: 'month', label: 'Tháng này' },
-  { value: 'quarter', label: 'Quý này' },
-  { value: 'year', label: 'Năm nay' }
+  { value: '7days', label: '7 ngày qua' },
+  { value: '30days', label: '30 ngày qua' },
+  { value: '6months', label: '6 tháng qua' },
+  { value: '12months', label: '12 tháng qua' },
+  { value: 'custom', label: 'Tùy chỉnh' }
 ];
 
 const STATUS_TONES = {
@@ -39,30 +40,71 @@ const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
-  const [selectedRange, setSelectedRange] = useState('month');
+  const [selectedRange, setSelectedRange] = useState('30days');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   const fetchStats = useCallback(async () => {
+    if (selectedRange === 'custom' && (!startDate || !endDate)) {
+      return; // wait for both dates to be selected
+    }
     setLoading(true);
     try {
-      const data = await adminService.getDashboardStats({ range: selectedRange });
+      const params = { range: selectedRange };
+      if (selectedRange === 'custom') {
+        params.startDate = startDate;
+        params.endDate = endDate;
+      }
+      const data = await adminService.getDashboardStats(params);
       setStats(data);
     } catch (err) {
       toast.error('Không thể tải thống kê');
     } finally {
       setLoading(false);
     }
-  }, [selectedRange]);
+  }, [selectedRange, startDate, endDate]);
 
   useEffect(() => {
     fetchStats();
   }, [fetchStats]);
 
   const chartData = useMemo(() => {
-    return (stats?.weeklyRevenue || []).map((item) => ({
+    const data = stats?.weeklyRevenue || [];
+    
+    if (selectedRange === '12months' || selectedRange === '6months') {
+      // Group by month
+      const monthly = data.reduce((acc, item) => {
+        const date = new Date(item.day);
+        const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+        if (!acc[monthKey]) {
+          acc[monthKey] = { label: `Thg ${date.getMonth() + 1}/${date.getFullYear().toString().slice(-2)}`, value: 0 };
+        }
+        acc[monthKey].value += Number(item.value);
+        return acc;
+      }, {});
+      return Object.values(monthly);
+    } 
+    
+    if (selectedRange === 'custom' && data.length > 60) {
+      // Group by month if custom range is long
+      const monthly = data.reduce((acc, item) => {
+        const date = new Date(item.day);
+        const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+        if (!acc[monthKey]) {
+          acc[monthKey] = { label: `Thg ${date.getMonth() + 1}/${date.getFullYear().toString().slice(-2)}`, value: 0 };
+        }
+        acc[monthKey].value += Number(item.value);
+        return acc;
+      }, {});
+      return Object.values(monthly);
+    }
+
+    // Default daily
+    return data.map((item) => ({
       ...item,
       label: new Date(item.day).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' })
     }));
-  }, [stats]);
+  }, [stats, selectedRange]);
 
   const statusTotal = useMemo(() => {
     return (stats?.orderStatuses || []).reduce((total, item) => total + Number(item.count || 0), 0);
@@ -108,25 +150,56 @@ const AdminDashboard = () => {
       />
 
       <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-2 px-1">
+        <div className="flex items-center gap-2 px-1 shrink-0">
           <Clock size={16} className="text-blue-600" />
-          <span className="text-xs font-black uppercase tracking-[0.18em] text-slate-500">Khoảng thời gian</span>
+          <span className="text-xs font-black uppercase tracking-[0.18em] text-slate-500 hidden md:inline">Khoảng thời gian</span>
         </div>
-        <div className="flex w-full gap-1.5 overflow-x-auto rounded-xl bg-slate-50 p-1 sm:w-auto">
-          {RANGE_OPTIONS.map((option) => (
-            <button
-              key={option.value}
-              type="button"
-              onClick={() => setSelectedRange(option.value)}
-              className={`shrink-0 rounded-lg px-3.5 py-2 text-sm font-bold transition-all ${
-                selectedRange === option.value
-                  ? 'bg-slate-950 text-white shadow-sm'
-                  : 'text-slate-500 hover:bg-white hover:text-slate-950'
-              }`}
-            >
-              {option.label}
-            </button>
-          ))}
+        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto overflow-hidden">
+          <div className="flex w-full gap-1.5 overflow-x-auto rounded-xl bg-slate-50 p-1 sm:w-auto scrollbar-hide">
+            {RANGE_OPTIONS.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => setSelectedRange(option.value)}
+                className={`shrink-0 rounded-lg px-3.5 py-2 text-sm font-bold transition-all ${
+                  selectedRange === option.value
+                    ? 'bg-slate-950 text-white shadow-sm'
+                    : 'text-slate-500 hover:bg-white hover:text-slate-950'
+                }`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+
+          {selectedRange === 'custom' && (
+            <div className="flex items-center gap-2 rounded-xl bg-slate-50 p-1 animate-in fade-in slide-in-from-right-4 duration-300">
+              <label className="relative flex items-center cursor-pointer">
+                <input 
+                  type="date" 
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="absolute inset-0 h-full w-full opacity-0 cursor-pointer z-10"
+                />
+                <div className="rounded-lg border-0 bg-white px-3 py-2 text-sm font-bold text-slate-700 shadow-sm ring-1 ring-inset ring-slate-200 min-w-[110px] text-center focus-within:ring-2 focus-within:ring-blue-500">
+                  {startDate ? startDate.split('-').reverse().join('/') : 'Từ ngày'}
+                </div>
+              </label>
+              <span className="text-slate-400 font-bold">-</span>
+              <label className="relative flex items-center cursor-pointer">
+                <input 
+                  type="date" 
+                  value={endDate}
+                  min={startDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className="absolute inset-0 h-full w-full opacity-0 cursor-pointer z-10"
+                />
+                <div className="rounded-lg border-0 bg-white px-3 py-2 text-sm font-bold text-slate-700 shadow-sm ring-1 ring-inset ring-slate-200 min-w-[110px] text-center focus-within:ring-2 focus-within:ring-blue-500">
+                  {endDate ? endDate.split('-').reverse().join('/') : 'Đến ngày'}
+                </div>
+              </label>
+            </div>
+          )}
         </div>
       </div>
 
@@ -155,13 +228,13 @@ const AdminDashboard = () => {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12, fontWeight: 600 }} dy={10} />
+                <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12, fontWeight: 600 }} dy={10} minTickGap={40} />
                 <YAxis hide={true} />
                 <Tooltip 
                   contentStyle={{ backgroundColor: '#1e293b', borderRadius: '12px', border: 'none', color: '#fff' }}
                   itemStyle={{ color: '#fff', fontSize: '14px', fontWeight: 'bold' }}
                   labelStyle={{ color: '#94a3b8', marginBottom: '4px' }}
-                  formatter={(value) => formatCurrency(value)}
+                  formatter={(value) => [formatCurrency(value), 'Doanh thu']}
                 />
                 <Area type="monotone" dataKey="value" stroke="#2563eb" strokeWidth={4} fillOpacity={1} fill="url(#colorValue)" />
               </AreaChart>

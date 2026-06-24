@@ -25,11 +25,11 @@ public class AdminService {
     private final ProductRepository productRepository;
 
     public DashboardStatsResponse getDashboardStats() {
-        return getDashboardStats("month");
+        return getDashboardStats("30days", null, null);
     }
 
-    public DashboardStatsResponse getDashboardStats(String range) {
-        DashboardRange dashboardRange = resolveRange(range);
+    public DashboardStatsResponse getDashboardStats(String range, LocalDate customStartDate, LocalDate customEndDate) {
+        DashboardRange dashboardRange = resolveRange(range, customStartDate, customEndDate);
 
         BigDecimal totalRevenue = orderRepository.sumDeliveredRevenueBetween(
                 dashboardRange.startDate(),
@@ -160,9 +160,9 @@ public class AdminService {
         return LocalDate.parse(value.toString());
     }
 
-    private DashboardRange resolveRange(String range) {
+    private DashboardRange resolveRange(String range, LocalDate customStartDate, LocalDate customEndDate) {
         LocalDate today = LocalDate.now();
-        String normalizedRange = range == null ? "month" : range;
+        String normalizedRange = range == null ? "30days" : range;
         LocalDate startDate;
         String label;
 
@@ -171,27 +171,41 @@ public class AdminService {
                 startDate = today;
                 label = "Hôm nay";
             }
-            case "week" -> {
-                startDate = today.with(java.time.DayOfWeek.MONDAY);
-                label = "Tuần này";
+            case "7days" -> {
+                startDate = today.minusDays(6); // 7 days including today
+                label = "7 ngày qua";
             }
-            case "month" -> {
-                startDate = today.withDayOfMonth(1);
-                label = "Tháng này";
+            case "30days" -> {
+                startDate = today.minusDays(29); // 30 days including today
+                label = "30 ngày qua";
             }
-            case "quarter" -> {
-                int firstMonthOfQuarter = ((today.getMonthValue() - 1) / 3) * 3 + 1;
-                startDate = LocalDate.of(today.getYear(), firstMonthOfQuarter, 1);
-                label = "Quý này";
+            case "6months" -> {
+                startDate = today.minusMonths(6).plusDays(1);
+                label = "6 tháng qua";
             }
-            case "year" -> {
-                startDate = LocalDate.of(today.getYear(), 1, 1);
-                label = "Năm nay";
+            case "12months" -> {
+                startDate = today.minusMonths(12).plusDays(1);
+                label = "12 tháng qua";
+            }
+            case "custom" -> {
+                if (customStartDate != null && customEndDate != null) {
+                    return new DashboardRange(
+                            "custom",
+                            "Tùy chỉnh",
+                            customStartDate.atStartOfDay(),
+                            customEndDate.atTime(LocalTime.MAX)
+                    );
+                } else {
+                    // Fallback if dates are missing
+                    normalizedRange = "30days";
+                    startDate = today.minusDays(29);
+                    label = "30 ngày qua";
+                }
             }
             default -> {
-                normalizedRange = "month";
-                startDate = today.withDayOfMonth(1);
-                label = "Tháng này";
+                normalizedRange = "30days";
+                startDate = today.minusDays(29);
+                label = "30 ngày qua";
             }
         }
 

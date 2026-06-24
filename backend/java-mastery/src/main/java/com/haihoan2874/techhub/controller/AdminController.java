@@ -33,9 +33,11 @@ public class AdminController {
     @Operation(summary = "Get dashboard statistics")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<DashboardStatsResponse> getDashboardStats(
-            @RequestParam(value = "range", defaultValue = "month") String range
+            @RequestParam(value = "range", defaultValue = "month") String range,
+            @RequestParam(value = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(value = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
     ) {
-        return ResponseEntity.ok(adminService.getDashboardStats(range));
+        return ResponseEntity.ok(adminService.getDashboardStats(range, startDate, endDate));
     }
 
     @GetMapping("/reports/orders/export")
