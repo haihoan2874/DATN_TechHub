@@ -70,31 +70,31 @@ const AIChatbot = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.2 }}
-            className={`flex flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_30px_100px_-15px_rgba(15,23,42,0.5)] ${
+            className={`flex flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_30px_100px_-15px_rgba(15,23,42,0.5)] transition-all duration-300 ${
               isMinimized
-                ? 'h-16 w-full sm:w-80'
+                ? 'h-auto w-full sm:w-[360px]'
                 : 'h-[min(580px,calc(100vh-100px))] w-full sm:h-[620px] sm:w-[420px]'
             }`}
           >
             {/* Header */}
-            <div className="shrink-0 border-b border-slate-900 bg-slate-950 px-5 py-4 text-white">
+            <div className="shrink-0 bg-slate-950 px-6 py-4 text-white">
               <div className="flex items-center justify-between">
-                <div className="flex min-w-0 items-center gap-3.5">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] bg-slate-900 border border-slate-800 shadow-inner overflow-visible">
-                    <img src="/logo_transparent.png" alt="S-LIFE AI" className="h-full w-full object-contain scale-[1.35] drop-shadow-[0_0_8px_rgba(255,255,255,0.15)]" />
+                <div className="flex min-w-0 items-center gap-4">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[18px] bg-slate-900 border border-slate-800 shadow-inner overflow-hidden p-1.5">
+                    <img src="/logo_transparent.png" alt="S-LIFE AI" className="h-full w-full object-contain scale-110 drop-shadow-sm" />
                   </div>
                   <div className="min-w-0">
-                    <h3 className="truncate text-base font-extrabold uppercase tracking-widest text-white">S-Life AI</h3>
+                    <h3 className="truncate text-[15px] font-extrabold uppercase tracking-wide text-white">S-Life AI</h3>
                     <div className="mt-1 flex items-center gap-2">
                       <span className="relative flex h-2 w-2">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                       </span>
-                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Đang hỗ trợ</span>
+                      <span className="text-[11px] font-bold uppercase tracking-widest text-emerald-400">Đang hỗ trợ</span>
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={() => setIsMinimized(!isMinimized)}
