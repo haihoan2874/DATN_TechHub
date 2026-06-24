@@ -33,7 +33,6 @@ Thumbs.db
 
 # Environment
 # AI Agent & Skills Configuration (Local only)
-.agent/
 .agents/
 skills/
 .gsd/
@@ -45,7 +44,6 @@ skills-lock.json
 
 # Gemini/Antigravity Metadata
 .gemini/
-.agent/
 
 # Data Crawler
 S-Life-Crawler/
@@ -58,6 +56,7 @@ backend/java-mastery/uploads/
 # Unwanted Documents
 /docs/
 .claude/
+.mcp.json
 *.dump
 *.cjs
 *.sql
