@@ -35,7 +35,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
                 p.description,
                 p.price,
                 p.imageUrl,
-                COALESCE((SELECT i.quantityAvailable FROM Inventory i WHERE i.productId = p.id), 0),
+                COALESCE(i.quantityAvailable, 0),
                 p.isActive,
                 p.specs,
                 p.features,
@@ -44,18 +44,21 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
                 p.createdBy,
                 p.updatedAt,
                 p.updatedBy,
-                (SELECT COALESCE(AVG(r.rating), 5.0) FROM Review r WHERE r.product.id = p.id),
-                (SELECT CAST(COUNT(r.id) AS integer) FROM Review r WHERE r.product.id = p.id)
+                COALESCE(AVG(r.rating), 5.0),
+                CAST(COUNT(r.id) AS integer)
             )
             FROM Product p
             JOIN Category c ON p.categoryId = c.id
             LEFT JOIN Brand b ON p.brandId = b.id
+            LEFT JOIN Inventory i ON i.productId = p.id
+            LEFT JOIN Review r ON r.product.id = p.id
             WHERE (:#{#filter.categoryId} IS NULL OR p.categoryId = :#{#filter.categoryId})
             AND (:#{#filter.brandId} IS NULL OR p.brandId = :#{#filter.brandId})
             AND (:#{#filter.name} IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :#{#filter.name},'%')))
             AND (:#{#filter.minPrice} IS NULL OR p.price >= :#{#filter.minPrice})
             AND (:#{#filter.maxPrice} IS NULL OR p.price <= :#{#filter.maxPrice})
             AND (:#{#filter.isActive} IS NULL OR p.isActive = :#{#filter.isActive})
+            GROUP BY p, c, b, i
             """,
             countQuery = """
                     SELECT COUNT(p)
@@ -86,7 +89,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
                         p.description,
                         p.price,
                         p.imageUrl,
-                        COALESCE((SELECT i.quantityAvailable FROM Inventory i WHERE i.productId = p.id), 0),
+                        COALESCE(i.quantityAvailable, 0),
                         p.isActive,
                         p.specs,
                         p.features,
@@ -95,14 +98,17 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
                         p.createdBy,
                         p.updatedAt,
                         p.updatedBy,
-                        (SELECT COALESCE(AVG(r.rating), 5.0) FROM Review r WHERE r.product.id = p.id),
-                        (SELECT CAST(COUNT(r.id) AS integer) FROM Review r WHERE r.product.id = p.id)
+                        COALESCE(AVG(r.rating), 5.0),
+                        CAST(COUNT(r.id) AS integer)
                         )
                         FROM Product p
                         JOIN Category c ON p.categoryId=c.id
                         LEFT JOIN Brand b ON p.brandId=b.id
+                        LEFT JOIN Inventory i ON i.productId = p.id
+                        LEFT JOIN Review r ON r.product.id = p.id
                         WHERE (:columnName = 'id' AND CAST(p.id AS string ) = :value )
                         OR (:columnName = 'slug' AND p.slug = :value)
+                        GROUP BY p, c, b, i
             """)
     Optional<ProductResponse> findDetailProductByCondition(@Param("columnName") String columnName, @Param("value") String value);
 
