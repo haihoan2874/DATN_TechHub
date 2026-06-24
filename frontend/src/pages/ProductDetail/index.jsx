@@ -53,13 +53,25 @@ const ProductDetail = () => {
           setActiveImage(0);
 
           if (productData.categoryId) {
-            const related = await productService.getAllProducts({
+            let related = await productService.getAllProducts({
               categoryId: productData.categoryId,
               pageNo: 0,
-              pageSize: 4
+              pageSize: 5
             });
-            const relatedItems = related.contents || related.data?.contents || related.content || related.data?.content || [];
-            setRelatedProducts(relatedItems.filter((item) => item.id !== productData.id));
+            let relatedItems = related.contents || related.data?.contents || related.content || related.data?.content || [];
+            let filtered = relatedItems.filter((item) => item.id !== productData.id);
+
+            // Fallback: Nếu không có sản phẩm cùng danh mục nào (chỉ có mỗi sản phẩm hiện tại)
+            if (filtered.length === 0) {
+              const anyProducts = await productService.getAllProducts({
+                pageNo: 0,
+                pageSize: 5
+              });
+              const anyItems = anyProducts.contents || anyProducts.data?.contents || anyProducts.content || anyProducts.data?.content || [];
+              filtered = anyItems.filter((item) => item.id !== productData.id);
+            }
+            
+            setRelatedProducts(filtered.slice(0, 4));
           }
         }
       } catch (error) {
@@ -167,14 +179,16 @@ const ProductDetail = () => {
         </nav>
 
         <section className="mb-5 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-          <div className="grid gap-0 lg:grid-cols-[minmax(420px,0.9fr)_minmax(0,1.1fr)]">
-            <div className="border-b border-slate-100 p-3 sm:p-5 lg:border-b-0 lg:border-r">
-              <ProductGallery
-                images={images}
-                activeImage={activeImage}
-                setActiveImage={setActiveImage}
-                productName={product.name}
-              />
+          <div className="grid gap-0 lg:grid-cols-[400px_1fr] xl:grid-cols-[450px_1fr]">
+            <div className="border-b border-slate-100 p-4 sm:p-5 lg:border-b-0 lg:border-r">
+              <div className="sticky top-24">
+                <ProductGallery
+                  images={images}
+                  activeImage={activeImage}
+                  setActiveImage={setActiveImage}
+                  productName={product.name}
+                />
+              </div>
             </div>
 
             <div className="p-4 sm:p-6">

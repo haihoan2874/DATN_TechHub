@@ -7,6 +7,9 @@ import { formatDate } from '../../../utils/formatters';
 const ProductReviews = ({ productId, averageRating, reviewCount }) => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showAllReviews, setShowAllReviews] = useState(false);
+
+  const displayedReviews = showAllReviews ? reviews : reviews.slice(0, 3);
 
   useEffect(() => {
     if (!productId) return;
@@ -57,7 +60,7 @@ const ProductReviews = ({ productId, averageRating, reviewCount }) => {
           </div>
         ) : reviews.length > 0 ? (
           <div className="space-y-5">
-            {reviews.map((review) => (
+            {displayedReviews.map((review) => (
               <article key={review.id} className="border-b border-slate-100 pb-5 last:border-0 last:pb-0">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div className="flex items-start gap-3">
@@ -110,6 +113,17 @@ const ProductReviews = ({ productId, averageRating, reviewCount }) => {
                 )}
               </article>
             ))}
+
+            {reviews.length > 3 && (
+              <div className="mt-6 text-center">
+                <button
+                  onClick={() => setShowAllReviews(!showAllReviews)}
+                  className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-8 py-3 text-sm font-bold text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:-translate-y-0.5"
+                >
+                  {showAllReviews ? 'Thu gọn' : `Xem thêm ${reviews.length - 3} đánh giá`}
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           <EmptyState
