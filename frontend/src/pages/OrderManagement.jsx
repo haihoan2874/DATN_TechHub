@@ -41,7 +41,7 @@ const tableColumns = [
 
 const statusToneMap = {
   PENDING: 'amber', PROCESSING: 'blue',
-  SHIPPED: 'purple', DELIVERED: 'green', CANCELLED: 'red'
+  SHIPPED: 'teal', DELIVERED: 'green', CANCELLED: 'red'
 };
 
 // ─── Shipping Label Component (dùng khi in) ───

@@ -9,8 +9,9 @@ function FeaturedSection({ products, loading }) {
   const sectionRef = useRef();
 
   useGSAP(() => {
+    let anim;
     if (!loading && products.length > 0) {
-      gsap.fromTo(".featured-card", 
+      anim = gsap.fromTo(".featured-card", 
         { y: 40, opacity: 0 },
         {
           scrollTrigger: {
@@ -27,6 +28,7 @@ function FeaturedSection({ products, loading }) {
         }
       );
     }
+    return () => { if (anim) anim.revert(); };
   }, { scope: sectionRef, dependencies: [loading, products] });
 
   return (

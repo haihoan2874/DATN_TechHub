@@ -426,7 +426,7 @@ const StockImportManagement = () => {
         </div>
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-purple-600">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-100 text-teal-600">
               <DollarSign size={24} />
             </div>
             <div>

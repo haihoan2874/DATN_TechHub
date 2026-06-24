@@ -29,7 +29,7 @@ const RANGE_OPTIONS = [
 
 const STATUS_TONES = {
   PENDING: 'bg-amber-500',
-  PROCESSING: 'bg-violet-500',
+  PROCESSING: 'bg-teal-500',
   SHIPPED: 'bg-sky-500',
   DELIVERED: 'bg-emerald-500',
   CANCELLED: 'bg-rose-500'

@@ -34,6 +34,8 @@ function Hero() {
       yoyo: true,
       ease: "sine.inOut"
     });
+
+    return () => tl.revert();
   }, { scope: containerRef });
 
   return (
