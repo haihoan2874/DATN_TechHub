@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   ArrowRight,
@@ -49,17 +49,21 @@ const Orders = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const toastTriggered = useRef(false);
+
   // Xử lý kết quả thanh toán VNPay redirect về
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const paymentStatus = params.get('payment');
-    if (paymentStatus === 'success') {
-      toast.success('Thanh toán VNPay thành công! Đơn hàng đang được xử lý.', { duration: 5000 });
-    } else if (paymentStatus === 'failed') {
-      toast.error('Thanh toán VNPay thất bại hoặc bị hủy. Vui lòng thử lại.', { duration: 5000 });
-    }
-    // Dọn query param khỏi URL để không hiển thị lại khi refresh
-    if (paymentStatus) {
+    
+    if (paymentStatus && !toastTriggered.current) {
+      toastTriggered.current = true; // Đánh dấu là đã hiện toast để không bị lặp đúp trong StrictMode
+      if (paymentStatus === 'success') {
+        toast.success('Thanh toán VNPay thành công! Đơn hàng đang được xử lý.', { duration: 5000 });
+      } else if (paymentStatus === 'failed') {
+        toast.error('Thanh toán VNPay thất bại hoặc bị hủy. Vui lòng thử lại.', { duration: 5000 });
+      }
+      // Dọn query param khỏi URL để không hiển thị lại khi refresh
       navigate('/orders', { replace: true });
     }
   }, [location.search, navigate]);

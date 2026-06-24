@@ -294,6 +294,23 @@ public class OrderService {
     }
 
     @Transactional
+    public void processPaymentFailed(String orderNumber) {
+        log.info("Processing failed payment for order: {}", orderNumber);
+        Order order = orderRepository.findByOrderNumber(orderNumber).orElse(null);
+        if (order == null) {
+            log.warn("Order not found on payment fail: {}", orderNumber);
+            return;
+        }
+
+        if (order.getStatus() == OrderStatus.PENDING) {
+            order.setStatus(OrderStatus.CANCELLED);
+            orderRepository.save(order);
+            restoreCancelledOrderStock(order);
+            log.info("Order {} marked as CANCELLED due to failed payment and inventory restored", orderNumber);
+        }
+    }
+
+    @Transactional
     public Map<String, String> processVnPayIpn(Map<String, String> queryParams) {
         try {
             if (!paymentService.verifySignature(queryParams)) {

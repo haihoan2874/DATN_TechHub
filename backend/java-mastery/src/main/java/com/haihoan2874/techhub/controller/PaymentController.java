@@ -82,7 +82,15 @@ public class PaymentController {
             // Redirect về trang đơn hàng với thông báo thành công
             redirectUrl = frontendUrl + "/orders?payment=success&order=" + orderNumber;
         } else {
-            log.warn("VNPay thanh toán THẤT BẠI hoặc chữ ký không hợp lệ cho Ref: {}", queryParams.get("vnp_TxnRef"));
+            String orderNumber = queryParams.get("vnp_TxnRef");
+            log.warn("VNPay thanh toán THẤT BẠI hoặc chữ ký không hợp lệ cho Ref: {}", orderNumber);
+            if (orderNumber != null) {
+                try {
+                    orderService.processPaymentFailed(orderNumber);
+                } catch (Exception e) {
+                    log.error("Failed to auto-cancel order on payment fail", e);
+                }
+            }
             // Redirect về trang đơn hàng với thông báo thất bại
             redirectUrl = frontendUrl + "/orders?payment=failed";
         }
