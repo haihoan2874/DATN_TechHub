@@ -217,9 +217,13 @@ const AIChatbot = () => {
 
                       {isLoading && (
                         <div className="flex justify-start">
-                          <div className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-3 text-xs font-bold text-slate-500 shadow-sm">
-                            <Loader2 size={14} className="animate-spin text-blue-600" />
-                            S-Life AI đang phân tích nhu cầu...
+                          <div className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+                            <div className="flex gap-1.5 items-center">
+                              <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                              <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                              <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                            </div>
+                            <span className="text-xs font-bold text-slate-500 ml-1">S-Life AI đang phân tích...</span>
                           </div>
                         </div>
                       )}

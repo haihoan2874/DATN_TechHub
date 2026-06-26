@@ -99,10 +99,16 @@ const Cart = () => {
     return (
       <div className="min-h-[70vh] bg-slate-50 py-8">
         <div className="container mx-auto flex flex-col items-center justify-center px-4 py-14 text-center sm:px-6">
-          <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-400">
-            <ShoppingBag size={30} />
+          <div className="relative mb-8">
+            <div className="absolute -inset-4 rounded-full bg-blue-100/50 animate-pulse blur-xl"></div>
+            <div className="relative flex h-24 w-24 items-center justify-center rounded-[2rem] bg-gradient-to-br from-blue-50 to-indigo-50 border border-white shadow-xl shadow-blue-900/5 rotate-[-5deg] transition-transform hover:rotate-0">
+              <ShoppingBag size={40} className="text-blue-600 drop-shadow-sm" />
+            </div>
+            <div className="absolute -bottom-2 -right-2 flex h-8 w-8 animate-bounce items-center justify-center rounded-full bg-amber-400 font-black text-white shadow-lg text-xs">
+              0
+            </div>
           </div>
-          <h1 className="mb-3 text-2xl font-bold text-slate-900">Giỏ hàng đang trống</h1>
+          <h1 className="mb-3 text-2xl font-black uppercase tracking-tight text-slate-900">Giỏ hàng đang trống</h1>
           <p className="mb-8 max-w-md text-sm leading-6 text-slate-500">
             Bạn chưa có sản phẩm nào trong giỏ hàng. Hãy chọn sản phẩm phù hợp rồi quay lại thanh toán.
           </p>

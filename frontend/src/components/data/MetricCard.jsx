@@ -11,7 +11,7 @@ const MetricCard = ({ label, value, icon: Icon, tone = 'blue' }) => {
   }[tone] || 'bg-slate-100 text-slate-700';
 
   return (
-    <div className="glass-card p-5">
+    <div className="glass-card p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-slate-200/50">
       <div className="flex items-center gap-4">
         {Icon && (
           <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${toneClass}`}>

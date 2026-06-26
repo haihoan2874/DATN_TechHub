@@ -587,6 +587,21 @@ const Checkout = () => {
           </div>
         </form>
       </Modal>
+      
+      {isSubmitting && formData.paymentMethod === 'VNPAY' && status.type === 'success' && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-950/40 backdrop-blur-sm transition-all">
+          <div className="flex flex-col items-center gap-5 rounded-3xl bg-white p-8 shadow-2xl">
+            <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl bg-blue-50">
+              <div className="absolute h-12 w-12 animate-ping rounded-full bg-blue-400 opacity-20"></div>
+              <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-600/30 border-t-blue-600"></div>
+            </div>
+            <div className="text-center">
+              <h3 className="text-lg font-black uppercase tracking-wide text-slate-900">Kết nối VNPay</h3>
+              <p className="mt-1 text-xs font-bold text-slate-500">Vui lòng không đóng trình duyệt...</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
