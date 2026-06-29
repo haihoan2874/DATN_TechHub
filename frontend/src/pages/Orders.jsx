@@ -304,7 +304,7 @@ const Orders = () => {
                   </div>
 
                   <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
-                    <div className="space-y-3">
+                    <div className="space-y-3 min-w-0">
                       {order.orderItems?.map((item, index) => (
                         <div key={`${order.id}-${item.productId || index}`} className="flex items-center gap-3">
                           <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-100 bg-slate-50">
