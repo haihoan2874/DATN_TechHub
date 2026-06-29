@@ -63,7 +63,7 @@ const AIChatbot = () => {
   const handleSend = () => sendMessage(input);
 
   return (
-    <div className="fixed inset-x-3 bottom-3 z-[9999] flex justify-end sm:inset-x-auto sm:bottom-8 sm:right-8">
+    <div className="fixed inset-x-3 bottom-3 z-[90] flex justify-end sm:inset-x-auto sm:bottom-8 sm:right-8">
       <AnimatePresence>
         {isOpen && (
           <motion.div
