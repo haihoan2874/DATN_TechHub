@@ -285,9 +285,9 @@ const Shop = () => {
             <>
                 <div
                 onClick={() => setIsFilterOpen(false)}
-                className="fixed inset-0 z-[60] bg-slate-900/50 lg:hidden"
+                className="fixed inset-0 z-[110] bg-slate-900/50 lg:hidden"
               />
-              <aside className="fixed bottom-0 left-0 top-0 z-[70] flex w-[90%] max-w-sm flex-col overflow-y-auto bg-white p-5 lg:hidden">
+              <aside className="fixed bottom-0 left-0 top-0 z-[120] flex w-[90%] max-w-sm flex-col overflow-y-auto bg-white p-5 lg:hidden">
                 <div className="mb-6 flex items-center justify-between">
                   <h2 className="text-xl font-bold text-slate-950">Bộ lọc S-LIFE</h2>
                     <button type="button" aria-label="Đóng bộ lọc" onClick={() => setIsFilterOpen(false)} className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:text-slate-900">
