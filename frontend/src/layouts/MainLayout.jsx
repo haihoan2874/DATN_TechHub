@@ -16,7 +16,7 @@ const MainLayout = () => {
   return (
     <div className="relative flex min-h-screen flex-col bg-transparent">
       <Navbar />
-      <main className="flex-grow">
+      <main className="flex-grow pb-[5.5rem] sm:pb-0">
         <Outlet />
       </main>
       <Footer />
