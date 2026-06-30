@@ -57,9 +57,9 @@ const ProductTable = ({ products, loading, footer, onEdit, onDelete, sortConfig,
                         <Package size={22} className="text-slate-300" />
                       )}
                     </div>
-                    <div className="min-w-0">
-                      <div className="truncate text-sm font-semibold text-slate-950">{product.name}</div>
-                      <div className="truncate font-mono text-xs text-slate-400">{product.slug}</div>
+                    <div className="min-w-0 max-w-[200px] xl:max-w-xs">
+                      <div className="truncate text-sm font-semibold text-slate-950" title={product.name}>{product.name}</div>
+                      <div className="truncate font-mono text-xs text-slate-400" title={product.slug}>{product.slug}</div>
                     </div>
                   </div>
                 </td>

@@ -23,10 +23,10 @@ const ProductFeatures = ({ features, description }) => {
     const timer = setTimeout(checkHeight, 500);
     return () => clearTimeout(timer);
   }, [features, description]);
-  const { textFeatures, contentBlocks } = useMemo(() => {
+  const { textFeatures, contentBlocks, richTextHtml } = useMemo(() => {
     try {
       const parsed = typeof features === 'string' ? JSON.parse(features) : (features || []);
-      if (!Array.isArray(parsed)) return { textFeatures: [], contentBlocks: [] };
+      if (!Array.isArray(parsed)) return { textFeatures: [], contentBlocks: [], richTextHtml: '' };
 
       return parsed.reduce((acc, block) => {
         if (!block) return acc;
@@ -34,16 +34,21 @@ const ProductFeatures = ({ features, description }) => {
           acc.textFeatures.push(block);
           return acc;
         }
+        if (block.type === 'rich_text') {
+          acc.richTextHtml = block.content;
+          return acc;
+        }
         if (block.type === 'gallery') return acc;
+        
         acc.contentBlocks.push(block);
         return acc;
-      }, { textFeatures: [], contentBlocks: [] });
+      }, { textFeatures: [], contentBlocks: [], richTextHtml: '' });
     } catch (e) {
-      return { textFeatures: [], contentBlocks: [] };
+      return { textFeatures: [], contentBlocks: [], richTextHtml: '' };
     }
   }, [features]);
 
-  if (!textFeatures.length && !contentBlocks.length && !description) return null;
+  if (!textFeatures.length && !contentBlocks.length && !description && !richTextHtml) return null;
 
   return (
     <section id="product-description" className="scroll-mt-28 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
@@ -62,7 +67,16 @@ const ProductFeatures = ({ features, description }) => {
         className={`relative ${!isLongContent || showMoreFeatures ? '' : 'max-h-[600px] overflow-hidden'}`}
       >
         <div className="space-y-8 p-5 sm:p-7">
-          {description && (
+          {richTextHtml && (
+            <div className="rounded-2xl border border-slate-100 bg-white p-4 sm:p-5">
+              <div
+                className="max-w-none text-sm leading-7 text-slate-700 sm:text-base [&>p]:mb-4 [&>h2]:mb-3 [&>h2]:text-xl [&>h2]:font-bold [&>h2]:text-slate-950 [&>h3]:mb-3 [&>h3]:text-lg [&>h3]:font-bold [&>h3]:text-slate-950 [&>img]:my-4 [&>img]:rounded-xl"
+                dangerouslySetInnerHTML={{ __html: richTextHtml }}
+              />
+            </div>
+          )}
+
+          {!richTextHtml && description && (
             <div className="rounded-2xl border border-slate-100 bg-white p-4 sm:p-5">
               <div
                 className="max-w-none text-sm leading-7 text-slate-700 sm:text-base [&>p]:mb-4 [&>h2]:mb-3 [&>h2]:text-xl [&>h2]:font-bold [&>h2]:text-slate-950 [&>h3]:mb-3 [&>h3]:text-lg [&>h3]:font-bold [&>h3]:text-slate-950 [&>img]:my-4 [&>img]:rounded-xl"

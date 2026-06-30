@@ -2,11 +2,14 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Plus, Trash2, GripVertical } from 'lucide-react';
 
 const SpecsEditor = ({ specs, setSpecs }) => {
-  // Convert object to array for safe editing without losing focus
   const [specItems, setSpecItems] = useState([]);
+  const [lastSavedSpecs, setLastSavedSpecs] = useState('');
 
-  // Initialize only once or when specs completely changes externally
+  // Sync with incoming specs from parent (only when it's an external change, like opening the modal)
   useEffect(() => {
+    const specsStr = typeof specs === 'object' ? JSON.stringify(specs) : String(specs);
+    if (specsStr === lastSavedSpecs) return; // Ignore updates that we triggered ourselves
+
     let parsed = {};
     try {
       parsed = typeof specs === 'string' ? JSON.parse(specs) : specs || {};
@@ -14,7 +17,6 @@ const SpecsEditor = ({ specs, setSpecs }) => {
       parsed = {};
     }
     
-    // Flatten if it was grouped
     const flattened = {};
     Object.entries(parsed).forEach(([k, v]) => {
       if (typeof v === 'object' && v !== null && !Array.isArray(v)) {
@@ -32,9 +34,9 @@ const SpecsEditor = ({ specs, setSpecs }) => {
       value: String(v)
     }));
     
-    // Only update if it's empty to prevent overriding during active editing
-    setSpecItems(prev => prev.length === 0 && items.length > 0 ? items : prev);
-  }, []);
+    setSpecItems(items);
+    setLastSavedSpecs(specsStr);
+  }, [specs]);
 
   const notifyChange = useCallback((items) => {
     const newSpecsObj = {};
@@ -43,6 +45,7 @@ const SpecsEditor = ({ specs, setSpecs }) => {
         newSpecsObj[item.keyName.trim()] = item.value;
       }
     });
+    setLastSavedSpecs(JSON.stringify(newSpecsObj)); // Mark this as our own update
     setSpecs(newSpecsObj);
   }, [setSpecs]);
 
@@ -81,8 +84,8 @@ const SpecsEditor = ({ specs, setSpecs }) => {
           </div>
         ) : (
           specItems.map((item) => (
-            <div key={item.id} className="flex items-center gap-3 group">
-              <div className="cursor-grab text-slate-300 hover:text-slate-500">
+            <div key={item.id} className="flex items-start gap-3 group">
+              <div className="cursor-grab text-slate-300 hover:text-slate-500 mt-3">
                 <GripVertical size={16} />
               </div>
               <input 
@@ -91,8 +94,9 @@ const SpecsEditor = ({ specs, setSpecs }) => {
                 onChange={(e) => updateItem(item.id, 'keyName', e.target.value)}
                 placeholder="VD: Kích thước màn hình"
               />
-              <input 
-                className="form-input flex-1 bg-slate-50 focus:bg-white transition-colors"
+              <textarea 
+                className="form-input flex-1 bg-slate-50 focus:bg-white transition-colors min-h-[42px] py-2.5 resize-y"
+                rows="1"
                 value={item.value}
                 onChange={(e) => updateItem(item.id, 'value', e.target.value)}
                 placeholder="VD: 6.7 inch"
@@ -101,7 +105,7 @@ const SpecsEditor = ({ specs, setSpecs }) => {
                 type="button"
                 onClick={() => removeItem(item.id)}
                 aria-label="Xóa"
-                className="p-2 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
+                className="mt-1 p-2 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
               >
                 <Trash2 size={18} />
               </button>

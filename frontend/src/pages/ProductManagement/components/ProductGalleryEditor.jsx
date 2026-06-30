@@ -63,6 +63,27 @@ const ProductGalleryEditor = ({ images = [], onChange }) => {
 
       <input ref={inputRef} type="file" accept="image/*" multiple onChange={handleFiles} className="hidden" />
 
+      <div className="relative mb-2">
+         <input 
+           type="text"
+           placeholder="Hoặc dán URL hình ảnh vào đây và nhấn Enter..."
+           className="form-input pr-10 font-mono text-xs w-full border-slate-300 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 transition-all bg-white"
+           onKeyDown={(e) => {
+             if (e.key === 'Enter') {
+               e.preventDefault();
+               const val = e.target.value.trim();
+               if (val) {
+                 onChange([...images, val]);
+                 e.target.value = '';
+               }
+             }
+           }}
+         />
+         <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">
+           <ImagePlus size={16} />
+         </div>
+      </div>
+
       {images.length > 0 ? (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
           {images.map((image, index) => (

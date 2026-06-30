@@ -29,6 +29,7 @@ const ProductManagement = () => {
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [brandFilter, setBrandFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState({ key: 'updatedAt', direction: 'desc' });
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
@@ -56,6 +57,7 @@ const ProductManagement = () => {
         name: debouncedSearchTerm.trim() || null,
         categoryId: categoryFilter === 'all' ? null : categoryFilter,
         brandId: brandFilter === 'all' ? null : brandFilter,
+        isActive: statusFilter === 'all' ? null : (statusFilter === 'active'),
         sortBy: sortConfig.key,
         sortOrder: sortConfig.direction
       });
@@ -69,7 +71,7 @@ const ProductManagement = () => {
     } finally {
       setLoading(false);
     }
-  }, [brandFilter, categoryFilter, currentPage, debouncedSearchTerm, sortConfig]);
+  }, [brandFilter, categoryFilter, statusFilter, currentPage, debouncedSearchTerm, sortConfig]);
 
   const refreshData = useCallback(() => {
     fetchFilters();
@@ -158,8 +160,8 @@ const ProductManagement = () => {
       </div>
 
       <div className="mb-4 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <div className="relative flex-1 lg:max-w-md">
+        <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
+          <div className="relative flex-1 xl:max-w-md">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
             <input
               type="text"
@@ -188,7 +190,7 @@ const ProductManagement = () => {
                 setCategoryFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="h-12 w-48 rounded-xl border border-slate-300 bg-white px-3 text-sm font-bold text-slate-700 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
+              className="h-12 w-full sm:w-auto min-w-[140px] flex-1 rounded-xl border border-slate-300 bg-white px-3 text-sm font-bold text-slate-700 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
             >
               <option value="all">Tất cả danh mục</option>
               {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -199,12 +201,24 @@ const ProductManagement = () => {
                 setBrandFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="h-12 w-40 rounded-xl border border-slate-300 bg-white px-3 text-sm font-bold text-slate-700 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
+              className="h-12 w-full sm:w-auto min-w-[140px] flex-1 rounded-xl border border-slate-300 bg-white px-3 text-sm font-bold text-slate-700 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
             >
               <option value="all">Tất cả thương hiệu</option>
               {brands.map(brand => <option key={brand.id} value={brand.id}>{brand.name}</option>)}
             </select>
-            <button type="button" onClick={refreshData} aria-label="Tải lại danh sách sản phẩm" className="flex h-12 w-12 items-center justify-center rounded-xl border border-slate-300 bg-white text-slate-500 hover:bg-slate-50 hover:text-slate-900">
+            <select
+              value={statusFilter}
+              onChange={(e) => {
+                setStatusFilter(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="h-12 w-full sm:w-auto min-w-[130px] flex-1 rounded-xl border border-slate-300 bg-white px-3 text-sm font-bold text-slate-700 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
+            >
+              <option value="all">Mọi trạng thái</option>
+              <option value="active">Đang bán</option>
+              <option value="inactive">Đã ẩn</option>
+            </select>
+            <button type="button" onClick={refreshData} aria-label="Tải lại danh sách sản phẩm" className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-slate-300 bg-white text-slate-500 hover:bg-slate-50 hover:text-slate-900">
               <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
             </button>
           </div>
