@@ -21,8 +21,13 @@ function Home() {
         ]);
 
         if (productResponse?.contents) {
-          // Mẹo Frontend: Lấy 50 sản phẩm, sort theo số lượng review (coi như là mua nhiều nhất) rồi lấy 4 cái đầu
           const popularProducts = [...productResponse.contents]
+            // Loại bỏ các món phụ kiện ra khỏi danh sách nổi bật (vd: Strap, Wristband)
+            .filter(p => {
+              const name = (p.name || '').toLowerCase();
+              const cat = (p.categoryName || '').toLowerCase();
+              return !name.includes('strap') && !name.includes('wristband') && !cat.includes('phụ kiện') && !cat.includes('dây đeo');
+            })
             .sort((a, b) => (b.reviewCount || 0) - (a.reviewCount || 0))
             .slice(0, 4);
           setFeaturedProducts(popularProducts);
