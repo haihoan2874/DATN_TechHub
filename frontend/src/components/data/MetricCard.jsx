@@ -14,13 +14,13 @@ const MetricCard = ({ label, value, icon: Icon, tone = 'blue' }) => {
     <div className="glass-card p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-slate-200/50">
       <div className="flex items-center gap-4">
         {Icon && (
-          <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${toneClass}`}>
+          <div className={`shrink-0 flex h-11 w-11 items-center justify-center rounded-xl ${toneClass}`}>
             <Icon size={22} />
           </div>
         )}
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</p>
-          <p className="mt-1 text-2xl font-bold text-slate-950">{value}</p>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-[11px] font-semibold uppercase tracking-wide text-slate-500" title={label}>{label}</p>
+          <p className="mt-1 truncate text-lg lg:text-xl font-bold text-slate-950" title={value}>{value}</p>
         </div>
       </div>
     </div>

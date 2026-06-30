@@ -173,31 +173,21 @@ const AdminDashboard = () => {
           </div>
 
           {selectedRange === 'custom' && (
-            <div className="flex items-center gap-2 rounded-xl bg-slate-50 p-1 animate-in fade-in slide-in-from-right-4 duration-300">
-              <label className="relative flex items-center cursor-pointer">
-                <input 
-                  type="date" 
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  className="absolute inset-0 h-full w-full opacity-0 cursor-pointer z-10"
-                />
-                <div className="rounded-lg border-0 bg-white px-3 py-2 text-sm font-bold text-slate-700 shadow-sm ring-1 ring-inset ring-slate-200 min-w-[110px] text-center focus-within:ring-2 focus-within:ring-blue-500">
-                  {startDate ? startDate.split('-').reverse().join('/') : 'Từ ngày'}
-                </div>
-              </label>
-              <span className="text-slate-400 font-bold">-</span>
-              <label className="relative flex items-center cursor-pointer">
-                <input 
-                  type="date" 
-                  value={endDate}
-                  min={startDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  className="absolute inset-0 h-full w-full opacity-0 cursor-pointer z-10"
-                />
-                <div className="rounded-lg border-0 bg-white px-3 py-2 text-sm font-bold text-slate-700 shadow-sm ring-1 ring-inset ring-slate-200 min-w-[110px] text-center focus-within:ring-2 focus-within:ring-blue-500">
-                  {endDate ? endDate.split('-').reverse().join('/') : 'Đến ngày'}
-                </div>
-              </label>
+            <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 rounded-xl bg-slate-50 p-1 animate-in fade-in slide-in-from-right-4 duration-300">
+              <input 
+                type="date" 
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="rounded-lg border-0 bg-white px-3 py-2 text-sm font-bold text-slate-700 shadow-sm ring-1 ring-inset ring-slate-200 min-w-[130px] text-center focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+              />
+              <span className="text-slate-400 font-bold hidden sm:inline">-</span>
+              <input 
+                type="date" 
+                value={endDate}
+                min={startDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="rounded-lg border-0 bg-white px-3 py-2 text-sm font-bold text-slate-700 shadow-sm ring-1 ring-inset ring-slate-200 min-w-[130px] text-center focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+              />
             </div>
           )}
         </div>
