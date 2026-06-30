@@ -37,8 +37,8 @@ function FeaturedSection({ products, loading }) {
         <div className="mb-6 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end lg:mb-8">
           <div>
             <p className="mb-2.5 text-[13px] font-bold uppercase tracking-widest text-blue-600">Sản phẩm nổi bật</p>
-            <h2 className="mb-3 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl lg:text-[34px]">Được quan tâm nhiều</h2>
-            <p className="text-base leading-relaxed text-slate-500">Những thiết bị được khách hàng tin dùng nhất tuần qua.</p>
+            <h2 className="mb-3 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl lg:text-[34px]">Sản phẩm mới nhất</h2>
+            <p className="text-base leading-relaxed text-slate-500">Những thiết bị công nghệ hiện đại vừa cập bến S-LIFE.</p>
           </div>
           <Link to="/shop" className="group flex items-center gap-2 text-blue-600 font-bold transition-colors hover:text-blue-700">
             <span className="relative pb-1">
