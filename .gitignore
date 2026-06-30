@@ -60,3 +60,4 @@ backend/java-mastery/uploads/
 *.dump
 *.cjs
 *.sql
+.agent/
