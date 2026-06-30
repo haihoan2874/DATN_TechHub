@@ -16,12 +16,16 @@ function Home() {
     const fetchFeatured = async () => {
       try {
         const [productResponse, categoryResponse] = await Promise.all([
-          productService.getAllProducts({ pageSize: 4, isActive: true }),
+          productService.getAllProducts({ pageSize: 50, isActive: true }),
           productService.getCategories()
         ]);
 
         if (productResponse?.contents) {
-          setFeaturedProducts(productResponse.contents);
+          // Mẹo Frontend: Lấy 50 sản phẩm, sort theo số lượng review (coi như là mua nhiều nhất) rồi lấy 4 cái đầu
+          const popularProducts = [...productResponse.contents]
+            .sort((a, b) => (b.reviewCount || 0) - (a.reviewCount || 0))
+            .slice(0, 4);
+          setFeaturedProducts(popularProducts);
         }
         setCategories(categoryResponse?.contents || categoryResponse || []);
       } catch (error) {
