@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 
@@ -36,10 +37,10 @@ const Modal = ({
     full: "max-w-[95vw]"
   };
 
-  return (
+  const modalContent = (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-3 sm:p-5">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-5">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -91,6 +92,9 @@ const Modal = ({
       )}
     </AnimatePresence>
   );
+
+  if (typeof document === 'undefined') return null;
+  return createPortal(modalContent, document.body);
 };
 
 export default Modal;

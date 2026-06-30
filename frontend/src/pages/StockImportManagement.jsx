@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { Plus, RefreshCw, PackagePlus, History, X, Search, CheckCircle2, ChevronLeft, ChevronRight, ArrowUpDown, TrendingUp, Box, DollarSign, Filter } from 'lucide-react';
 import adminService from '../services/adminService';
 import PageShell from '../components/layout/PageShell';
@@ -75,8 +76,8 @@ const ImportModal = ({ products, onClose, onSuccess }) => {
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+  const modalContent = (
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/40 backdrop-blur-md p-4">
       <div className="w-full max-w-lg rounded-2xl bg-white shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
@@ -226,6 +227,9 @@ const ImportModal = ({ products, onClose, onSuccess }) => {
       </div>
     </div>
   );
+
+  if (typeof document === 'undefined') return null;
+  return createPortal(modalContent, document.body);
 };
 
 // ───────── Main Page ─────────
