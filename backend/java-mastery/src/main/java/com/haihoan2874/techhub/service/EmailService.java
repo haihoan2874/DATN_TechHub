@@ -27,6 +27,10 @@ public class EmailService {
 
     @Async
     public void sendEmail(String to, String subject, String content, boolean isHtml) {
+        if (to == null || to.trim().isEmpty() || !to.contains("@")) {
+            log.warn("Invalid email address '{}'. Skipping email sending for subject: {}", to, subject);
+            return;
+        }
         try {
             log.info("Sending email to: {} with subject: {}", to, subject);
             MimeMessage message = mailSender.createMimeMessage();
