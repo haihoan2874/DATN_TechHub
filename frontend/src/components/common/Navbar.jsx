@@ -110,7 +110,8 @@ const Navbar = () => {
         try {
           const response = await productService.getAllProducts({ 
             name: searchQuery,
-            pageSize: 6
+            pageSize: 6,
+            isActive: true
           });
           setSearchResults(response.contents || response.data?.contents || response.content || []);
         } catch (error) {

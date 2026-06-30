@@ -16,7 +16,7 @@ function Home() {
     const fetchFeatured = async () => {
       try {
         const [productResponse, categoryResponse] = await Promise.all([
-          productService.getAllProducts({ pageSize: 4 }),
+          productService.getAllProducts({ pageSize: 4, isActive: true }),
           productService.getCategories()
         ]);
 

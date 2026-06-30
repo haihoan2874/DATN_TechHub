@@ -156,7 +156,8 @@ const Shop = () => {
         sortBy: sortOrder,
         sortOrder: sortDirection,
         pageNo: currentPage,
-        pageSize: PAGE_SIZE
+        pageSize: PAGE_SIZE,
+        isActive: true
       };
 
       const response = await productService.getAllProducts(params);

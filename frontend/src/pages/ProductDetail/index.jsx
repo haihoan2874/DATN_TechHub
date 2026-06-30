@@ -56,7 +56,8 @@ const ProductDetail = () => {
             let related = await productService.getAllProducts({
               categoryId: productData.categoryId,
               pageNo: 0,
-              pageSize: 5
+              pageSize: 5,
+              isActive: true
             });
             let relatedItems = related.contents || related.data?.contents || related.content || related.data?.content || [];
             let filtered = relatedItems.filter((item) => item.id !== productData.id);
@@ -65,7 +66,8 @@ const ProductDetail = () => {
             if (filtered.length === 0) {
               const anyProducts = await productService.getAllProducts({
                 pageNo: 0,
-                pageSize: 5
+                pageSize: 5,
+                isActive: true
               });
               const anyItems = anyProducts.contents || anyProducts.data?.contents || anyProducts.content || anyProducts.data?.content || [];
               filtered = anyItems.filter((item) => item.id !== productData.id);
