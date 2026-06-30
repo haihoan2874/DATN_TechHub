@@ -41,11 +41,15 @@ const ProductCard = ({ product }) => {
           decoding="async"
           className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
         />
-        {stockQuantity <= 5 && stockQuantity > 0 && (
+        {!inStock ? (
+          <div className="absolute left-3 top-3 rounded-full bg-rose-500 px-2.5 py-1 text-[11px] font-semibold text-white">
+            Hết hàng
+          </div>
+        ) : stockQuantity <= 5 ? (
           <div className="absolute left-3 top-3 hidden rounded-full bg-amber-500 px-2.5 py-1 text-[11px] font-semibold text-white sm:block">
             Sắp hết hàng
           </div>
-        )}
+        ) : null}
       </div>
 
       <div className="flex min-w-0 flex-grow flex-col p-3 sm:p-4">

@@ -133,11 +133,11 @@ const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow, ca
             size="lg"
             className="w-full"
             onClick={onBuyNow}
-            icon={Zap}
+            icon={inStock ? Zap : undefined}
             isLoading={cartAction === 'buy'}
             disabled={!inStock || Boolean(cartAction)}
           >
-            Mua ngay
+            {inStock ? 'Mua ngay' : 'Tạm hết hàng'}
           </Button>
         </div>
 
@@ -148,11 +148,11 @@ const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow, ca
             size="lg"
             className="w-full border-slate-300"
             onClick={onAddToCart}
-            icon={ShoppingCart}
+            icon={inStock ? ShoppingCart : undefined}
             isLoading={cartAction === 'add'}
             disabled={!inStock || Boolean(cartAction)}
           >
-            Thêm vào giỏ
+            {inStock ? 'Thêm vào giỏ' : 'Hết hàng'}
           </Button>
           <Button
             variant="ghost"
