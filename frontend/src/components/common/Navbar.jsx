@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, User, Search, Menu, X, ChevronDown, LogOut, Settings, Loader2 } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
@@ -29,7 +29,9 @@ const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
   const [categories, setCategories] = useState([]);
+  const searchContainerRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -72,6 +74,7 @@ const Navbar = () => {
     setIsUserMenuOpen(false);
     setIsLogoutConfirmOpen(false);
     setSearchResults([]);
+    setShowDropdown(false);
   }, [location.pathname]);
 
   useEffect(() => {
@@ -97,6 +100,7 @@ const Navbar = () => {
     if (!keyword) return;
 
     setSearchResults([]);
+    setShowDropdown(false);
     setIsMobileMenuOpen(false);
     setIsUserMenuOpen(false);
     navigate(`/shop?search=${encodeURIComponent(keyword)}`);
@@ -107,6 +111,7 @@ const Navbar = () => {
     const delayDebounceFn = setTimeout(async () => {
       if (searchQuery.trim().length > 1) {
         setIsSearching(true);
+        setShowDropdown(true);
         try {
           const response = await productService.getAllProducts({ 
             name: searchQuery,
@@ -121,11 +126,22 @@ const Navbar = () => {
         }
       } else {
         setSearchResults([]);
+        setShowDropdown(false);
       }
     }, 400);
 
     return () => clearTimeout(delayDebounceFn);
   }, [searchQuery]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   return (
     <>
@@ -186,7 +202,7 @@ const Navbar = () => {
           </div>
 
           {/* 3. Search Pill (Compact) */}
-          <form onSubmit={handleSearchSubmit} className="relative hidden max-w-md flex-grow lg:flex">
+          <form ref={searchContainerRef} onSubmit={handleSearchSubmit} className="relative hidden max-w-md flex-grow lg:flex">
             <Input
               icon={Search}
               placeholder="Tìm sản phẩm…"
@@ -195,6 +211,9 @@ const Navbar = () => {
               className="w-full"
               name="navbarSearch"
               autoComplete="off"
+              onFocus={() => {
+                if (searchQuery.trim().length > 1) setShowDropdown(true);
+              }}
             />
             {isSearching && (
               <div className="absolute right-4 top-1/2 -translate-y-1/2">
@@ -203,7 +222,7 @@ const Navbar = () => {
             )}
             {/* Compact Search Results */}
             <AnimatePresence>
-              {(searchResults.length > 0 || (searchQuery.trim().length > 1 && !isSearching)) && (
+              {showDropdown && (searchResults.length > 0 || (searchQuery.trim().length > 1 && !isSearching)) && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 5 }}
                   className="absolute top-full left-0 right-0 z-[60] mt-3 overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-xl shadow-slate-900/10"
