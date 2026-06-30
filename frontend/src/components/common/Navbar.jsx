@@ -101,6 +101,7 @@ const Navbar = () => {
 
     setSearchResults([]);
     setShowDropdown(false);
+    setSearchQuery('');
     setIsMobileMenuOpen(false);
     setIsUserMenuOpen(false);
     navigate(`/shop?search=${encodeURIComponent(keyword)}`);
