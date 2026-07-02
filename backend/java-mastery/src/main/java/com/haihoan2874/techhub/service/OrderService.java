@@ -515,11 +515,39 @@ public class OrderService {
     }
 
     private void sendOrderEmail(String username, Order order) {
+        String htmlContent = "<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;\">"
+                + "<div style=\"background-color: #0f172a; padding: 20px; text-align: center;\">"
+                + "<h1 style=\"color: #ffffff; margin: 0; font-size: 28px; font-weight: bold;\">S-LIFE</h1>"
+                + "<p style=\"color: #94a3b8; margin: 5px 0 0 0; font-size: 14px;\">Techwear & Smart Healthcare</p>"
+                + "</div>"
+                + "<div style=\"padding: 30px; background-color: #ffffff;\">"
+                + "<h2 style=\"color: #0f172a; margin-top: 0; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;\">Xác nhận đơn hàng</h2>"
+                + "<p style=\"color: #334155; line-height: 1.6;\">Xin chào <strong>" + username + "</strong>,</p>"
+                + "<p style=\"color: #334155; line-height: 1.6;\">Cảm ơn bạn đã tin tưởng chọn S-Life. Đơn hàng của bạn đã được hệ thống ghi nhận thành công và đang được chuẩn bị.</p>"
+                + "<div style=\"background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 25px 0; border: 1px solid #e2e8f0;\">"
+                + "<h3 style=\"margin-top: 0; color: #0f172a; font-size: 16px;\">Thông tin thanh toán</h3>"
+                + "<table style=\"width: 100%; border-collapse: collapse;\">"
+                + "<tr><td style=\"padding: 8px 0; color: #64748b;\">Mã đơn hàng:</td><td style=\"padding: 8px 0; text-align: right; font-weight: bold; color: #0f172a;\">#" + order.getOrderNumber() + "</td></tr>"
+                + "<tr><td style=\"padding: 8px 0; color: #64748b;\">Phương thức:</td><td style=\"padding: 8px 0; text-align: right; font-weight: bold; color: #0f172a;\">" + order.getPaymentMethod() + "</td></tr>"
+                + "<tr><td style=\"padding: 8px 0; color: #64748b; border-top: 1px dashed #cbd5e1;\">Tổng cộng:</td><td style=\"padding: 8px 0; text-align: right; font-weight: bold; color: #2563eb; font-size: 18px; border-top: 1px dashed #cbd5e1;\">" + String.format("%,.0f", order.getTotal()) + " đ</td></tr>"
+                + "</table>"
+                + "</div>"
+                + "<p style=\"color: #334155; line-height: 1.6;\">Chúng tôi sẽ thông báo cho bạn ngay khi đơn hàng được giao cho đơn vị vận chuyển.</p>"
+                + "<div style=\"text-align: center; margin-top: 30px;\">"
+                + "<a href=\"http://localhost:5173/profile\" style=\"display: inline-block; background-color: #0f172a; color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 6px; font-weight: bold; font-size: 16px;\">Kiểm tra đơn hàng</a>"
+                + "</div>"
+                + "</div>"
+                + "<div style=\"background-color: #f8fafc; padding: 20px; text-align: center; color: #64748b; font-size: 13px; border-top: 1px solid #e2e8f0;\">"
+                + "<p style=\"margin: 0 0 5px 0;\">Nếu bạn có bất kỳ câu hỏi nào, vui lòng liên hệ bộ phận CSKH.</p>"
+                + "<p style=\"margin: 0;\">&copy; 2026 S-Life TechHub. Đồ Án Tốt Nghiệp.</p>"
+                + "</div>"
+                + "</div>";
+
         emailService.sendEmail(
                 userService.getUserByUsername(username).getEmail(),
-                "S-Life - Xác nhận đặt hàng " + order.getOrderNumber(),
-                "Cảm ơn bạn đã tin tưởng chọn S-Life. Đơn hàng của bạn đang được chuẩn bị để bắt đầu hành trình chăm sóc sức khỏe. Mã đơn hàng: " + order.getOrderNumber(),
-                false
+                "S-Life - Xác nhận đặt hàng #" + order.getOrderNumber(),
+                htmlContent,
+                true
         );
     }
 
