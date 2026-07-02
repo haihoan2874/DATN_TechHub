@@ -59,6 +59,9 @@ public class OrderService {
     private final VoucherService voucherService;
     private final ReviewRepository reviewRepository;
 
+    @org.springframework.beans.factory.annotation.Value("${app.frontend-url}")
+    private String frontendUrl;
+
     @Transactional
     public CreateOrderResponse createOrder(CreateOrderRequest request, Authentication authentication) {
         UUID userId = userService.getCurrentUserId(authentication);
@@ -534,7 +537,7 @@ public class OrderService {
                 + "</div>"
                 + "<p style=\"color: #334155; line-height: 1.6;\">Chúng tôi sẽ thông báo cho bạn ngay khi đơn hàng được giao cho đơn vị vận chuyển.</p>"
                 + "<div style=\"text-align: center; margin-top: 30px;\">"
-                + "<a href=\"http://localhost:5173/profile\" style=\"display: inline-block; background-color: #0f172a; color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 6px; font-weight: bold; font-size: 16px;\">Kiểm tra đơn hàng</a>"
+                + "<a href=\"" + frontendUrl + "/profile\" style=\"display: inline-block; background-color: #0f172a; color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 6px; font-weight: bold; font-size: 16px;\">Kiểm tra đơn hàng</a>"
                 + "</div>"
                 + "</div>"
                 + "<div style=\"background-color: #f8fafc; padding: 20px; text-align: center; color: #64748b; font-size: 13px; border-top: 1px solid #e2e8f0;\">"
