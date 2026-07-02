@@ -48,7 +48,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const login = async (credentials) => {
+  const login = useCallback(async (credentials) => {
     try {
       const response = await authService.login(credentials);
       // Backend returns LoginResponse { token, type, role, username }
@@ -67,9 +67,9 @@ export const AuthProvider = ({ children }) => {
         )
       };
     }
-  };
+  }, []);
 
-  const register = async (userData) => {
+  const register = useCallback(async (userData) => {
     try {
       await authService.register(userData);
       return { success: true };
@@ -82,18 +82,18 @@ export const AuthProvider = ({ children }) => {
         )
       };
     }
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     authService.logout();
     setUser(null);
-  };
+  }, []);
 
-  const loginWithToken = (token, userData) => {
+  const loginWithToken = useCallback((token, userData) => {
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(userData));
     setUser(userData);
-  };
+  }, []);
 
   const updateUser = useCallback((newUserData) => {
     setUser((currentUser) => {
@@ -103,8 +103,12 @@ export const AuthProvider = ({ children }) => {
     });
   }, []);
 
+  const value = useMemo(() => ({
+    user, setUser, loading, login, register, logout, loginWithToken, updateUser
+  }), [user, loading, login, register, logout, loginWithToken, updateUser]);
+
   return (
-    <AuthContext.Provider value={{ user, setUser, loading, login, register, logout, loginWithToken, updateUser }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
