@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Slf4j
 @Service
@@ -72,17 +74,34 @@ public class StockImportService {
                 .build();
         stockImportRepository.save(stockImport);
 
-        // 2 & 3. Cộng số lượng vào kho, cập nhật ngày nhập
+        // 2 & 3. Tính toán Bình quân gia quyền (MAC) TRƯỚC KHI cộng dồn số lượng
+        // Phải cộng cả Hàng đang giữ (Reserved) để tính đúng tổng giá trị thực tế trong kho
+        int oldQty = inventory.getQuantityAvailable() + inventory.getQuantityReserved();
+        BigDecimal oldCost = product.getCostPrice() != null ? product.getCostPrice() : BigDecimal.ZERO;
+        
+        int newQty = request.getQuantity();
+        BigDecimal newCost = request.getImportPrice();
+        
+        int totalQty = oldQty + newQty;
+        
+        // MAC = ((oldQty * oldCost) + (newQty * newCost)) / totalQty
+        BigDecimal totalOldValue = oldCost.multiply(BigDecimal.valueOf(oldQty));
+        BigDecimal totalNewValue = newCost.multiply(BigDecimal.valueOf(newQty));
+        
+        BigDecimal newAvgCost = totalOldValue.add(totalNewValue)
+                .divide(BigDecimal.valueOf(totalQty), 2, RoundingMode.HALF_UP);
+                
+        // Cập nhật số lượng và ngày nhập kho
         inventory.setQuantityAvailable(inventory.getQuantityAvailable() + request.getQuantity());
         inventory.setLastRestockDate(importedAt);
         inventoryRepository.save(inventory);
 
-        // 4. Cập nhật giá vốn mới nhất lên sản phẩm
-        product.setCostPrice(request.getImportPrice());
+        // 4. Cập nhật Giá vốn Bình quân gia quyền (MAC) lên sản phẩm
+        product.setCostPrice(newAvgCost);
         productRepository.save(product);
 
-        log.info("Stock imported: product={}, qty={}, importPrice={}",
-                product.getName(), request.getQuantity(), request.getImportPrice());
+        log.info("Stock imported: product={}, addedQty={}, importPrice={}, newAvgCost={}",
+                product.getName(), request.getQuantity(), request.getImportPrice(), newAvgCost);
 
         return toResponse(stockImport, product.getName());
     }
