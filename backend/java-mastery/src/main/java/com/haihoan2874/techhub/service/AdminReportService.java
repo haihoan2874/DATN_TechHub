@@ -122,23 +122,27 @@ public class AdminReportService {
     }
 
     private int writeQuickSummary(Sheet sheet, ReportStyles styles, List<Order> orders, int rowIndex) {
-        rowIndex = writeSectionTitle(sheet, styles, rowIndex, "TÓM TẮT NHANH");
+        rowIndex = writeSectionTitle(sheet, styles, rowIndex, "TÓM TẮT DOANH THU (CHỈ TÍNH ĐƠN ĐÃ GIAO THÀNH CÔNG)");
+
+        List<Order> deliveredOrders = orders.stream()
+                .filter(o -> o.getStatus() == OrderStatus.DELIVERED)
+                .toList();
 
         Row header = sheet.createRow(rowIndex++);
-        writeStyledCell(header, 0, "Tổng đơn", styles.summaryHeader);
+        writeStyledCell(header, 0, "Tổng đơn (Đã giao)", styles.summaryHeader);
         writeStyledCell(header, 1, "Tổng SL sản phẩm", styles.summaryHeader);
         writeStyledCell(header, 2, "Tổng tiền hàng", styles.summaryHeader);
         writeStyledCell(header, 3, "Tổng giảm giá", styles.summaryHeader);
         writeStyledCell(header, 4, "Phí vận chuyển", styles.summaryHeader);
-        writeStyledCell(header, 5, "Tổng thành tiền", styles.summaryHeader);
+        writeStyledCell(header, 5, "Tổng doanh thu", styles.summaryHeader);
 
         Row value = sheet.createRow(rowIndex++);
-        writeNumberCell(value, 0, orders.size(), styles.summaryValue);
-        writeNumberCell(value, 1, sumItemCount(orders), styles.summaryValue);
-        writeMoneyCell(value, 2, sumSubtotal(orders), styles.summaryValueMoney);
-        writeMoneyCell(value, 3, sumDiscount(orders), styles.summaryValueMoney);
+        writeNumberCell(value, 0, deliveredOrders.size(), styles.summaryValue);
+        writeNumberCell(value, 1, sumItemCount(deliveredOrders), styles.summaryValue);
+        writeMoneyCell(value, 2, sumSubtotal(deliveredOrders), styles.summaryValueMoney);
+        writeMoneyCell(value, 3, sumDiscount(deliveredOrders), styles.summaryValueMoney);
         writeMoneyCell(value, 4, BigDecimal.ZERO, styles.summaryValueMoney);
-        writeMoneyCell(value, 5, sumTotal(orders), styles.summaryValueMoney);
+        writeMoneyCell(value, 5, sumTotal(deliveredOrders), styles.summaryValueMoney);
 
         return rowIndex + 1;
     }
@@ -206,17 +210,22 @@ public class AdminReportService {
     }
 
     private void writeFooterSummary(Sheet sheet, ReportStyles styles, List<Order> orders, int rowIndex) {
-        rowIndex = writeSectionTitle(sheet, styles, rowIndex, "TỔNG KẾT CHI TIẾT");
-        rowIndex = writeKeyValue(sheet, styles, rowIndex, "Tổng số đơn hàng", String.valueOf(orders.size()));
-        rowIndex = writeKeyValue(sheet, styles, rowIndex, "Tổng số lượng sản phẩm", String.valueOf(sumItemCount(orders)));
-        rowIndex = writeKeyValue(sheet, styles, rowIndex, "Tổng tiền hàng", sumSubtotal(orders).toPlainString());
-        rowIndex = writeKeyValue(sheet, styles, rowIndex, "Tổng giảm giá", sumDiscount(orders).toPlainString());
+        rowIndex = writeSectionTitle(sheet, styles, rowIndex, "TỔNG KẾT DOANH THU (CHỈ TÍNH ĐƠN ĐÃ GIAO THÀNH CÔNG)");
+
+        List<Order> deliveredOrders = orders.stream()
+                .filter(o -> o.getStatus() == OrderStatus.DELIVERED)
+                .toList();
+
+        rowIndex = writeKeyValue(sheet, styles, rowIndex, "Tổng số đơn đã giao", String.valueOf(deliveredOrders.size()));
+        rowIndex = writeKeyValue(sheet, styles, rowIndex, "Tổng số lượng sản phẩm", String.valueOf(sumItemCount(deliveredOrders)));
+        rowIndex = writeKeyValue(sheet, styles, rowIndex, "Tổng tiền hàng", sumSubtotal(deliveredOrders).toPlainString());
+        rowIndex = writeKeyValue(sheet, styles, rowIndex, "Tổng giảm giá", sumDiscount(deliveredOrders).toPlainString());
         rowIndex = writeKeyValue(sheet, styles, rowIndex, "Tổng phí vận chuyển", "0");
-        rowIndex = writeKeyValue(sheet, styles, rowIndex, "Tổng thành tiền", sumTotal(orders).toPlainString());
+        rowIndex = writeKeyValue(sheet, styles, rowIndex, "Tổng doanh thu thực tế", sumTotal(deliveredOrders).toPlainString());
         rowIndex++;
 
         rowIndex = writeGroupedSummary(sheet, styles, orders, rowIndex, "THỐNG KÊ THEO TRẠNG THÁI", order -> getStatusLabel(order.getStatus()));
-        writeGroupedSummary(sheet, styles, orders, rowIndex + 1, "THỐNG KÊ THEO PHƯƠNG THỨC THANH TOÁN", order -> {
+        writeGroupedSummary(sheet, styles, deliveredOrders, rowIndex + 1, "DOANH THU THEO PHƯƠNG THỨC THANH TOÁN (CHỈ ĐƠN ĐÃ GIAO)", order -> {
             String label = getPaymentMethodLabel(order.getPaymentMethod());
             return label.isBlank() ? "Không xác định" : label;
         });
