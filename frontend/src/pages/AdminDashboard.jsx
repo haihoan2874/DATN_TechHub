@@ -36,6 +36,29 @@ const STATUS_TONES = {
   CANCELLED: 'bg-rose-500'
 };
 
+const formatVietnameseDateStr = (isoDate) => {
+  if (!isoDate) return '';
+  const [year, month, day] = isoDate.split('-');
+  return `${day}/${month}/${year}`;
+};
+
+const CustomDatePicker = ({ placeholder, value, onChange, min }) => (
+  <label className="relative flex h-9 w-[130px] cursor-pointer items-center justify-center rounded-lg border-0 bg-white px-3 shadow-sm ring-1 ring-inset ring-slate-200 focus-within:ring-2 focus-within:ring-blue-500 hover:bg-slate-50">
+    <span className={`text-sm font-bold truncate ${value ? 'text-slate-700' : 'text-slate-400'}`}>
+      {value ? formatVietnameseDateStr(value) : placeholder}
+    </span>
+    <input
+      type="date"
+      value={value}
+      min={min}
+      onChange={(e) => onChange(e.target.value)}
+      onClick={(e) => e.target.showPicker && e.target.showPicker()}
+      className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+      title={placeholder}
+    />
+  </label>
+);
+
 const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -174,19 +197,17 @@ const AdminDashboard = () => {
 
           {selectedRange === 'custom' && (
             <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 rounded-xl bg-slate-50 p-1 animate-in fade-in slide-in-from-right-4 duration-300">
-              <input 
-                type="date" 
+              <CustomDatePicker 
+                placeholder="Từ ngày"
                 value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="rounded-lg border-0 bg-white px-3 py-2 text-sm font-bold text-slate-700 shadow-sm ring-1 ring-inset ring-slate-200 min-w-[130px] text-center focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                onChange={setStartDate}
               />
               <span className="text-slate-400 font-bold hidden sm:inline">-</span>
-              <input 
-                type="date" 
+              <CustomDatePicker 
+                placeholder="Đến ngày"
                 value={endDate}
                 min={startDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="rounded-lg border-0 bg-white px-3 py-2 text-sm font-bold text-slate-700 shadow-sm ring-1 ring-inset ring-slate-200 min-w-[130px] text-center focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                onChange={setEndDate}
               />
             </div>
           )}

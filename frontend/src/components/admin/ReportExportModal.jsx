@@ -53,6 +53,7 @@ const DatePickerField = ({ label, value, onChange }) => (
       type="date"
       value={value}
       onChange={(event) => onChange(event.target.value)}
+      onClick={(e) => e.target.showPicker && e.target.showPicker()}
       className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
       aria-label={label}
     />

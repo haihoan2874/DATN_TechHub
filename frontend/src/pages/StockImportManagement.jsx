@@ -24,6 +24,28 @@ const fmtVND = (n) =>
 const fmtDate = (d) =>
   d ? new Date(d).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—';
 
+const formatVietnameseDateStr = (isoDate) => {
+  if (!isoDate) return '';
+  const [year, month, day] = isoDate.split('-');
+  return `${day}/${month}/${year}`;
+};
+
+const CustomDatePicker = ({ placeholder, value, onChange }) => (
+  <label className="relative flex h-12 w-[140px] cursor-pointer items-center rounded-xl border border-slate-300 bg-white px-3 focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/10 hover:bg-slate-50">
+    <span className={`text-sm font-semibold truncate ${value ? 'text-slate-700' : 'text-slate-400'}`}>
+      {value ? formatVietnameseDateStr(value) : placeholder}
+    </span>
+    <input
+      type="date"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      onClick={(e) => e.target.showPicker && e.target.showPicker()}
+      className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+      title={placeholder}
+    />
+  </label>
+);
+
 // ───────── Modal Form ─────────
 const ImportModal = ({ products, onClose, onSuccess }) => {
   const [form, setForm] = useState({
@@ -456,20 +478,16 @@ const StockImportManagement = () => {
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <div className="flex items-center gap-2">
-              <input
-                type="date"
+              <CustomDatePicker
+                placeholder="Từ ngày"
                 value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="h-12 w-36 rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
-                title="Từ ngày"
+                onChange={setStartDate}
               />
               <span className="text-slate-400 font-medium">-</span>
-              <input
-                type="date"
+              <CustomDatePicker
+                placeholder="Đến ngày"
                 value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="h-12 w-36 rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
-                title="Đến ngày"
+                onChange={setEndDate}
               />
             </div>
             <select
