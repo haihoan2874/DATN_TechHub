@@ -12,6 +12,7 @@ import Pagination from '../components/data/Pagination';
 import toast from 'react-hot-toast';
 import ProductTable from './ProductManagement/components/ProductTable';
 import ProductFormModal from './ProductManagement/components/ProductFormModal';
+import ProductFinanceModal from './ProductManagement/components/ProductFinanceModal';
 import useDebounce from '../hooks/useDebounce';
 
 const PAGE_SIZE = 8;
@@ -23,6 +24,7 @@ const ProductManagement = () => {
   const [brands, setBrands] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isFinanceModalOpen, setIsFinanceModalOpen] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
   
   const [searchTerm, setSearchTerm] = useState('');
@@ -89,6 +91,11 @@ const ProductManagement = () => {
   const handleOpenModal = (product = null) => {
     setCurrentProduct(product);
     setIsModalOpen(true);
+  };
+
+  const handleViewStats = (product) => {
+    setCurrentProduct(product);
+    setIsFinanceModalOpen(true);
   };
 
   const confirmDelete = async () => {
@@ -239,22 +246,29 @@ const ProductManagement = () => {
         sortConfig={sortConfig}
         onSort={handleSort}
         onEdit={handleOpenModal}
+        onViewStats={handleViewStats}
         onDelete={(id) => { setProductToDelete(id); setIsDeleteConfirmOpen(true); }}
       />
 
       {isModalOpen && (
         <ProductFormModal 
           isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
+          onClose={() => { setIsModalOpen(false); setCurrentProduct(null); }}
           onSuccess={() => {
             setIsModalOpen(false);
-            fetchProducts();
+            refreshData();
           }}
           currentProduct={currentProduct}
           categories={categories}
           brands={brands}
         />
       )}
+
+      <ProductFinanceModal
+        isOpen={isFinanceModalOpen}
+        onClose={() => { setIsFinanceModalOpen(false); setCurrentProduct(null); }}
+        product={currentProduct}
+      />
     </PageShell>
   );
 };

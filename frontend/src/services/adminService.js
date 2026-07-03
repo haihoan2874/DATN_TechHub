@@ -17,6 +17,9 @@ const adminService = {
   updateStock: (id, quantity) => {
     return axiosClient.patch(`/products/${id}/stock`, { stockQuantity: quantity });
   },
+  getProductFinance: (id) => {
+    return axiosClient.get(`/admin/products/${id}/finance`);
+  },
 
   // Orders
   getAllOrders: () => {

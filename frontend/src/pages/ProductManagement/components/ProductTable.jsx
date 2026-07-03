@@ -12,7 +12,7 @@ const tableColumns = [
   { key: 'actions', label: 'Thao tác', className: 'text-right', sortable: false }
 ];
 
-const ProductTable = ({ products, loading, footer, onEdit, onDelete, sortConfig, onSort }) => {
+const ProductTable = ({ products, loading, footer, onEdit, onDelete, onViewStats, sortConfig, onSort }) => {
   const columnsWithSort = React.useMemo(() => {
     return tableColumns.map(col => ({
       ...col,
@@ -75,13 +75,23 @@ const ProductTable = ({ products, loading, footer, onEdit, onDelete, sortConfig,
                     Kho: {product.stockQuantity}
                   </div>
                 </td>
-                <td className="px-5 py-4 text-right">
+                 <td className="px-5 py-4 text-right">
                   <div className="flex justify-end gap-2">
+                     <button 
+                       type="button"
+                       onClick={() => onViewStats && onViewStats(product)} 
+                       className="rounded-lg p-2 text-slate-500 hover:bg-emerald-50 hover:text-emerald-700"
+                       aria-label={`Xem thống kê ${product.name}`}
+                       title="Hiệu quả kinh doanh"
+                     >
+                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+                     </button>
                      <button 
                        type="button"
                        onClick={() => onEdit(product)} 
                        className="rounded-lg p-2 text-slate-500 hover:bg-blue-50 hover:text-blue-700"
                        aria-label={`Sửa sản phẩm ${product.name}`}
+                       title="Sửa"
                      >
                        <Edit2 size={16} />
                      </button>
@@ -90,6 +100,7 @@ const ProductTable = ({ products, loading, footer, onEdit, onDelete, sortConfig,
                        onClick={() => onDelete(product.id)} 
                        className="rounded-lg p-2 text-slate-500 hover:bg-rose-50 hover:text-rose-700"
                        aria-label={`Xóa sản phẩm ${product.name}`}
+                       title="Xóa"
                      >
                        <Trash2 size={16} />
                      </button>
