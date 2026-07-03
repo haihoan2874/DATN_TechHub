@@ -108,7 +108,7 @@ const Cart = () => {
               0
             </div>
           </div>
-          <h1 className="mb-3 text-2xl font-black uppercase tracking-tight text-slate-900">Giỏ hàng đang trống</h1>
+          <h2 className="mb-3 text-2xl font-black uppercase tracking-tight text-slate-900">Giỏ hàng đang trống</h2>
           <p className="mb-8 max-w-md text-sm leading-6 text-slate-500">
             Bạn chưa có sản phẩm nào trong giỏ hàng. Hãy chọn sản phẩm phù hợp rồi quay lại thanh toán.
           </p>
