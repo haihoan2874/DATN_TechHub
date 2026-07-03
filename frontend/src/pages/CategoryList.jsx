@@ -43,7 +43,7 @@ const CategoryList = () => {
   );
 
   return (
-    <div className="min-h-screen bg-transparent py-6 sm:py-8 lg:py-10">
+    <div aria-label="category-list" className="min-h-screen bg-transparent py-6 sm:py-8 lg:py-10">
       <div className="container mx-auto max-w-6xl px-4 sm:px-6">
         <div className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
           <span>Trang chủ</span>

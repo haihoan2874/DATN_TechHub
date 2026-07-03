@@ -41,7 +41,7 @@ const About = () => {
   const navigate = useNavigate();
 
   return (
-    <main className="bg-slate-950 text-white selection:bg-blue-500/30 min-h-screen overflow-hidden">
+    <main aria-label="about" className="bg-slate-950 text-white selection:bg-blue-500/30 min-h-screen overflow-hidden">
       
       {/* 1. HERO SECTION - RETAIL AUTHORITY */}
       <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
