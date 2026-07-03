@@ -169,7 +169,7 @@ const ImportModal = ({ products, onClose, onSuccess }) => {
           {/* Giá vốn nhập */}
           <div>
             <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">
-              Giá vốn nhập (₫) <span className="text-red-500">*</span>
+              Giá vốn nhập (1sp) (₫) <span className="text-red-500">*</span>
             </label>
             <input
               type="number" min="0"
@@ -239,7 +239,8 @@ const StockImportManagement = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [dateFilter, setDateFilter] = useState('all');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: 'importedAt', direction: 'desc' });
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(12);
@@ -272,23 +273,14 @@ const StockImportManagement = () => {
   const filteredImports = useMemo(() => {
     let result = [...imports];
 
-    // Filter by Date
-    if (dateFilter !== 'all') {
-      const now = new Date();
+    // Filter by Custom Date Range
+    if (startDate || endDate) {
       result = result.filter(item => {
         if (!item.importedAt) return false;
-        const itemDate = new Date(item.importedAt);
-        if (dateFilter === 'thisMonth') {
-          return itemDate.getMonth() === now.getMonth() && itemDate.getFullYear() === now.getFullYear();
-        }
-        if (dateFilter === 'lastMonth') {
-          const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-          return itemDate.getMonth() === lastMonth.getMonth() && itemDate.getFullYear() === lastMonth.getFullYear();
-        }
-        if (dateFilter === 'thisYear') {
-          return itemDate.getFullYear() === now.getFullYear();
-        }
-        return true;
+        const itemDate = new Date(item.importedAt).getTime();
+        const start = startDate ? new Date(startDate).setHours(0, 0, 0, 0) : 0;
+        const end = endDate ? new Date(endDate).setHours(23, 59, 59, 999) : Infinity;
+        return itemDate >= start && itemDate <= end;
       });
     }
 
@@ -330,7 +322,7 @@ const StockImportManagement = () => {
     });
 
     return result;
-  }, [imports, searchTerm, dateFilter, sortConfig]);
+  }, [imports, searchTerm, startDate, endDate, sortConfig]);
 
   const summaryStats = useMemo(() => {
     return filteredImports.reduce((acc, item) => {
@@ -367,7 +359,7 @@ const StockImportManagement = () => {
 
   useEffect(() => {
     setPage(0);
-  }, [searchTerm, dateFilter, pageSize, sortConfig]);
+  }, [searchTerm, startDate, endDate, pageSize, sortConfig]);
 
   return (
     <PageShell>
@@ -463,18 +455,22 @@ const StockImportManagement = () => {
             )}
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <div className="relative flex items-center">
-              <Filter size={16} className="absolute left-3 text-slate-400" />
-              <select
-                value={dateFilter}
-                onChange={(event) => setDateFilter(event.target.value)}
-                className="h-12 w-36 rounded-xl border border-slate-300 bg-white pl-9 pr-3 text-sm font-bold text-slate-700 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
-              >
-                <option value="all">Tất cả</option>
-                <option value="thisMonth">Tháng này</option>
-                <option value="lastMonth">Tháng trước</option>
-                <option value="thisYear">Năm nay</option>
-              </select>
+            <div className="flex items-center gap-2">
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="h-12 w-36 rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
+                title="Từ ngày"
+              />
+              <span className="text-slate-400 font-medium">-</span>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="h-12 w-36 rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
+                title="Đến ngày"
+              />
             </div>
             <select
               value={pageSize}
