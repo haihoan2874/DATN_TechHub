@@ -52,7 +52,16 @@ public class InventoryService {
     @Transactional
     public boolean reserveStock(UUID productId, Integer quantity) {
         log.info("Reserving stock for product {}: quantity {}", productId, quantity);
-        Inventory inventory = getOrCreateInventory(productId);
+        Inventory inventory = inventoryRepository.findByProductIdForUpdate(productId)
+                .orElseGet(() -> {
+                    log.warn("Inventory not found for product {}. Creating new inventory with 0 stock.", productId);
+                    return inventoryRepository.save(Inventory.builder()
+                            .productId(productId)
+                            .quantityAvailable(0)
+                            .quantityReserved(0)
+                            .minStockLevel(10)
+                            .build());
+                });
 
         if (inventory.getQuantityAvailable() < quantity) {
             log.warn("Not enough stock for product {}: requested {}, available {}",
@@ -69,7 +78,7 @@ public class InventoryService {
     @Transactional
     public void releaseStock(UUID productId, Integer quantity) {
         log.info("Releasing reserved stock for product {}: quantity {}", productId, quantity);
-        Inventory inventory = inventoryRepository.findByProductId(productId)
+        Inventory inventory = inventoryRepository.findByProductIdForUpdate(productId)
                 .orElseThrow(() -> new EntityNotFoundException("Inventory not found"));
 
         inventory.setQuantityReserved(Math.max(0, inventory.getQuantityReserved() - quantity));
@@ -80,7 +89,7 @@ public class InventoryService {
     @Transactional
     public void confirmSale(UUID productId, Integer quantity) {
         log.info("Confirming sale for product {}: quantity {}", productId, quantity);
-        Inventory inventory = inventoryRepository.findByProductId(productId)
+        Inventory inventory = inventoryRepository.findByProductIdForUpdate(productId)
                 .orElseThrow(() -> new EntityNotFoundException("Inventory not found"));
 
         inventory.setQuantityReserved(Math.max(0, inventory.getQuantityReserved() - quantity));
