@@ -109,6 +109,15 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
             @Param("endDate") LocalDateTime endDate
     );
     @Query(value = """
+            SELECT SUM(oi.quantity) as quantitySold, SUM(oi.subtotal) as totalRevenue, SUM(COALESCE(oi.cost_price, p.cost_price, 0) * oi.quantity) as totalCogs
+            FROM order_items oi
+            JOIN orders o ON o.id = oi.order_id
+            JOIN products p ON p.id = oi.product_id
+            WHERE o.status = 'DELIVERED'
+            AND p.id = :productId
+            """, nativeQuery = true)
+    List<Object[]> getProductFinanceStats(@Param("productId") UUID productId);
+    @Query(value = """
             SELECT COUNT(*)
             FROM orders
             WHERE created_at BETWEEN :startOfDay AND :endOfDay

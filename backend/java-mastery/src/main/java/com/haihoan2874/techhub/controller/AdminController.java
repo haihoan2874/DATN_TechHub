@@ -1,6 +1,7 @@
 package com.haihoan2874.techhub.controller;
 
 import com.haihoan2874.techhub.dto.response.DashboardStatsResponse;
+import com.haihoan2874.techhub.dto.response.ProductFinanceResponse;
 import com.haihoan2874.techhub.service.AdminReportService;
 import com.haihoan2874.techhub.service.AdminService;
 import com.haihoan2874.techhub.service.FileStorageService;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/admin")
@@ -58,6 +60,15 @@ public class AdminController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
                 .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .body(workbook);
+    }
+
+    @GetMapping("/products/{productId}/finance")
+    @Operation(summary = "Get financial stats for a specific product")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ProductFinanceResponse> getProductFinanceStats(
+            @PathVariable UUID productId
+    ) {
+        return ResponseEntity.ok(adminService.getProductFinanceStats(productId));
     }
 
     @PostMapping("/files/upload")

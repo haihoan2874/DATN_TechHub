@@ -1,6 +1,9 @@
 package com.haihoan2874.techhub.service;
 
 import com.haihoan2874.techhub.dto.response.DashboardStatsResponse;
+import com.haihoan2874.techhub.dto.response.ProductFinanceResponse;
+import com.haihoan2874.techhub.model.Product;
+import com.haihoan2874.techhub.model.StockImport;
 import com.haihoan2874.techhub.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,6 +27,8 @@ public class AdminService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final StockImportRepository stockImportRepository;
+    private final InventoryRepository inventoryRepository;
 
     public DashboardStatsResponse getDashboardStats() {
         return getDashboardStats("30days", null, null);
@@ -223,4 +229,51 @@ public class AdminService {
             LocalDateTime startDate,
             LocalDateTime endDate
     ) {}
+
+    public ProductFinanceResponse getProductFinanceStats(UUID productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+
+        // 1. Calculate Total Import Cost
+        List<StockImport> imports = stockImportRepository.findByProductIdOrderByImportedAtDesc(productId);
+        int quantityImported = 0;
+        BigDecimal totalImportCost = BigDecimal.ZERO;
+        for (StockImport imp : imports) {
+            quantityImported += imp.getQuantity();
+            totalImportCost = totalImportCost.add(imp.getImportPrice().multiply(BigDecimal.valueOf(imp.getQuantity())));
+        }
+
+        // 2. Calculate Total Revenue & COGS
+        List<Object[]> stats = orderRepository.getProductFinanceStats(productId);
+        int quantitySold = 0;
+        BigDecimal totalRevenue = BigDecimal.ZERO;
+        BigDecimal cogs = BigDecimal.ZERO;
+
+        if (stats != null && !stats.isEmpty() && stats.get(0)[0] != null) {
+            Object[] row = stats.get(0);
+            quantitySold = ((Number) row[0]).intValue();
+            totalRevenue = new BigDecimal(row[1].toString());
+            cogs = new BigDecimal(row[2].toString());
+        }
+
+        BigDecimal profit = totalRevenue.subtract(cogs);
+
+        BigDecimal currentMac = product.getCostPrice() != null ? product.getCostPrice() : BigDecimal.ZERO;
+        int currentStock = quantityImported - quantitySold;
+        BigDecimal currentStockValue = currentMac.multiply(BigDecimal.valueOf(currentStock));
+
+        return ProductFinanceResponse.builder()
+                .productId(productId)
+                .productName(product.getName())
+                .quantityImported(quantityImported)
+                .quantitySold(quantitySold)
+                .totalImportCost(totalImportCost)
+                .totalRevenue(totalRevenue)
+                .cogs(cogs)
+                .profit(profit)
+                .currentStock(currentStock)
+                .currentMac(currentMac)
+                .currentStockValue(currentStockValue)
+                .build();
+    }
 }
