@@ -123,7 +123,7 @@ const ProductFinanceModal = ({ isOpen, onClose, product }) => {
                   </div>
                   <h4 className="font-semibold text-indigo-900">Trạng thái sản phẩm trong kho</h4>
                 </div>
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                <div className="grid grid-cols-2 gap-4">
                   <div className="rounded-lg bg-white p-3 shadow-sm">
                     <span className="block text-xs font-medium text-slate-500">SP trong kho</span>
                     <span className="mt-1 block text-lg font-bold text-slate-900">{stats.currentStock} cái</span>
