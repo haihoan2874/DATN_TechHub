@@ -50,7 +50,7 @@ public class ProductService {
     private final UserService userService;
 
     // Allowed sort fields
-    private static final Set<String> ALLOWED_SORT_FIELDS = Set.of("name", "price", "updatedat");
+    private static final Set<String> ALLOWED_SORT_FIELDS = Set.of("name", "price", "updatedat", "quantityavailable");
     private static final String DEFAULT_SORT_FIELD = "updatedAt";
 
     @Transactional
@@ -167,6 +167,10 @@ public class ProductService {
 
         if ("updatedat".equals(lowerSortBy)) {
             return DEFAULT_SORT_FIELD;
+        }
+
+        if ("quantityavailable".equals(lowerSortBy)) {
+            return "quantityAvailable";
         }
 
         return lowerSortBy;

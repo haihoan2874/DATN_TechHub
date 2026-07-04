@@ -101,7 +101,7 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
             WHERE o.status = 'DELIVERED'
             AND o.created_at BETWEEN :startDate AND :endDate
             GROUP BY p.id, p.name, p.image_url
-            ORDER BY profit DESC, revenue DESC
+            ORDER BY quantity DESC, revenue DESC
             LIMIT 5
             """, nativeQuery = true)
     List<Object[]> getTopSellingProducts(

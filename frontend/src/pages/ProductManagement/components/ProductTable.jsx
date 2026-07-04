@@ -8,7 +8,7 @@ import { formatCurrency } from '../../../utils/formatters';
 const tableColumns = [
   { key: 'product', label: 'Sản phẩm', sortable: true, sortKey: 'name' },
   { key: 'classification', label: 'Phân loại', sortable: false },
-  { key: 'priceStock', label: 'Giá / Kho hiện tại', sortable: true, sortKey: 'price' },
+  { key: 'priceStock', label: 'Giá / Kho hiện tại', sortable: true, sortKey: 'quantityAvailable' },
   { key: 'actions', label: 'Thao tác', className: 'text-right', sortable: false }
 ];
 

@@ -35,7 +35,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
                 p.description,
                 p.price,
                 p.imageUrl,
-                COALESCE(i.quantityAvailable, 0),
+                COALESCE(i.quantityAvailable, 0) as quantityAvailable,
                 p.isActive,
                 p.specs,
                 p.features,
