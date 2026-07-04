@@ -62,7 +62,7 @@ const ProductCard = ({ product }) => {
             />
           ))}
           <span className="ml-1 text-xs font-semibold text-slate-400">
-            ({reviewCount})
+            Kho: {stockQuantity || 0}
           </span>
         </div>
 
