@@ -109,6 +109,10 @@ const ProductFinanceModal = ({ isOpen, onClose, product }) => {
                     <span className="text-sm font-medium text-slate-700">Tổng doanh thu (Tất cả):</span>
                     <span className="font-bold text-emerald-600">{formatCurrency(stats.totalRevenue)}</span>
                   </div>
+                  <div className="flex justify-between border-t border-slate-200 pt-3">
+                    <span className="text-sm text-slate-500">Tổng giá vốn hàng bán (COGS):</span>
+                    <span className="font-semibold text-slate-900">{formatCurrency(stats.cogs)}</span>
+                  </div>
                 </div>
               </div>
 
