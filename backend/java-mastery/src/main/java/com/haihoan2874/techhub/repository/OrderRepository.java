@@ -109,11 +109,15 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
             @Param("endDate") LocalDateTime endDate
     );
     @Query(value = """
-            SELECT SUM(oi.quantity) as quantitySold, SUM(oi.subtotal) as totalRevenue, SUM(COALESCE(oi.cost_price, p.cost_price, 0) * oi.quantity) as totalCogs
+            SELECT 
+                SUM(CASE WHEN o.status = 'DELIVERED' THEN oi.quantity ELSE 0 END) as quantitySold, 
+                SUM(CASE WHEN o.status = 'DELIVERED' THEN oi.subtotal ELSE 0 END) as totalRevenue, 
+                SUM(CASE WHEN o.status = 'DELIVERED' THEN COALESCE(oi.cost_price, p.cost_price, 0) * oi.quantity ELSE 0 END) as totalCogs,
+                SUM(CASE WHEN o.status IN ('PENDING', 'PROCESSING', 'SHIPPED') THEN oi.quantity ELSE 0 END) as quantityInTransit
             FROM order_items oi
             JOIN orders o ON o.id = oi.order_id
             JOIN products p ON p.id = oi.product_id
-            WHERE o.status = 'DELIVERED'
+            WHERE o.status != 'CANCELLED'
             AND p.id = :productId
             """, nativeQuery = true)
     List<Object[]> getProductFinanceStats(@Param("productId") UUID productId);

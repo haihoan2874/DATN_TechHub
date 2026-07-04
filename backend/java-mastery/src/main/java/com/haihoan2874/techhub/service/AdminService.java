@@ -250,11 +250,13 @@ public class AdminService {
         BigDecimal totalRevenue = BigDecimal.ZERO;
         BigDecimal cogs = BigDecimal.ZERO;
 
+        int reservedStock = 0;
         if (stats != null && !stats.isEmpty() && stats.get(0)[0] != null) {
             Object[] row = stats.get(0);
             quantitySold = ((Number) row[0]).intValue();
             totalRevenue = new BigDecimal(row[1].toString());
             cogs = new BigDecimal(row[2].toString());
+            reservedStock = ((Number) row[3]).intValue();
         }
 
         BigDecimal profit = totalRevenue.subtract(cogs);
@@ -262,7 +264,6 @@ public class AdminService {
         BigDecimal currentMac = product.getCostPrice() != null ? product.getCostPrice() : BigDecimal.ZERO;
         Inventory inv = inventoryRepository.findByProductId(productId).orElse(null);
         int currentStock = inv != null ? inv.getQuantityAvailable() : 0;
-        int reservedStock = inv != null ? inv.getQuantityReserved() : 0;
         BigDecimal currentStockValue = currentMac.multiply(BigDecimal.valueOf(currentStock));
 
         return ProductFinanceResponse.builder()
