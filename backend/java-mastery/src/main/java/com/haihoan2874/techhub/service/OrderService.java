@@ -430,9 +430,7 @@ public class OrderService {
                 throw new EntityNotFoundException("Product not found");
             }
 
-            // Kiểm tra tồn kho qua bảng inventory (nguồn dữ liệu chính xác)
-            int availableStock = inventoryService.getAvailableStock(product.getId());
-            if (availableStock < itemReq.getQuantity()) {
+            if (!inventoryService.reserveStock(product.getId(), itemReq.getQuantity())) {
                 throw new RuntimeException("Product " + product.getName() + " is out of stock");
             }
 
