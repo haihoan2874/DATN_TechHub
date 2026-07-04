@@ -100,14 +100,10 @@ const ProductFinanceModal = ({ isOpen, onClose, product }) => {
                     <span className="font-semibold text-slate-900">{stats.quantitySold} cái</span>
                   </div>
                   <div className="flex justify-between border-t border-slate-200 pt-3">
-                    <span className="text-sm text-slate-500">Giá vốn xuất kho (1 cái):</span>
+                    <span className="text-sm text-slate-500">Giá bán bình quân (1 cái):</span>
                     <span className="font-semibold text-slate-900">
-                      {stats.quantitySold > 0 ? formatCurrency(stats.cogs / stats.quantitySold) : '0 ₫'}
+                      {stats.quantitySold > 0 ? formatCurrency(stats.totalRevenue / stats.quantitySold) : '0 ₫'}
                     </span>
-                  </div>
-                  <div className="flex justify-between border-t border-slate-200 pt-3">
-                    <span className="text-sm font-medium text-slate-700">Tổng vốn xuất kho (Tất cả hàng đã giao):</span>
-                    <span className="font-semibold text-slate-900">{formatCurrency(stats.cogs)}</span>
                   </div>
                   <div className="flex justify-between border-t border-slate-200 pt-3">
                     <span className="text-sm font-medium text-slate-700">Tổng doanh thu (Tất cả):</span>
