@@ -259,9 +259,9 @@ public class AdminService {
         BigDecimal profit = totalRevenue.subtract(cogs);
 
         BigDecimal currentMac = product.getCostPrice() != null ? product.getCostPrice() : BigDecimal.ZERO;
-        int currentStock = inventoryRepository.findByProductId(productId)
-                .map(com.haihoan2874.techhub.model.Inventory::getQuantityAvailable)
-                .orElse(0);
+        com.haihoan2874.techhub.model.Inventory inv = inventoryRepository.findByProductId(productId).orElse(null);
+        int currentStock = inv != null ? inv.getQuantityAvailable() : 0;
+        int reservedStock = inv != null ? inv.getQuantityReserved() : 0;
         BigDecimal currentStockValue = currentMac.multiply(BigDecimal.valueOf(currentStock));
 
         return ProductFinanceResponse.builder()
@@ -274,6 +274,7 @@ public class AdminService {
                 .cogs(cogs)
                 .profit(profit)
                 .currentStock(currentStock)
+                .reservedStock(reservedStock)
                 .currentMac(currentMac)
                 .currentStockValue(currentStockValue)
                 .build();

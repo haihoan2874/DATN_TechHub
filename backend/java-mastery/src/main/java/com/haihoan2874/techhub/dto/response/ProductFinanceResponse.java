@@ -24,6 +24,7 @@ public class ProductFinanceResponse {
     
     // Tồn kho hiện tại
     private int currentStock;
+    private int reservedStock;
     private BigDecimal currentMac; // Giá vốn bình quân hiện hành (MAC)
     private BigDecimal currentStockValue; // Giá trị tồn kho hiện tại (currentStock * currentMac)
 }
