@@ -8,7 +8,8 @@ import { formatCurrency } from '../../../utils/formatters';
 const tableColumns = [
   { key: 'product', label: 'Sản phẩm', sortable: true, sortKey: 'name' },
   { key: 'classification', label: 'Phân loại', sortable: false },
-  { key: 'priceStock', label: 'Giá / Kho hiện tại', sortable: true, sortKey: 'quantityAvailable' },
+  { key: 'price', label: 'Giá bán', sortable: true, sortKey: 'price' },
+  { key: 'quantityAvailable', label: 'Kho hiện tại', sortable: true, sortKey: 'quantityAvailable' },
   { key: 'actions', label: 'Thao tác', className: 'text-right', sortable: false }
 ];
 
@@ -71,8 +72,10 @@ const ProductTable = ({ products, loading, footer, onEdit, onDelete, onViewStats
                 </td>
                 <td className="px-5 py-4">
                   <div className="text-sm font-bold text-blue-700">{formatCurrency(product.price)}</div>
-                  <div className={`mt-1 text-xs font-semibold ${product.stockQuantity < 10 ? 'text-rose-600' : 'text-slate-500'}`}>
-                    Kho: {product.stockQuantity}
+                </td>
+                <td className="px-5 py-4">
+                  <div className={`text-sm font-semibold ${product.stockQuantity < 10 ? 'text-rose-600' : 'text-slate-700'}`}>
+                    {product.stockQuantity}
                   </div>
                 </td>
                  <td className="px-5 py-4 text-right">
