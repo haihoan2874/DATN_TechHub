@@ -76,8 +76,9 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-// Configure MapStruct annotation processor
+// Configure MapStruct annotation processor and add -parameters flag for Spring Web reflection
 compileJava {
+    options.compilerArgs << '-parameters'
     options.annotationProcessorPath = configurations.annotationProcessor
 }
 

@@ -84,8 +84,8 @@ public class ProductController {
             @ApiResponse(responseCode = APIConstants.NOT_FOUND, description = APIConstants.MSG_PRODUCT_NOT_FOUND)
     })
     public ResponseEntity<ProductResponse> getProductDetail(
-            @RequestParam String searchBy,
-            @RequestParam String value
+            @RequestParam("searchBy") String searchBy,
+            @RequestParam("value") String value
     ) {
         log.info("Getting product detail by {}: {}", searchBy, value);
 
