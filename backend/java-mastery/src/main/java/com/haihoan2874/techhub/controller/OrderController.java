@@ -27,7 +27,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import com.haihoan2874.techhub.model.OrderStatus;
 
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -72,7 +74,7 @@ public class OrderController {
     @GetMapping("/my-orders")
     @Operation(summary = "Get current user order history", description = "Get all orders owned by the authenticated user")
     @SecurityRequirement(name = APIConstants.BEARER)
-    public ResponseEntity<java.util.List<OrderHistoryResponse>> getMyOrders(Authentication authentication) {
+    public ResponseEntity<List<OrderHistoryResponse>> getMyOrders(Authentication authentication) {
         return ResponseEntity.ok(orderService.getMyOrders(authentication));
     }
 
@@ -120,7 +122,7 @@ public class OrderController {
     @Operation(summary = "Get all orders (Admin only)")
     @SecurityRequirement(name = APIConstants.BEARER)
     @PreAuthorize(APIConstants.ROLE_ADMIN)
-    public ResponseEntity<java.util.List<AdminOrderResponse>> getAllOrders() {
+    public ResponseEntity<List<AdminOrderResponse>> getAllOrders() {
         return ResponseEntity.ok(orderService.getAllOrdersAdmin());
     }
 
@@ -128,7 +130,7 @@ public class OrderController {
     @Operation(summary = "Update order status (Admin only)")
     @SecurityRequirement(name = APIConstants.BEARER)
     @PreAuthorize(APIConstants.ROLE_ADMIN)
-    public ResponseEntity<AdminOrderResponse> updateStatus(@PathVariable java.util.UUID id, @RequestParam com.haihoan2874.techhub.model.OrderStatus status) {
+    public ResponseEntity<AdminOrderResponse> updateStatus(@PathVariable UUID id, @RequestParam OrderStatus status) {
         return ResponseEntity.ok(orderService.updateOrderStatus(id, status));
     }
 

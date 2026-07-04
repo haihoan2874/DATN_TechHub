@@ -636,7 +636,7 @@ public class OrderService {
         java.util.List<AdminOrderResponse.AdminOrderItemResponse> items = new java.util.ArrayList<>();
 
         if (order.getItems() != null) {
-            for (com.haihoan2874.techhub.model.OrderItem item : order.getItems()) {
+            for (OrderItem item : order.getItems()) {
                 BigDecimal costPrice = item.getCostPrice() != null ? item.getCostPrice() : BigDecimal.ZERO;
                 BigDecimal profit = item.getPrice().subtract(costPrice).multiply(BigDecimal.valueOf(item.getQuantity()));
                 grossProfit = grossProfit.add(profit);

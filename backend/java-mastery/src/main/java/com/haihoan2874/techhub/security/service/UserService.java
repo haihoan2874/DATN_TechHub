@@ -8,6 +8,7 @@ import com.haihoan2874.techhub.security.dto.LoginResponse;
 import com.haihoan2874.techhub.security.dto.RegistrationRequest;
 import com.haihoan2874.techhub.security.dto.RegistrationResponse;
 import com.haihoan2874.techhub.dto.response.UserResponse;
+import com.haihoan2874.techhub.dto.request.UserUpdateRequest;
 import com.haihoan2874.techhub.security.jwt.JwtTokenProvider;
 import com.haihoan2874.techhub.security.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
@@ -59,7 +60,7 @@ public class UserService {
                 .build();
     }
 
-    public UserResponse getMyInfo(org.springframework.security.core.Authentication authentication) {
+    public UserResponse getMyInfo(Authentication authentication) {
         String username = authentication.getName();
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -67,7 +68,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponse updateProfile(com.haihoan2874.techhub.dto.request.UserUpdateRequest request, org.springframework.security.core.Authentication authentication) {
+    public UserResponse updateProfile(UserUpdateRequest request, Authentication authentication) {
         String username = authentication.getName();
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));

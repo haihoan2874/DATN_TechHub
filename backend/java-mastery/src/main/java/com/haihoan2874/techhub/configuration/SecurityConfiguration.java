@@ -4,6 +4,8 @@ import com.haihoan2874.techhub.security.jwt.JwtAuthenticationEntryPoint;
 import com.haihoan2874.techhub.security.jwt.JwtAuthenticationFilter;
 import com.haihoan2874.techhub.security.jwt.JwtAuthenticationForBidden;
 import com.haihoan2874.techhub.security.jwt.JwtTokenProvider;
+import com.haihoan2874.techhub.security.OAuth2AuthenticationSuccessHandler;
+import com.haihoan2874.techhub.security.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -36,8 +38,8 @@ public class SecurityConfiguration {
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAuthenticationForBidden jwtAuthenticationForBidden;
-    private final com.haihoan2874.techhub.security.service.CustomOAuth2UserService customOAuth2UserService;
-    private final com.haihoan2874.techhub.security.OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
     @Value("${app.frontend-url}")
     private String frontendUrl;
