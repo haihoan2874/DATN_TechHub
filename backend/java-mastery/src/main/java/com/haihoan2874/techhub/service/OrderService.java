@@ -223,8 +223,15 @@ public class OrderService {
         log.info("Admin fetching all orders");
         List<Order> orders = orderRepository.findAllWithItems();
 
+        Set<UUID> userIds = orders.stream()
+                .map(Order::getUserId)
+                .collect(Collectors.toSet());
+
+        Map<UUID, User> userMap = userRepository.findAllById(userIds).stream()
+                .collect(Collectors.toMap(User::getId, user -> user));
+
         return orders.stream()
-                .map(this::mapToAdminOrderResponse)
+                .map(order -> mapToAdminOrderResponse(order, userMap.get(order.getUserId())))
                 .toList();
     }
 
@@ -246,7 +253,8 @@ public class OrderService {
         order.setStatus(newStatus);
         Order savedOrder = orderRepository.save(order);
 
-        return mapToAdminOrderResponse(savedOrder);
+        User user = userRepository.findById(savedOrder.getUserId()).orElse(null);
+        return mapToAdminOrderResponse(savedOrder, user);
     }
 
     @Transactional
@@ -601,7 +609,7 @@ public class OrderService {
         return String.format("%s || %s || %s", address.getFullName(), address.getPhone(), address.getAddress());
     }
 
-    private AdminOrderResponse mapToAdminOrderResponse(Order order) {
+    private AdminOrderResponse mapToAdminOrderResponse(Order order, User user) {
         String customerName = "N/A";
         String customerEmail = "N/A";
         String customerPhone = "N/A";
@@ -613,7 +621,6 @@ public class OrderService {
             shippingAddress = order.getShippingAddress().getAddress() != null ? order.getShippingAddress().getAddress() : formatAddress(order.getShippingAddress());
         }
 
-        User user = userRepository.findById(order.getUserId()).orElse(null);
         if (user != null) {
             if ("N/A".equals(customerName) || customerName.isBlank()) {
                 customerName = String.format("%s %s", nullToEmpty(user.getFirstName()), nullToEmpty(user.getLastName())).trim();
