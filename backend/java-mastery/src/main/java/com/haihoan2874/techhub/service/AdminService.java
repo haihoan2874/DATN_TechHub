@@ -259,7 +259,9 @@ public class AdminService {
         BigDecimal profit = totalRevenue.subtract(cogs);
 
         BigDecimal currentMac = product.getCostPrice() != null ? product.getCostPrice() : BigDecimal.ZERO;
-        int currentStock = quantityImported - quantitySold;
+        int currentStock = inventoryRepository.findByProductId(productId)
+                .map(com.haihoan2874.techhub.model.Inventory::getQuantityAvailable)
+                .orElse(0);
         BigDecimal currentStockValue = currentMac.multiply(BigDecimal.valueOf(currentStock));
 
         return ProductFinanceResponse.builder()

@@ -121,11 +121,11 @@ const ProductFinanceModal = ({ isOpen, onClose, product }) => {
                   <div className="rounded-lg bg-indigo-100 p-2 text-indigo-700">
                     <Tag size={20} />
                   </div>
-                  <h4 className="font-semibold text-indigo-900">Trạng thái tồn kho hiện tại</h4>
+                  <h4 className="font-semibold text-indigo-900">Trạng thái sản phẩm trong kho</h4>
                 </div>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                   <div className="rounded-lg bg-white p-3 shadow-sm">
-                    <span className="block text-xs font-medium text-slate-500">SL tồn kho</span>
+                    <span className="block text-xs font-medium text-slate-500">SP trong kho</span>
                     <span className="mt-1 block text-lg font-bold text-slate-900">{stats.currentStock} cái</span>
                   </div>
                   <div className="rounded-lg bg-white p-3 shadow-sm">
@@ -133,7 +133,7 @@ const ProductFinanceModal = ({ isOpen, onClose, product }) => {
                     <span className="mt-1 block text-lg font-bold text-indigo-700">{formatCurrency(stats.currentMac)}</span>
                   </div>
                   <div className="rounded-lg bg-white p-3 shadow-sm">
-                    <span className="block text-xs font-medium text-slate-500">Tổng giá trị tồn kho (Tất cả)</span>
+                    <span className="block text-xs font-medium text-slate-500">Tổng giá trị SP trong kho (Tất cả)</span>
                     <span className="mt-1 block text-lg font-bold text-indigo-700">{formatCurrency(stats.currentStockValue)}</span>
                   </div>
                 </div>
