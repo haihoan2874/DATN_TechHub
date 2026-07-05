@@ -62,6 +62,41 @@ const AIChatbot = () => {
 
   const handleSend = () => sendMessage(input);
 
+  // Hàm render Markdown phân cấp cha - con
+  const renderMessageContent = (content) => {
+    if (!content) return null;
+    return content.split('\n').map((line, i) => {
+      const parts = line.split(/(\*\*.*?\*\*)/g).map((part, j) => {
+        if (part.startsWith('**') && part.endsWith('**')) {
+          // Xóa text-slate-900 để tự kế thừa màu (trắng hoặc đen tùy role)
+          return <strong key={j} className="font-extrabold">{part.slice(2, -2)}</strong>;
+        }
+        return part;
+      });
+
+      const trimmedLine = line.trim();
+      const isListItem = trimmedLine.startsWith('* ') || trimmedLine.startsWith('- ');
+      
+      if (isListItem) {
+        const leadingSpaces = line.match(/^\s*/)[0].length;
+        const isChild = leadingSpaces > 0;
+        const indentClass = isChild ? "ml-5" : "";
+
+        return (
+          <div key={i} className={`flex items-start gap-2 mt-1.5 ${indentClass}`}>
+            <span className={`shrink-0 rounded-full shadow-sm ${isChild ? 'h-1.5 w-1.5 bg-slate-400 mt-1.5' : 'h-2 w-2 bg-blue-500 mt-1.5'}`}></span>
+            <span className="flex-1">
+              {parts.map((p, k) => <React.Fragment key={k}>{typeof p === 'string' ? p.replace(/^\s*[\*\-]\s/, '') : p}</React.Fragment>)}
+            </span>
+          </div>
+        );
+      }
+      
+      // Xóa text-slate-700
+      return <div key={i} className={i > 0 ? "mt-1" : ""}>{parts}</div>;
+    });
+  };
+
   return (
     <div className="fixed inset-x-3 bottom-3 z-[90] flex justify-end sm:inset-x-auto sm:bottom-8 sm:right-8">
       <AnimatePresence>
@@ -159,7 +194,7 @@ const AIChatbot = () => {
                                 ? 'border border-slate-200 bg-white text-slate-800'
                                 : 'bg-slate-950 text-white'
                             }`}>
-                                <div className="whitespace-pre-line">{msg.content}</div>
+                                <div className="text-[13px] sm:text-sm">{renderMessageContent(msg.content)}</div>
                                 {msg.suggestedProducts?.length > 0 && (
                                   <div className="mt-3">
                                     <p className="mb-2 text-[10px] font-black uppercase tracking-[0.16em] text-slate-400">
@@ -170,7 +205,6 @@ const AIChatbot = () => {
                                       <Link
                                         key={product.id}
                                         to={`/product/${product.slug}`}
-                                        onClick={() => setIsOpen(false)}
                                         className="flex gap-2.5 rounded-2xl border border-slate-200 bg-slate-50 p-2 transition-colors hover:border-blue-200 hover:bg-blue-50"
                                       >
                                         <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-white ring-1 ring-slate-100">
@@ -216,16 +250,25 @@ const AIChatbot = () => {
                       )}
 
                       {isLoading && (
-                        <div className="flex justify-start">
-                          <div className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-                            <div className="flex gap-1.5 items-center">
-                              <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                              <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                              <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                            </div>
-                            <span className="text-xs font-bold text-slate-500 ml-1">S-Life AI đang phân tích...</span>
+                        <motion.div 
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          className="flex justify-start"
+                        >
+                          <div className="flex max-w-[94%] gap-2.5 sm:max-w-[88%] flex-row">
+                            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-2xl shadow-sm bg-blue-600 text-white">
+                                <Bot size={16} />
+                             </div>
+                            <div className="flex items-center gap-3 rounded-[1.35rem] border border-slate-200 bg-white px-4 py-3.5 shadow-sm">
+                                <div className="flex gap-1.5 items-center">
+                                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                                </div>
+                                <span className="text-[13px] font-bold text-slate-500">Đang phân tích...</span>
+                             </div>
                           </div>
-                        </div>
+                        </motion.div>
                       )}
                     </div>
 

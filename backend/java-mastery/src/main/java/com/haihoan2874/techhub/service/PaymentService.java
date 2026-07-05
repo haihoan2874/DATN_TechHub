@@ -21,13 +21,13 @@ public class PaymentService {
     private final VnPayConfig vnPayConfig;
 
     /**
-     * Create payment URL for an order.
+     * Khởi tạo đường link thanh toán VNPAY (Gom thông tin đơn hàng và mã hóa chữ ký).
      *
-     * @param request the HttpServletRequest
-     * @param amount the amount to pay
-     * @param orderInfo the order description
-     * @param txnRef the unique transaction reference (usually order ID)
-     * @return the generated VNPay payment URL
+     * @param request HttpServletRequest (dùng để lấy IP thật của người mua theo yêu cầu VNPAY)
+     * @param amount Số tiền cần thanh toán (VNĐ)
+     * @param orderInfo Mô tả nội dung đơn hàng hiển thị trên cổng thanh toán
+     * @param txnRef Mã tham chiếu duy nhất của đơn hàng (TxnRef - Thường là Mã hóa đơn)
+     * @return Đường link thanh toán VNPAY hoàn chỉnh đã kèm ổ khóa chữ ký bảo mật (vnp_SecureHash)
      */
     public String createPaymentUrl(HttpServletRequest request, long amount, String orderInfo, String txnRef) {
         log.info("Creating VNPay payment URL for Ref: {}, Amount: {}", txnRef, amount);
@@ -71,10 +71,11 @@ public class PaymentService {
     }
 
     /**
-     * Verify payment status from callback request.
+     * Kiểm tra trạng thái giao dịch (Kiểm tra kép: Không bị hack & Giao dịch thành công).
+     * Phải thỏa mãn 2 điều kiện: Chữ ký khớp (verifySignature) và Mã phản hồi trả về là "00".
      *
-     * @param requestParams map of parameters from VNPay callback
-     * @return true if payment is successful and signature is valid
+     * @param requestParams Tất cả tham số VNPAY trả về qua URL (Callback hoặc IPN)
+     * @return true nếu thanh toán thành công và an toàn tuyệt đối
      */
     public boolean verifyPayment(Map<String, String> requestParams) {
         boolean isValid = verifySignature(requestParams);
@@ -87,6 +88,13 @@ public class PaymentService {
         return isValid && "00".equals(responseCode) && "00".equals(transactionStatus);
     }
 
+    /**
+     * Xác thực chữ ký điện tử (Chốt chặn bảo mật chống hacker sửa đổi dữ liệu).
+     * Bóc tách chữ ký gốc ra, sau đó tự tính toán lại chữ ký mới từ dữ liệu còn lại xem có khớp nhau không.
+     *
+     * @param requestParams Tất cả tham số VNPAY trả về
+     * @return true nếu chữ ký khớp (Dữ liệu nguyên bản, không bị giả mạo trên đường truyền)
+     */
     public boolean verifySignature(Map<String, String> requestParams) {
         String vnpSecureHash = requestParams.get("vnp_SecureHash");
         if (vnpSecureHash == null) {

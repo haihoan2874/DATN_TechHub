@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import com.haihoan2874.techhub.util.AIQueryParser;
+import com.haihoan2874.techhub.util.AIQueryParser.BudgetRange;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
@@ -28,8 +30,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
- * Service for Google Gemini AI Advisor integration.
- * Provides product recommendations and technical advice.
+ * BỘ NÃO AI CỦA HỆ THỐNG (Triển khai kiến trúc RAG - Sinh văn bản tăng cường truy xuất).
+ * Đây là nơi xử lý toàn bộ logic để biến Google Gemini thành nhân viên tư vấn độc quyền của TechHub.
  */
 @Slf4j
 @Service
@@ -37,9 +39,8 @@ import java.util.stream.Collectors;
 public class AIService {
 
     private static final int MAX_CONTEXT_PRODUCTS = 10;
-    private static final int MAX_KEYWORD_LOOKUPS = 5;
+    private static final int MAX_KEYWORD_LOOKUPS = 8;
     private static final int MAX_CONTEXT_FIELD_LENGTH = 420;
-    private static final Pattern MONEY_PATTERN = Pattern.compile("(\\d+(?:[.,]\\d+)?)\\s*(tr|trieu|trieu dong|triệu|triệu đồng|m|k|nghin|nghìn)?");
     private static final String DEFAULT_UNAVAILABLE_MESSAGE =
             "Hệ thống tư vấn AI hiện chưa khả dụng. Bạn vui lòng thử lại sau hoặc liên hệ nhân viên tư vấn.";
 
@@ -48,12 +49,20 @@ public class AIService {
     private final InventoryService inventoryService;
     private final WebClient geminiWebClient;
 
+    /**
+     * LUỒNG RAG CHÍNH (Trái tim của chức năng AI)
+     * - B2 (Retrieval): Quét câu hỏi, lục Database lấy sản phẩm thật.
+     * - B3 (Augmented): Nhét sản phẩm vừa tìm được vào Prompt (Lệnh ngầm).
+     * - B4 (Generation): Bắn Prompt sang Google Gemini để nó sinh ra câu văn mượt mà.
+     *
+     * @param request Yêu cầu tư vấn của khách
+     * @return Câu trả lời của AI kèm theo Link các sản phẩm có thật trong kho
+     */
     public Mono<AIConsultResponse> getProductAdvice(AIConsultRequest request) {
         String userQuestion = request.getMessage().trim();
         log.info("Requesting AI advice. messageLength={}, productId={}", userQuestion.length(), request.getProductId());
 
         List<Product> contextProducts = findContextProducts(userQuestion, request.getProductId());
-        List<AISuggestedProductResponse> suggestedProducts = toSuggestedProducts(contextProducts);
 
         if (!isGeminiConfigured()) {
             return Mono.just(AIConsultResponse.builder()
@@ -83,10 +92,36 @@ public class AIService {
                             return Mono.error(new IllegalStateException("Gemini API error: " + response.statusCode()));
                         }))
                 .bodyToMono(Map.class)
-                .map(response -> AIConsultResponse.builder()
-                        .answer(parseGeminiText(response))
-                        .suggestedProducts(suggestedProducts)
-                        .build())
+                .map(response -> {
+                    String rawAnswer = parseGeminiText(response);
+                    
+                    // Lọc ra các ID sản phẩm do chính AI đề xuất (Rất dễ giải thích: Bắt AI nhả ra ID, mình Regex lấy lại)
+                    List<UUID> aiSuggestedIds = new ArrayList<>();
+                    Matcher matcher = Pattern.compile("\\[SUGGESTED_IDS:\\s*([^\\]]+)\\]").matcher(rawAnswer);
+                    if (matcher.find()) {
+                        String idsStr = matcher.group(1);
+                        for (String id : idsStr.split(",")) {
+                            try { aiSuggestedIds.add(UUID.fromString(id.trim())); } catch (Exception ignored) {}
+                        }
+                        // Xóa thẻ này khỏi câu trả lời gửi cho user
+                        rawAnswer = rawAnswer.replace(matcher.group(0), "").trim();
+                    }
+
+                    // Nếu AI không chọn gì, mặc định lấy 1 sản phẩm liên quan nhất để chữa cháy
+                    if (aiSuggestedIds.isEmpty() && !contextProducts.isEmpty()) {
+                        aiSuggestedIds.add(contextProducts.getFirst().getId());
+                    }
+
+                    List<AISuggestedProductResponse> suggestedProducts = contextProducts.stream()
+                            .filter(p -> aiSuggestedIds.contains(p.getId()))
+                            .map(this::toSuggestedProductResponse)
+                            .toList();
+
+                    return AIConsultResponse.builder()
+                            .answer(rawAnswer)
+                            .suggestedProducts(suggestedProducts)
+                            .build();
+                })
                 .onErrorResume(e -> {
                     log.error("AI service error: {}", e.getMessage());
                     return Mono.just(AIConsultResponse.builder()
@@ -101,10 +136,15 @@ public class AIService {
         return apiKey != null && !apiKey.isBlank() && !apiKey.startsWith("your-");
     }
 
+    /**
+     * Kỹ thuật Bóc tách từ khóa & Truy xuất Database (Retrieval).
+     * Hàm này là thuốc đặc trị hội chứng "Ảo giác" (Hallucination) của AI:
+     * Dùng Regex bắt lấy giá tiền và từ khóa -> Quét Database lấy đúng sản phẩm TỒN TẠI TRONG KHO.
+     */
     private List<Product> findContextProducts(String userQuestion, UUID productId) {
         LinkedHashMap<UUID, Product> products = new LinkedHashMap<>();
-        BudgetRange budgetRange = parseBudgetRange(userQuestion);
-        List<String> keywords = extractKeywords(userQuestion);
+        BudgetRange budgetRange = AIQueryParser.parseBudgetRange(userQuestion);
+        List<String> keywords = AIQueryParser.extractKeywords(userQuestion, MAX_KEYWORD_LOOKUPS);
 
         if (productId != null) {
             productRepository.findById(productId)
@@ -147,115 +187,40 @@ public class AIService {
             });
         }
 
-        if (products.isEmpty()) {
+        // Nếu khách CÓ nhập yêu cầu (giá/từ khóa) nhưng tìm KHÔNG RA -> Không được lấy bừa!
+        // Chỉ lấy bừa 10 sản phẩm (Fallback) nếu khách chào hỏi chung chung (không có từ khóa, không có budget).
+        if (products.isEmpty() && !budgetRange.hasValue() && keywords.isEmpty()) {
             productRepository.findActiveProductsForAi(MAX_CONTEXT_PRODUCTS).forEach(product -> products.put(product.getId(), product));
         }
 
         return new ArrayList<>(products.values());
     }
 
-    private BudgetRange parseBudgetRange(String message) {
-        String normalized = normalizeForSearch(message);
-        Matcher matcher = MONEY_PATTERN.matcher(normalized);
-
-        if (!matcher.find()) {
-            return BudgetRange.empty();
-        }
-
-        BigDecimal amount = parseMoneyAmount(matcher.group(1), matcher.group(2));
-        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-            return BudgetRange.empty();
-        }
-
-        if (containsAny(normalized, "tren", "hon", "tu ", ">=", ">")) {
-            return new BudgetRange(amount, null);
-        }
-
-        if (containsAny(normalized, "duoi", "toi da", "khong qua", "<=", "<", "max")) {
-            return new BudgetRange(null, amount);
-        }
-
-        if (containsAny(normalized, "tam", "khoang", "co ")) {
-            BigDecimal variance = amount.multiply(BigDecimal.valueOf(0.2)).setScale(0, RoundingMode.HALF_UP);
-            return new BudgetRange(amount.subtract(variance).max(BigDecimal.ZERO), amount.add(variance));
-        }
-
-        return new BudgetRange(null, amount);
-    }
-
-    private BigDecimal parseMoneyAmount(String rawNumber, String rawUnit) {
-        try {
-            BigDecimal value = new BigDecimal(rawNumber.replace(',', '.'));
-            String unit = rawUnit == null ? "" : normalizeForSearch(rawUnit);
-
-            if (unit.contains("tr") || unit.equals("m") || unit.contains("trieu")) {
-                return value.multiply(BigDecimal.valueOf(1_000_000));
-            }
-
-            if (unit.equals("k") || unit.contains("nghin")) {
-                return value.multiply(BigDecimal.valueOf(1_000));
-            }
-
-            if (value.compareTo(BigDecimal.valueOf(1000)) < 0) {
-                return value.multiply(BigDecimal.valueOf(1_000_000));
-            }
-
-            return value;
-        } catch (NumberFormatException e) {
-            return null;
-        }
-    }
-
-    private boolean containsAny(String value, String... candidates) {
-        for (String candidate : candidates) {
-            if (value.contains(candidate)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private List<String> extractKeywords(String message) {
-        List<String> keywords = new ArrayList<>();
-        String normalizedMessage = message.toLowerCase(Locale.ROOT).replaceAll("[^\\p{L}\\p{N}\\s]", " ");
-
-        for (String candidate : List.of(
-                "garmin", "amazfit", "fitbit", "huawei", "polar", "whoop", "coros", "samsung", "apple",
-                "đồng hồ", "smartwatch", "vòng đeo", "tai nghe", "phụ kiện",
-                "chạy bộ", "gps", "bơi", "thể thao", "giấc ngủ", "spo2", "nhịp tim", "pin"
-        )) {
-            if (normalizedMessage.contains(candidate)) {
-                keywords.add(candidate);
-            }
-        }
-
-        for (String token : normalizedMessage.split("\\s+")) {
-            if (keywords.size() >= MAX_KEYWORD_LOOKUPS) {
-                break;
-            }
-            if (token.length() >= 2 && token.matches(".*\\p{L}.*|.*\\d.*") && !keywords.contains(token)) {
-                keywords.add(token);
-            }
-        }
-
-        return keywords.stream().limit(MAX_KEYWORD_LOOKUPS).toList();
-    }
-
+    /**
+     * Kỹ thuật Tiêm Ngữ Cảnh (Prompt Engineering).
+     * Nhốt con AI vào một "chiếc hộp": Ép nó đóng vai nhân viên TechHub và CHỈ ĐƯỢC PHÉP tư vấn dựa trên danh sách hàng vừa tìm thấy.
+     */
     private String buildPrompt(String userQuestion, List<Product> products) {
         String productContext = products.isEmpty()
                 ? "Hiện chưa có sản phẩm phù hợp trong dữ liệu được cung cấp."
                 : buildProductContext(products);
 
         return """
-                Bạn là chuyên gia tư vấn thiết bị sức khỏe S-LIFE (Đồng hồ thông minh, vòng đeo tay, v.v).
-                Nhiệm vụ: Tư vấn nhiệt tình, chi tiết, phân tích chuyên sâu tính năng và so sánh để khách hàng dễ chọn lựa.
+                Bạn là trợ lý AI chuyên nghiệp của cửa hàng đồng hồ thể thao cao cấp S-LIFE (TechHub).
+                Nhiệm vụ: Tư vấn nhiệt tình, chi tiết, phân tích chuyên sâu tính năng sản phẩm HOẶC giải đáp thắc mắc về chính sách mua hàng.
 
-                Quy tắc bắt buộc:
-                - Chỉ tư vấn dựa trên danh sách sản phẩm S-LIFE được cung cấp bên dưới.
-                - KHÔNG bịa tên sản phẩm, thông số. KHÔNG tư vấn y tế.
-                - Nếu khách hỏi tên sản phẩm viết tắt (VD: "Polar M3", "X2"), hãy chủ động hiểu và đối chiếu với các phiên bản đầy đủ (VD: "Polar Vantage M3", "Polar Grit X2 Pro") có trong danh sách để tư vấn, không được trả lời là "không có".
-                - Tập trung làm nổi bật điểm mạnh, thông số (Specs) và Tính năng (Features) của các sản phẩm gợi ý.
-                - Tư vấn chi tiết, tự nhiên như một chuyên gia sale cao cấp.
+                THÔNG TIN CHÍNH SÁCH CỬA HÀNG S-LIFE:
+                - Thanh toán: Hỗ trợ thanh toán tiền mặt khi nhận hàng (COD) hoặc thanh toán trực tuyến an toàn qua cổng VNPAY.
+                - Giao hàng: Giao hàng tận nơi toàn quốc.
+                - Bảo hành & Đổi trả: Cam kết sản phẩm chính hãng, hỗ trợ đổi trả và bảo hành theo quy định của hãng.
+                - Nếu khách hỏi về chính sách không có ở trên, hãy đáp lịch sự và mời khách liên hệ hotline để được hỗ trợ.
+
+                QUY TẮC TƯ VẤN SẢN PHẨM (NẾU KHÁCH HỎI MUA HÀNG):
+                - Chỉ tư vấn dựa trên danh sách sản phẩm ĐƯỢC CUNG CẤP bên dưới.
+                - KHÔNG ĐƯỢC bịa đặt thông số, tưởng tượng, hoặc khuyên mua các hãng/mẫu mã không có trong danh sách.
+                - DÙNG MARKDOWN gạch đầu dòng, trình bày thật NGẮN GỌN, đi thẳng vào vấn đề. CẤM viết văn xuôi dài dòng lan man.
+                - Nếu khách hỏi sản phẩm/giá tiền mà danh sách cung cấp không có: Trả lời ngắn gọn là kho hiện không có sản phẩm phù hợp.
+                - [QUAN TRỌNG NHẤT]: Nếu khách yêu cầu tư vấn mua hàng và bạn tìm thấy sản phẩm phù hợp trong danh sách để gợi ý, bạn BẮT BUỘC phải in ra dòng này ở cuối cùng: `[SUGGESTED_IDS: <id-1>, <id-2>]`. Nếu hỏi chính sách hoặc không có sản phẩm, TUYỆT ĐỐI KHÔNG ĐƯỢC in dòng này.
 
                 Sản phẩm S-LIFE hiện có:
                 %s
@@ -283,18 +248,15 @@ public class AIService {
         return "Xin lỗi, tôi chưa thể tạo câu trả lời phù hợp lúc này. Bạn vui lòng thử lại với nhu cầu cụ thể hơn.";
     }
 
-    private List<AISuggestedProductResponse> toSuggestedProducts(List<Product> products) {
-        return products.stream()
-                .limit(4)
-                .map(product -> AISuggestedProductResponse.builder()
-                        .id(product.getId())
-                        .name(product.getName())
-                        .slug(product.getSlug())
-                        .price(product.getPrice())
-                        .imageUrl(product.getImageUrl())
-                        .stockQuantity(inventoryService.getAvailableStock(product.getId()))
-                        .build())
-                .toList();
+    private AISuggestedProductResponse toSuggestedProductResponse(Product product) {
+        return AISuggestedProductResponse.builder()
+                .id(product.getId())
+                .name(product.getName())
+                .slug(product.getSlug())
+                .price(product.getPrice())
+                .imageUrl(product.getImageUrl())
+                .stockQuantity(inventoryService.getAvailableStock(product.getId()))
+                .build();
     }
 
     private String buildProductContext(List<Product> products) {
@@ -304,14 +266,14 @@ public class AIService {
                 .map(product -> {
                     String price = product.getPrice() == null ? "Chưa cập nhật" : currencyFormat.format(product.getPrice()) + " VND";
                     int stock = inventoryService.getAvailableStock(product.getId());
-                    return "- %s | Giá: %s | Tồn kho: %s | Mô tả: %s | Thông số: %s | Điểm nổi bật: %s"
+                    return "ID: %s | Tên: %s | Giá: %s | Tồn kho: %s | Mô tả: %s | Thông số: %s"
                             .formatted(
+                                    product.getId(),
                                     product.getName(),
                                     price,
                                     stock,
                                     compact(product.getDescription()),
-                                    compact(product.getSpecs()),
-                                    compact(product.getFeatures())
+                                    compact(product.getSpecs())
                             );
                 })
                 .collect(Collectors.joining("\n"));
@@ -328,27 +290,5 @@ public class AIService {
         }
 
         return normalized.substring(0, MAX_CONTEXT_FIELD_LENGTH) + "...";
-    }
-
-    private String normalizeForSearch(String value) {
-        if (value == null) {
-            return "";
-        }
-
-        String normalized = Normalizer.normalize(value, Normalizer.Form.NFD)
-                .replaceAll("\\p{M}", "")
-                .toLowerCase(Locale.ROOT);
-
-        return normalized.replaceAll("[^a-z0-9<>=>=.,\\s]", " ").replaceAll("\\s+", " ").trim();
-    }
-
-    private record BudgetRange(BigDecimal minPrice, BigDecimal maxPrice) {
-        static BudgetRange empty() {
-            return new BudgetRange(null, null);
-        }
-
-        boolean hasValue() {
-            return minPrice != null || maxPrice != null;
-        }
     }
 }

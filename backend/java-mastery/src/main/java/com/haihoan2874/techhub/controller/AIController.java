@@ -30,10 +30,11 @@ public class AIController {
     private final AIService aiService;
 
     /**
-     * Ask the AI advisor for product recommendations or specifications.
+     * BƯỚC 1: TIẾP NHẬN YÊU CẦU (Nhận câu hỏi từ Frontend).
+     * API này hứng câu chat của khách hàng. Nó đóng vai trò như cô lễ tân ghi nhận nhu cầu của khách.
      *
-     * @param request the consultation request
-     * @return Mono with the AI response
+     * @param request Chứa đoạn chat của khách (VD: "Tìm cho tôi đồng hồ 10 triệu để chạy bộ")
+     * @return Dữ liệu JSON chứa câu trả lời mượt mà của AI và Danh sách link sản phẩm gợi ý
      */
     @PostMapping("/consult")
     @Operation(summary = "Ask S-Life AI Advisor", description = "Send a question to the S-Life AI Advisor for health tech recommendations")

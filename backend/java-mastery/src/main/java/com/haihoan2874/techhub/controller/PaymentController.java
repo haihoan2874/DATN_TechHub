@@ -35,12 +35,13 @@ public class PaymentController {
     private String frontendUrl;
 
     /**
-     * Create VNPay payment URL for an order.
+     * CỬA 1: Xin Link Thanh Toán (Frontend gọi vào đây).
+     * Nhận ID Đơn hàng và Số tiền, nhờ Quản đốc (PaymentService) tạo link VNPAY và trả về cho React.
      *
-     * @param request the HttpServletRequest
-     * @param amount the amount to pay (in VND)
-     * @param orderId the order ID
-     * @return the generated payment URL
+     * @param request HttpServletRequest (Lấy IP khách hàng)
+     * @param amount Số tiền cần thanh toán (VNĐ)
+     * @param orderId Mã đơn hàng
+     * @return URL thanh toán VNPAY (Frontend sẽ tự động mở URL này)
      */
     @SecurityRequirement(name = "bearer")
     @GetMapping("/vnpay-create")
@@ -59,14 +60,12 @@ public class PaymentController {
     }
 
     /**
-     * VNPay callback handler.
+     * CỬA 2: Đón khách về (VNPay Return URL / Callback).
+     * Trình duyệt của khách sẽ tự động bay về API này sau khi thanh toán xong trên web VNPAY.
+     * Nhiệm vụ chính: Xác minh chữ ký, Hủy đơn nếu khách tắt ngang, và Bẻ lái (Redirect 302) về Frontend để hiện giao diện Cảm ơn / Báo lỗi.
      *
-     * @param queryParams map of parameters from VNPay callback
-     * @return payment status message
-     */
-    /**
-     * VNPay gọi về URL này sau khi người dùng hoàn tất thanh toán trên cổng VNPay.
-     * Xác minh chữ ký, cập nhật đơn hàng, rồi redirect 302 về giao diện Frontend.
+     * @param queryParams Toàn bộ tham số VNPAY trả về trên URL
+     * @return Redirect thẳng về màn hình Frontend (Không trả về JSON)
      */
     @GetMapping("/vnpay-callback")
     @Operation(summary = "VNPay callback", description = "Xử lý kết quả thanh toán từ VNPay và redirect về Frontend")
@@ -100,6 +99,14 @@ public class PaymentController {
                 .build();
     }
 
+    /**
+     * CỬA 3: Cửa hậu bí mật (VNPay IPN - Server to Server).
+     * Server của VNPAY sẽ tự động gọi ngầm vào API này (Khách hàng không hề biết).
+     * Đây là TRÁI TIM của hệ thống: Đảm bảo cập nhật trạng thái đơn hàng và trừ kho an toàn 100% kể cả khi khách rớt mạng.
+     *
+     * @param queryParams Dữ liệu VNPAY gửi sang
+     * @return Trả về JSON {"RspCode":"00"} cho VNPAY biết là đã nhận được tin báo
+     */
     @GetMapping("/vnpay-ipn")
     @Operation(summary = "VNPay IPN", description = "Server-to-server endpoint để VNPay cập nhật kết quả thanh toán")
     public ResponseEntity<Map<String, String>> vnpayIpn(@RequestParam Map<String, String> queryParams) {
