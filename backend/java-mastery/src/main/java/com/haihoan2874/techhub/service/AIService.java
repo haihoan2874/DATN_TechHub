@@ -107,11 +107,7 @@ public class AIService {
                         rawAnswer = rawAnswer.replace(matcher.group(0), "").trim();
                     }
 
-                    // Nếu AI không chọn gì, mặc định lấy 1 sản phẩm liên quan nhất để chữa cháy
-                    if (aiSuggestedIds.isEmpty() && !contextProducts.isEmpty()) {
-                        aiSuggestedIds.add(contextProducts.getFirst().getId());
-                    }
-
+                    // Nếu AI không chọn gì, ta tôn trọng và trả về danh sách gợi ý trống
                     List<AISuggestedProductResponse> suggestedProducts = contextProducts.stream()
                             .filter(p -> aiSuggestedIds.contains(p.getId()))
                             .map(this::toSuggestedProductResponse)
@@ -188,9 +184,12 @@ public class AIService {
         }
 
         // Nếu khách CÓ nhập yêu cầu (giá/từ khóa) nhưng tìm KHÔNG RA -> Không được lấy bừa!
-        // Chỉ lấy bừa 10 sản phẩm (Fallback) nếu khách chào hỏi chung chung (không có từ khóa, không có budget).
+        // Chỉ lấy bừa 10 sản phẩm (Fallback) nếu khách chào hỏi chung chung NHƯNG CÓ Ý ĐỊNH MUA HÀNG.
         if (products.isEmpty() && !budgetRange.hasValue() && keywords.isEmpty()) {
-            productRepository.findActiveProductsForAi(MAX_CONTEXT_PRODUCTS).forEach(product -> products.put(product.getId(), product));
+            boolean wantsSuggestion = userQuestion.toLowerCase().matches(".*(tư vấn|gợi ý|mua|xem|top|hot|bán chạy|đồng hồ|smartwatch).*");
+            if (wantsSuggestion) {
+                productRepository.findActiveProductsForAi(MAX_CONTEXT_PRODUCTS).forEach(product -> products.put(product.getId(), product));
+            }
         }
 
         return new ArrayList<>(products.values());
@@ -217,10 +216,11 @@ public class AIService {
 
                 QUY TẮC TƯ VẤN SẢN PHẨM (NẾU KHÁCH HỎI MUA HÀNG):
                 - Chỉ tư vấn dựa trên danh sách sản phẩm ĐƯỢC CUNG CẤP bên dưới.
-                - KHÔNG ĐƯỢC bịa đặt thông số, tưởng tượng, hoặc khuyên mua các hãng/mẫu mã không có trong danh sách.
-                - DÙNG MARKDOWN gạch đầu dòng, trình bày thật NGẮN GỌN, đi thẳng vào vấn đề. CẤM viết văn xuôi dài dòng lan man.
-                - Nếu khách hỏi sản phẩm/giá tiền mà danh sách cung cấp không có: Trả lời ngắn gọn là kho hiện không có sản phẩm phù hợp.
-                - [QUAN TRỌNG NHẤT]: Nếu khách yêu cầu tư vấn mua hàng và bạn tìm thấy sản phẩm phù hợp trong danh sách để gợi ý, bạn BẮT BUỘC phải in ra dòng này ở cuối cùng: `[SUGGESTED_IDS: <id-1>, <id-2>]`. Nếu hỏi chính sách hoặc không có sản phẩm, TUYỆT ĐỐI KHÔNG ĐƯỢC in dòng này.
+                - KHÁCH HAY GÕ SAI CHÍNH TẢ HOẶC THIẾU CHỮ (Ví dụ: khách gõ "polar pacer carbon gray", hãy tự hiểu là "Polar Pacer Pro Carbon Gray"). Bạn phải thông minh nhận diện sản phẩm gần giống nhất trong danh sách để tư vấn!
+                - DÙNG MARKDOWN gạch đầu dòng, trình bày thật NGẮN GỌN. CẤM viết văn xuôi dài dòng lan man.
+                - Nếu khách hỏi những câu bâng quơ, đánh đố (như hỏi giá nhập, hỏi đối thủ): Hãy từ chối khéo léo và bẻ lái về việc tư vấn đồng hồ thể thao.
+                - [QUAN TRỌNG NHẤT]: NẾU VÀ CHỈ NẾU bạn trực tiếp tư vấn và khen ngợi một sản phẩm CỤ THỂ trong danh sách cung cấp, bạn MỚI ĐƯỢC in ra dòng `[SUGGESTED_IDS: <id-1>]` ở cuối cùng. 
+                - Nếu khách chỉ hỏi thông tin chung chung, hỏi phần mềm, hỏi kết nối, hoặc danh sách cung cấp không có: TUYỆT ĐỐI KHÔNG in ra thẻ `[SUGGESTED_IDS]`. Trả lời ngắn gọn và dừng lại.
 
                 Sản phẩm S-LIFE hiện có:
                 %s

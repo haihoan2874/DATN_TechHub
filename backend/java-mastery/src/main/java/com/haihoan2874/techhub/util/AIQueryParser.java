@@ -40,15 +40,20 @@ public class AIQueryParser {
             return BudgetRange.empty();
         }
 
-        if (containsAny(normalized, "tren", "hon", "tu ", ">=", ">")) {
+        // Loại bỏ cụm từ "tu van" và "tu dong" để tránh nhận diện nhầm với "tu " (từ)
+        String checkStr = normalized.replaceAll("\\btu\\s+van\\b", "")
+                .replaceAll("\\btu\\s+dong\\b", "")
+                .replaceAll("\\s+", " ");
+
+        if (containsAny(checkStr, "tren", "hon", "tu ", ">=", ">")) {
             return new BudgetRange(amount, null);
         }
 
-        if (containsAny(normalized, "duoi", "toi da", "khong qua", "<=", "<", "max")) {
+        if (containsAny(checkStr, "duoi", "toi da", "khong qua", "<=", "<", "max")) {
             return new BudgetRange(null, amount);
         }
 
-        if (containsAny(normalized, "tam", "khoang", "co ")) {
+        if (containsAny(checkStr, "tam", "khoang", "co ")) {
             BigDecimal variance = amount.multiply(BigDecimal.valueOf(0.2)).setScale(0, RoundingMode.HALF_UP);
             return new BudgetRange(amount.subtract(variance).max(BigDecimal.ZERO), amount.add(variance));
         }
@@ -123,6 +128,9 @@ public class AIQueryParser {
         if (value == null) {
             return "";
         }
+
+        // Thay thế thủ công đ/Đ để giữ lại ký tự 'd' trước khi NFD loại bỏ dấu
+        value = value.replace('đ', 'd').replace('Đ', 'D');
 
         String normalized = Normalizer.normalize(value, Normalizer.Form.NFD)
                 .replaceAll("\\p{M}", "")
