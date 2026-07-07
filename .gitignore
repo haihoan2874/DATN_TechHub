@@ -61,3 +61,7 @@ backend/java-mastery/uploads/
 *.cjs
 *.sql
 .agent/
+*.xlsx
+*.xls
+*.csv
+
