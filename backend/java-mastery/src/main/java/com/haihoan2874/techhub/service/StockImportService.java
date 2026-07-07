@@ -1,12 +1,17 @@
 package com.haihoan2874.techhub.service;
 
 import com.haihoan2874.techhub.dto.request.StockImportRequest;
+import com.haihoan2874.techhub.dto.response.ProductItemResponse;
 import com.haihoan2874.techhub.dto.response.StockImportResponse;
 import com.haihoan2874.techhub.model.Inventory;
 import com.haihoan2874.techhub.model.Product;
+import com.haihoan2874.techhub.model.ProductItem;
 import com.haihoan2874.techhub.model.StockImport;
+import com.haihoan2874.techhub.model.Order;
 import com.haihoan2874.techhub.model.User;
 import com.haihoan2874.techhub.repository.InventoryRepository;
+import com.haihoan2874.techhub.repository.OrderRepository;
+import com.haihoan2874.techhub.repository.ProductItemRepository;
 import com.haihoan2874.techhub.repository.ProductRepository;
 import com.haihoan2874.techhub.repository.StockImportRepository;
 import com.haihoan2874.techhub.repository.UserRepository;
@@ -20,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -35,6 +41,8 @@ public class StockImportService {
     private final ProductRepository productRepository;
     private final InventoryRepository inventoryRepository;
     private final UserRepository userRepository;
+    private final ProductItemRepository productItemRepository;
+    private final OrderRepository orderRepository;
 
     /**
      * Tạo phiếu nhập kho mới.
@@ -100,6 +108,18 @@ public class StockImportService {
         product.setCostPrice(newAvgCost);
         productRepository.save(product);
 
+        // 5. Tự động sinh danh sách mã IMEI/Serial đích danh cho đợt nhập hàng này (Sửa Phẫu Thuật)
+        for (int i = 1; i <= request.getQuantity(); i++) {
+            String serialNo = "IMEI-" + (product.getSlug() != null ? product.getSlug().toUpperCase() : "PROD") 
+                    + "-" + (System.currentTimeMillis() % 1000000) + "-" + i;
+            productItemRepository.save(ProductItem.builder()
+                    .productId(product.getId())
+                    .stockImportId(stockImport.getId())
+                    .serialNumber(serialNo)
+                    .status("AVAILABLE")
+                    .build());
+        }
+
         log.info("Stock imported: product={}, addedQty={}, importPrice={}, newAvgCost={}",
                 product.getName(), request.getQuantity(), request.getImportPrice(), newAvgCost);
 
@@ -155,6 +175,50 @@ public class StockImportService {
                 .importedAt(si.getImportedAt())
                 .createdBy(si.getCreatedBy())
                 .createdAt(si.getCreatedAt())
+                .build();
+    }
+
+    /**
+     * Lấy danh sách IMEI/Serial theo đợt nhập kho
+     */
+    public List<ProductItemResponse> getSerialNumbersByImportId(UUID stockImportId) {
+        List<ProductItem> items = productItemRepository.findByStockImportIdOrderByCreatedAtAsc(stockImportId);
+        List<UUID> productIds = items.stream().map(ProductItem::getProductId).distinct().collect(Collectors.toList());
+        Map<UUID, String> productNameMap = productRepository.findAllById(productIds).stream()
+                .collect(Collectors.toMap(Product::getId, Product::getName, (a, b) -> a));
+        List<UUID> orderIds = items.stream().map(ProductItem::getOrderId).filter(Objects::nonNull).distinct().collect(Collectors.toList());
+        Map<UUID, String> orderNumberMap = orderRepository.findAllById(orderIds).stream()
+                .collect(Collectors.toMap(Order::getId, Order::getOrderNumber, (a, b) -> a));
+        return items.stream()
+                .map(item -> toProductItemResponse(item, productNameMap.getOrDefault(item.getProductId(), "Unknown"), orderNumberMap.get(item.getOrderId())))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Lấy danh sách IMEI/Serial theo sản phẩm
+     */
+    public List<ProductItemResponse> getSerialNumbersByProductId(UUID productId) {
+        List<ProductItem> items = productItemRepository.findByProductIdOrderByCreatedAtAsc(productId);
+        String productName = productRepository.findById(productId).map(Product::getName).orElse("Unknown");
+        List<UUID> orderIds = items.stream().map(ProductItem::getOrderId).filter(Objects::nonNull).distinct().collect(Collectors.toList());
+        Map<UUID, String> orderNumberMap = orderRepository.findAllById(orderIds).stream()
+                .collect(Collectors.toMap(Order::getId, Order::getOrderNumber, (a, b) -> a));
+        return items.stream()
+                .map(item -> toProductItemResponse(item, productName, orderNumberMap.get(item.getOrderId())))
+                .collect(Collectors.toList());
+    }
+
+    private ProductItemResponse toProductItemResponse(ProductItem item, String productName, String orderNumber) {
+        return ProductItemResponse.builder()
+                .id(item.getId())
+                .productId(item.getProductId())
+                .productName(productName)
+                .stockImportId(item.getStockImportId())
+                .serialNumber(item.getSerialNumber())
+                .status(item.getStatus())
+                .orderId(item.getOrderId())
+                .orderNumber(orderNumber)
+                .createdAt(item.getCreatedAt())
                 .build();
     }
 }

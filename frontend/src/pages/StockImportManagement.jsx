@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
-import { Plus, RefreshCw, PackagePlus, History, X, Search, CheckCircle2, ChevronLeft, ChevronRight, ArrowUpDown, TrendingUp, Box, DollarSign, Filter } from 'lucide-react';
+import { Plus, RefreshCw, PackagePlus, History, X, Search, CheckCircle2, ChevronLeft, ChevronRight, ArrowUpDown, TrendingUp, Box, DollarSign, Filter, Barcode, ShieldCheck, Copy, ShoppingBag, Tag, Clock, Info } from 'lucide-react';
 import adminService from '../services/adminService';
 import PageShell from '../components/layout/PageShell';
 import PageHeader from '../components/layout/PageHeader';
@@ -16,6 +16,7 @@ const tableColumns = [
   { key: 'totalPrice', label: 'Thành tiền', className: 'text-right', sortable: true },
   { key: 'note', label: 'Ghi chú', sortable: false },
   { key: 'importedAt', label: 'Ngày nhập', sortable: true },
+  { key: 'action', label: 'IMEI', className: 'text-center', sortable: false },
 ];
 
 const fmtVND = (n) =>
@@ -100,7 +101,7 @@ const ImportModal = ({ products, onClose, onSuccess }) => {
 
   const modalContent = (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/40 backdrop-blur-md p-4">
-      <div className="w-full max-w-lg rounded-2xl bg-white shadow-2xl">
+      <div className="w-full max-w-lg max-h-[85dvh] overflow-y-auto rounded-2xl bg-white shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
           <div className="flex items-center gap-3">
@@ -254,12 +255,352 @@ const ImportModal = ({ products, onClose, onSuccess }) => {
   return createPortal(modalContent, document.body);
 };
 
+// ───────── Serial/IMEI & Định Danh Vòng Đời Modal (Sửa Phẫu Thuật Tối Ưu) ─────────
+const SerialModal = ({ importItem, onClose }) => {
+  const [serials, setSerials] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filterStatus, setFilterStatus] = useState('ALL');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    if (importItem?.id) {
+      adminService.getSerialNumbersByImport(importItem.id)
+        .then(res => setSerials(res || []))
+        .catch(() => toast.error('Không thể tải danh sách IMEI/Serial'))
+        .finally(() => setLoading(false));
+    }
+  }, [importItem]);
+
+  const soldCount = useMemo(() => serials.filter(s => s.status === 'SOLD').length, [serials]);
+  const availableCount = useMemo(() => serials.filter(s => s.status === 'AVAILABLE').length, [serials]);
+  const reservedCount = useMemo(() => serials.filter(s => s.status === 'RESERVED').length, [serials]);
+  const soldPercent = useMemo(() => serials.length > 0 ? Math.round((soldCount / serials.length) * 100) : 0, [serials, soldCount]);
+  const availablePercent = useMemo(() => serials.length > 0 ? Math.round((availableCount / serials.length) * 100) : 0, [serials, availableCount]);
+  const reservedPercent = useMemo(() => serials.length > 0 ? Math.round((reservedCount / serials.length) * 100) : 0, [serials, reservedCount]);
+
+  // Tính toán hiệu quả kinh doanh lô hàng (ERP Batch Financial KPI - Option A)
+  const importPrice = Number(importItem?.importPrice || 0);
+  const estSellingPrice = importPrice > 0 ? importPrice / 0.7 : 0;
+  const cogsSold = soldCount * importPrice;
+  const revenueSold = soldCount * estSellingPrice;
+  const grossProfit = revenueSold - cogsSold;
+  const profitMarginPercent = revenueSold > 0 ? ((grossProfit / revenueSold) * 100).toFixed(1) : '0.0';
+
+  const filteredSerials = useMemo(() => {
+    return serials.filter(sn => {
+      const matchStatus = filterStatus === 'ALL' || sn.status === filterStatus;
+      const matchQuery = !searchQuery || 
+        sn.serialNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        sn.orderNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        sn.orderId?.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchStatus && matchQuery;
+    });
+  }, [serials, filterStatus, searchQuery]);
+
+  const handleCopy = (text, label) => {
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+    toast.success(`Đã sao chép ${label || 'IMEI'}: ${text}`);
+  };
+
+  const modalContent = (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm animate-in fade-in">
+      <div className="w-full max-w-3xl max-h-[88dvh] overflow-y-auto rounded-3xl bg-white p-4 sm:p-6 shadow-2xl transition-all">
+        {/* Header */}
+        <div className="mb-4 flex items-center justify-between border-b border-slate-100 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 text-blue-600 shadow-sm">
+              <Barcode size={24} />
+            </div>
+            <div>
+              <h3 className="text-lg font-black text-slate-900">Chi tiết Lô nhập & Quản lý Vòng đời IMEI</h3>
+              <p className="text-xs font-semibold text-slate-500">
+                Lô: <span className="text-slate-800 font-bold">{importItem.productName}</span> (+{importItem.quantity} SP) • Ngày nhập: {fmtDate(importItem.importedAt)}
+              </p>
+            </div>
+          </div>
+          <button onClick={onClose} className="rounded-xl p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors">
+            <X size={20} />
+          </button>
+        </div>
+
+        {/* Thống kê lô hàng (Summary Banner - Option A Chuẩn ERP) */}
+        {!loading && serials.length > 0 && (
+          <div className="mb-5 rounded-2xl bg-gradient-to-r from-slate-900 to-slate-800 p-4 text-white shadow-md">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 flex-1 text-left">
+                <div className="border-b pb-2 sm:border-b-0 sm:pb-0 sm:border-r border-slate-700/80 pr-2">
+                  <p className="text-[10px] font-black uppercase tracking-wider text-slate-400">Tổng Lô Nhập</p>
+                  <p className="text-xl font-black text-white mt-0.5">{serials.length} <span className="text-xs font-normal text-slate-300">máy (100%)</span></p>
+                </div>
+                <div className="border-b pb-2 sm:border-b-0 sm:pb-0 lg:border-r border-slate-700/80 pr-2">
+                  <p className="text-[10px] font-black uppercase tracking-wider text-emerald-400">Sẵn trong kho</p>
+                  <p className="text-xl font-black text-emerald-300 mt-0.5">{availableCount} <span className="text-xs font-normal text-emerald-200">({availablePercent}%)</span></p>
+                </div>
+                <div className="border-b pb-2 sm:border-b-0 sm:pb-0 sm:border-r border-slate-700/80 pr-2">
+                  <p className="text-[10px] font-black uppercase tracking-wider text-amber-400">Đang giữ / Chờ giao</p>
+                  <p className="text-xl font-black text-amber-300 mt-0.5">{reservedCount} <span className="text-xs font-normal text-amber-200">({reservedPercent}%)</span></p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-wider text-rose-400">Đã bán (Xuất kho)</p>
+                  <p className="text-xl font-black text-rose-300 mt-0.5">{soldCount} <span className="text-xs font-normal text-rose-200">({soldPercent}%)</span></p>
+                </div>
+              </div>
+            </div>
+            {/* Thanh tiến độ 3 màu phân bổ kho hàng */}
+            <div className="mt-3.5 flex h-2.5 w-full overflow-hidden rounded-full bg-slate-700/60 p-0.5 gap-0.5">
+              {availableCount > 0 && (
+                <div 
+                  className="h-full rounded-l-full bg-emerald-500 transition-all duration-500" 
+                  style={{ width: `${(availableCount / serials.length) * 100}%` }}
+                  title={`Sẵn kho: ${availableCount} máy (${availablePercent}%)`}
+                />
+              )}
+              {reservedCount > 0 && (
+                <div 
+                  className="h-full bg-amber-500 transition-all duration-500" 
+                  style={{ width: `${(reservedCount / serials.length) * 100}%` }}
+                  title={`Đang giữ / Chờ giao: ${reservedCount} máy (${reservedPercent}%)`}
+                />
+              )}
+              {soldCount > 0 && (
+                <div 
+                  className="h-full rounded-r-full bg-rose-500 transition-all duration-500" 
+                  style={{ width: `${(soldCount / serials.length) * 100}%` }}
+                  title={`Đã bán: ${soldCount} máy (${soldPercent}%)`}
+                />
+              )}
+            </div>
+
+            {/* Thẻ Kế toán Quản trị Lô hàng (Executive Batch Financial KPI - Option A) */}
+            <div className="mt-4 pt-3.5 border-t border-slate-700/80 grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {/* Box 1: Vốn hàng đã bán */}
+              <div className="relative group flex items-center gap-2.5 rounded-xl bg-slate-800/80 p-2.5 border border-slate-700/60 cursor-help transition-all hover:border-slate-500/80 hover:bg-slate-800">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-700 text-slate-300">
+                  <Box size={18} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1">
+                    <p className="text-[10px] font-black uppercase tracking-wider text-slate-400">Vốn hàng đã bán</p>
+                    <Info size={12} className="text-slate-400 shrink-0 group-hover:text-white transition-colors" />
+                  </div>
+                  <p className="text-sm font-black text-white">{fmtVND(cogsSold)}</p>
+                </div>
+
+                {/* Popover giải thích công thức */}
+                <div className="absolute left-0 bottom-full mb-2 hidden group-hover:block z-50 w-64 max-w-[calc(100vw-32px)] rounded-xl bg-slate-900/95 p-3 text-xs text-slate-200 shadow-2xl border border-slate-700 backdrop-blur-md pointer-events-none transition-all animate-in fade-in zoom-in-95 duration-150">
+                  <p className="font-bold text-white border-b border-slate-700/80 pb-1.5 mb-2 flex items-center gap-1.5">
+                    <Info size={14} className="text-blue-400" /> Công thức Vốn đã bán
+                  </p>
+                  <div className="space-y-1.5 text-[11px] leading-relaxed">
+                    <div className="flex justify-between"><span className="text-slate-400">Số lượng đã bán:</span> <span className="font-semibold text-white">{soldCount} máy</span></div>
+                    <div className="flex justify-between"><span className="text-slate-400">Giá vốn 1 máy:</span> <span className="font-semibold text-white">{fmtVND(importPrice)}</span></div>
+                    <div className="pt-1.5 mt-1 border-t border-slate-800/80 flex justify-between font-bold text-slate-100">
+                      <span>Tổng tiền vốn:</span>
+                      <span className="text-emerald-400">{fmtVND(cogsSold)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Box 2: Doanh thu bán ra */}
+              <div className="relative group flex items-center gap-2.5 rounded-xl bg-slate-800/80 p-2.5 border border-slate-700/60 cursor-help transition-all hover:border-blue-500/80 hover:bg-slate-800">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-900/50 text-blue-400">
+                  <DollarSign size={18} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1">
+                    <p className="text-[10px] font-black uppercase tracking-wider text-blue-300">Doanh thu bán ra</p>
+                    <Info size={12} className="text-blue-400 shrink-0 group-hover:text-white transition-colors" />
+                  </div>
+                  <p className="text-sm font-black text-blue-200">{fmtVND(revenueSold)}</p>
+                </div>
+
+                {/* Popover giải thích công thức */}
+                <div className="absolute left-0 sm:left-auto sm:right-0 bottom-full mb-2 hidden group-hover:block z-50 w-64 max-w-[calc(100vw-32px)] rounded-xl bg-slate-900/95 p-3 text-xs text-slate-200 shadow-2xl border border-slate-700 backdrop-blur-md pointer-events-none transition-all animate-in fade-in zoom-in-95 duration-150">
+                  <p className="font-bold text-white border-b border-slate-700/80 pb-1.5 mb-2 flex items-center gap-1.5">
+                    <Info size={14} className="text-blue-400" /> Công thức Doanh thu
+                  </p>
+                  <div className="space-y-1.5 text-[11px] leading-relaxed">
+                    <div className="flex justify-between"><span className="text-slate-400">Số lượng đã bán:</span> <span className="font-semibold text-white">{soldCount} máy</span></div>
+                    <div className="flex justify-between"><span className="text-slate-400">Giá bán thực tế (1 SP):</span> <span className="font-semibold text-white">{fmtVND(estSellingPrice)}</span></div>
+                    <div className="pt-1.5 mt-1 border-t border-slate-800/80 flex justify-between font-bold text-slate-100">
+                      <span>Tổng doanh thu:</span>
+                      <span className="text-blue-400">{fmtVND(revenueSold)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Box 3: Lợi nhuận gộp */}
+              <div className="relative group flex items-center gap-2.5 rounded-xl bg-emerald-950/40 p-2.5 border border-emerald-800/50 cursor-help transition-all hover:border-emerald-500/80 hover:bg-emerald-950/60">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-900/60 text-emerald-400">
+                  <TrendingUp size={18} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1">
+                    <p className="text-[10px] font-black uppercase tracking-wider text-emerald-400">Lợi nhuận gộp</p>
+                    <Info size={12} className="text-emerald-400 shrink-0 group-hover:text-white transition-colors" />
+                  </div>
+                  <p className="text-sm font-black text-emerald-300">
+                    +{fmtVND(grossProfit)} <span className="text-xs font-semibold text-emerald-400">({profitMarginPercent}%)</span>
+                  </p>
+                </div>
+
+                {/* Popover giải thích công thức */}
+                <div className="absolute right-0 bottom-full mb-2 hidden group-hover:block z-50 w-64 max-w-[calc(100vw-32px)] rounded-xl bg-slate-900/95 p-3 text-xs text-slate-200 shadow-2xl border border-slate-700 backdrop-blur-md pointer-events-none transition-all animate-in fade-in zoom-in-95 duration-150">
+                  <p className="font-bold text-white border-b border-slate-700/80 pb-1.5 mb-2 flex items-center gap-1.5">
+                    <Info size={14} className="text-emerald-400" /> Công thức Lợi nhuận
+                  </p>
+                  <div className="space-y-1.5 text-[11px] leading-relaxed">
+                    <div className="flex justify-between"><span className="text-slate-400">Doanh thu bán ra:</span> <span className="font-semibold text-blue-300">{fmtVND(revenueSold)}</span></div>
+                    <div className="flex justify-between"><span className="text-slate-400">Trừ Vốn đã bán:</span> <span className="font-semibold text-rose-400">-{fmtVND(cogsSold)}</span></div>
+                    <div className="pt-1.5 mt-1 border-t border-slate-800/80 flex justify-between font-bold text-slate-100">
+                      <span>Lãi thuần ({profitMarginPercent}%):</span>
+                      <span className="text-emerald-400">+{fmtVND(grossProfit)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Bộ lọc và Tìm kiếm */}
+        <div className="mb-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-1.5 overflow-x-auto rounded-xl bg-slate-100 p-1 text-xs font-bold">
+            {[
+              { id: 'ALL', label: `Tất cả (${serials.length})`, activeColor: 'bg-white text-slate-900 shadow-sm' },
+              { id: 'AVAILABLE', label: `Sẵn kho (${availableCount})`, activeColor: 'bg-emerald-600 text-white shadow-sm' },
+              { id: 'SOLD', label: `Đã bán (${soldCount})`, activeColor: 'bg-rose-600 text-white shadow-sm' },
+              { id: 'RESERVED', label: `Đang giữ / Chờ giao (${reservedCount})`, activeColor: 'bg-amber-600 text-white shadow-sm' },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setFilterStatus(tab.id)}
+                className={`rounded-lg px-3 py-1.5 whitespace-nowrap transition-all ${
+                  filterStatus === tab.id ? tab.activeColor : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="relative min-w-[220px]">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={15} />
+            <input
+              type="text"
+              placeholder="Tìm IMEI hoặc mã Đơn hàng..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full rounded-xl border border-slate-200 bg-white py-1.5 pl-9 pr-3 text-xs font-semibold text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+            />
+          </div>
+        </div>
+
+        {/* Danh sách Serial / IMEI */}
+        <div className="max-h-80 overflow-y-auto pr-1">
+          {loading ? (
+            <div className="flex justify-center py-12 text-slate-400 font-semibold text-sm">Đang tải số liệu IMEI và đối soát đơn hàng...</div>
+          ) : filteredSerials.length === 0 ? (
+            <div className="py-12 text-center text-slate-400 text-sm font-medium">
+              {searchQuery || filterStatus !== 'ALL' ? 'Không tìm thấy số IMEI nào khớp với điều kiện lọc.' : 'Chưa có mã IMEI/Serial nào cho lô này.'}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+              {filteredSerials.map((sn, idx) => (
+                <div 
+                  key={sn.id || idx} 
+                  className={`flex flex-col justify-between rounded-2xl border p-3.5 transition-all ${
+                    sn.status === 'SOLD' ? 'border-rose-200 bg-rose-50/40' : 
+                    sn.status === 'RESERVED' ? 'border-amber-200 bg-amber-50/40' : 'border-slate-200 bg-slate-50/60 hover:border-slate-300'
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-center gap-2 overflow-hidden">
+                      <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-lg bg-white border border-slate-200 text-xs font-black text-slate-600 shadow-2xs">
+                        #{idx + 1}
+                      </span>
+                      <span className="font-mono text-xs font-bold text-slate-800 truncate" title={sn.serialNumber}>
+                        {sn.serialNumber}
+                      </span>
+                      <button 
+                        onClick={() => handleCopy(sn.serialNumber, 'IMEI')}
+                        className="text-slate-400 hover:text-blue-600 transition-colors"
+                        title="Sao chép IMEI"
+                      >
+                        <Copy size={13} />
+                      </button>
+                    </div>
+                    <span className={`flex-shrink-0 rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-wider ${
+                      sn.status === 'AVAILABLE' ? 'bg-emerald-100 text-emerald-700' : 
+                      sn.status === 'RESERVED' ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'
+                    }`}>
+                      {sn.status === 'AVAILABLE' ? 'Sẵn kho' : sn.status === 'RESERVED' ? 'Đang giữ (Chờ giao)' : 'Đã bán'}
+                    </span>
+                  </div>
+
+                  {/* Phần hiển thị Đơn hàng nếu Đã Bán hoặc Đang Giữ */}
+                  {(sn.status === 'SOLD' || sn.status === 'RESERVED') && (
+                    <div className={`mt-2.5 flex items-center justify-between rounded-xl bg-white/80 border px-2.5 py-1.5 text-[11px] font-semibold text-slate-600 ${
+                      sn.status === 'SOLD' ? 'border-rose-100' : 'border-amber-100'
+                    }`}>
+                      <div className={`flex items-center gap-1.5 ${sn.status === 'SOLD' ? 'text-rose-700' : 'text-amber-700'}`}>
+                        {sn.status === 'SOLD' ? (
+                          <ShieldCheck size={14} className="flex-shrink-0 text-emerald-600" />
+                        ) : (
+                          <Clock size={14} className="flex-shrink-0 text-amber-600 animate-pulse" />
+                        )}
+                        <span className="truncate">
+                          Đơn: <strong className="font-mono text-slate-900">{sn.orderNumber ? (sn.orderNumber.startsWith('#') ? sn.orderNumber : `#${sn.orderNumber}`) : (sn.orderId ? `#${sn.orderId.substring(0, 8).toUpperCase()}` : 'N/A')}</strong>
+                        </span>
+                      </div>
+                      {(sn.orderNumber || sn.orderId) && (
+                        <button 
+                          onClick={() => handleCopy(sn.orderNumber || sn.orderId, 'Mã Đơn Hàng')}
+                          className="text-[10px] font-bold text-blue-600 hover:underline flex items-center gap-0.5"
+                          title="Sao chép trọn bộ mã đơn hàng để đối soát kế toán"
+                        >
+                          Copy ID
+                        </button>
+                      )}
+                    </div>
+                  )}
+
+                  {sn.status === 'AVAILABLE' && (
+                    <div className="mt-2.5 flex items-center gap-1 text-[11px] font-medium text-emerald-600">
+                      <CheckCircle2 size={13} className="flex-shrink-0" />
+                      <span>Sẵn sàng xuất kho & định danh đơn bán</span>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="mt-5 flex items-center justify-end border-t border-slate-100 pt-4">
+          <button onClick={onClose} className="rounded-xl bg-slate-900 px-6 py-2.5 text-sm font-bold text-white hover:bg-slate-800 transition-all shadow-sm">
+            Đóng
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  if (typeof document === 'undefined') return null;
+  return createPortal(modalContent, document.body);
+};
+
 // ───────── Main Page ─────────
 const StockImportManagement = () => {
   const [imports, setImports] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [selectedImportForSerial, setSelectedImportForSerial] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -390,6 +731,12 @@ const StockImportManagement = () => {
           products={products}
           onClose={() => setShowModal(false)}
           onSuccess={handleSuccess}
+        />
+      )}
+      {selectedImportForSerial && (
+        <SerialModal
+          importItem={selectedImportForSerial}
+          onClose={() => setSelectedImportForSerial(null)}
         />
       )}
 
@@ -548,6 +895,17 @@ const StockImportManagement = () => {
               </td>
               <td className="px-5 py-4 text-xs font-medium text-slate-500 whitespace-nowrap">
                 {fmtDate(item.importedAt)}
+              </td>
+              <td className="px-5 py-4 text-center">
+                <button
+                  type="button"
+                  onClick={() => setSelectedImportForSerial(item)}
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700 hover:bg-blue-100 transition-all"
+                  title="Xem mã IMEI/Serial"
+                >
+                  <Barcode size={14} />
+                  Xem IMEI
+                </button>
               </td>
             </tr>
           ))

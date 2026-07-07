@@ -321,7 +321,7 @@ const ProductFormModal = ({ isOpen, onClose, onSuccess, currentProduct, categori
           <div className="sticky top-0 h-max space-y-5 p-4 sm:p-5 lg:space-y-6 lg:p-6">
                <div className="space-y-2">
                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Nhóm thông tin</p>
-                 <div className="grid grid-cols-2 gap-2 lg:block lg:space-y-1">
+                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 lg:grid-cols-1 lg:space-y-1">
                     {[
                       { id: 'basic', label: 'Bán hàng', icon: Info },
                       { id: 'details', label: 'Chi tiết sản phẩm', icon: Layout },
@@ -375,7 +375,7 @@ const ProductFormModal = ({ isOpen, onClose, onSuccess, currentProduct, categori
             </div>
           </div>
 
-          <div ref={contentRef} className="flex-1 bg-slate-50 h-[calc(100vh-200px)] overflow-y-auto scroll-smooth">
+          <div ref={contentRef} className="flex-1 bg-slate-50 max-h-[calc(100dvh-180px)] overflow-y-auto scroll-smooth">
             <div className="mx-auto max-w-4xl space-y-12 px-4 py-5 sm:px-6 lg:px-8 lg:py-8">
                  <div id="section-basic" className="space-y-8 scroll-mt-24">
                     <section className="space-y-6">

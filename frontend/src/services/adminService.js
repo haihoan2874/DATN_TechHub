@@ -112,6 +112,12 @@ const adminService = {
   createStockImport: (data) => {
     return axiosClient.post('/admin/stock-imports', data);
   },
+  getSerialNumbersByImport: (importId) => {
+    return axiosClient.get(`/admin/stock-imports/${importId}/items`);
+  },
+  getSerialNumbersByProduct: (productId) => {
+    return axiosClient.get(`/admin/stock-imports/products/${productId}/items`);
+  },
 
   // Orders - get detail
   getOrderDetail: (id) => {

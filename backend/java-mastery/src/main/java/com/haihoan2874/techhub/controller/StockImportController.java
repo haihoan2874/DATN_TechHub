@@ -1,6 +1,7 @@
 package com.haihoan2874.techhub.controller;
 
 import com.haihoan2874.techhub.dto.request.StockImportRequest;
+import com.haihoan2874.techhub.dto.response.ProductItemResponse;
 import com.haihoan2874.techhub.dto.response.StockImportResponse;
 import com.haihoan2874.techhub.service.StockImportService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -51,5 +52,19 @@ public class StockImportController {
                description = "Admin xem lịch sử tất cả các lần nhập của 1 sản phẩm cụ thể")
     public ResponseEntity<List<StockImportResponse>> getImportsByProduct(@PathVariable UUID productId) {
         return ResponseEntity.ok(stockImportService.getImportsByProduct(productId));
+    }
+
+    @GetMapping("/{importId}/items")
+    @Operation(summary = "Lấy danh sách mã IMEI/Serial theo đợt nhập",
+               description = "Admin xem danh sách các mã IMEI/Serial đích danh đã sinh ra trong 1 đợt nhập")
+    public ResponseEntity<List<ProductItemResponse>> getSerialNumbersByImport(@PathVariable UUID importId) {
+        return ResponseEntity.ok(stockImportService.getSerialNumbersByImportId(importId));
+    }
+
+    @GetMapping("/products/{productId}/items")
+    @Operation(summary = "Lấy toàn bộ mã IMEI/Serial theo sản phẩm",
+               description = "Admin xem tất cả các mã IMEI/Serial đang có của 1 sản phẩm")
+    public ResponseEntity<List<ProductItemResponse>> getSerialNumbersByProduct(@PathVariable UUID productId) {
+        return ResponseEntity.ok(stockImportService.getSerialNumbersByProductId(productId));
     }
 }
