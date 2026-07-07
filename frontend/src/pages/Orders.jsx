@@ -4,9 +4,13 @@ import {
   ArrowRight,
   Calendar,
   CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
   CreditCard,
   Package,
+  Search,
   ShoppingBag,
+  SlidersHorizontal,
   Star,
   Zap
 } from 'lucide-react';
@@ -40,6 +44,10 @@ const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('ALL');
+  const [sortBy, setSortBy] = useState('NEWEST');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
   const [reviewTarget, setReviewTarget] = useState(null);
   const [reviewRating, setReviewRating] = useState(0);
   const [reviewComment, setReviewComment] = useState('');
@@ -84,9 +92,50 @@ const Orders = () => {
     fetchOrders();
   }, []);
 
-  const filteredOrders = useMemo(() => {
-    return filter === 'ALL' ? orders : orders.filter((order) => order.status === filter);
-  }, [filter, orders]);
+  const processedOrders = useMemo(() => {
+    let list = [...orders];
+
+    if (filter !== 'ALL') {
+      list = list.filter((order) => order.status === filter);
+    }
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.trim().toLowerCase();
+      list = list.filter((order) => {
+        const matchNumber = (order.orderNumber || '').toLowerCase().includes(q);
+        const matchId = String(order.id || '').toLowerCase().includes(q);
+        const matchItem = order.orderItems?.some((item) =>
+          (item.productName || '').toLowerCase().includes(q)
+        );
+        return matchNumber || matchId || matchItem;
+      });
+    }
+
+    list.sort((a, b) => {
+      if (sortBy === 'NEWEST') {
+        return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+      } else if (sortBy === 'OLDEST') {
+        return new Date(a.createdAt || 0) - new Date(b.createdAt || 0);
+      } else if (sortBy === 'HIGHEST_TOTAL') {
+        return getOrderTotal(b) - getOrderTotal(a);
+      } else if (sortBy === 'LOWEST_TOTAL') {
+        return getOrderTotal(a) - getOrderTotal(b);
+      }
+      return 0;
+    });
+
+    return list;
+  }, [orders, filter, searchQuery, sortBy]);
+
+  const totalPages = Math.ceil(processedOrders.length / itemsPerPage);
+  const paginatedOrders = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return processedOrders.slice(start, start + itemsPerPage);
+  }, [processedOrders, currentPage]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filter, searchQuery, sortBy]);
 
   const stats = useMemo(() => ([
     { label: 'Tổng đơn hàng', value: orders.length, icon: Package, tone: 'blue' },
@@ -247,21 +296,49 @@ const Orders = () => {
             ))}
           </div>
 
-          <div className="mb-5 glass-card p-2">
-            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
+          <div className="mb-6 flex flex-col gap-4 rounded-2xl border border-slate-200/80 bg-white/90 p-4 shadow-sm backdrop-blur-md">
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2 border-b border-slate-100">
               {['ALL', ...ORDER_STATUS_VALUES].map((status) => (
                 <button
                   key={status}
                   onClick={() => setFilter(status)}
-                  className={`whitespace-nowrap rounded-xl px-3 py-2 text-sm font-semibold transition-colors ${
+                  className={`whitespace-nowrap rounded-xl px-4 py-2.5 text-sm font-bold transition-all ${
                     filter === status
-                      ? 'bg-slate-900 text-white'
-                      : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
+                      ? 'bg-slate-900 text-white shadow-md shadow-slate-900/20'
+                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                   }`}
                 >
-                  {status === 'ALL' ? 'Tất cả' : getOrderStatusLabel(status)}
+                  {status === 'ALL' ? 'Tất cả đơn hàng' : getOrderStatusLabel(status)}
                 </button>
               ))}
+            </div>
+
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pt-1">
+              <div className="relative flex-1 max-w-md">
+                <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Tìm theo mã đơn hàng, tên sản phẩm..."
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 pl-10 pr-4 text-sm font-medium text-slate-800 placeholder-slate-400 transition focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-900/10"
+                />
+              </div>
+
+              <div className="flex items-center gap-2 self-end sm:self-auto">
+                <SlidersHorizontal size={16} className="text-slate-500" />
+                <span className="text-xs font-semibold text-slate-500 whitespace-nowrap">Sắp xếp:</span>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-bold text-slate-800 transition hover:border-slate-300 focus:border-slate-400 focus:outline-none"
+                >
+                  <option value="NEWEST">Mới nhất trước</option>
+                  <option value="OLDEST">Cũ nhất trước</option>
+                  <option value="HIGHEST_TOTAL">Giá trị cao nhất</option>
+                  <option value="LOWEST_TOTAL">Giá trị thấp nhất</option>
+                </select>
+              </div>
             </div>
           </div>
 
@@ -271,10 +348,10 @@ const Orders = () => {
                 <div key={index} className="h-40 animate-pulse rounded-2xl border border-slate-200 bg-white" />
               ))}
             </div>
-          ) : filteredOrders.length > 0 ? (
+          ) : processedOrders.length > 0 ? (
             <div className="space-y-4">
-              {filteredOrders.map((order) => (
-                <article key={order.id} className="glass-card p-4 sm:p-6">
+              {paginatedOrders.map((order) => (
+                <article key={order.id} className="glass-card p-4 sm:p-6 transition-all hover:shadow-md hover:border-slate-300/80">
                   <div className="flex flex-col gap-4 border-b border-slate-100 pb-4 sm:flex-row sm:items-start sm:justify-between">
                     <div>
                       <div className="flex flex-wrap items-center gap-3">
@@ -286,20 +363,20 @@ const Orders = () => {
                         </StatusBadge>
                       </div>
                       <div className="mt-2 flex flex-wrap gap-4 text-sm text-slate-500">
-                        <span className="inline-flex items-center gap-1.5">
+                        <span className="inline-flex items-center gap-1.5 font-medium">
                           <Calendar size={14} />
                           {formatDate(order.createdAt)}
                         </span>
-                        <span className="inline-flex items-center gap-1.5">
+                        <span className="inline-flex items-center gap-1.5 font-medium">
                           <CreditCard size={14} />
                           {order.paymentMethod || 'COD'}
                         </span>
-                        <span>{getItemCount(order)} sản phẩm</span>
+                        <span className="font-semibold text-slate-700">{getItemCount(order)} sản phẩm</span>
                       </div>
                     </div>
                     <div className="text-left sm:text-right">
-                      <p className="text-sm text-slate-500">Tổng thanh toán</p>
-                      <p className="text-xl font-bold text-blue-600">{formatCurrency(getOrderTotal(order))}</p>
+                      <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Tổng thanh toán</p>
+                      <p className="text-xl font-black text-blue-600">{formatCurrency(getOrderTotal(order))}</p>
                     </div>
                   </div>
 
@@ -318,8 +395,8 @@ const Orders = () => {
                           </div>
                           <div className="min-w-0 flex-1">
                             <p className="truncate text-sm font-semibold text-slate-900">{item.productName}</p>
-                            <p className="text-xs text-slate-500">
-                              SL: {item.quantity} x {formatCurrency(item.price)}
+                            <p className="text-xs font-medium text-slate-500">
+                              SL: {item.quantity} x <span className="font-bold text-slate-700">{formatCurrency(item.price)}</span>
                             </p>
                           </div>
                           {order.status === 'DELIVERED' && (() => {
@@ -329,10 +406,10 @@ const Orders = () => {
                                 type="button"
                                 disabled={hasReviewed}
                                 onClick={() => openReviewModal(order, item)}
-                                className={`rounded-xl border px-3 py-2.5 text-xs font-semibold transition-colors ${
+                                className={`rounded-xl border px-3.5 py-2 text-xs font-bold transition-colors ${
                                   hasReviewed
                                     ? 'border-slate-200 bg-slate-100 text-slate-400 cursor-not-allowed'
-                                    : 'border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100'
+                                    : 'border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 shadow-sm'
                                 }`}
                               >
                                 {hasReviewed ? 'Đã đánh giá' : 'Đánh giá'}
@@ -345,17 +422,78 @@ const Orders = () => {
 
                     <div className="flex flex-col gap-2 sm:flex-row lg:flex-col lg:justify-center">
                       {order.status === 'PENDING' && (
-                        <Button variant="outline" onClick={() => setCancelTarget(order)} className="border-rose-200 text-rose-600 hover:bg-rose-50">
+                        <Button variant="outline" onClick={() => setCancelTarget(order)} className="border-rose-200 text-rose-600 hover:bg-rose-50 font-bold">
                           Hủy đơn
                         </Button>
                       )}
-                      <Button onClick={() => navigate(`/orders/${order.id}`)} icon={ArrowRight} iconPosition="right">
+                      <Button onClick={() => navigate(`/orders/${order.id}`)} icon={ArrowRight} iconPosition="right" className="font-bold">
                         Xem chi tiết
                       </Button>
                     </div>
                   </div>
                 </article>
               ))}
+
+              {totalPages > 1 && (
+                <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm">
+                  <p className="text-sm font-medium text-slate-500">
+                    Hiển thị <span className="font-bold text-slate-900">{(currentPage - 1) * itemsPerPage + 1}</span> -{' '}
+                    <span className="font-bold text-slate-900">
+                      {Math.min(currentPage * itemsPerPage, processedOrders.length)}
+                    </span>{' '}
+                    trong tổng số <span className="font-bold text-slate-900">{processedOrders.length}</span> đơn hàng
+                  </p>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                      disabled={currentPage === 1}
+                      className="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      <ChevronLeft size={16} /> Trang trước
+                    </button>
+                    <div className="flex items-center gap-1">
+                      {[...Array(totalPages)].map((_, i) => {
+                        const pageNum = i + 1;
+                        if (
+                          pageNum === 1 ||
+                          pageNum === totalPages ||
+                          (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)
+                        ) {
+                          return (
+                            <button
+                              key={pageNum}
+                              type="button"
+                              onClick={() => setCurrentPage(pageNum)}
+                              className={`h-9 w-9 rounded-xl text-xs font-black transition ${
+                                currentPage === pageNum
+                                  ? 'bg-slate-900 text-white shadow-md shadow-slate-900/20'
+                                  : 'text-slate-600 hover:bg-slate-100'
+                              }`}
+                            >
+                              {pageNum}
+                            </button>
+                          );
+                        } else if (
+                          (pageNum === currentPage - 2 && pageNum > 1) ||
+                          (pageNum === currentPage + 2 && pageNum < totalPages)
+                        ) {
+                          return <span key={pageNum} className="px-1 text-xs font-bold text-slate-400">...</span>;
+                        }
+                        return null;
+                      })}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                      disabled={currentPage === totalPages}
+                      className="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      Trang sau <ChevronRight size={16} />
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <div className="rounded-2xl border border-dashed border-slate-300 bg-white">
