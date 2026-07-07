@@ -45,9 +45,9 @@ public class EmailService {
 
             mailSender.send(message);
             log.info("Email sent successfully to: {}", to);
-        } catch (MessagingException e) {
-            log.error("Failed to send email to: {}", to, e);
-            throw new RuntimeException("Failed to send email", e);
+        } catch (Exception e) {
+            log.error("CRITICAL: Failed to send email to '{}' with subject '{}'. Reason: {} - {}", 
+                      to, subject, e.getClass().getName(), e.getMessage(), e);
         }
     }
 
