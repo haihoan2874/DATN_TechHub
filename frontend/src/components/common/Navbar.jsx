@@ -282,13 +282,13 @@ const Navbar = () => {
             </Link>
 
             {user ? (
-              <div className="relative hidden sm:block">
+              <div className="relative">
                 <button
                   type="button"
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="flex items-center gap-2.5 p-1 rounded-xl bg-slate-50 hover:bg-slate-100 transition-all border border-slate-100 pr-3 group"
+                  className="flex items-center gap-1 sm:gap-2.5 p-1 rounded-xl bg-slate-50 hover:bg-slate-100 transition-all border border-slate-100 pr-1.5 sm:pr-3 group"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center text-white font-black text-xs overflow-hidden">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-slate-900 flex items-center justify-center text-white font-black text-xs overflow-hidden shrink-0">
                     {user?.imageUrl ? (
                       <img src={resolveApiAssetUrl(user.imageUrl)} alt="Avatar" className="w-full h-full object-cover" loading="lazy" decoding="async" />
                     ) : (
@@ -339,7 +339,7 @@ const Navbar = () => {
                 variant="primary" 
                 size="md" 
                 onClick={() => navigate('/login')}
-                className="hidden sm:flex"
+                className="hidden xl:flex"
               >
                 Đăng nhập
               </Button>

@@ -94,30 +94,30 @@ const Register = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center bg-transparent px-4 py-8 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen items-center justify-center bg-transparent px-3 py-6 sm:px-6 lg:px-8">
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         className="mx-auto w-full max-w-5xl"
       >
-        <div className="grid overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm lg:grid-cols-[1fr_0.8fr]">
-          <main className="p-5 sm:p-7 lg:p-8">
-            <div className="mb-6">
-              <Link to="/" className="mb-6 inline-block text-2xl font-extrabold text-slate-900 lg:hidden" translate="no">
+        <div className="grid w-full overflow-hidden rounded-2xl border-0 sm:border border-slate-200 bg-white shadow-none sm:shadow-sm lg:grid-cols-[1fr_0.8fr]">
+          <main className="p-3.5 sm:p-7 lg:p-8">
+            <div className="mb-5 sm:mb-6">
+              <Link to="/" className="mb-4 inline-block text-xl font-extrabold text-slate-900 lg:hidden" translate="no">
                 S-LIFE
               </Link>
-              <h1 className="text-2xl font-extrabold tracking-tight text-slate-950 sm:text-3xl">Tạo tài khoản</h1>
-              <p className="mt-2 text-sm font-medium leading-6 text-slate-500">Tạo tài khoản bằng tên đăng nhập, email và mật khẩu để mua sắm tại S-LIFE.</p>
+              <h1 className="text-xl font-extrabold tracking-tight text-slate-950 sm:text-3xl">Tạo tài khoản</h1>
+              <p className="mt-1 sm:mt-2 text-xs sm:text-sm font-medium leading-relaxed text-slate-500">Tạo tài khoản bằng tên đăng nhập, email và mật khẩu để mua sắm tại S-LIFE.</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4" noValidate>
               {/* Status Message */}
               {status.message && (
                 <motion.div 
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   aria-live="polite"
-                  className={`flex items-center gap-3 rounded-xl p-4 text-sm font-medium ${
+                  className={`flex items-center gap-3 rounded-xl p-3 sm:p-4 text-xs sm:text-sm font-medium ${
                     status.type === 'error' ? 'bg-rose-50 text-rose-700' : 'bg-emerald-50 text-emerald-700'
                   }`}
                 >
@@ -126,7 +126,7 @@ const Register = () => {
                 </motion.div>
               )}
 
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2">
                 <Input 
                   label="Tên đăng nhập"
                   name="username"

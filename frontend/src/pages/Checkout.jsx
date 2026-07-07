@@ -495,8 +495,8 @@ const Checkout = () => {
         }}
         title="Thêm địa chỉ mới"
       >
-        <form onSubmit={handleAddAddress} className="space-y-5" noValidate>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form onSubmit={handleAddAddress} className="space-y-3.5 sm:space-y-5" noValidate>
+          <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2">
             <div className="col-span-1 md:col-span-2">
               <Input
                 label="Họ tên người nhận"

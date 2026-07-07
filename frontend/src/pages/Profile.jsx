@@ -297,8 +297,8 @@ const Profile = () => {
         size="lg"
         closeOnOverlay={!addressSubmitting}
       >
-        <form onSubmit={handleSaveAddress} className="space-y-5" noValidate>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <form onSubmit={handleSaveAddress} className="space-y-3.5 sm:space-y-5" noValidate>
+          <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2">
             <div className="md:col-span-2">
               <Input
                 label="Họ tên người nhận"
@@ -461,8 +461,8 @@ const Profile = () => {
                       ))}
                     </div>
                   ) : (
-                    <form onSubmit={handleUpdate} className="space-y-5">
-                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <form onSubmit={handleUpdate} className="space-y-3.5 sm:space-y-5">
+                      <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2">
                         <ProfileField
                           label="Họ"
                           value={formData.lastName}
@@ -588,10 +588,10 @@ const ProfileField = ({ label, value, isEditing, onChange, icon: Icon, type = 't
       <Input label={label} value={value} onChange={onChange} type={type} icon={Icon} error={error} {...inputProps} />
     ) : (
       <div>
-        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">{label}</p>
-        <div className="flex min-h-[48px] items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
-          <Icon size={17} className="shrink-0 text-slate-400" />
-          <span className="break-words text-sm font-semibold text-slate-900">{value || '---'}</span>
+        <p className="mb-1 sm:mb-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-500">{label}</p>
+        <div className="flex min-h-[42px] sm:min-h-[48px] items-center gap-2.5 sm:gap-3 rounded-xl border border-slate-200/80 bg-slate-50 px-3 py-2 sm:px-4 sm:py-3">
+          <Icon className="w-4 h-4 sm:w-[17px] sm:h-[17px] shrink-0 text-slate-400" />
+          <span className="break-words text-xs sm:text-sm font-semibold text-slate-900">{value || '---'}</span>
         </div>
       </div>
     )}

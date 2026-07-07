@@ -77,13 +77,13 @@ const Login = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center bg-transparent px-4 py-8 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen items-center justify-center bg-transparent px-3 py-6 sm:px-6 lg:px-8">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="mx-auto w-full max-w-4xl"
       >
-        <div className="grid overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm lg:grid-cols-[0.9fr_1fr]">
+        <div className="grid w-full overflow-hidden rounded-2xl border-0 sm:border border-slate-200 bg-white shadow-none sm:shadow-sm lg:grid-cols-[0.9fr_1fr]">
           <aside className="hidden bg-slate-950 p-8 text-white lg:flex lg:flex-col lg:justify-between">
             <div>
               <Link to="/" className="inline-flex items-center gap-3 text-2xl font-extrabold" translate="no">
@@ -104,16 +104,16 @@ const Login = () => {
             </div>
           </aside>
 
-          <main className="p-5 sm:p-7 lg:p-8">
-            <div className="mb-6">
-              <Link to="/" className="mb-6 inline-block text-2xl font-extrabold text-slate-900 lg:hidden" translate="no">
+          <main className="p-3.5 sm:p-7 lg:p-8">
+            <div className="mb-5 sm:mb-6">
+              <Link to="/" className="mb-4 inline-block text-xl font-extrabold text-slate-900 lg:hidden" translate="no">
                 S-LIFE
               </Link>
-              <h1 className="text-2xl font-extrabold tracking-tight text-slate-950 sm:text-3xl">Đăng nhập</h1>
-              <p className="mt-2 text-sm font-medium leading-6 text-slate-500">Chào mừng bạn quay trở lại. Vui lòng đăng nhập để tiếp tục.</p>
+              <h1 className="text-xl font-extrabold tracking-tight text-slate-950 sm:text-3xl">Đăng nhập</h1>
+              <p className="mt-1 sm:mt-2 text-xs sm:text-sm font-medium leading-relaxed text-slate-500">Chào mừng bạn quay trở lại. Vui lòng đăng nhập để tiếp tục.</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4" noValidate>
               {/* Status Message */}
               {status.message && (
                 <motion.div 

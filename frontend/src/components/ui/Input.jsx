@@ -15,7 +15,7 @@ const Input = ({
   const inputId = props.id || props.name || generatedId;
 
   return (
-    <div className={`flex flex-col gap-2 w-full ${className}`}>
+    <div className={`flex flex-col gap-1 sm:gap-1.5 w-full ${className}`}>
       {label && (
         <label htmlFor={inputId} className="form-label">
           {label}
@@ -24,8 +24,8 @@ const Input = ({
       
       <div className="relative group">
         {Icon && (
-          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">
-            <Icon size={18} />
+          <div className="absolute left-3 sm:left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors pointer-events-none">
+            <Icon className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
           </div>
         )}
         
@@ -35,7 +35,7 @@ const Input = ({
           aria-describedby={error ? `${inputId}-error` : undefined}
           className={`
             form-input
-            ${Icon ? 'pl-12' : ''}
+            ${Icon ? 'pl-9 sm:pl-10' : ''}
             ${error ? 'border-rose-500 bg-rose-50/30' : ''}
             ${inputClassName}
           `}

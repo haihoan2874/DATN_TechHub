@@ -1,4 +1,5 @@
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 
 const Button = ({ 
   type = 'button',
@@ -34,7 +35,7 @@ const Button = ({
   return (
     <button
       type={type}
-      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
+      className={twMerge(baseStyles, variants[variant], sizes[size], className)}
       disabled={isLoading || disabled}
       {...props}
     >
