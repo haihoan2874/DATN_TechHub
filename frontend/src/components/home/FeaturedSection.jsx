@@ -49,16 +49,16 @@ function FeaturedSection({ products, loading }) {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-4 lg:gap-4">
+        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-2 md:grid-cols-4 lg:gap-4">
           {loading ? (
              [...Array(4)].map((_, i) => (
                <div key={i} className="h-[340px] animate-pulse rounded-2xl border border-slate-200 bg-white" />
              ))
           ) : (
             products.map(product => (
-              <div key={product.id} className="featured-card">
-                <ProductCard product={product} />
-              </div>
+               <div key={product.id} className="featured-card">
+                 <ProductCard product={product} />
+               </div>
             ))
           )}
         </div>

@@ -47,7 +47,7 @@ const StorySection = () => {
             </Link>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-3 sm:gap-4 md:grid-cols-3">
             {GUIDES.map((item) => (
               <GuideCard key={item.title} {...item} />
             ))}
@@ -62,15 +62,17 @@ function GuideCard({ icon: Icon, title, description, to }) {
   return (
     <Link
       to={to}
-      className="group flex min-h-[210px] flex-col rounded-2xl border border-slate-200/60 bg-slate-50 p-6 transition-all duration-300 hover:border-blue-200 hover:bg-white hover:shadow-lg hover:-translate-y-1"
+      className="group flex min-h-[140px] sm:min-h-[210px] flex-col justify-between rounded-2xl border border-slate-200/60 bg-slate-50 p-4 sm:p-6 transition-all duration-300 hover:border-blue-200 hover:bg-white hover:shadow-lg hover:-translate-y-1"
     >
-      <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-white text-blue-600 shadow-sm transition-colors group-hover:bg-blue-50">
-        <Icon size={24} />
+      <div>
+        <div className="mb-3 sm:mb-5 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-white text-blue-600 shadow-sm transition-colors group-hover:bg-blue-50">
+          <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
+        </div>
+        <h3 className="mb-1 sm:mb-2.5 text-[15px] sm:text-[17px] font-bold text-slate-900">{title}</h3>
+        <p className="text-xs sm:text-sm leading-relaxed text-slate-500">{description}</p>
       </div>
-      <h3 className="mb-2.5 text-[17px] font-bold text-slate-900">{title}</h3>
-      <p className="text-sm leading-relaxed text-slate-500">{description}</p>
-      <div className="mt-auto flex items-center gap-2 pt-5 text-[13px] font-bold text-slate-400 transition-colors group-hover:text-blue-600">
-        Khám phá <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+      <div className="mt-3 sm:mt-auto flex items-center gap-2 pt-3 sm:pt-5 text-xs sm:text-[13px] font-bold text-slate-400 transition-colors group-hover:text-blue-600">
+        Khám phá <ArrowRight size={16} className="sm:w-[18px] sm:h-[18px] transition-transform group-hover:translate-x-1" />
       </div>
     </Link>
   );

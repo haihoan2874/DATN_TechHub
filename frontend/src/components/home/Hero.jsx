@@ -41,7 +41,7 @@ function Hero() {
   return (
     <section ref={containerRef} className="relative overflow-hidden py-10 sm:py-14 lg:py-20">
       <div className="container relative z-10 mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="grid items-center gap-7 lg:grid-cols-[0.95fr_1.05fr] lg:gap-10">
+        <div className="grid items-center gap-5 sm:gap-7 lg:grid-cols-[0.95fr_1.05fr] lg:gap-10">
           <div className="hero-content text-center lg:text-left">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-blue-50 px-3.5 py-1.5 text-xs font-semibold tracking-wide text-blue-700">
               <Activity size={16} />
@@ -58,12 +58,12 @@ function Hero() {
               Chính xác, tinh tế và luôn bên bạn mọi lúc mọi nơi.
             </p>
 
-            <div className="mb-6 flex flex-wrap justify-center gap-3 lg:justify-start">
+            <div className="mb-6 flex flex-col sm:flex-row justify-center gap-3 w-full sm:w-auto lg:justify-start">
               <Button
                 onClick={() => navigate('/shop')}
                 size="lg"
                 icon={ShoppingBag}
-                className="px-6 shadow-lg shadow-blue-600/15 transition-shadow hover:shadow-blue-600/30 sm:px-8"
+                className="w-full sm:w-auto px-6 shadow-lg shadow-blue-600/15 transition-shadow hover:shadow-blue-600/30 sm:px-8"
               >
                 Sắm ngay
               </Button>
@@ -71,13 +71,13 @@ function Hero() {
                 variant="outline"
                 onClick={() => navigate('/about')}
                 size="lg"
-                className="px-6 sm:px-8"
+                className="w-full sm:w-auto px-6 sm:px-8"
               >
                 Tìm hiểu thêm
               </Button>
             </div>
 
-            <div className="mx-auto grid w-full max-w-[520px] grid-cols-3 gap-2 rounded-2xl border border-slate-200/60 bg-white p-2.5 shadow-sm sm:gap-3 sm:p-3 lg:mx-0 lg:max-w-lg">
+            <div className="mx-auto grid w-full max-w-[520px] grid-cols-3 gap-1.5 sm:gap-3 rounded-2xl border border-slate-200/60 bg-white p-2 shadow-sm sm:p-3 lg:mx-0 lg:max-w-lg">
               <TrustItem value="100%" label="Chính hãng" />
               <TrustItem value="24/7" label="Hỗ trợ" />
               <TrustItem value="2 Năm" label="Bảo hành" />
@@ -87,25 +87,25 @@ function Hero() {
           <div className="relative">
             <div ref={imageRef} className="relative z-10 mx-auto max-w-xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
               <div className="grid gap-0 lg:grid-cols-[1fr_170px]">
-                <div className="flex min-h-[280px] items-center justify-center bg-slate-50 p-4 sm:min-h-[340px] sm:p-6">
+                <div className="flex min-h-[220px] sm:min-h-[340px] items-center justify-center bg-slate-50 p-4 sm:p-6">
                   <img
                     src="/assets/categories/sports_watch.png"
                     alt="Đồng hồ sức khỏe thông minh S-LIFE"
-                    className="h-[240px] w-full object-contain sm:h-[300px] lg:h-[340px]"
+                    className="h-[180px] sm:h-[300px] lg:h-[340px] w-full object-contain"
                   />
                 </div>
                 <div className="flex flex-col justify-between border-t border-slate-100 p-4 lg:border-l lg:border-t-0">
                   <div>
-                    <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
-                      <Watch size={24} />
+                    <div className="mb-3 sm:mb-4 inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+                      <Watch className="w-5 h-5 sm:w-6 sm:h-6" />
                     </div>
                     <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Bộ sưu tập 2026</p>
-                    <h2 className="mt-2 text-xl font-bold leading-tight text-slate-900">Đồng hồ thể thao thông minh</h2>
-                    <p className="mt-2 text-sm leading-relaxed text-slate-500">
+                    <h2 className="mt-1 sm:mt-2 text-lg sm:text-xl font-bold leading-tight text-slate-900">Đồng hồ thể thao thông minh</h2>
+                    <p className="mt-1 sm:mt-2 text-xs sm:text-sm leading-relaxed text-slate-500">
                       GPS, nhịp tim, giấc ngủ và luyện tập trong một thiết bị gọn nhẹ.
                     </p>
                   </div>
-                  <div className="mt-4 space-y-2">
+                  <div className="mt-4 space-y-2 hidden sm:block">
                     <HeroMetric icon={CheckCircle2} label="Sẵn hàng" value="99+" />
                     <HeroMetric icon={Truck} label="Giao hàng" value="Toàn quốc" />
                     <HeroMetric icon={ShieldCheck} label="Cam kết" value="Chính hãng" />
@@ -136,12 +136,12 @@ function HeroMetric({ icon: Icon, label, value }) {
 
 function TrustItem({ value, label }) {
   return (
-    <div className="flex min-h-[62px] flex-col justify-center rounded-xl bg-slate-50/80 px-2.5 py-2.5 text-left transition-colors hover:bg-slate-100 sm:min-h-[72px] sm:px-3">
-      <div className="mb-1 flex items-center gap-1.5 whitespace-nowrap text-blue-600">
-        <Star size={14} className="fill-current" />
-        <span className="text-sm font-bold text-slate-900 sm:text-base">{value}</span>
+    <div className="flex min-h-[58px] flex-col justify-center rounded-xl bg-slate-50/80 px-1.5 py-2 text-left transition-colors hover:bg-slate-100 sm:min-h-[72px] sm:px-3 sm:py-2.5">
+      <div className="mb-0.5 sm:mb-1 flex items-center gap-1 sm:gap-1.5 whitespace-nowrap text-blue-600">
+        <Star size={13} className="fill-current sm:w-3.5 sm:h-3.5" />
+        <span className="text-[13px] font-bold text-slate-900 sm:text-base">{value}</span>
       </div>
-      <p className="text-[12px] font-medium leading-snug text-slate-500 sm:text-[13px]">{label}</p>
+      <p className="text-[11px] font-medium leading-snug text-slate-500 sm:text-[13px]">{label}</p>
     </div>
   );
 }

@@ -13,7 +13,7 @@ function BenefitsSection() {
               <p className="text-base leading-relaxed text-slate-300 lg:text-lg">Chúng tôi cam kết sản phẩm chính hãng, bảo hành rõ ràng và hỗ trợ sau bán hàng.</p>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-3">
               <BenefitItem
                 icon={<ShieldCheck className="text-blue-300" size={26} />}
                 title="Chính hãng 100%"
@@ -39,13 +39,13 @@ function BenefitsSection() {
 
 function BenefitItem({ icon, title, desc }) {
   return (
-    <div className="group flex flex-col items-center gap-4 rounded-2xl border border-white/5 bg-white/5 p-6 text-center transition-all duration-300 hover:border-white/10 hover:bg-white/10 hover:-translate-y-1 hover:shadow-lg lg:items-start lg:text-left">
-      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-500/20 text-blue-400 transition-colors group-hover:bg-blue-500/30">
+    <div className="group flex flex-col items-center gap-3 sm:gap-4 rounded-2xl border border-white/5 bg-white/5 p-4 sm:p-6 text-center transition-all duration-300 hover:border-white/10 hover:bg-white/10 hover:-translate-y-1 hover:shadow-lg lg:items-start lg:text-left">
+      <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-2xl bg-blue-500/20 text-blue-400 transition-colors group-hover:bg-blue-500/30">
         {icon}
       </div>
       <div>
-        <h4 className="mb-2 text-[17px] font-bold text-white">{title}</h4>
-        <p className="text-slate-400 text-sm leading-relaxed">{desc}</p>
+        <h4 className="mb-1 sm:mb-2 text-[15px] sm:text-[17px] font-bold text-white">{title}</h4>
+        <p className="text-slate-400 text-xs sm:text-sm leading-relaxed">{desc}</p>
       </div>
     </div>
   );
