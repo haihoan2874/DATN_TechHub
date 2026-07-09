@@ -171,6 +171,10 @@ public class OrderService {
         UUID userId = userService.getCurrentUserId(authentication);
         log.info("Fetching order history for user id {}", userId);
 
+        // Fix N+1: Lấy TẤT CẢ productId đã review của user trong 1 query duy nhất
+        // thay vì gọi DB lặp lại cho từng sản phẩm trong từng đơn hàng.
+        Set<UUID> reviewedProductIds = reviewRepository.findReviewedProductIdsByUserId(userId);
+
         return orderRepository.findByUserIdOrderByCreatedAtDesc(userId).stream()
                 .map(order -> OrderHistoryResponse.builder()
                         .id(order.getId())
@@ -186,7 +190,7 @@ public class OrderService {
                                         .quantity(item.getQuantity())
                                         .price(item.getPrice())
                                         .subtotal(item.getSubtotal())
-                                        .isReviewed(reviewRepository.existsByProductIdAndUserId(item.getProductId(), userId))
+                                        .isReviewed(reviewedProductIds.contains(item.getProductId()))
                                         .build())
                                 .toList())
                         .build())
