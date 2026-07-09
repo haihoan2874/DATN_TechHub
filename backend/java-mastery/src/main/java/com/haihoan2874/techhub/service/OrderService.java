@@ -594,11 +594,9 @@ public class OrderService {
     }
 
     private String generateOrderNumber() {
-        LocalDateTime startOfDay = LocalDateTime.now().toLocalDate().atStartOfDay();
-        LocalDateTime endOfDay = startOfDay.plusDays(1);
-        Long todayOrderCount = orderRepository.countByCreatedAtBetween(startOfDay, endOfDay);
-        String dateStr = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        return String.format("ORD-%s-%03d", dateStr, todayOrderCount + 1);
+        String dateStr = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd"));
+        int randomNum = new java.util.Random().nextInt(90000) + 10000; // 10000 to 99999
+        return String.format("ORD-%s-%d", dateStr, randomNum);
     }
 
     private BigDecimal calculateTotal(List<OrderItem> orderItems) {

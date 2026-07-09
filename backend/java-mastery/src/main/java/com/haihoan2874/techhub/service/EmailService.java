@@ -11,23 +11,27 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Email service sử dụng Resend HTTP API thay vì JavaMailSender SMTP.
- * Lý do: Render Free Tier block outbound SMTP (port 465/587) → dùng HTTPS API thay thế.
+ * Email service sử dụng Brevo HTTP API thay vì JavaMailSender SMTP.
+ * Lý do: Render Free Tier block outbound SMTP (port 465/587).
+ * Ưu điểm của Brevo so với Resend: Cho phép gửi từ @gmail.com miễn phí, không bắt buộc có tên miền.
  */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class EmailService {
 
-    private static final String RESEND_API_URL = "https://api.resend.com/emails";
+    private static final String BREVO_API_URL = "https://api.brevo.com/v3/smtp/email";
 
     private final WebClient.Builder webClientBuilder;
 
-    @Value("${resend.api-key:}")
-    private String resendApiKey;
+    @Value("${brevo.api-key:}")
+    private String brevoApiKey;
 
-    @Value("${resend.from-email:S-Life <onboarding@resend.dev>}")
-    private String fromEmail;
+    @Value("${brevo.sender.email:hoanhonghot85@gmail.com}")
+    private String senderEmail;
+
+    @Value("${brevo.sender.name:S-Life}")
+    private String senderName;
 
     @Value("${app.backend-url}")
     private String backendUrl;
@@ -39,32 +43,34 @@ public class EmailService {
             return;
         }
 
-        if (resendApiKey == null || resendApiKey.isBlank()) {
-            log.warn("RESEND_API_KEY not configured. Skipping email to: {} | subject: {}", to, subject);
+        if (brevoApiKey == null || brevoApiKey.isBlank()) {
+            log.warn("BREVO_API_KEY not configured. Skipping email to: {} | subject: {}", to, subject);
             return;
         }
 
         String htmlContent = isHtml ? content : "<pre>" + content + "</pre>";
+        
         Map<String, Object> body = Map.of(
-                "from", fromEmail,
-                "to", List.of(to),
+                "sender", Map.of("name", senderName, "email", senderEmail),
+                "to", List.of(Map.of("email", to)),
                 "subject", subject,
-                "html", htmlContent
+                "htmlContent", htmlContent
         );
 
-        log.info("Sending email via Resend to: {} | subject: {}", to, subject);
+        log.info("Sending email via Brevo to: {} | subject: {}", to, subject);
 
         webClientBuilder.build()
                 .post()
-                .uri(RESEND_API_URL)
-                .header("Authorization", "Bearer " + resendApiKey)
-                .header("Content-Type", "application/json")
+                .uri(BREVO_API_URL)
+                .header("api-key", brevoApiKey)
+                .header("accept", "application/json")
+                .header("content-type", "application/json")
                 .bodyValue(body)
                 .retrieve()
                 .bodyToMono(Map.class)
                 .subscribe(
-                        response -> log.info("Email sent successfully via Resend to: {} | id: {}", to, response.get("id")),
-                        error -> log.error("CRITICAL: Failed to send email via Resend to '{}' subject '{}'. Error: {}",
+                        response -> log.info("Email sent successfully via Brevo to: {} | messageId: {}", to, response.get("messageId")),
+                        error -> log.error("CRITICAL: Failed to send email via Brevo to '{}' subject '{}'. Error: {}",
                                 to, subject, error.getMessage())
                 );
     }

@@ -5,10 +5,9 @@ import com.haihoan2874.techhub.repository.UserRepository;
 import com.haihoan2874.techhub.security.dto.ForgotPasswordRequest;
 import com.haihoan2874.techhub.security.dto.ResetPasswordRequest;
 import com.haihoan2874.techhub.security.dto.VerifyOtpRequest;
+import com.haihoan2874.techhub.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +22,7 @@ public class PasswordResetService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JavaMailSender mailSender;
+    private final EmailService emailService;
 
     @Transactional
     public void sendOtp(ForgotPasswordRequest request) {
@@ -37,17 +36,11 @@ public class PasswordResetService {
 
         log.info("Mã OTP cho email {}: {}", request.getEmail(), otp);
 
-        try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom("S-Life <noreply@slife.vn>");
-            message.setTo(user.getEmail());
-            message.setSubject("Mã xác thực đổi mật khẩu S-Life");
-            message.setText("Mã xác thực của bạn là: " + otp + ". Mã có hiệu lực trong 5 phút.");
-            mailSender.send(message); 
-            log.info("Đã gửi Email thành công cho {}", user.getEmail());
-        } catch (Exception e) {
-            log.error("Lỗi khi gửi mail: {}", e.getMessage());
-        }
+        String htmlContent = "<h3>Mã xác thực đổi mật khẩu S-Life</h3>" +
+                "<p>Mã OTP của bạn là: <strong>" + otp + "</strong></p>" +
+                "<p>Mã có hiệu lực trong <strong>5 phút</strong>. Vui lòng không chia sẻ mã này.</p>";
+        emailService.sendEmail(user.getEmail(), "Mã xác thực đổi mật khẩu S-Life", htmlContent, true);
+        log.info("Đã gửi OTP cho {}", user.getEmail());
     }
 
     public boolean verifyOtp(VerifyOtpRequest request) {
