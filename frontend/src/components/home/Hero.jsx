@@ -92,6 +92,7 @@ function Hero() {
                     src="/assets/categories/sports_watch.png"
                     alt="Đồng hồ sức khỏe thông minh S-LIFE"
                     className="h-[180px] sm:h-[300px] lg:h-[340px] w-full object-contain"
+                    fetchPriority="high"
                   />
                 </div>
                 <div className="flex flex-col justify-between border-t border-slate-100 p-4 lg:border-l lg:border-t-0">

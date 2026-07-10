@@ -8,7 +8,7 @@ import productService from '../../services/productService';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
 import ConfirmModal from '../ui/ConfirmModal';
-import { resolveApiAssetUrl } from '../../config/api';
+import { resolveApiAssetUrl, optimizeImageUrl } from '../../config/api';
 import { formatCurrency } from '../../utils/formatters';
 import { getCategoryIconComponent } from '../../utils/categoryIcons';
 
@@ -290,7 +290,7 @@ const Navbar = () => {
                 >
                   <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-slate-900 flex items-center justify-center text-white font-black text-xs overflow-hidden shrink-0">
                     {user?.imageUrl ? (
-                      <img src={resolveApiAssetUrl(user.imageUrl)} alt="Avatar" className="w-full h-full object-cover" loading="lazy" decoding="async" />
+                      <img src={optimizeImageUrl(user.imageUrl, 100)} alt="Avatar" className="w-full h-full object-cover" loading="lazy" decoding="async" />
                     ) : (
                       user?.firstName?.charAt(0) || user?.username?.charAt(0) || 'U'
                     )}

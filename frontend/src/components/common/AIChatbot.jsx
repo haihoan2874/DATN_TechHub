@@ -309,6 +309,7 @@ const AIChatbot = () => {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsOpen(true)}
+          aria-label="Mở trợ lý tư vấn AI"
           className="group relative flex h-14 w-14 items-center justify-center rounded-[18px] bg-slate-950 text-white shadow-[0_8px_30px_rgb(0,0,0,0.24)] border border-slate-800 transition-shadow hover:shadow-[0_8px_30px_rgba(37,99,235,0.4)]"
         >
           <div className="absolute inset-0 rounded-[18px] bg-gradient-to-tr from-blue-600 to-indigo-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
