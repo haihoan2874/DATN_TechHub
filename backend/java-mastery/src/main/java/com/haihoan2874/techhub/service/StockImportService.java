@@ -108,9 +108,9 @@ public class StockImportService {
         product.setCostPrice(newAvgCost);
         productRepository.save(product);
 
-        // 5. Tự động sinh danh sách mã IMEI/Serial đích danh cho đợt nhập hàng này (Sửa Phẫu Thuật)
+        // 5. Tự động sinh danh sách mã Serial/SKU nội bộ định danh tài sản vật lý cho lô nhập này
         for (int i = 1; i <= request.getQuantity(); i++) {
-            String serialNo = "IMEI-" + (product.getSlug() != null ? product.getSlug().toUpperCase() : "PROD") 
+            String serialNo = "SL-SN-" + (product.getSlug() != null ? product.getSlug().toUpperCase() : "PROD") 
                     + "-" + (System.currentTimeMillis() % 1000000) + "-" + i;
             productItemRepository.save(ProductItem.builder()
                     .productId(product.getId())

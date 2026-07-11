@@ -64,4 +64,5 @@ backend/java-mastery/uploads/
 *.xlsx
 *.xls
 *.csv
-
+baove.docs
+*.pdf

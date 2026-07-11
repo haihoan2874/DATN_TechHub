@@ -16,7 +16,7 @@ const tableColumns = [
   { key: 'totalPrice', label: 'Thành tiền', className: 'text-right', sortable: true },
   { key: 'note', label: 'Ghi chú', sortable: false },
   { key: 'importedAt', label: 'Ngày nhập', sortable: true },
-  { key: 'action', label: 'IMEI', className: 'text-center', sortable: false },
+  { key: 'action', label: 'Serial / SKU', className: 'text-center', sortable: false },
 ];
 
 const fmtVND = (n) =>
@@ -313,7 +313,7 @@ const SerialModal = ({ importItem, onClose }) => {
               <Barcode size={24} />
             </div>
             <div>
-              <h3 className="text-lg font-black text-slate-900">Chi tiết Lô nhập & Quản lý Vòng đời IMEI</h3>
+              <h3 className="text-lg font-black text-slate-900">Chi tiết Lô nhập & Quản lý Serial / SKU Tài Sản</h3>
               <p className="text-xs font-semibold text-slate-500">
                 Lô: <span className="text-slate-800 font-bold">{importItem.productName}</span> (+{importItem.quantity} SP) • Ngày nhập: {fmtDate(importItem.importedAt)}
               </p>
@@ -491,7 +491,7 @@ const SerialModal = ({ importItem, onClose }) => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={15} />
             <input
               type="text"
-              placeholder="Tìm IMEI hoặc mã Đơn hàng..."
+              placeholder="Tìm Serial/SKU hoặc mã Đơn hàng..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full rounded-xl border border-slate-200 bg-white py-1.5 pl-9 pr-3 text-xs font-semibold text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
@@ -499,13 +499,13 @@ const SerialModal = ({ importItem, onClose }) => {
           </div>
         </div>
 
-        {/* Danh sách Serial / IMEI */}
+        {/* Danh sách Serial / SKU */}
         <div className="max-h-80 overflow-y-auto pr-1">
           {loading ? (
-            <div className="flex justify-center py-12 text-slate-400 font-semibold text-sm">Đang tải số liệu IMEI và đối soát đơn hàng...</div>
+            <div className="flex justify-center py-12 text-slate-400 font-semibold text-sm">Đang tải số liệu Serial/SKU và đối soát đơn hàng...</div>
           ) : filteredSerials.length === 0 ? (
             <div className="py-12 text-center text-slate-400 text-sm font-medium">
-              {searchQuery || filterStatus !== 'ALL' ? 'Không tìm thấy số IMEI nào khớp với điều kiện lọc.' : 'Chưa có mã IMEI/Serial nào cho lô này.'}
+              {searchQuery || filterStatus !== 'ALL' ? 'Không tìm thấy mã Serial/SKU nào khớp với điều kiện lọc.' : 'Chưa có mã Serial/SKU nào cho lô này.'}
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
@@ -526,9 +526,9 @@ const SerialModal = ({ importItem, onClose }) => {
                         {sn.serialNumber}
                       </span>
                       <button 
-                        onClick={() => handleCopy(sn.serialNumber, 'IMEI')}
+                        onClick={() => handleCopy(sn.serialNumber, 'Serial')}
                         className="text-slate-400 hover:text-blue-600 transition-colors"
-                        title="Sao chép IMEI"
+                        title="Sao chép Serial"
                       >
                         <Copy size={13} />
                       </button>
@@ -901,10 +901,10 @@ const StockImportManagement = () => {
                   type="button"
                   onClick={() => setSelectedImportForSerial(item)}
                   className="inline-flex items-center gap-1.5 rounded-xl border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700 hover:bg-blue-100 transition-all"
-                  title="Xem mã IMEI/Serial"
+                  title="Xem danh sách Serial / SKU kho"
                 >
                   <Barcode size={14} />
-                  Xem IMEI
+                  Xem Serial
                 </button>
               </td>
             </tr>

@@ -12,9 +12,11 @@ import com.haihoan2874.techhub.dto.response.UpdateProductStockResponse;
 import com.haihoan2874.techhub.dto.request.base.BaseProductRequest;
 import com.haihoan2874.techhub.dto.core.PagingList;
 import com.haihoan2874.techhub.model.Product;
+import com.haihoan2874.techhub.model.ProductItem;
 import com.haihoan2874.techhub.model.StockImport;
 import com.haihoan2874.techhub.repository.BrandRepository;
 import com.haihoan2874.techhub.repository.CategoryRepository;
+import com.haihoan2874.techhub.repository.ProductItemRepository;
 import com.haihoan2874.techhub.repository.ProductRepository;
 import com.haihoan2874.techhub.repository.StockImportRepository;
 import com.haihoan2874.techhub.security.service.UserService;
@@ -46,6 +48,7 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
     private final BrandRepository brandRepository;
     private final StockImportRepository stockImportRepository;
+    private final ProductItemRepository productItemRepository;
     private final InventoryService inventoryService;
     private final UserService userService;
 
@@ -88,7 +91,7 @@ public class ProductService {
         inventoryService.initializeInventory(saveProduct.getId(), initialStock, initialImportedAt);
 
         if (initialStock > 0) {
-            stockImportRepository.save(StockImport.builder()
+            StockImport stockImport = stockImportRepository.save(StockImport.builder()
                     .productId(saveProduct.getId())
                     .quantity(initialStock)
                     .importPrice(request.getInitialImportPrice())
@@ -96,6 +99,17 @@ public class ProductService {
                     .importedAt(initialImportedAt)
                     .createdBy(saveProduct.getCreatedBy())
                     .build());
+
+            for (int i = 1; i <= initialStock; i++) {
+                String serialNo = "SL-SN-" + (saveProduct.getSlug() != null ? saveProduct.getSlug().toUpperCase() : "PROD")
+                        + "-" + (System.currentTimeMillis() % 1000000) + "-" + i;
+                productItemRepository.save(ProductItem.builder()
+                        .productId(saveProduct.getId())
+                        .stockImportId(stockImport.getId())
+                        .serialNumber(serialNo)
+                        .status("AVAILABLE")
+                        .build());
+            }
         }
 
         return CreateProductResponse.builder()
