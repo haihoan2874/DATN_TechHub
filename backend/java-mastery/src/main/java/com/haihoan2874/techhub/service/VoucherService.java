@@ -114,6 +114,22 @@ public class VoucherService {
         voucherRepository.save(voucher);
     }
 
+    @Transactional
+    public void releaseVoucher(String code) {
+        if (code == null || code.isBlank()) {
+            return;
+        }
+        
+        // Vẫn dùng Lock bi quan để tránh lỗi khi có người khác đang lấy mã này cùng lúc
+        voucherRepository.findByCodeIgnoreCaseForUpdate(code.trim())
+                .ifPresent(voucher -> {
+                    if (voucher.getUsedCount() > 0) {
+                        voucher.setUsedCount(voucher.getUsedCount() - 1);
+                        voucherRepository.save(voucher);
+                    }
+                });
+    }
+
     private Voucher findValidVoucher(String code, BigDecimal orderAmount) {
         if (code == null || code.isBlank()) {
             throw new IllegalStateException("Mã giảm giá không hợp lệ hoặc đã hết hạn sử dụng");

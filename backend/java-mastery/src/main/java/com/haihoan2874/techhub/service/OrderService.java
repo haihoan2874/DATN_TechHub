@@ -572,6 +572,16 @@ public class OrderService {
                 log.warn("Inventory not found while restoring stock for product {}", item.getProductId());
             }
         }
+        
+        // Trả lại lượt sử dụng cho mã giảm giá nếu có
+        if (order.getVoucherCode() != null && !order.getVoucherCode().isBlank()) {
+            try {
+                voucherService.releaseVoucher(order.getVoucherCode());
+                log.info("Voucher {} released for cancelled order {}", order.getVoucherCode(), order.getOrderNumber());
+            } catch (Exception ex) {
+                log.warn("Failed to release voucher {} for order {}", order.getVoucherCode(), order.getOrderNumber(), ex);
+            }
+        }
     }
 
     private void validateOrderStatusTransition(OrderStatus currentStatus, OrderStatus newStatus) {
