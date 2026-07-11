@@ -1,6 +1,6 @@
 -- V20__Add_sample_profitable_business_data.sql
 -- 1. Clean up any previously inserted sample data from test runs of this script
-DELETE FROM product_items WHERE serial_number LIKE 'SL-2026-Q3-%' OR stock_import_id IN (SELECT id FROM stock_imports WHERE note LIKE '%Lãi suất cao%');
+DELETE FROM product_items WHERE serial_number LIKE 'SL-2026-Q3-%' OR serial_number LIKE 'SL-SN-%' OR stock_import_id IN (SELECT id FROM stock_imports WHERE note LIKE '%Lãi suất cao%');
 DELETE FROM order_items WHERE order_id IN (SELECT id FROM orders WHERE order_number LIKE 'ORD-Q3-2026-%');
 DELETE FROM orders WHERE order_number LIKE 'ORD-Q3-2026-%';
 DELETE FROM stock_imports WHERE note LIKE '%Lãi suất cao%';
@@ -32,9 +32,12 @@ DECLARE
     i INT;
     v_serial VARCHAR(100);
 BEGIN
-    FOR imp IN SELECT id, product_id, imported_at FROM stock_imports WHERE note LIKE '%Lãi suất cao%' LOOP
+    FOR imp IN SELECT si.id, si.product_id, si.imported_at, p.slug 
+               FROM stock_imports si
+               JOIN products p ON si.product_id = p.id
+               WHERE si.note LIKE '%Lãi suất cao%' LOOP
         FOR i IN 1..20 LOOP
-            v_serial := 'SL-2026-Q3-' || SUBSTRING(imp.product_id::text, 1, 4) || '-' || LPAD(i::text, 3, '0') || '-' || LPAD(FLOOR(RANDOM() * 9000 + 1000)::text, 4, '0');
+            v_serial := 'SL-SN-' || UPPER(COALESCE(imp.slug, 'PROD')) || '-' || LPAD(FLOOR(RANDOM() * 900000 + 100000)::text, 6, '0') || '-' || i::text;
             INSERT INTO product_items (id, product_id, stock_import_id, serial_number, status, created_at)
             VALUES (
                 gen_random_uuid(),
