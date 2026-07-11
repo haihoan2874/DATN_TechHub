@@ -95,7 +95,21 @@ public class VoucherService {
         if (code == null || code.isBlank()) {
             return;
         }
-        Voucher voucher = findValidVoucher(code, orderAmount);
+        
+        // Dùng Lock bi quan (PESSIMISTIC_WRITE) để chống Race Condition khi nhiều người cùng dùng
+        Voucher voucher = voucherRepository.findByCodeIgnoreCaseForUpdate(code.trim())
+                .orElseThrow(() -> new IllegalStateException("Mã giảm giá không hợp lệ"));
+                
+        if (Boolean.FALSE.equals(voucher.getIsActive()) || voucher.getExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new IllegalStateException("Mã giảm giá không hợp lệ hoặc đã hết hạn sử dụng");
+        }
+        if (voucher.getUsageLimit() != null && voucher.getUsedCount() >= voucher.getUsageLimit()) {
+            throw new IllegalStateException("Mã giảm giá đã được sử dụng hết");
+        }
+        if (orderAmount.compareTo(voucher.getMinOrderAmount()) < 0) {
+            throw new IllegalStateException("Đơn hàng chưa đạt giá trị tối thiểu để sử dụng mã này");
+        }
+
         voucher.setUsedCount(voucher.getUsedCount() + 1);
         voucherRepository.save(voucher);
     }
