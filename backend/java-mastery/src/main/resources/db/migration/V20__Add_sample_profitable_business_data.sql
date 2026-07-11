@@ -37,7 +37,7 @@ BEGIN
                JOIN products p ON si.product_id = p.id
                WHERE si.note LIKE '%Lãi suất cao%' LOOP
         FOR i IN 1..20 LOOP
-            v_serial := 'SL-SN-' || UPPER(COALESCE(imp.slug, 'PROD')) || '-' || LPAD(FLOOR(RANDOM() * 900000 + 100000)::text, 6, '0') || '-' || i::text;
+            v_serial := 'SL-SN-' || UPPER(COALESCE(imp.slug, 'PROD')) || '-' || TO_CHAR(imp.imported_at, 'DDMM-HH24MI') || '-' || i::text;
             INSERT INTO product_items (id, product_id, stock_import_id, serial_number, status, created_at)
             VALUES (
                 gen_random_uuid(),

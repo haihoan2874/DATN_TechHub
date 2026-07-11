@@ -109,9 +109,10 @@ public class StockImportService {
         productRepository.save(product);
 
         // 5. Tự động sinh danh sách mã Serial/SKU nội bộ định danh tài sản vật lý cho lô nhập này
+        String batchCode = new java.text.SimpleDateFormat("ddMM-HHmm").format(new java.util.Date());
         for (int i = 1; i <= request.getQuantity(); i++) {
             String serialNo = "SL-SN-" + (product.getSlug() != null ? product.getSlug().toUpperCase() : "PROD") 
-                    + "-" + (System.currentTimeMillis() % 1000000) + "-" + i;
+                    + "-" + batchCode + "-" + i;
             productItemRepository.save(ProductItem.builder()
                     .productId(product.getId())
                     .stockImportId(stockImport.getId())

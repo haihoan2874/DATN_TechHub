@@ -100,9 +100,10 @@ public class ProductService {
                     .createdBy(saveProduct.getCreatedBy())
                     .build());
 
+            String batchCode = new java.text.SimpleDateFormat("ddMM-HHmm").format(new java.util.Date());
             for (int i = 1; i <= initialStock; i++) {
                 String serialNo = "SL-SN-" + (saveProduct.getSlug() != null ? saveProduct.getSlug().toUpperCase() : "PROD")
-                        + "-" + (System.currentTimeMillis() % 1000000) + "-" + i;
+                        + "-" + batchCode + "-" + i;
                 productItemRepository.save(ProductItem.builder()
                         .productId(saveProduct.getId())
                         .stockImportId(stockImport.getId())
